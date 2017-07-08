@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Ratatoskr.Devices.AudioFile
+{
+    internal class DeviceClassImpl : DeviceClass
+    {
+        public DeviceClassImpl() : base(Guid.Parse("07B1F2AF-67AD-4ADB-B8F3-2D831530B050"))
+        {
+        }
+
+        public override string Name
+        {
+            get { return ("音声ファイル"); }
+        }
+
+        public override string Details
+        {
+            get { return ("音声ファイルからデータを取得します。"); }
+        }
+
+        public override Type GetPropertyType()
+        {
+            return (typeof(DevicePropertyImpl));
+        }
+
+        public override DeviceProperty CreateProperty()
+        {
+            return (new DevicePropertyImpl());
+        }
+
+        protected override DeviceInstance OnCreateInstance(DeviceManager devm, Guid obj_id, string name, DeviceProperty devp)
+        {
+            return (new DeviceInstanceImpl(devm, this, devp, obj_id, name));
+        }
+
+        public override string ToString()
+        {
+            return (Name);
+        }
+    }
+}
