@@ -32,7 +32,7 @@ namespace Ratatoskr.Actions.ActionModules
                 return;
             }
 
-            var dialog = new Forms.Information.InformationFrame();
+            var dialog = new Forms.AboutForm.AboutForm();
 
             dialog.ShowDialog();
         }

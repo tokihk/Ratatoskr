@@ -11,15 +11,15 @@ using System.Xml;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 
-namespace Ratatoskr.Forms.Information
+namespace Ratatoskr.Forms.AboutForm
 {
-    public partial class InformationFrame : Form
+    public partial class AboutForm : Form
     {
         private readonly Font font_license_name_ = new Font("Arial", 14, FontStyle.Bold);
         private readonly Font font_license_homepage_ = new Font("Arial", 10, FontStyle.Italic);
 
 
-        public InformationFrame()
+        public AboutForm()
         {
             InitializeComponent();
 

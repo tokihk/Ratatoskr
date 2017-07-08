@@ -1,6 +1,6 @@
-﻿namespace Ratatoskr.Forms.Information
+﻿namespace Ratatoskr.Forms.AboutForm
 {
-    partial class InformationFrame
+    partial class AboutForm
     {
         /// <summary>
         /// Required designer variable.
