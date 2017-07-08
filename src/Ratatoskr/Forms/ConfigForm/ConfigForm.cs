@@ -54,9 +54,9 @@ namespace Ratatoskr.Forms.ConfigForm
         private void InitializePageMenu()
         {
             var items = new [] {
-                new { level = 0, text = "アプリケーション",   page = PageId.None },
-                new { level = 1, text = "言語",               page = PageId.Language },
-                new { level = 1, text = "自動更新",           page = PageId.AutoUpdate },
+//                new { level = 0, text = "アプリケーション",   page = PageId.None },
+//                new { level = 1, text = "言語",               page = PageId.Language },
+//                new { level = 1, text = "自動更新",           page = PageId.AutoUpdate },
                 new { level = 0, text = "ツール",             page = PageId.None },
                 new { level = 1, text = "自動タイムスタンプ", page = PageId.AutoTimeStamp },
                 new { level = 0, text = "ログ",               page = PageId.None },
