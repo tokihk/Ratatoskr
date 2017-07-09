@@ -17,12 +17,12 @@ namespace Ratatoskr.PacketViews.Sequential
 
         public override string Name
         {
-            get { return ("シーケンシャル"); }
+            get { return ("Sequential"); }
         }
 
         public override string Details
         {
-            get { return ("全てのパケットを連続したデータとして表示します。"); }
+            get { return (Name); }
         }
 
         public override Type GetPropertyType()

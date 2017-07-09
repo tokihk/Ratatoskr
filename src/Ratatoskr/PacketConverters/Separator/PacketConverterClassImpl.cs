@@ -17,12 +17,12 @@ namespace Ratatoskr.PacketConverters.Separator
 
         public override string Name
         {
-            get { return ("パケット区切り"); }
+            get { return ("Grouping"); }
         }
 
         public override string Details
         {
-            get { return ("パケットの切れ目を定義できます。"); }
+            get { return ("Specify the boundary of the packet."); }
         }
 
         public override Type GetPropertyType()

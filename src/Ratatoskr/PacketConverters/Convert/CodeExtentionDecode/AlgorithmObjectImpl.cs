@@ -71,16 +71,16 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
             this.label3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 0);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.label3.Size = new System.Drawing.Size(80, 15);
+            this.label3.Size = new System.Drawing.Size(50, 15);
             this.label3.TabIndex = 11;
-            this.label3.Text = "拡張先行コード";
+            this.label3.Text = "Pre code";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Num_ExtCode
             // 
             this.Num_ExtCode.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Num_ExtCode.Hexadecimal = true;
-            this.Num_ExtCode.Location = new System.Drawing.Point(86, 3);
+            this.Num_ExtCode.Location = new System.Drawing.Point(56, 3);
             this.Num_ExtCode.Margin = new System.Windows.Forms.Padding(2, 3, 2, 0);
             this.Num_ExtCode.Maximum = new decimal(new int[] {
             255,
@@ -95,7 +95,7 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
             // label5
             // 
             this.label5.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label5.Location = new System.Drawing.Point(141, 2);
+            this.label5.Location = new System.Drawing.Point(111, 2);
             this.label5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(2, 22);
@@ -104,20 +104,20 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(149, 2);
+            this.label6.Location = new System.Drawing.Point(119, 2);
             this.label6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
             this.label6.Name = "label6";
             this.label6.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.label6.Size = new System.Drawing.Size(82, 15);
+            this.label6.Size = new System.Drawing.Size(70, 15);
             this.label6.TabIndex = 14;
-            this.label6.Text = "対象コードマスク";
+            this.label6.Text = "Output mask";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Num_ExtMask
             // 
             this.Num_ExtMask.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Num_ExtMask.Hexadecimal = true;
-            this.Num_ExtMask.Location = new System.Drawing.Point(236, 3);
+            this.Num_ExtMask.Location = new System.Drawing.Point(194, 3);
             this.Num_ExtMask.Margin = new System.Windows.Forms.Padding(2, 3, 2, 0);
             this.Num_ExtMask.Maximum = new decimal(new int[] {
             255,

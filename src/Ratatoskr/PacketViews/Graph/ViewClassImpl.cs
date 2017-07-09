@@ -17,12 +17,12 @@ namespace Ratatoskr.PacketViews.Graph
 
         public override string Name
         {
-            get { return ("グラフ"); }
+            get { return ("Graph"); }
         }
 
         public override string Details
         {
-            get { return ("データをグラフ化します"); }
+            get { return (Name); }
         }
 
         public override Type GetPropertyType()

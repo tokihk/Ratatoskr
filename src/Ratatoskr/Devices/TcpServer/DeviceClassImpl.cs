@@ -14,12 +14,12 @@ namespace Ratatoskr.Devices.TcpServer
 
         public override string Name
         {
-            get { return ("TCPサーバー"); }
+            get { return ("TCP Server(IPv4/IPv6)"); }
         }
 
         public override string Details
         {
-            get { return ("TCPサーバー(IPv4/IPv6)を制御します"); }
+            get { return (Name); }
         }
 
         public override Type GetPropertyType()

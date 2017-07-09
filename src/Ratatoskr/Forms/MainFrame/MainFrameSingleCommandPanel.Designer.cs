@@ -54,7 +54,7 @@
             this.GBox_CommandList.Size = new System.Drawing.Size(421, 44);
             this.GBox_CommandList.TabIndex = 0;
             this.GBox_CommandList.TabStop = false;
-            this.GBox_CommandList.Text = "コマンド";
+            this.GBox_CommandList.Text = "Command";
             // 
             // Btn_FileFunction
             // 
@@ -109,7 +109,7 @@
             this.GBox_Target.Size = new System.Drawing.Size(157, 44);
             this.GBox_Target.TabIndex = 1;
             this.GBox_Target.TabStop = false;
-            this.GBox_Target.Text = "ターゲット";
+            this.GBox_Target.Text = "Target alias";
             // 
             // CBox_TargetList
             // 
@@ -128,12 +128,12 @@
             this.CMenu_FileFunction.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Menu_FileFunc_Transfer});
             this.CMenu_FileFunction.Name = "CMenu_FileFunction";
-            this.CMenu_FileFunction.Size = new System.Drawing.Size(149, 26);
+            this.CMenu_FileFunction.Size = new System.Drawing.Size(133, 26);
             // 
             // Menu_FileFunc_Transfer
             // 
             this.Menu_FileFunc_Transfer.Name = "Menu_FileFunc_Transfer";
-            this.Menu_FileFunc_Transfer.Size = new System.Drawing.Size(148, 22);
+            this.Menu_FileFunc_Transfer.Size = new System.Drawing.Size(132, 22);
             this.Menu_FileFunc_Transfer.Text = "ファイル転送";
             this.Menu_FileFunc_Transfer.Click += new System.EventHandler(this.Menu_FileFunc_Transfer_Click);
             // 

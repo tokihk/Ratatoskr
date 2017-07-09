@@ -61,10 +61,12 @@ namespace Ratatoskr.PacketViews.Graph
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.Panel_ToolBar = new System.Windows.Forms.Panel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.GBox_ViewMode = new System.Windows.Forms.GroupBox();
+            this.CBox_ViewMode = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.Num_DrawInterval = new System.Windows.Forms.NumericUpDown();
@@ -95,10 +97,9 @@ namespace Ratatoskr.PacketViews.Graph
             this.Panel_Bottom = new System.Windows.Forms.Panel();
             this.Panel_Graph = new System.Windows.Forms.Panel();
             this.Chart_Data = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.GBox_ViewMode = new System.Windows.Forms.GroupBox();
-            this.CBox_ViewMode = new System.Windows.Forms.ComboBox();
             this.Panel_ToolBar.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.GBox_ViewMode.SuspendLayout();
             this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_DrawInterval)).BeginInit();
             this.groupBox7.SuspendLayout();
@@ -119,7 +120,6 @@ namespace Ratatoskr.PacketViews.Graph
             this.GBox_InputDataType.SuspendLayout();
             this.Panel_Graph.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Chart_Data)).BeginInit();
-            this.GBox_ViewMode.SuspendLayout();
             this.SuspendLayout();
             // 
             // Panel_ToolBar
@@ -145,7 +145,28 @@ namespace Ratatoskr.PacketViews.Graph
             this.groupBox4.Size = new System.Drawing.Size(420, 148);
             this.groupBox4.TabIndex = 5;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "グラフ設定";
+            this.groupBox4.Text = "Graph setting";
+            // 
+            // GBox_ViewMode
+            // 
+            this.GBox_ViewMode.Controls.Add(this.CBox_ViewMode);
+            this.GBox_ViewMode.Location = new System.Drawing.Point(6, 18);
+            this.GBox_ViewMode.Name = "GBox_ViewMode";
+            this.GBox_ViewMode.Size = new System.Drawing.Size(100, 45);
+            this.GBox_ViewMode.TabIndex = 9;
+            this.GBox_ViewMode.TabStop = false;
+            this.GBox_ViewMode.Text = "Mode";
+            // 
+            // CBox_ViewMode
+            // 
+            this.CBox_ViewMode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CBox_ViewMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_ViewMode.FormattingEnabled = true;
+            this.CBox_ViewMode.Location = new System.Drawing.Point(3, 15);
+            this.CBox_ViewMode.Name = "CBox_ViewMode";
+            this.CBox_ViewMode.Size = new System.Drawing.Size(94, 20);
+            this.CBox_ViewMode.TabIndex = 0;
+            this.CBox_ViewMode.SelectedIndexChanged += new System.EventHandler(this.Setting_SelectedIndexChanged);
             // 
             // groupBox8
             // 
@@ -153,19 +174,19 @@ namespace Ratatoskr.PacketViews.Graph
             this.groupBox8.Controls.Add(this.Num_DrawInterval);
             this.groupBox8.Location = new System.Drawing.Point(238, 18);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(120, 45);
+            this.groupBox8.Size = new System.Drawing.Size(136, 45);
             this.groupBox8.TabIndex = 8;
             this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "表示間隔";
+            this.groupBox8.Text = "Draw interval";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(94, 22);
+            this.label4.Location = new System.Drawing.Point(92, 23);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(20, 12);
+            this.label4.Size = new System.Drawing.Size(32, 12);
             this.label4.TabIndex = 1;
-            this.label4.Text = "ms";
+            this.label4.Text = "msec";
             // 
             // Num_DrawInterval
             // 
@@ -201,7 +222,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.groupBox7.Size = new System.Drawing.Size(120, 45);
             this.groupBox7.TabIndex = 7;
             this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "グラフ種別";
+            this.groupBox7.Text = "Graph type";
             // 
             // CBox_GraphType
             // 
@@ -225,7 +246,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.groupBox1.Size = new System.Drawing.Size(200, 71);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Y軸設定";
+            this.groupBox1.Text = "Y axis setting";
             // 
             // ChkBox_DataValueMax
             // 
@@ -233,7 +254,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.ChkBox_DataValueMax.Name = "ChkBox_DataValueMax";
             this.ChkBox_DataValueMax.Size = new System.Drawing.Size(80, 16);
             this.ChkBox_DataValueMax.TabIndex = 4;
-            this.ChkBox_DataValueMax.Text = "最大値";
+            this.ChkBox_DataValueMax.Text = "Maximum";
             this.ChkBox_DataValueMax.UseVisualStyleBackColor = true;
             this.ChkBox_DataValueMax.CheckedChanged += new System.EventHandler(this.Setting_SelectedIndexChanged);
             // 
@@ -243,7 +264,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.ChkBox_DataValueMin.Name = "ChkBox_DataValueMin";
             this.ChkBox_DataValueMin.Size = new System.Drawing.Size(80, 24);
             this.ChkBox_DataValueMin.TabIndex = 3;
-            this.ChkBox_DataValueMin.Text = "最小値";
+            this.ChkBox_DataValueMin.Text = "Minimum";
             this.ChkBox_DataValueMin.UseVisualStyleBackColor = true;
             this.ChkBox_DataValueMin.CheckedChanged += new System.EventHandler(this.Setting_SelectedIndexChanged);
             // 
@@ -308,7 +329,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.GBox_DrawPoint.Size = new System.Drawing.Size(200, 45);
             this.GBox_DrawPoint.TabIndex = 5;
             this.GBox_DrawPoint.TabStop = false;
-            this.GBox_DrawPoint.Text = "X軸設定";
+            this.GBox_DrawPoint.Text = "X axis setting";
             // 
             // label1
             // 
@@ -316,7 +337,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(80, 23);
             this.label1.TabIndex = 1;
-            this.label1.Text = "ポイント数";
+            this.label1.Text = "Points";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Num_DrawPointNum
@@ -350,10 +371,10 @@ namespace Ratatoskr.PacketViews.Graph
             this.groupBox3.Controls.Add(this.GBox_SamplingInterval);
             this.groupBox3.Location = new System.Drawing.Point(724, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(139, 71);
+            this.groupBox3.Size = new System.Drawing.Size(155, 71);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "モード別設定: データ量";
+            this.groupBox3.Text = "Mode setting: Amount";
             // 
             // GBox_SamplingInterval
             // 
@@ -361,19 +382,19 @@ namespace Ratatoskr.PacketViews.Graph
             this.GBox_SamplingInterval.Controls.Add(this.Num_SamplingInterval);
             this.GBox_SamplingInterval.Location = new System.Drawing.Point(6, 18);
             this.GBox_SamplingInterval.Name = "GBox_SamplingInterval";
-            this.GBox_SamplingInterval.Size = new System.Drawing.Size(128, 45);
+            this.GBox_SamplingInterval.Size = new System.Drawing.Size(143, 45);
             this.GBox_SamplingInterval.TabIndex = 3;
             this.GBox_SamplingInterval.TabStop = false;
-            this.GBox_SamplingInterval.Text = "サンプリング間隔";
+            this.GBox_SamplingInterval.Text = "Sampling interval";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(99, 18);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(20, 12);
+            this.label2.Size = new System.Drawing.Size(32, 12);
             this.label2.TabIndex = 3;
-            this.label2.Text = "ms";
+            this.label2.Text = "msec";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Num_SamplingInterval
@@ -414,7 +435,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.groupBox2.Size = new System.Drawing.Size(289, 125);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "モード別設定: 連続データ";
+            this.groupBox2.Text = "Mode setting: Value";
             // 
             // groupBox6
             // 
@@ -425,7 +446,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.groupBox6.Size = new System.Drawing.Size(108, 45);
             this.groupBox6.TabIndex = 7;
             this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "有効データ間隔";
+            this.groupBox6.Text = "Snap counter";
             // 
             // label3
             // 
@@ -472,7 +493,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.groupBox5.Size = new System.Drawing.Size(108, 45);
             this.groupBox5.TabIndex = 6;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "データ値補正";
+            this.groupBox5.Text = "Adjust value";
             // 
             // Num_DataValueOffset
             // 
@@ -515,7 +536,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.GBox_InputByteEndian.Size = new System.Drawing.Size(140, 45);
             this.GBox_InputByteEndian.TabIndex = 3;
             this.GBox_InputByteEndian.TabStop = false;
-            this.GBox_InputByteEndian.Text = "バイトエンディアン";
+            this.GBox_InputByteEndian.Text = "Endian";
             // 
             // CBox_InputByteEndian
             // 
@@ -536,7 +557,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.GBox_InputDataType.Size = new System.Drawing.Size(140, 45);
             this.GBox_InputDataType.TabIndex = 2;
             this.GBox_InputDataType.TabStop = false;
-            this.GBox_InputDataType.Text = "データタイプ";
+            this.GBox_InputDataType.Text = "Value type";
             // 
             // CBox_InputDataType
             // 
@@ -569,42 +590,21 @@ namespace Ratatoskr.PacketViews.Graph
             // Chart_Data
             // 
             this.Chart_Data.AntiAliasing = System.Windows.Forms.DataVisualization.Charting.AntiAliasingStyles.None;
-            chartArea2.Name = "ChartArea_Data";
-            this.Chart_Data.ChartAreas.Add(chartArea2);
+            chartArea1.Name = "ChartArea_Data";
+            this.Chart_Data.ChartAreas.Add(chartArea1);
             this.Chart_Data.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Chart_Data.IsSoftShadows = false;
             this.Chart_Data.Location = new System.Drawing.Point(0, 0);
             this.Chart_Data.Name = "Chart_Data";
-            series2.ChartArea = "ChartArea_Data";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Name = "Series1";
-            series2.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
-            this.Chart_Data.Series.Add(series2);
+            series1.ChartArea = "ChartArea_Data";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Name = "Series1";
+            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
+            this.Chart_Data.Series.Add(series1);
             this.Chart_Data.Size = new System.Drawing.Size(997, 393);
             this.Chart_Data.TabIndex = 0;
             this.Chart_Data.Text = "chart1";
             this.Chart_Data.TextAntiAliasingQuality = System.Windows.Forms.DataVisualization.Charting.TextAntiAliasingQuality.Normal;
-            // 
-            // GBox_ViewMode
-            // 
-            this.GBox_ViewMode.Controls.Add(this.CBox_ViewMode);
-            this.GBox_ViewMode.Location = new System.Drawing.Point(6, 18);
-            this.GBox_ViewMode.Name = "GBox_ViewMode";
-            this.GBox_ViewMode.Size = new System.Drawing.Size(100, 45);
-            this.GBox_ViewMode.TabIndex = 9;
-            this.GBox_ViewMode.TabStop = false;
-            this.GBox_ViewMode.Text = "モード";
-            // 
-            // CBox_ViewMode
-            // 
-            this.CBox_ViewMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CBox_ViewMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CBox_ViewMode.FormattingEnabled = true;
-            this.CBox_ViewMode.Location = new System.Drawing.Point(3, 15);
-            this.CBox_ViewMode.Name = "CBox_ViewMode";
-            this.CBox_ViewMode.Size = new System.Drawing.Size(94, 20);
-            this.CBox_ViewMode.TabIndex = 0;
-            this.CBox_ViewMode.SelectedIndexChanged += new System.EventHandler(this.Setting_SelectedIndexChanged);
             // 
             // ViewInstanceImpl
             // 
@@ -616,6 +616,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.Size = new System.Drawing.Size(997, 576);
             this.Panel_ToolBar.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
+            this.GBox_ViewMode.ResumeLayout(false);
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_DrawInterval)).EndInit();
@@ -639,7 +640,6 @@ namespace Ratatoskr.PacketViews.Graph
             this.GBox_InputDataType.ResumeLayout(false);
             this.Panel_Graph.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Chart_Data)).EndInit();
-            this.GBox_ViewMode.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -793,8 +793,8 @@ namespace Ratatoskr.PacketViews.Graph
         private GraphChartObject CreateChartObject()
         {
             switch (prop_.ViewMode.Value) {
-                case ViewModeType.Data:
-                    return (new GraphType.Data.GraphChartObjectImpl(prop_));
+                case ViewModeType.Value:
+                    return (new GraphType.Value.GraphChartObjectImpl(prop_));
                 case ViewModeType.Amount:
                     return (new GraphType.Amount.GraphChartObjectImpl(prop_));
                 default:

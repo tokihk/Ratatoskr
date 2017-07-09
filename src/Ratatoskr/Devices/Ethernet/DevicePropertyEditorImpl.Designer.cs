@@ -57,7 +57,7 @@
             this.GBox_IfceList.Size = new System.Drawing.Size(407, 65);
             this.GBox_IfceList.TabIndex = 5;
             this.GBox_IfceList.TabStop = false;
-            this.GBox_IfceList.Text = "インターフェース";
+            this.GBox_IfceList.Text = "Device interface";
             // 
             // Label_IfceName
             // 
@@ -91,7 +91,7 @@
             this.GBox_RecvConfig.Size = new System.Drawing.Size(407, 180);
             this.GBox_RecvConfig.TabIndex = 6;
             this.GBox_RecvConfig.TabStop = false;
-            this.GBox_RecvConfig.Text = "受信設定";
+            this.GBox_RecvConfig.Text = "Monitor setting";
             // 
             // GBox_ViewData
             // 
@@ -106,7 +106,7 @@
             this.GBox_ViewData.Size = new System.Drawing.Size(321, 102);
             this.GBox_ViewData.TabIndex = 9;
             this.GBox_ViewData.TabStop = false;
-            this.GBox_ViewData.Text = "表示データ";
+            this.GBox_ViewData.Text = "Monitor data select";
             // 
             // CBox_ViewDataType
             // 
@@ -132,7 +132,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(100, 20);
             this.label3.TabIndex = 3;
-            this.label3.Text = "データ内容";
+            this.label3.Text = "Data contents";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label2
@@ -141,7 +141,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(100, 20);
             this.label2.TabIndex = 2;
-            this.label2.Text = "送信先";
+            this.label2.Text = "Destination";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label1
@@ -150,7 +150,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 20);
             this.label1.TabIndex = 1;
-            this.label1.Text = "送信元";
+            this.label1.Text = "Source";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // CBox_ViewSourceType
@@ -172,7 +172,7 @@
             this.GBox_RecvFilterPattern.Size = new System.Drawing.Size(395, 42);
             this.GBox_RecvFilterPattern.TabIndex = 1;
             this.GBox_RecvFilterPattern.TabStop = false;
-            this.GBox_RecvFilterPattern.Text = "WinPCapフィルター";
+            this.GBox_RecvFilterPattern.Text = "WinPCap filter";
             // 
             // TBox_RecvFilter
             // 
@@ -189,7 +189,7 @@
             this.Controls.Add(this.GBox_RecvConfig);
             this.Controls.Add(this.GBox_IfceList);
             this.Name = "DevicePropertyEditorImpl";
-            this.Size = new System.Drawing.Size(418, 348);
+            this.Size = new System.Drawing.Size(418, 263);
             this.GBox_IfceList.ResumeLayout(false);
             this.GBox_RecvConfig.ResumeLayout(false);
             this.GBox_ViewData.ResumeLayout(false);

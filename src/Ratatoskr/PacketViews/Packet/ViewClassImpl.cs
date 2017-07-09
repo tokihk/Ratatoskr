@@ -17,12 +17,12 @@ namespace Ratatoskr.PacketViews.Packet
 
         public override string Name
         {
-            get { return ("パケット"); }
+            get { return ("Packet"); }
         }
 
         public override string Details
         {
-            get { return ("パケット毎に表示します。"); }
+            get { return (Name); }
         }
 
         public override Type GetPropertyType()

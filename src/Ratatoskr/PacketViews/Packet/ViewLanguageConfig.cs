@@ -40,6 +40,5 @@ namespace Ratatoskr.PacketViews.Packet
         public StringConfig CMenu_Packet_CopyToClipboard_DataCustom    { get; } = new StringConfig("Data: Custom");
         public StringConfig CMenu_Packet_CopyToClipboard_NewLineOn     { get; } = new StringConfig("Line feed on");
         public StringConfig CMenu_Packet_CopyToClipboard_NewLineOff    { get; } = new StringConfig("Line feed off");
-        public StringConfig CMenu_Packet_CopyToPacketList              { get; } = new StringConfig("Copy to Packet List");
     }
 }

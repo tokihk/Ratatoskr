@@ -108,7 +108,7 @@ namespace Ratatoskr.Forms.MainFrame
                         var column = new DataGridViewTextBoxColumn();
 
                         column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.HeaderText = "コマンド";
+                        column.HeaderText = "Command";
                         column.DefaultCellStyle.Font = new Font("MS Gothic", 9);
                         GView_CmdList.Columns.Add(column);
                     }
@@ -119,7 +119,7 @@ namespace Ratatoskr.Forms.MainFrame
                         var column = new DataGridViewTextBoxColumn();
 
                         column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.HeaderText = "基本遅延[ms]";
+                        column.HeaderText = "Fixed delay" + " [msec]";
                         column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                         column.Width = 150;
                         column.Resizable = DataGridViewTriState.False;
@@ -133,9 +133,9 @@ namespace Ratatoskr.Forms.MainFrame
                         var column = new DataGridViewTextBoxColumn();
 
                         column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.HeaderText = "乱数遅延(0～XXX)[ms]";
+                        column.HeaderText = "Random delay" + " (0～XXX)[msec]";
                         column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.Width = 150;
+                        column.Width = 200;
                         column.Resizable = DataGridViewTriState.False;
                         column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                         GView_CmdList.Columns.Add(column);
@@ -392,8 +392,8 @@ namespace Ratatoskr.Forms.MainFrame
                            ? (global::Ratatoskr.Properties.Resources.pause_32x32)
                            : (global::Ratatoskr.Properties.Resources.play_32x32);
             Btn_Play.Text = (play_state_ == PlayStatus.Busy)
-                          ? ("一時停止")
-                          : ("再生");
+                          ? ("Pause")
+                          : ("Play");
 
             Btn_Stop.Enabled = (play_state_ != PlayStatus.Reset);
 
@@ -448,7 +448,7 @@ namespace Ratatoskr.Forms.MainFrame
 
             /* === 行エラーを設定 === */
             if (error) {
-                row_obj.ErrorText = "入力値エラーの項目があります";
+                row_obj.ErrorText = "There is an item of input value error";
             } else {
                 row_obj.ErrorText = "";
             }
@@ -472,7 +472,7 @@ namespace Ratatoskr.Forms.MainFrame
                             cell.Style.BackColor = COLOR_COMMAND_FORMAT_OK;
                         } else {
                             cell.Style.BackColor = COLOR_COMMAND_FORMAT_NG;
-                            error_text = "コマンド式が間違っています";
+                            error_text = "Command incorrect";
                         }
                     }
                 }
@@ -499,16 +499,19 @@ namespace Ratatoskr.Forms.MainFrame
             /* 再生中 */
             if (play_state_ == PlayStatus.Busy) {
                 str.AppendFormat(
-                    "コマンドリスト実行中 {0,3}/{1,-3} | 次のコマンドまでの遅延 {2,6}[ms] | {3}",
+                    "{0} {1,3}/{2,-3} | {3} {4,6}[ms] | {5}",
+                    "Command list running",
                     play_cmd_index_busy_ + 1,
                     GView_CmdList.RowCount,
+                    "Next command",
                     play_next_delay_,
-                    (runner_.IsRunning) ? ("コマンド処理中") : ("ウェイト"));
+                    (runner_.IsRunning) ? ("Command busy") : ("Delay waiting"));
 
             /* 一時停止中 */
             } else if (play_state_ == PlayStatus.Pause) {
                 str.AppendFormat(
-                    "コマンドリスト一時停止中 {0,3}/{1,-3}",
+                    "{0} {1,3}/{2,-3}",
+                    "Command list pause",
                     play_cmd_index_busy_ + 1,
                     GView_CmdList.RowCount);
             }
@@ -717,7 +720,7 @@ namespace Ratatoskr.Forms.MainFrame
         {
             var dialog = new OpenFileDialog();
 
-            dialog.Filter = "CSVファイル(*.csv)|*.csv";
+            dialog.Filter = "CSV file(*.csv)|*.csv";
 
             if (dialog.ShowDialog() != DialogResult.OK)return;
 
@@ -728,7 +731,7 @@ namespace Ratatoskr.Forms.MainFrame
         {
             var dialog = new SaveFileDialog();
 
-            dialog.Filter = "CSVファイル(*.csv)|*.csv";
+            dialog.Filter = "CSV file(*.csv)|*.csv";
 
             if (dialog.ShowDialog() != DialogResult.OK)return;
 

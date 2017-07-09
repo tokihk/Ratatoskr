@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs.UserConfigs;
 
-namespace Ratatoskr.Forms.ConfigForm
+namespace Ratatoskr.Forms.OptionForm
 {
-    internal class ConfigPage : UserControl
+    internal class OptionFormPage : UserControl
     {
         public OptionConfig Config { get; private set; }
 
 
-        public ConfigPage()
+        public OptionFormPage()
         {
         }
 

@@ -62,7 +62,7 @@
             this.GBox_ConnectAction.Size = new System.Drawing.Size(150, 42);
             this.GBox_ConnectAction.TabIndex = 0;
             this.GBox_ConnectAction.TabStop = false;
-            this.GBox_ConnectAction.Text = "接続時の動作";
+            this.GBox_ConnectAction.Text = "Connect action";
             // 
             // CBox_ConnectAction
             // 
@@ -82,7 +82,7 @@
             this.GBox_BitsPerSample.Size = new System.Drawing.Size(150, 42);
             this.GBox_BitsPerSample.TabIndex = 1;
             this.GBox_BitsPerSample.TabStop = false;
-            this.GBox_BitsPerSample.Text = "再生回数(0=Infinite)";
+            this.GBox_BitsPerSample.Text = "Repeat count (0=Infinite)";
             // 
             // Num_RepeatCount
             // 
@@ -111,7 +111,7 @@
             this.GBox_InputDeviceList.Size = new System.Drawing.Size(492, 120);
             this.GBox_InputDeviceList.TabIndex = 5;
             this.GBox_InputDeviceList.TabStop = false;
-            this.GBox_InputDeviceList.Text = "音声データファイル";
+            this.GBox_InputDeviceList.Text = "Audio date file";
             // 
             // TBox_InputFileInfo
             // 
@@ -126,11 +126,11 @@
             // Btn_InputFileSelect
             // 
             this.Btn_InputFileSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Btn_InputFileSelect.Location = new System.Drawing.Point(446, 18);
+            this.Btn_InputFileSelect.Location = new System.Drawing.Point(426, 18);
             this.Btn_InputFileSelect.Name = "Btn_InputFileSelect";
-            this.Btn_InputFileSelect.Size = new System.Drawing.Size(40, 20);
+            this.Btn_InputFileSelect.Size = new System.Drawing.Size(60, 20);
             this.Btn_InputFileSelect.TabIndex = 1;
-            this.Btn_InputFileSelect.Text = "...";
+            this.Btn_InputFileSelect.Text = "Browse...";
             this.Btn_InputFileSelect.UseVisualStyleBackColor = true;
             this.Btn_InputFileSelect.Click += new System.EventHandler(this.Btn_InputFileSelect_Click);
             // 
@@ -140,7 +140,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TBox_InputFilePath.Location = new System.Drawing.Point(3, 19);
             this.TBox_InputFilePath.Name = "TBox_InputFilePath";
-            this.TBox_InputFilePath.Size = new System.Drawing.Size(437, 19);
+            this.TBox_InputFilePath.Size = new System.Drawing.Size(417, 19);
             this.TBox_InputFilePath.TabIndex = 0;
             this.TBox_InputFilePath.TextChanged += new System.EventHandler(this.TBox_InputFilePath_TextChanged);
             // 
@@ -154,7 +154,7 @@
             this.groupBox2.Size = new System.Drawing.Size(153, 162);
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "入力レート変換";
+            this.groupBox2.Text = "Input rate";
             // 
             // GBox_ChannelNum
             // 
@@ -164,7 +164,7 @@
             this.GBox_ChannelNum.Size = new System.Drawing.Size(140, 42);
             this.GBox_ChannelNum.TabIndex = 11;
             this.GBox_ChannelNum.TabStop = false;
-            this.GBox_ChannelNum.Text = "チャンネル数";
+            this.GBox_ChannelNum.Text = "Channel number";
             // 
             // CBox_InputChannelNum
             // 
@@ -183,7 +183,7 @@
             this.groupBox1.Size = new System.Drawing.Size(140, 42);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "量子化ビット数";
+            this.groupBox1.Text = "Quantization bit rate";
             // 
             // CBox_InputBitsPerSample
             // 
@@ -202,7 +202,7 @@
             this.GBox_SamplingRate.Size = new System.Drawing.Size(140, 42);
             this.GBox_SamplingRate.TabIndex = 9;
             this.GBox_SamplingRate.TabStop = false;
-            this.GBox_SamplingRate.Text = "サンプリングレート(Hz)";
+            this.GBox_SamplingRate.Text = "Sampling bit rate(Hz)";
             // 
             // CBox_InputSamplingRate
             // 
@@ -222,7 +222,7 @@
             this.groupBox3.Size = new System.Drawing.Size(164, 117);
             this.groupBox3.TabIndex = 10;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "再生設定";
+            this.groupBox3.Text = "Play setting";
             // 
             // DevicePropertyEditorImpl
             // 

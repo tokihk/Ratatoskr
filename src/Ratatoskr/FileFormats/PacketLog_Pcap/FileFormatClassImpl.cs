@@ -15,12 +15,12 @@ namespace Ratatoskr.FileFormats.PacketLog_Pcap
 
         public override string Name
         {
-            get { return ("pcapフォーマット"); }
+            get { return ("pcap format"); }
         }
 
         public override string Detail
         {
-            get { return ("pcapフォーマット"); }
+            get { return ("pcap format"); }
         }
 
         public override string[] FileExtension

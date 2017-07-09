@@ -40,36 +40,32 @@
             this.Panel_Center = new Ratatoskr.Forms.MainFrame.MainFrameCenter();
             this.SingleCmdPanel_Main = new Ratatoskr.Forms.MainFrame.MainFrameSingleCommandPanel();
             this.MBar_Main = new System.Windows.Forms.MenuStrip();
-            this.ファイルFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_File_OpenFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_File = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_File_Open = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.MenuBar_File_SavePacket = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_File_SavePacket_FilterOff = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_File_SavePacket_FilterOn = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_File_SaveAsPacket = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_File_SaveAsPacket_FilterOff = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_File_SaveAsPacket_FilterOn = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_File_SavePacket_AutoSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_File_Save = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_File_Save_Original = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_File_Save_Shaping = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_File_SaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_File_SaveAs_Original = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_File_SaveAs_Shaping = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_File_Exit = new System.Windows.Forms.ToolStripMenuItem();
-            this.編集EToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_Edit_TimeStamp = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_Edit_TimeStamp_Run = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.MenuBar_Edit_TimeStamp_Auto = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.MenuBar_Edit = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_Edit_EventClear = new System.Windows.Forms.ToolStripMenuItem();
-            this.表示VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_View = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_View_PacketConverterAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_View_PacketViewAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_View_PacketViewRedraw = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_View_AutoScroll = new System.Windows.Forms.ToolStripMenuItem();
-            this.ツールTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Tool = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Edit_TimeStamp = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_Tool_Option = new System.Windows.Forms.ToolStripMenuItem();
-            this.ヘルプHToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_Help_Information = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Help = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Help_About = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -201,238 +197,208 @@
             // 
             this.MBar_Main.Dock = System.Windows.Forms.DockStyle.None;
             this.MBar_Main.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ファイルFToolStripMenuItem,
-            this.編集EToolStripMenuItem,
-            this.表示VToolStripMenuItem,
-            this.ツールTToolStripMenuItem,
-            this.ヘルプHToolStripMenuItem});
+            this.MenuBar_File,
+            this.MenuBar_Edit,
+            this.MenuBar_View,
+            this.MenuBar_Tool,
+            this.MenuBar_Help});
             this.MBar_Main.Location = new System.Drawing.Point(0, 0);
             this.MBar_Main.Name = "MBar_Main";
             this.MBar_Main.Size = new System.Drawing.Size(784, 24);
             this.MBar_Main.TabIndex = 0;
             this.MBar_Main.Text = "menuStrip1";
             // 
-            // ファイルFToolStripMenuItem
+            // MenuBar_File
             // 
-            this.ファイルFToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuBar_File_OpenFile,
+            this.MenuBar_File.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuBar_File_Open,
             this.toolStripSeparator2,
-            this.MenuBar_File_SavePacket,
-            this.MenuBar_File_SaveAsPacket,
-            this.MenuBar_File_SavePacket_AutoSave,
+            this.MenuBar_File_Save,
+            this.MenuBar_File_SaveAs,
             this.toolStripSeparator1,
             this.MenuBar_File_Exit});
-            this.ファイルFToolStripMenuItem.Name = "ファイルFToolStripMenuItem";
-            this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
-            this.ファイルFToolStripMenuItem.Text = "ファイル(&F)";
+            this.MenuBar_File.Name = "MenuBar_File";
+            this.MenuBar_File.Size = new System.Drawing.Size(37, 20);
+            this.MenuBar_File.Text = "File";
             // 
-            // MenuBar_File_OpenFile
+            // MenuBar_File_Open
             // 
-            this.MenuBar_File_OpenFile.Name = "MenuBar_File_OpenFile";
-            this.MenuBar_File_OpenFile.Size = new System.Drawing.Size(223, 22);
-            this.MenuBar_File_OpenFile.Tag = "FileOpen";
-            this.MenuBar_File_OpenFile.Text = "ファイルを開く(&O)";
+            this.MenuBar_File_Open.Name = "MenuBar_File_Open";
+            this.MenuBar_File_Open.Size = new System.Drawing.Size(152, 22);
+            this.MenuBar_File_Open.Tag = "FileOpen";
+            this.MenuBar_File_Open.Text = "Open";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(220, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
-            // MenuBar_File_SavePacket
+            // MenuBar_File_Save
             // 
-            this.MenuBar_File_SavePacket.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuBar_File_SavePacket_FilterOff,
-            this.MenuBar_File_SavePacket_FilterOn});
-            this.MenuBar_File_SavePacket.Name = "MenuBar_File_SavePacket";
-            this.MenuBar_File_SavePacket.Size = new System.Drawing.Size(223, 22);
-            this.MenuBar_File_SavePacket.Text = "パケットログを保存";
-            this.MenuBar_File_SavePacket.Click += new System.EventHandler(this.OnMenuClick);
+            this.MenuBar_File_Save.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuBar_File_Save_Original,
+            this.MenuBar_File_Save_Shaping});
+            this.MenuBar_File_Save.Name = "MenuBar_File_Save";
+            this.MenuBar_File_Save.Size = new System.Drawing.Size(152, 22);
+            this.MenuBar_File_Save.Text = "Save";
+            this.MenuBar_File_Save.Click += new System.EventHandler(this.OnMenuClick);
             // 
-            // MenuBar_File_SavePacket_FilterOff
+            // MenuBar_File_Save_Original
             // 
-            this.MenuBar_File_SavePacket_FilterOff.Name = "MenuBar_File_SavePacket_FilterOff";
-            this.MenuBar_File_SavePacket_FilterOff.Size = new System.Drawing.Size(151, 22);
-            this.MenuBar_File_SavePacket_FilterOff.Tag = "PacketSaveRuleOff";
-            this.MenuBar_File_SavePacket_FilterOff.Text = "パケット制御なし";
+            this.MenuBar_File_Save_Original.Name = "MenuBar_File_Save_Original";
+            this.MenuBar_File_Save_Original.Size = new System.Drawing.Size(152, 22);
+            this.MenuBar_File_Save_Original.Tag = "PacketSaveRuleOff";
+            this.MenuBar_File_Save_Original.Text = "Original";
             // 
-            // MenuBar_File_SavePacket_FilterOn
+            // MenuBar_File_Save_Shaping
             // 
-            this.MenuBar_File_SavePacket_FilterOn.Name = "MenuBar_File_SavePacket_FilterOn";
-            this.MenuBar_File_SavePacket_FilterOn.Size = new System.Drawing.Size(151, 22);
-            this.MenuBar_File_SavePacket_FilterOn.Tag = "PacketSaveRuleOn";
-            this.MenuBar_File_SavePacket_FilterOn.Text = "パケット制御あり";
+            this.MenuBar_File_Save_Shaping.Name = "MenuBar_File_Save_Shaping";
+            this.MenuBar_File_Save_Shaping.Size = new System.Drawing.Size(152, 22);
+            this.MenuBar_File_Save_Shaping.Tag = "PacketSaveRuleOn";
+            this.MenuBar_File_Save_Shaping.Text = "Shaping";
             // 
-            // MenuBar_File_SaveAsPacket
+            // MenuBar_File_SaveAs
             // 
-            this.MenuBar_File_SaveAsPacket.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuBar_File_SaveAsPacket_FilterOff,
-            this.MenuBar_File_SaveAsPacket_FilterOn});
-            this.MenuBar_File_SaveAsPacket.Name = "MenuBar_File_SaveAsPacket";
-            this.MenuBar_File_SaveAsPacket.Size = new System.Drawing.Size(223, 22);
-            this.MenuBar_File_SaveAsPacket.Text = "名前を付けてパケットログを保存";
+            this.MenuBar_File_SaveAs.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuBar_File_SaveAs_Original,
+            this.MenuBar_File_SaveAs_Shaping});
+            this.MenuBar_File_SaveAs.Name = "MenuBar_File_SaveAs";
+            this.MenuBar_File_SaveAs.Size = new System.Drawing.Size(152, 22);
+            this.MenuBar_File_SaveAs.Text = "Save as";
             // 
-            // MenuBar_File_SaveAsPacket_FilterOff
+            // MenuBar_File_SaveAs_Original
             // 
-            this.MenuBar_File_SaveAsPacket_FilterOff.Name = "MenuBar_File_SaveAsPacket_FilterOff";
-            this.MenuBar_File_SaveAsPacket_FilterOff.Size = new System.Drawing.Size(151, 22);
-            this.MenuBar_File_SaveAsPacket_FilterOff.Tag = "PacketSaveAsRuleOff";
-            this.MenuBar_File_SaveAsPacket_FilterOff.Text = "パケット制御なし";
+            this.MenuBar_File_SaveAs_Original.Name = "MenuBar_File_SaveAs_Original";
+            this.MenuBar_File_SaveAs_Original.Size = new System.Drawing.Size(152, 22);
+            this.MenuBar_File_SaveAs_Original.Tag = "PacketSaveAsRuleOff";
+            this.MenuBar_File_SaveAs_Original.Text = "Original...";
             // 
-            // MenuBar_File_SaveAsPacket_FilterOn
+            // MenuBar_File_SaveAs_Shaping
             // 
-            this.MenuBar_File_SaveAsPacket_FilterOn.Name = "MenuBar_File_SaveAsPacket_FilterOn";
-            this.MenuBar_File_SaveAsPacket_FilterOn.Size = new System.Drawing.Size(151, 22);
-            this.MenuBar_File_SaveAsPacket_FilterOn.Tag = "PacketSaveAsRuleOn";
-            this.MenuBar_File_SaveAsPacket_FilterOn.Text = "パケット制御あり";
-            // 
-            // MenuBar_File_SavePacket_AutoSave
-            // 
-            this.MenuBar_File_SavePacket_AutoSave.Name = "MenuBar_File_SavePacket_AutoSave";
-            this.MenuBar_File_SavePacket_AutoSave.Size = new System.Drawing.Size(223, 22);
-            this.MenuBar_File_SavePacket_AutoSave.Tag = "AutoSaveToggle";
-            this.MenuBar_File_SavePacket_AutoSave.Text = "パケットログを自動保存(&A)";
+            this.MenuBar_File_SaveAs_Shaping.Name = "MenuBar_File_SaveAs_Shaping";
+            this.MenuBar_File_SaveAs_Shaping.Size = new System.Drawing.Size(152, 22);
+            this.MenuBar_File_SaveAs_Shaping.Tag = "PacketSaveAsRuleOn";
+            this.MenuBar_File_SaveAs_Shaping.Text = "Shaping...";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(220, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // MenuBar_File_Exit
             // 
             this.MenuBar_File_Exit.Name = "MenuBar_File_Exit";
-            this.MenuBar_File_Exit.Size = new System.Drawing.Size(223, 22);
+            this.MenuBar_File_Exit.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_File_Exit.Tag = "ApplicationExit";
-            this.MenuBar_File_Exit.Text = "終了(&X)";
+            this.MenuBar_File_Exit.Text = "Exit";
             // 
-            // 編集EToolStripMenuItem
+            // MenuBar_Edit
             // 
-            this.編集EToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuBar_Edit_TimeStamp,
-            this.toolStripSeparator5,
+            this.MenuBar_Edit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MenuBar_Edit_EventClear});
-            this.編集EToolStripMenuItem.Name = "編集EToolStripMenuItem";
-            this.編集EToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
-            this.編集EToolStripMenuItem.Text = "編集(&E)";
-            // 
-            // MenuBar_Edit_TimeStamp
-            // 
-            this.MenuBar_Edit_TimeStamp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuBar_Edit_TimeStamp_Run,
-            this.toolStripSeparator6,
-            this.MenuBar_Edit_TimeStamp_Auto});
-            this.MenuBar_Edit_TimeStamp.Name = "MenuBar_Edit_TimeStamp";
-            this.MenuBar_Edit_TimeStamp.Size = new System.Drawing.Size(151, 22);
-            this.MenuBar_Edit_TimeStamp.Text = "タイムスタンプ(&T)";
-            // 
-            // MenuBar_Edit_TimeStamp_Run
-            // 
-            this.MenuBar_Edit_TimeStamp_Run.Name = "MenuBar_Edit_TimeStamp_Run";
-            this.MenuBar_Edit_TimeStamp_Run.Size = new System.Drawing.Size(140, 22);
-            this.MenuBar_Edit_TimeStamp_Run.Tag = "TimeStampRun";
-            this.MenuBar_Edit_TimeStamp_Run.Text = "すぐに実行(&R)";
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(137, 6);
-            // 
-            // MenuBar_Edit_TimeStamp_Auto
-            // 
-            this.MenuBar_Edit_TimeStamp_Auto.Name = "MenuBar_Edit_TimeStamp_Auto";
-            this.MenuBar_Edit_TimeStamp_Auto.Size = new System.Drawing.Size(140, 22);
-            this.MenuBar_Edit_TimeStamp_Auto.Tag = "AutoTimeStampToggle";
-            this.MenuBar_Edit_TimeStamp_Auto.Text = "自動挿入(&A)";
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(148, 6);
+            this.MenuBar_Edit.Name = "MenuBar_Edit";
+            this.MenuBar_Edit.Size = new System.Drawing.Size(39, 20);
+            this.MenuBar_Edit.Text = "Edit";
             // 
             // MenuBar_Edit_EventClear
             // 
             this.MenuBar_Edit_EventClear.Name = "MenuBar_Edit_EventClear";
-            this.MenuBar_Edit_EventClear.Size = new System.Drawing.Size(151, 22);
+            this.MenuBar_Edit_EventClear.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_Edit_EventClear.Tag = "EventPacketClear";
-            this.MenuBar_Edit_EventClear.Text = "バッファクリア(&C)";
+            this.MenuBar_Edit_EventClear.Text = "Buffer clear";
             // 
-            // 表示VToolStripMenuItem
+            // MenuBar_View
             // 
-            this.表示VToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuBar_View.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MenuBar_View_PacketConverterAdd,
             this.MenuBar_View_PacketViewAdd,
             this.toolStripSeparator3,
             this.MenuBar_View_PacketViewRedraw,
             this.toolStripSeparator4,
             this.MenuBar_View_AutoScroll});
-            this.表示VToolStripMenuItem.Name = "表示VToolStripMenuItem";
-            this.表示VToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
-            this.表示VToolStripMenuItem.Text = "表示(&V)";
+            this.MenuBar_View.Name = "MenuBar_View";
+            this.MenuBar_View.Size = new System.Drawing.Size(44, 20);
+            this.MenuBar_View.Text = "View";
             // 
             // MenuBar_View_PacketConverterAdd
             // 
             this.MenuBar_View_PacketConverterAdd.Name = "MenuBar_View_PacketConverterAdd";
-            this.MenuBar_View_PacketConverterAdd.Size = new System.Drawing.Size(193, 22);
-            this.MenuBar_View_PacketConverterAdd.Text = "パケット制御を追加(&C)";
+            this.MenuBar_View_PacketConverterAdd.Size = new System.Drawing.Size(161, 22);
+            this.MenuBar_View_PacketConverterAdd.Text = "Add converter";
             // 
             // MenuBar_View_PacketViewAdd
             // 
             this.MenuBar_View_PacketViewAdd.Name = "MenuBar_View_PacketViewAdd";
-            this.MenuBar_View_PacketViewAdd.Size = new System.Drawing.Size(193, 22);
-            this.MenuBar_View_PacketViewAdd.Text = "パケットビューを追加(&V)";
+            this.MenuBar_View_PacketViewAdd.Size = new System.Drawing.Size(161, 22);
+            this.MenuBar_View_PacketViewAdd.Text = "Add packet view";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(190, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(158, 6);
             // 
             // MenuBar_View_PacketViewRedraw
             // 
             this.MenuBar_View_PacketViewRedraw.Name = "MenuBar_View_PacketViewRedraw";
-            this.MenuBar_View_PacketViewRedraw.Size = new System.Drawing.Size(193, 22);
+            this.MenuBar_View_PacketViewRedraw.Size = new System.Drawing.Size(161, 22);
             this.MenuBar_View_PacketViewRedraw.Tag = "EventPacketRedraw";
-            this.MenuBar_View_PacketViewRedraw.Text = "パケットビューを再描画(&R)";
+            this.MenuBar_View_PacketViewRedraw.Text = "Redraw";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(190, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(158, 6);
             // 
             // MenuBar_View_AutoScroll
             // 
             this.MenuBar_View_AutoScroll.Name = "MenuBar_View_AutoScroll";
-            this.MenuBar_View_AutoScroll.Size = new System.Drawing.Size(193, 22);
+            this.MenuBar_View_AutoScroll.Size = new System.Drawing.Size(161, 22);
             this.MenuBar_View_AutoScroll.Tag = "AutoScrollToggle";
-            this.MenuBar_View_AutoScroll.Text = "自動スクロール(&S)";
+            this.MenuBar_View_AutoScroll.Text = "Auto scroll";
             // 
-            // ツールTToolStripMenuItem
+            // MenuBar_Tool
             // 
-            this.ツールTToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuBar_Tool.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuBar_Edit_TimeStamp,
+            this.toolStripSeparator7,
             this.MenuBar_Tool_Option});
-            this.ツールTToolStripMenuItem.Name = "ツールTToolStripMenuItem";
-            this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
-            this.ツールTToolStripMenuItem.Text = "ツール(&T)";
+            this.MenuBar_Tool.Name = "MenuBar_Tool";
+            this.MenuBar_Tool.Size = new System.Drawing.Size(41, 20);
+            this.MenuBar_Tool.Text = "Tool";
+            // 
+            // MenuBar_Edit_TimeStamp
+            // 
+            this.MenuBar_Edit_TimeStamp.Name = "MenuBar_Edit_TimeStamp";
+            this.MenuBar_Edit_TimeStamp.Size = new System.Drawing.Size(152, 22);
+            this.MenuBar_Edit_TimeStamp.Tag = "TimeStampRun";
+            this.MenuBar_Edit_TimeStamp.Text = "Time stamp";
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
             // 
             // MenuBar_Tool_Option
             // 
             this.MenuBar_Tool_Option.Name = "MenuBar_Tool_Option";
-            this.MenuBar_Tool_Option.Size = new System.Drawing.Size(135, 22);
+            this.MenuBar_Tool_Option.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_Tool_Option.Tag = "ShowConfigDialog";
-            this.MenuBar_Tool_Option.Text = "オプション(&O)";
+            this.MenuBar_Tool_Option.Text = "Options...";
             // 
-            // ヘルプHToolStripMenuItem
+            // MenuBar_Help
             // 
-            this.ヘルプHToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuBar_Help_Information});
-            this.ヘルプHToolStripMenuItem.Name = "ヘルプHToolStripMenuItem";
-            this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
-            this.ヘルプHToolStripMenuItem.Text = "ヘルプ(H)";
+            this.MenuBar_Help.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuBar_Help_About});
+            this.MenuBar_Help.Name = "MenuBar_Help";
+            this.MenuBar_Help.Size = new System.Drawing.Size(44, 20);
+            this.MenuBar_Help.Text = "Help";
             // 
-            // MenuBar_Help_Information
+            // MenuBar_Help_About
             // 
-            this.MenuBar_Help_Information.Name = "MenuBar_Help_Information";
-            this.MenuBar_Help_Information.Size = new System.Drawing.Size(158, 22);
-            this.MenuBar_Help_Information.Tag = "ShowAppInformation";
-            this.MenuBar_Help_Information.Text = "バージョン情報(&A)";
+            this.MenuBar_Help_About.Name = "MenuBar_Help_About";
+            this.MenuBar_Help_About.Size = new System.Drawing.Size(159, 22);
+            this.MenuBar_Help_About.Tag = "ShowAppInformation";
+            this.MenuBar_Help_About.Text = "About Ratatoskr";
             // 
             // toolStrip1
             // 
@@ -484,22 +450,22 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.MenuStrip MBar_Main;
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripMenuItem ファイルFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_File;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_File_Exit;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_SavePacket;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_OpenFile;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_Save;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_Open;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_SavePacket_FilterOff;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_SavePacket_FilterOn;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_SaveAsPacket;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_SaveAsPacket_FilterOff;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_SaveAsPacket_FilterOn;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_Save_Original;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_Save_Shaping;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_SaveAs;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_SaveAs_Original;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_SaveAs_Shaping;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem 表示VToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_View;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_View_AutoScroll;
-        private System.Windows.Forms.ToolStripMenuItem ヘルプHToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_Help_Information;
-        private System.Windows.Forms.ToolStripMenuItem ツールTToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Help;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Help_About;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Tool;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Tool_Option;
         private System.Windows.Forms.ToolStripStatusLabel Label_Status;
         private System.Windows.Forms.ToolStripStatusLabel Label_PktCount_Raw;
@@ -508,19 +474,15 @@
         private System.Windows.Forms.ToolStripMenuItem MenuBar_View_PacketViewAdd;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private MainFrameCenter Panel_Center;
-        private System.Windows.Forms.ToolStripMenuItem 編集EToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Edit;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Edit_EventClear;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_Edit_TimeStamp;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_Edit_TimeStamp_Run;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_Edit_TimeStamp_Auto;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_View_PacketViewRedraw;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_View_PacketConverterAdd;
         private System.Windows.Forms.ToolStripStatusLabel Label_PktCount_View;
         private System.Windows.Forms.ToolStripStatusLabel Label_ViewDrawMode;
         private System.Windows.Forms.ToolStripStatusLabel Label_PktCount_Busy;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_SavePacket_AutoSave;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Edit_TimeStamp;
     }
 }

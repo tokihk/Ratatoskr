@@ -18,7 +18,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 
         public override string Name
         {
-            get { return ("Ratatoskr packet formats"); }
+            get { return ("Ratatoskr format"); }
         }
 
         public override string Detail

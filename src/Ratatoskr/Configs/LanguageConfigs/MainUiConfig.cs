@@ -12,11 +12,21 @@ namespace Ratatoskr.Configs.LanguageConfigs
 {
     internal sealed class MainUiConfig : ConfigHolder
     {
+        public StringConfig Title_AdminMode { get; } = new StringConfig("Administrator Mode");
+
         public StringConfig AboutForm_Title   { get; } = new StringConfig("About Ratatoskr");
 
-        public StringConfig MenuBar_File      { get; } = new StringConfig("File(&F)");
-        public StringConfig MenuBar_File_Exit { get; } = new StringConfig("Exit(&X)");
+        public StringConfig MenuBar_File                 { get; } = new StringConfig("File");
+        public StringConfig MenuBar_File_Open            { get; } = new StringConfig("Open");
+        public StringConfig MenuBar_File_Save            { get; } = new StringConfig("Save");
+        public StringConfig MenuBar_File_Save_Original   { get; } = new StringConfig("Original");
+        public StringConfig MenuBar_File_Save_Shaping    { get; } = new StringConfig("Shaping");
+        public StringConfig MenuBar_File_SaveAs          { get; } = new StringConfig("Save as");
+        public StringConfig MenuBar_File_SaveAs_Original { get; } = new StringConfig("Original...");
+        public StringConfig MenuBar_File_SaveAs_Shaping  { get; } = new StringConfig("Shaping...");
+        public StringConfig MenuBar_File_Exit            { get; } = new StringConfig("Exit");
 
+        public StringConfig MenuBar_Edit                 { get; } = new StringConfig("Edit");
 
         public StringConfig SCmdPanel_Target  { get; } = new StringConfig("Target");
         public StringConfig SCmdPanel_Command { get; } = new StringConfig("Command");

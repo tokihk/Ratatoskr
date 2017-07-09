@@ -58,7 +58,7 @@ namespace Ratatoskr.Forms.MainFrame
 
             AddDockContent(
                 "MFDC_CmdListPanel",
-                "コマンドリスト",
+                "Command list",
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottomAutoHide,
                 false,
@@ -66,7 +66,7 @@ namespace Ratatoskr.Forms.MainFrame
 
             AddDockContent(
                 "MFDC_RedirectListPanel",
-                "リダイレクトリスト",
+                "Redirect list",
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottomAutoHide,
                 false,

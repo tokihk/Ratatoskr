@@ -21,8 +21,9 @@ namespace Ratatoskr.Forms.MainFrame
         public MainFrame()
         {
             InitializeComponent();
-            InitializeTitle();
             InitializeMenuBar();
+
+            ConfigManager.Language.Loaded += Language_Loaded;
 
             SetStatusText("");
             SetProgressBar(false, 0, 0);
@@ -33,18 +34,20 @@ namespace Ratatoskr.Forms.MainFrame
             Visible = false;
         }
 
-        private void InitializeTitle()
+        private void Language_Loaded(object sender, EventArgs e)
         {
-            var title = new StringBuilder();
+            Text = GetTitleText();
 
-            title.Append(ConfigManager.Fixed.ApplicationName.Value);
+            MenuBar_File.Text = ConfigManager.Language.MainUI.MenuBar_File.Value;
+            MenuBar_File_Open.Text = ConfigManager.Language.MainUI.MenuBar_File_Open.Value;
+            MenuBar_File_Save.Text = ConfigManager.Language.MainUI.MenuBar_File_Save.Value;
+            MenuBar_File_Save_Original.Text = ConfigManager.Language.MainUI.MenuBar_File_Save_Original.Value;
+            MenuBar_File_Save_Shaping.Text = ConfigManager.Language.MainUI.MenuBar_File_Save_Shaping.Value;
+            MenuBar_File_SaveAs.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs.Value;
+            MenuBar_File_SaveAs_Original.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs_Original.Value;
+            MenuBar_File_SaveAs_Shaping.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs_Shaping.Value;
+            MenuBar_File_Exit.Text = ConfigManager.Language.MainUI.MenuBar_File_Exit.Value;
 
-            /* 管理者権限かどうかを確認 */
-            if ((new WindowsPrincipal(WindowsIdentity.GetCurrent())).IsInRole(WindowsBuiltInRole.Administrator)) {
-                title.Append(" (Administrator Mode)");
-            }
-
-            Text = title.ToString();
         }
 
         private void InitializeMenuBar()
@@ -107,6 +110,20 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void InitializeFilterBox()
         {
+        }
+
+        private string GetTitleText()
+        {
+            var title = new StringBuilder();
+
+            title.Append(ConfigManager.Fixed.ApplicationName.Value);
+
+            /* 管理者権限かどうかを確認 */
+            if ((new WindowsPrincipal(WindowsIdentity.GetCurrent())).IsInRole(WindowsBuiltInRole.Administrator)) {
+                title.Append(string.Format(" ({0})", ConfigManager.Language.MainUI.Title_AdminMode.Value));
+            }
+
+            return (title.ToString());
         }
 
         private void BuildPacketConverterMenu(ToolStripMenuItem menu)
@@ -191,8 +208,6 @@ namespace Ratatoskr.Forms.MainFrame
                 return;
             }
 
-            MenuBar_File_SavePacket_AutoSave.Checked = ConfigManager.User.Option.AutoSave.Value;
-            MenuBar_Edit_TimeStamp_Auto.Checked = ConfigManager.User.Option.AutoTimeStamp.Value;
             MenuBar_View_PacketConverterAdd.Enabled = FormTaskManager.CanAddPacketConverter;
             MenuBar_View_PacketViewAdd.Enabled = FormTaskManager.CanAddPacketView;
             MenuBar_View_AutoScroll.Checked = ConfigManager.User.Option.AutoScroll.Value;

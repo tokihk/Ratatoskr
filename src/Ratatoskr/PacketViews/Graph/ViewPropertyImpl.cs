@@ -11,7 +11,7 @@ namespace Ratatoskr.PacketViews.Graph
 {
     internal enum ViewModeType
     {
-        Data,
+        Value,
         Amount,
     }
 
@@ -37,7 +37,7 @@ namespace Ratatoskr.PacketViews.Graph
 
     internal class ViewPropertyImpl : ViewProperty
     {
-        public EnumConfig<ViewModeType>        ViewMode             { get; } = new EnumConfig<ViewModeType>(ViewModeType.Data);
+        public EnumConfig<ViewModeType>        ViewMode             { get; } = new EnumConfig<ViewModeType>(ViewModeType.Value);
         public EnumConfig<SeriesChartType>     GraphType            { get; } = new EnumConfig<SeriesChartType>(SeriesChartType.Line);
         public IntegerConfig                   DrawPointNum         { get; } = new IntegerConfig(10000);
         public IntegerConfig                   DrawInterval         { get; } = new IntegerConfig(1000);

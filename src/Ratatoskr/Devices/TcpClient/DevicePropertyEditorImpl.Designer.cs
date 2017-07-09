@@ -52,7 +52,7 @@
             this.GBox_Local.Size = new System.Drawing.Size(113, 66);
             this.GBox_Local.TabIndex = 5;
             this.GBox_Local.TabStop = false;
-            this.GBox_Local.Text = "ローカル";
+            this.GBox_Local.Text = "Local";
             // 
             // GBox_LocalPortNo
             // 
@@ -62,7 +62,7 @@
             this.GBox_LocalPortNo.Size = new System.Drawing.Size(100, 41);
             this.GBox_LocalPortNo.TabIndex = 6;
             this.GBox_LocalPortNo.TabStop = false;
-            this.GBox_LocalPortNo.Text = "ポート番号";
+            this.GBox_LocalPortNo.Text = "Port number";
             // 
             // Num_LocalPortNo
             // 
@@ -89,7 +89,7 @@
             this.GBox_Remote.Size = new System.Drawing.Size(338, 66);
             this.GBox_Remote.TabIndex = 6;
             this.GBox_Remote.TabStop = false;
-            this.GBox_Remote.Text = "サーバー";
+            this.GBox_Remote.Text = "Server";
             // 
             // GBox_RemotePortNo
             // 
@@ -100,7 +100,7 @@
             this.GBox_RemotePortNo.Size = new System.Drawing.Size(100, 41);
             this.GBox_RemotePortNo.TabIndex = 6;
             this.GBox_RemotePortNo.TabStop = false;
-            this.GBox_RemotePortNo.Text = "ポート番号";
+            this.GBox_RemotePortNo.Text = "Port number";
             // 
             // Num_RemotePortNo
             // 
@@ -136,7 +136,7 @@
             this.GBox_RemoteAddress.Size = new System.Drawing.Size(219, 41);
             this.GBox_RemoteAddress.TabIndex = 0;
             this.GBox_RemoteAddress.TabStop = false;
-            this.GBox_RemoteAddress.Text = "アドレス";
+            this.GBox_RemoteAddress.Text = "Address";
             // 
             // TBox_RemoteAddress
             // 

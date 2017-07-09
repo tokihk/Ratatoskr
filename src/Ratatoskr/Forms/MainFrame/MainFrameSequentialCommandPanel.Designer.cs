@@ -29,7 +29,7 @@
         {
             this.GView_CmdList = new System.Windows.Forms.DataGridView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.GBox_Target = new System.Windows.Forms.GroupBox();
             this.TBox_Target = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.Btn_Play = new System.Windows.Forms.Button();
@@ -38,9 +38,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.Label_RepeatCount = new System.Windows.Forms.Label();
             this.Num_RepeatCount = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.GView_CmdList)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.GBox_Target.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_RepeatCount)).BeginInit();
             this.SuspendLayout();
@@ -50,6 +51,7 @@
             this.GView_CmdList.AllowUserToOrderColumns = true;
             this.GView_CmdList.BackgroundColor = System.Drawing.SystemColors.Window;
             this.GView_CmdList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.GView_CmdList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised;
             this.GView_CmdList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.GView_CmdList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GView_CmdList.Location = new System.Drawing.Point(0, 62);
@@ -66,7 +68,7 @@
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Controls.Add(this.groupBox1);
+            this.flowLayoutPanel1.Controls.Add(this.GBox_Target);
             this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Controls.Add(this.Btn_Play);
             this.flowLayoutPanel1.Controls.Add(this.Btn_Stop);
@@ -77,16 +79,16 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(777, 62);
             this.flowLayoutPanel1.TabIndex = 2;
             // 
-            // groupBox1
+            // GBox_Target
             // 
-            this.groupBox1.Controls.Add(this.TBox_Target);
-            this.groupBox1.Location = new System.Drawing.Point(3, 8);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(140, 40);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "ターゲット";
+            this.GBox_Target.Controls.Add(this.TBox_Target);
+            this.GBox_Target.Location = new System.Drawing.Point(3, 8);
+            this.GBox_Target.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
+            this.GBox_Target.Name = "GBox_Target";
+            this.GBox_Target.Size = new System.Drawing.Size(140, 40);
+            this.GBox_Target.TabIndex = 5;
+            this.GBox_Target.TabStop = false;
+            this.GBox_Target.Text = "Target alias";
             // 
             // TBox_Target
             // 
@@ -115,7 +117,7 @@
             this.Btn_Play.Name = "Btn_Play";
             this.Btn_Play.Size = new System.Drawing.Size(65, 54);
             this.Btn_Play.TabIndex = 6;
-            this.Btn_Play.Text = "開始";
+            this.Btn_Play.Text = "Run";
             this.Btn_Play.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.Btn_Play.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.Btn_Play.UseVisualStyleBackColor = true;
@@ -130,7 +132,7 @@
             this.Btn_Stop.Name = "Btn_Stop";
             this.Btn_Stop.Size = new System.Drawing.Size(65, 54);
             this.Btn_Stop.TabIndex = 7;
-            this.Btn_Stop.Text = "停止";
+            this.Btn_Stop.Text = "Stop";
             this.Btn_Stop.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.Btn_Stop.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.Btn_Stop.UseVisualStyleBackColor = true;
@@ -141,13 +143,14 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.Label_RepeatCount);
             this.groupBox2.Controls.Add(this.Num_RepeatCount);
+            this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Location = new System.Drawing.Point(299, 8);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(186, 40);
+            this.groupBox2.Size = new System.Drawing.Size(269, 40);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "実行回数(0=無限)";
+            this.groupBox2.Text = "Number of repetitions";
             // 
             // label3
             // 
@@ -186,6 +189,16 @@
             0,
             0});
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label2.Location = new System.Drawing.Point(184, 18);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(60, 12);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "(0: Infinite)";
+            // 
             // MainFrameSequentialCommandPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -196,9 +209,10 @@
             this.Size = new System.Drawing.Size(777, 473);
             ((System.ComponentModel.ISupportInitialize)(this.GView_CmdList)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.GBox_Target.ResumeLayout(false);
+            this.GBox_Target.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_RepeatCount)).EndInit();
             this.ResumeLayout(false);
 
@@ -208,7 +222,7 @@
 
         private System.Windows.Forms.DataGridView GView_CmdList;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox GBox_Target;
         private System.Windows.Forms.TextBox TBox_Target;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button Btn_Play;
@@ -217,5 +231,6 @@
         private System.Windows.Forms.NumericUpDown Num_RepeatCount;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label Label_RepeatCount;
+        private System.Windows.Forms.Label label2;
     }
 }

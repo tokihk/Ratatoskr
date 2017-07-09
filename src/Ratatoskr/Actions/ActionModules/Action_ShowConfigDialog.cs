@@ -38,7 +38,7 @@ namespace Ratatoskr.Actions.ActionModules
 
             if (config == null)return;
 
-            var dialog = new Forms.ConfigForm.ConfigForm(config);
+            var dialog = new Forms.OptionForm.OptionForm(config);
 
             if (dialog.ShowDialog() != DialogResult.OK)return;
 

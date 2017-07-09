@@ -68,9 +68,9 @@
             // 
             this.TBox_Filter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TBox_Filter.Location = new System.Drawing.Point(100, 3);
+            this.TBox_Filter.Location = new System.Drawing.Point(60, 3);
             this.TBox_Filter.Name = "TBox_Filter";
-            this.TBox_Filter.Size = new System.Drawing.Size(769, 19);
+            this.TBox_Filter.Size = new System.Drawing.Size(809, 19);
             this.TBox_Filter.TabIndex = 1;
             this.TBox_Filter.TextChanged += new System.EventHandler(this.TBox_Filter_TextChanged);
             this.TBox_Filter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TBox_Filter_KeyDown);
@@ -80,9 +80,9 @@
             this.ChkBox_Filter.AutoSize = true;
             this.ChkBox_Filter.Location = new System.Drawing.Point(3, 5);
             this.ChkBox_Filter.Name = "ChkBox_Filter";
-            this.ChkBox_Filter.Size = new System.Drawing.Size(91, 16);
+            this.ChkBox_Filter.Size = new System.Drawing.Size(51, 16);
             this.ChkBox_Filter.TabIndex = 0;
-            this.ChkBox_Filter.Text = "パケットフィルタ";
+            this.ChkBox_Filter.Text = "Filter";
             this.ChkBox_Filter.UseVisualStyleBackColor = true;
             this.ChkBox_Filter.CheckedChanged += new System.EventHandler(this.ChkBox_Filter_CheckedChanged);
             // 

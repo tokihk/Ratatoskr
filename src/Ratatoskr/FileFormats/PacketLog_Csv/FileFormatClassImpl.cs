@@ -15,12 +15,12 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
 
         public override string Name
         {
-            get { return ("CSVフォーマット"); }
+            get { return ("CSV format"); }
         }
 
         public override string Detail
         {
-            get { return ("CSVフォーマット"); }
+            get { return ("CSV format"); }
         }
 
         public override string[] FileExtension

@@ -4,5 +4,5 @@
   <item name="Gardens Point Parser Generator" homepage="https://gppg.codeplex.com/" license_name="Free BSD License" />
   <item name="SharpPcap" homepage="https://github.com/chmorgan/sharppcap" license_name="GPLv3" />
   <item name="USBPcap" homepage="http://desowin.org/usbpcap/" license_name="GPLv2" />
-  <item name="naudio" homepage="https://naudio.codeplex.com/" license_name="Microsoft Public License (Ms-PL)" />
+  <item name="NAudio" homepage="https://naudio.codeplex.com/" license_name="Microsoft Public License (Ms-PL)" />
 </license>

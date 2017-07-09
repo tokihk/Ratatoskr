@@ -12,12 +12,16 @@ namespace Ratatoskr.Configs.LanguageConfigs
 {
     internal sealed class LanguageConfig : ConfigManagerBase<LanguageConfig>
     {
+        public LanguageConfig() : base("language") { }
+
+        public delegate void LoadedEventHandler(object sender, EventArgs e);
+        public event LoadedEventHandler Loaded = delegate (object sender, EventArgs e) {};
+
+
         public MainMessageConfig MainMessage { get; } = new MainMessageConfig();
         public MainUiConfig      MainUI      { get; } = new MainUiConfig();
         public PacketViewConfig  PacketView  { get; } = new PacketViewConfig();
 
-
-        public LanguageConfig() : base("language") { }
 
         public bool Load()
         {
@@ -25,10 +29,14 @@ namespace Ratatoskr.Configs.LanguageConfigs
 
             if (path_profile == null)return (false);
 
-            var path_language = Path.Combine(path_profile, "default.gdlng");
+            var path_language = Path.Combine(path_profile, "default.lng");
 
             /* プロファイルを読み込み */
-            return (LoadConfig(path_language));
+            if (!LoadConfig(path_language))return (false);
+
+            Loaded(this, EventArgs.Empty);
+
+            return (true);
         }
 
         public bool Save()
@@ -37,7 +45,7 @@ namespace Ratatoskr.Configs.LanguageConfigs
 
             if (path_profile == null)return (false);
 
-            var path_language = Path.Combine(path_profile, "default.gdlng");
+            var path_language = Path.Combine(path_profile, "default.lng");
 
             /* プロファイルを読み込み */
             return (SaveConfig(path_language));

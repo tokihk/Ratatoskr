@@ -1,4 +1,4 @@
-﻿namespace Ratatoskr.Forms.ConfigForm.Pages
+﻿namespace Ratatoskr.Forms.OptionForm.Pages
 {
     partial class ConfigPage_AutoUpdate
     {
@@ -36,7 +36,7 @@
             this.ChkBox_AutoUpdate.Name = "ChkBox_AutoUpdate";
             this.ChkBox_AutoUpdate.Size = new System.Drawing.Size(260, 24);
             this.ChkBox_AutoUpdate.TabIndex = 0;
-            this.ChkBox_AutoUpdate.Text = "アプリケーションの自動更新を有効にする";
+            this.ChkBox_AutoUpdate.Text = "Automatically update applications";
             this.ChkBox_AutoUpdate.UseVisualStyleBackColor = true;
             // 
             // ConfigPage_AutoUpdate

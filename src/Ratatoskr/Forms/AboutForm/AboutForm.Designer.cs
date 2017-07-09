@@ -28,24 +28,24 @@
         private void InitializeComponent()
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.TabPage_About = new System.Windows.Forms.TabPage();
             this.Label_Copyright = new System.Windows.Forms.Label();
             this.Label_Version = new System.Windows.Forms.Label();
             this.PictBox_Logo = new System.Windows.Forms.PictureBox();
             this.PictBox_Icon = new System.Windows.Forms.PictureBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.TabPage_License = new System.Windows.Forms.TabPage();
             this.RTBox_LicenseList = new System.Windows.Forms.RichTextBox();
             this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.TabPage_About.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Logo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Icon)).BeginInit();
-            this.tabPage2.SuspendLayout();
+            this.TabPage_License.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.TabPage_About);
+            this.tabControl1.Controls.Add(this.TabPage_License);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.ItemSize = new System.Drawing.Size(160, 18);
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -55,19 +55,19 @@
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl1.TabIndex = 0;
             // 
-            // tabPage1
+            // TabPage_About
             // 
-            this.tabPage1.Controls.Add(this.Label_Copyright);
-            this.tabPage1.Controls.Add(this.Label_Version);
-            this.tabPage1.Controls.Add(this.PictBox_Logo);
-            this.tabPage1.Controls.Add(this.PictBox_Icon);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(496, 146);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "アプリケーションについて";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.TabPage_About.Controls.Add(this.Label_Copyright);
+            this.TabPage_About.Controls.Add(this.Label_Version);
+            this.TabPage_About.Controls.Add(this.PictBox_Logo);
+            this.TabPage_About.Controls.Add(this.PictBox_Icon);
+            this.TabPage_About.Location = new System.Drawing.Point(4, 22);
+            this.TabPage_About.Name = "TabPage_About";
+            this.TabPage_About.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPage_About.Size = new System.Drawing.Size(496, 146);
+            this.TabPage_About.TabIndex = 0;
+            this.TabPage_About.Text = "About application";
+            this.TabPage_About.UseVisualStyleBackColor = true;
             // 
             // Label_Copyright
             // 
@@ -105,16 +105,16 @@
             this.PictBox_Icon.TabIndex = 0;
             this.PictBox_Icon.TabStop = false;
             // 
-            // tabPage2
+            // TabPage_License
             // 
-            this.tabPage2.Controls.Add(this.RTBox_LicenseList);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(496, 146);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "ライセンス情報";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.TabPage_License.Controls.Add(this.RTBox_LicenseList);
+            this.TabPage_License.Location = new System.Drawing.Point(4, 22);
+            this.TabPage_License.Name = "TabPage_License";
+            this.TabPage_License.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPage_License.Size = new System.Drawing.Size(496, 146);
+            this.TabPage_License.TabIndex = 1;
+            this.TabPage_License.Text = "Third party license";
+            this.TabPage_License.UseVisualStyleBackColor = true;
             // 
             // RTBox_LicenseList
             // 
@@ -129,7 +129,7 @@
             this.RTBox_LicenseList.TabIndex = 0;
             this.RTBox_LicenseList.Text = "";
             // 
-            // InformationFrame
+            // AboutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -138,16 +138,16 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "InformationFrame";
+            this.Name = "AboutForm";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "InformationFrame";
+            this.Text = "About";
             this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
+            this.TabPage_About.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Logo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Icon)).EndInit();
-            this.tabPage2.ResumeLayout(false);
+            this.TabPage_License.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -155,8 +155,8 @@
         #endregion
 
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage TabPage_About;
+        private System.Windows.Forms.TabPage TabPage_License;
         private System.Windows.Forms.PictureBox PictBox_Icon;
         private System.Windows.Forms.Label Label_Version;
         private System.Windows.Forms.PictureBox PictBox_Logo;

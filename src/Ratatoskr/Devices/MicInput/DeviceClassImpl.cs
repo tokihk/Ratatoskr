@@ -14,12 +14,12 @@ namespace Ratatoskr.Devices.MicInput
 
         public override string Name
         {
-            get { return ("マイク入力"); }
+            get { return ("MIC input"); }
         }
 
         public override string Details
         {
-            get { return ("マイク端子からA/D値を取得します。"); }
+            get { return (Name); }
         }
 
         public override Type GetPropertyType()

@@ -14,12 +14,12 @@ namespace Ratatoskr.Devices.Ethernet
 
         public override string Name
         {
-            get { return ("イーサネット"); }
+            get { return ("Ethernet"); }
         }
 
         public override string Details
         {
-            get { return ("イーサネットを制御します。"); }
+            get { return (Name); }
         }
 
         public override Type GetPropertyType()

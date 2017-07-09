@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs.UserConfigs;
 
-namespace Ratatoskr.Forms.ConfigForm
+namespace Ratatoskr.Forms.OptionForm
 {
-    internal partial class ConfigForm : Form
+    internal partial class OptionForm : Form
     {
         private enum PageId
         {
@@ -35,18 +35,18 @@ namespace Ratatoskr.Forms.ConfigForm
         }
 
 
-        private ConfigPage page_current_ = null;
+        private OptionFormPage page_current_ = null;
 
         public OptionConfig Config { get; private set; }
 
 
-        public ConfigForm()
+        public OptionForm()
         {
             InitializeComponent();
             InitializePageMenu();
         }
 
-        public ConfigForm(OptionConfig config) : this()
+        public OptionForm(OptionConfig config) : this()
         {
             Config = config;
         }
@@ -96,7 +96,7 @@ namespace Ratatoskr.Forms.ConfigForm
             }
         }
 
-        private ConfigPage GetPage(PageId id)
+        private OptionFormPage GetPage(PageId id)
         {
             switch (id) {
                 case PageId.Language:      return (new Pages.ConfigPage_Language());

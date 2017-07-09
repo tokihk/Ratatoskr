@@ -22,6 +22,7 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
         private Label label3;
         private NumericUpDown Num_DataOffset;
         private Label label4;
+        private Label label5;
         private int data_length_ = 0;
 
         public AlgorithmObjectImpl()
@@ -48,6 +49,7 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
             this.label1 = new System.Windows.Forms.Label();
             this.Num_DataLength = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_DataOffset)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_DataLength)).BeginInit();
@@ -57,6 +59,7 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
             // 
             this.flowLayoutPanel1.Controls.Add(this.label3);
             this.flowLayoutPanel1.Controls.Add(this.Num_DataOffset);
+            this.flowLayoutPanel1.Controls.Add(this.label5);
             this.flowLayoutPanel1.Controls.Add(this.label2);
             this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Controls.Add(this.Num_DataLength);
@@ -65,7 +68,7 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(365, 25);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(555, 25);
             this.flowLayoutPanel1.TabIndex = 10;
             // 
             // label3
@@ -74,22 +77,22 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
             this.label3.Location = new System.Drawing.Point(3, 0);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label3.Size = new System.Drawing.Size(77, 18);
+            this.label3.Size = new System.Drawing.Size(80, 18);
             this.label3.TabIndex = 10;
-            this.label3.Text = "削除開始位置";
+            this.label3.Text = "Remove offset";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Num_DataOffset
             // 
             this.Num_DataOffset.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Num_DataOffset.Location = new System.Drawing.Point(86, 3);
+            this.Num_DataOffset.Location = new System.Drawing.Point(89, 3);
             this.Num_DataOffset.Maximum = new decimal(new int[] {
             999999,
             0,
             0,
             0});
             this.Num_DataOffset.Minimum = new decimal(new int[] {
-            1,
+            999999,
             0,
             0,
             -2147483648});
@@ -108,7 +111,7 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
             // label2
             // 
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label2.Location = new System.Drawing.Point(172, 0);
+            this.label2.Location = new System.Drawing.Point(330, 0);
             this.label2.Name = "label2";
             this.label2.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.label2.Size = new System.Drawing.Size(2, 24);
@@ -117,18 +120,18 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(180, 0);
+            this.label1.Location = new System.Drawing.Point(338, 0);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label1.Size = new System.Drawing.Size(58, 18);
+            this.label1.Size = new System.Drawing.Size(70, 18);
             this.label1.TabIndex = 12;
-            this.label1.Text = "削除サイズ";
+            this.label1.Text = "Remove size";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Num_DataLength
             // 
             this.Num_DataLength.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Num_DataLength.Location = new System.Drawing.Point(244, 3);
+            this.Num_DataLength.Location = new System.Drawing.Point(414, 3);
             this.Num_DataLength.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -149,12 +152,22 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(330, 0);
+            this.label4.Location = new System.Drawing.Point(500, 0);
             this.label4.Name = "label4";
             this.label4.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label4.Size = new System.Drawing.Size(27, 18);
+            this.label4.Size = new System.Drawing.Size(33, 18);
             this.label4.TabIndex = 16;
-            this.label4.Text = "byte";
+            this.label4.Text = "bytes";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(175, 0);
+            this.label5.Name = "label5";
+            this.label5.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.label5.Size = new System.Drawing.Size(149, 18);
+            this.label5.TabIndex = 17;
+            this.label5.Text = "(X < 0 : Count from the end)";
             // 
             // AlgorithmObjectImpl
             // 
@@ -162,7 +175,7 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
             this.Controls.Add(this.flowLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "AlgorithmObjectImpl";
-            this.Size = new System.Drawing.Size(365, 25);
+            this.Size = new System.Drawing.Size(555, 25);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_DataOffset)).EndInit();
@@ -203,14 +216,17 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
             var offset = 0;
             var length = 0;
 
-            /* データの最後尾から計算 */
+            /* 削除開始位置 */
             if (data_offset_ < 0) {
-                offset = Math.Max(data.Length + data_offset_ - data_length_, 0);
+                /* データの最後尾から計算 */
+                offset = Math.Max(0, data.Length + data_offset_);
 
-            /* データの先頭から計算 */
             } else {
+                /* データの先頭から計算 */
                 offset = Math.Min(data_offset_, Math.Max(0, data.Length - 1));
             }
+
+            /* 削除サイズ */
             length = Math.Min(data.Length - offset, data_length_);
 
             /* 削除データが存在しないため変換無し */

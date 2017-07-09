@@ -51,7 +51,7 @@
             this.GBox_DeviceList.Size = new System.Drawing.Size(407, 42);
             this.GBox_DeviceList.TabIndex = 5;
             this.GBox_DeviceList.TabStop = false;
-            this.GBox_DeviceList.Text = "監視デバイス";
+            this.GBox_DeviceList.Text = "Monitor device";
             // 
             // CBox_DeviceList
             // 
@@ -73,7 +73,7 @@
             this.GBox_DeviceTree.Size = new System.Drawing.Size(252, 111);
             this.GBox_DeviceTree.TabIndex = 6;
             this.GBox_DeviceTree.TabStop = false;
-            this.GBox_DeviceTree.Text = "デバイスツリー情報";
+            this.GBox_DeviceTree.Text = "Device tree";
             // 
             // TBox_DeviceTree
             // 
@@ -97,16 +97,16 @@
             this.groupBox1.Size = new System.Drawing.Size(149, 111);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "フィルタ設定";
+            this.groupBox1.Text = "Filter setting";
             // 
             // ChkBox_Filter_InterruptTransfer
             // 
             this.ChkBox_Filter_InterruptTransfer.AutoSize = true;
             this.ChkBox_Filter_InterruptTransfer.Location = new System.Drawing.Point(6, 62);
             this.ChkBox_Filter_InterruptTransfer.Name = "ChkBox_Filter_InterruptTransfer";
-            this.ChkBox_Filter_InterruptTransfer.Size = new System.Drawing.Size(99, 16);
+            this.ChkBox_Filter_InterruptTransfer.Size = new System.Drawing.Size(111, 16);
             this.ChkBox_Filter_InterruptTransfer.TabIndex = 3;
-            this.ChkBox_Filter_InterruptTransfer.Text = "インタラプト転送";
+            this.ChkBox_Filter_InterruptTransfer.Text = "Interrupt transfer";
             this.ChkBox_Filter_InterruptTransfer.UseVisualStyleBackColor = true;
             // 
             // ChkBox_Filter_BulkTransfer
@@ -114,9 +114,9 @@
             this.ChkBox_Filter_BulkTransfer.AutoSize = true;
             this.ChkBox_Filter_BulkTransfer.Location = new System.Drawing.Point(6, 40);
             this.ChkBox_Filter_BulkTransfer.Name = "ChkBox_Filter_BulkTransfer";
-            this.ChkBox_Filter_BulkTransfer.Size = new System.Drawing.Size(76, 16);
+            this.ChkBox_Filter_BulkTransfer.Size = new System.Drawing.Size(91, 16);
             this.ChkBox_Filter_BulkTransfer.TabIndex = 2;
-            this.ChkBox_Filter_BulkTransfer.Text = "バルク転送";
+            this.ChkBox_Filter_BulkTransfer.Text = "Bulk transfer";
             this.ChkBox_Filter_BulkTransfer.UseVisualStyleBackColor = true;
             // 
             // ChkBox_Filter_ControlTransfer
@@ -124,9 +124,9 @@
             this.ChkBox_Filter_ControlTransfer.AutoSize = true;
             this.ChkBox_Filter_ControlTransfer.Location = new System.Drawing.Point(6, 18);
             this.ChkBox_Filter_ControlTransfer.Name = "ChkBox_Filter_ControlTransfer";
-            this.ChkBox_Filter_ControlTransfer.Size = new System.Drawing.Size(102, 16);
+            this.ChkBox_Filter_ControlTransfer.Size = new System.Drawing.Size(105, 16);
             this.ChkBox_Filter_ControlTransfer.TabIndex = 1;
-            this.ChkBox_Filter_ControlTransfer.Text = "コントロール転送";
+            this.ChkBox_Filter_ControlTransfer.Text = "Control transfer";
             this.ChkBox_Filter_ControlTransfer.UseVisualStyleBackColor = true;
             // 
             // ChkBox_Filter_IsochronousTransfer
@@ -134,9 +134,9 @@
             this.ChkBox_Filter_IsochronousTransfer.AutoSize = true;
             this.ChkBox_Filter_IsochronousTransfer.Location = new System.Drawing.Point(6, 84);
             this.ChkBox_Filter_IsochronousTransfer.Name = "ChkBox_Filter_IsochronousTransfer";
-            this.ChkBox_Filter_IsochronousTransfer.Size = new System.Drawing.Size(111, 16);
+            this.ChkBox_Filter_IsochronousTransfer.Size = new System.Drawing.Size(129, 16);
             this.ChkBox_Filter_IsochronousTransfer.TabIndex = 0;
-            this.ChkBox_Filter_IsochronousTransfer.Text = "アイソクロナス転送";
+            this.ChkBox_Filter_IsochronousTransfer.Text = "Isochronous transfer";
             this.ChkBox_Filter_IsochronousTransfer.UseVisualStyleBackColor = true;
             // 
             // DevicePropertyEditorImpl

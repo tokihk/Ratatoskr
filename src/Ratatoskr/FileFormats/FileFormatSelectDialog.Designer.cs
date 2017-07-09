@@ -52,7 +52,7 @@
             this.MinimizeBox = false;
             this.Name = "FileFormatSelectDialog";
             this.ShowIcon = false;
-            this.Text = "ファイルフォーマット選択";
+            this.Text = "Select file format";
             this.ResumeLayout(false);
 
         }

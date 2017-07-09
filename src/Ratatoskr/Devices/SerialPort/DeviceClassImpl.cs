@@ -14,12 +14,12 @@ namespace Ratatoskr.Devices.SerialPort
 
         public override string Name
         {
-            get { return ("シリアルポート"); }
+            get { return ("Serial port"); }
         }
 
         public override string Details
         {
-            get { return ("シリアルポートを制御します。"); }
+            get { return (Name); }
         }
 
         public override Type GetPropertyType()

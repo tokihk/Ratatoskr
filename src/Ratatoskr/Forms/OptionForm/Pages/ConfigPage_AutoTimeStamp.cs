@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs.UserConfigs;
 
-namespace Ratatoskr.Forms.ConfigForm.Pages
+namespace Ratatoskr.Forms.OptionForm.Pages
 {
-    internal partial class ConfigPage_AutoTimeStamp : ConfigPage
+    internal partial class ConfigPage_AutoTimeStamp : OptionFormPage
     {
         public ConfigPage_AutoTimeStamp()
         {

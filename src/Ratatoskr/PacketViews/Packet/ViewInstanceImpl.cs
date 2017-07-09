@@ -61,7 +61,6 @@ namespace Ratatoskr.PacketViews.Packet
         private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Hex;
         private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn;
         private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff;
-        private ToolStripMenuItem CMenu_Packet_CopyToPacketList;
 
         private GroupBox GBox_CustomFormat;
         private NumericUpDown Num_PreviewDataSize;
@@ -69,7 +68,7 @@ namespace Ratatoskr.PacketViews.Packet
         private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn;
         private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff;
         private ToolStrip toolStrip1;
-        private ToolStripDropDownButton toolStripDropDownButton1;
+        private ToolStripDropDownButton Menu_ExtView;
         private ToolStripMenuItem Menu_ExtView_SelectPacketCount;
         private ToolStripMenuItem Menu_ExtView_SelectTotalSize;
         private ToolStripMenuItem Menu_ExtView_FirstPacketInfo;
@@ -78,6 +77,7 @@ namespace Ratatoskr.PacketViews.Packet
         private ListView LView_ExtInfo;
         private ColumnHeader LView_ExtInfoColumn_Name;
         private ColumnHeader LView_ExtInfoColumn_Value;
+        private Label label1;
         private TextBox TBox_CustomFormat;
 
 
@@ -91,6 +91,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.GBox_CharCode = new System.Windows.Forms.GroupBox();
             this.CBox_CharCode = new System.Windows.Forms.ComboBox();
             this.GBox_PreviewByteNum = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.Num_PreviewDataSize = new System.Windows.Forms.NumericUpDown();
             this.Split_Main = new System.Windows.Forms.SplitContainer();
             this.LView_Main = new Ratatoskr.Generic.Controls.ListViewEx();
@@ -100,7 +101,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.LView_ExtInfoColumn_Name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.LView_ExtInfoColumn_Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.Menu_ExtView = new System.Windows.Forms.ToolStripDropDownButton();
             this.Menu_ExtView_SelectPacketCount = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_ExtView_SelectTotalSize = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_ExtView_FirstPacketInfo = new System.Windows.Forms.ToolStripMenuItem();
@@ -118,7 +119,6 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_CopyToClipboard_Data_Custom = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToPacketList = new System.Windows.Forms.ToolStripMenuItem();
             this.Panel_ToolBar.SuspendLayout();
             this.GBox_CustomFormat.SuspendLayout();
             this.GBox_CharCode.SuspendLayout();
@@ -152,12 +152,12 @@ namespace Ratatoskr.PacketViews.Packet
             this.GBox_CustomFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.GBox_CustomFormat.Controls.Add(this.TBox_CustomFormat);
-            this.GBox_CustomFormat.Location = new System.Drawing.Point(255, 5);
+            this.GBox_CustomFormat.Location = new System.Drawing.Point(275, 5);
             this.GBox_CustomFormat.Name = "GBox_CustomFormat";
-            this.GBox_CustomFormat.Size = new System.Drawing.Size(699, 39);
+            this.GBox_CustomFormat.Size = new System.Drawing.Size(679, 39);
             this.GBox_CustomFormat.TabIndex = 2;
             this.GBox_CustomFormat.TabStop = false;
-            this.GBox_CustomFormat.Text = "カスタムフォーマット";
+            this.GBox_CustomFormat.Text = "Custom preview format";
             // 
             // TBox_CustomFormat
             // 
@@ -165,7 +165,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.TBox_CustomFormat.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.TBox_CustomFormat.Location = new System.Drawing.Point(3, 15);
             this.TBox_CustomFormat.Name = "TBox_CustomFormat";
-            this.TBox_CustomFormat.Size = new System.Drawing.Size(693, 19);
+            this.TBox_CustomFormat.Size = new System.Drawing.Size(673, 19);
             this.TBox_CustomFormat.TabIndex = 0;
             this.TBox_CustomFormat.TextChanged += new System.EventHandler(this.TBox_CustomFormat_TextChanged);
             this.TBox_CustomFormat.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TBox_CustomFormat_KeyDown);
@@ -173,12 +173,12 @@ namespace Ratatoskr.PacketViews.Packet
             // GBox_CharCode
             // 
             this.GBox_CharCode.Controls.Add(this.CBox_CharCode);
-            this.GBox_CharCode.Location = new System.Drawing.Point(129, 4);
+            this.GBox_CharCode.Location = new System.Drawing.Point(149, 4);
             this.GBox_CharCode.Name = "GBox_CharCode";
             this.GBox_CharCode.Size = new System.Drawing.Size(120, 40);
             this.GBox_CharCode.TabIndex = 1;
             this.GBox_CharCode.TabStop = false;
-            this.GBox_CharCode.Text = "文字列: 文字コード";
+            this.GBox_CharCode.Text = "Character code";
             // 
             // CBox_CharCode
             // 
@@ -193,27 +193,37 @@ namespace Ratatoskr.PacketViews.Packet
             // 
             // GBox_PreviewByteNum
             // 
+            this.GBox_PreviewByteNum.Controls.Add(this.label1);
             this.GBox_PreviewByteNum.Controls.Add(this.Num_PreviewDataSize);
             this.GBox_PreviewByteNum.Location = new System.Drawing.Point(3, 4);
             this.GBox_PreviewByteNum.Name = "GBox_PreviewByteNum";
-            this.GBox_PreviewByteNum.Size = new System.Drawing.Size(120, 40);
+            this.GBox_PreviewByteNum.Size = new System.Drawing.Size(140, 40);
             this.GBox_PreviewByteNum.TabIndex = 0;
             this.GBox_PreviewByteNum.TabStop = false;
-            this.GBox_PreviewByteNum.Text = "プレビューバイト数";
+            this.GBox_PreviewByteNum.Text = "Preview size";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(99, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(33, 12);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "bytes";
             // 
             // Num_PreviewDataSize
             // 
-            this.Num_PreviewDataSize.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Num_PreviewDataSize.Location = new System.Drawing.Point(3, 15);
             this.Num_PreviewDataSize.Maximum = new decimal(new int[] {
-            1024,
+            2000,
             0,
             0,
             0});
             this.Num_PreviewDataSize.Name = "Num_PreviewDataSize";
-            this.Num_PreviewDataSize.Size = new System.Drawing.Size(114, 19);
+            this.Num_PreviewDataSize.Size = new System.Drawing.Size(90, 19);
             this.Num_PreviewDataSize.TabIndex = 0;
             this.Num_PreviewDataSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_PreviewDataSize.ThousandsSeparator = true;
             this.Num_PreviewDataSize.ValueChanged += new System.EventHandler(this.Num_PreviewDataSize_ValueChanged);
             this.Num_PreviewDataSize.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Num_PreviewDataSize_KeyDown);
             // 
@@ -308,19 +318,19 @@ namespace Ratatoskr.PacketViews.Packet
             // 
             // LView_ExtInfoColumn_Name
             // 
-            this.LView_ExtInfoColumn_Name.Text = "情報名";
-            this.LView_ExtInfoColumn_Name.Width = 160;
+            this.LView_ExtInfoColumn_Name.Text = "Information name";
+            this.LView_ExtInfoColumn_Name.Width = 300;
             // 
             // LView_ExtInfoColumn_Value
             // 
-            this.LView_ExtInfoColumn_Value.Text = "値";
-            this.LView_ExtInfoColumn_Value.Width = 280;
+            this.LView_ExtInfoColumn_Value.Text = "Value";
+            this.LView_ExtInfoColumn_Value.Width = 120;
             // 
             // toolStrip1
             // 
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripDropDownButton1});
+            this.Menu_ExtView});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(313, 25);
@@ -328,63 +338,62 @@ namespace Ratatoskr.PacketViews.Packet
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripDropDownButton1
+            // Menu_ExtView
             // 
-            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Menu_ExtView.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.Menu_ExtView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Menu_ExtView_SelectPacketCount,
             this.Menu_ExtView_SelectTotalSize,
             this.Menu_ExtView_FirstPacketInfo,
             this.Menu_ExtView_LastPacketInfo,
             this.Menu_ExtView_SelectDelta});
-            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(105, 22);
-            this.toolStripDropDownButton1.Text = "表示情報の選択";
+            this.Menu_ExtView.Image = ((System.Drawing.Image)(resources.GetObject("Menu_ExtView.Image")));
+            this.Menu_ExtView.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.Menu_ExtView.Name = "Menu_ExtView";
+            this.Menu_ExtView.Size = new System.Drawing.Size(117, 22);
+            this.Menu_ExtView.Text = "Display item select";
             // 
             // Menu_ExtView_SelectPacketCount
             // 
             this.Menu_ExtView_SelectPacketCount.Name = "Menu_ExtView_SelectPacketCount";
-            this.Menu_ExtView_SelectPacketCount.Size = new System.Drawing.Size(267, 22);
-            this.Menu_ExtView_SelectPacketCount.Text = "選択パケット数";
+            this.Menu_ExtView_SelectPacketCount.Size = new System.Drawing.Size(311, 22);
+            this.Menu_ExtView_SelectPacketCount.Text = "Select packet count";
             this.Menu_ExtView_SelectPacketCount.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_SelectTotalSize
             // 
             this.Menu_ExtView_SelectTotalSize.Name = "Menu_ExtView_SelectTotalSize";
-            this.Menu_ExtView_SelectTotalSize.Size = new System.Drawing.Size(267, 22);
-            this.Menu_ExtView_SelectTotalSize.Text = "選択パケットの合計データサイズ";
+            this.Menu_ExtView_SelectTotalSize.Size = new System.Drawing.Size(311, 22);
+            this.Menu_ExtView_SelectTotalSize.Text = "Select packet total size";
             this.Menu_ExtView_SelectTotalSize.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_FirstPacketInfo
             // 
             this.Menu_ExtView_FirstPacketInfo.Name = "Menu_ExtView_FirstPacketInfo";
-            this.Menu_ExtView_FirstPacketInfo.Size = new System.Drawing.Size(267, 22);
-            this.Menu_ExtView_FirstPacketInfo.Text = "選択パケット(先頭)の情報";
+            this.Menu_ExtView_FirstPacketInfo.Size = new System.Drawing.Size(311, 22);
+            this.Menu_ExtView_FirstPacketInfo.Text = "Information on selected packet (first)";
             this.Menu_ExtView_FirstPacketInfo.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_LastPacketInfo
             // 
             this.Menu_ExtView_LastPacketInfo.Name = "Menu_ExtView_LastPacketInfo";
-            this.Menu_ExtView_LastPacketInfo.Size = new System.Drawing.Size(267, 22);
-            this.Menu_ExtView_LastPacketInfo.Text = "選択パケット(最後)の情報";
+            this.Menu_ExtView_LastPacketInfo.Size = new System.Drawing.Size(311, 22);
+            this.Menu_ExtView_LastPacketInfo.Text = "Information on selected packet (last)";
             this.Menu_ExtView_LastPacketInfo.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_SelectDelta
             // 
             this.Menu_ExtView_SelectDelta.Name = "Menu_ExtView_SelectDelta";
-            this.Menu_ExtView_SelectDelta.Size = new System.Drawing.Size(267, 22);
-            this.Menu_ExtView_SelectDelta.Text = "選択パケット(最後 - 先頭)の時刻差";
+            this.Menu_ExtView_SelectDelta.Size = new System.Drawing.Size(311, 22);
+            this.Menu_ExtView_SelectDelta.Text = "Time difference of selection packet (last-first)";
             this.Menu_ExtView_SelectDelta.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // CMenu_Packet
             // 
             this.CMenu_Packet.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CMenu_Packet_CopyToClipboard,
-            this.CMenu_Packet_CopyToPacketList});
+            this.CMenu_Packet_CopyToClipboard});
             this.CMenu_Packet.Name = "CMenu_Data";
-            this.CMenu_Packet.Size = new System.Drawing.Size(209, 48);
+            this.CMenu_Packet.Size = new System.Drawing.Size(169, 26);
             // 
             // CMenu_Packet_CopyToClipboard
             // 
@@ -394,14 +403,14 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_CopyToClipboard_Data_Hex,
             this.CMenu_Packet_CopyToClipboard_Data_Custom});
             this.CMenu_Packet_CopyToClipboard.Name = "CMenu_Packet_CopyToClipboard";
-            this.CMenu_Packet_CopyToClipboard.Size = new System.Drawing.Size(208, 22);
-            this.CMenu_Packet_CopyToClipboard.Text = "クリップボードへコピー";
+            this.CMenu_Packet_CopyToClipboard.Size = new System.Drawing.Size(168, 22);
+            this.CMenu_Packet_CopyToClipboard.Text = "Copy to clipboard";
             // 
             // CMenu_Packet_CopyToClipboard_AllInfo_Csv
             // 
             this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Name = "CMenu_Packet_CopyToClipboard_AllInfo_Csv";
-            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Size = new System.Drawing.Size(205, 22);
-            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Text = "全情報(CSV形式)";
+            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Size = new System.Drawing.Size(226, 22);
+            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Text = "All information (CSV format)";
             this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_AllInfo_Csv_Click);
             // 
             // CMenu_Packet_CopyToClipboard_Data_String
@@ -410,25 +419,25 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn,
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff});
             this.CMenu_Packet_CopyToClipboard_Data_String.Name = "CMenu_Packet_CopyToClipboard_Data_String";
-            this.CMenu_Packet_CopyToClipboard_Data_String.Size = new System.Drawing.Size(205, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_String.Size = new System.Drawing.Size(226, 22);
             this.CMenu_Packet_CopyToClipboard_Data_String.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_String.Text = "データ: 文字列";
+            this.CMenu_Packet_CopyToClipboard_Data_String.Text = "Data: Raw text";
             this.CMenu_Packet_CopyToClipboard_Data_String.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_String_Click);
             // 
             // CMenu_Packet_CopyToClipboard_Data_String_NewLineOn
             // 
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Name = "CMenu_Packet_CopyToClipboard_Data_String_NewLineOn";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Size = new System.Drawing.Size(196, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Size = new System.Drawing.Size(140, 22);
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Tag = "1";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Text = "パケット間の改行あり";
+            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Text = "Line feed on";
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_String_Click);
             // 
             // CMenu_Packet_CopyToClipboard_Data_String_NewLineOff
             // 
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Name = "CMenu_Packet_CopyToClipboard_Data_String_NewLineOff";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Size = new System.Drawing.Size(196, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Size = new System.Drawing.Size(140, 22);
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Text = "パケット間の改行なし";
+            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Text = "Line feed off";
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_String_Click);
             // 
             // CMenu_Packet_CopyToClipboard_Data_Hex
@@ -437,25 +446,25 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn,
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff});
             this.CMenu_Packet_CopyToClipboard_Data_Hex.Name = "CMenu_Packet_CopyToClipboard_Data_Hex";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex.Size = new System.Drawing.Size(205, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Hex.Size = new System.Drawing.Size(226, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Hex.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex.Text = "データ: 16進文字列";
+            this.CMenu_Packet_CopyToClipboard_Data_Hex.Text = "Data: HEX text";
             this.CMenu_Packet_CopyToClipboard_Data_Hex.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Hex_Click);
             // 
             // CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn
             // 
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Name = "CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Size = new System.Drawing.Size(196, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Size = new System.Drawing.Size(140, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Tag = "1";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Text = "パケット間の改行あり";
+            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Text = "Line feed on";
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Hex_Click);
             // 
             // CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff
             // 
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Name = "CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Size = new System.Drawing.Size(196, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Size = new System.Drawing.Size(140, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Text = "パケット間の改行なし";
+            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Text = "Line feed off";
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Hex_Click);
             // 
             // CMenu_Packet_CopyToClipboard_Data_Custom
@@ -464,33 +473,26 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn,
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff});
             this.CMenu_Packet_CopyToClipboard_Data_Custom.Name = "CMenu_Packet_CopyToClipboard_Data_Custom";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom.Size = new System.Drawing.Size(205, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Custom.Size = new System.Drawing.Size(226, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Custom.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom.Text = "データ: カスタム文字列";
+            this.CMenu_Packet_CopyToClipboard_Data_Custom.Text = "Data: Custom preview format";
             this.CMenu_Packet_CopyToClipboard_Data_Custom.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Custom_Click);
             // 
             // CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn
             // 
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Name = "CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Size = new System.Drawing.Size(196, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Size = new System.Drawing.Size(140, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Tag = "1";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Text = "パケット間の改行あり";
+            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Text = "Line feed on";
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Custom_Click);
             // 
             // CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff
             // 
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Name = "CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Size = new System.Drawing.Size(196, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Size = new System.Drawing.Size(140, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Text = "パケット間の改行なし";
+            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Text = "Line feed off";
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Custom_Click);
-            // 
-            // CMenu_Packet_CopyToPacketList
-            // 
-            this.CMenu_Packet_CopyToPacketList.Name = "CMenu_Packet_CopyToPacketList";
-            this.CMenu_Packet_CopyToPacketList.Size = new System.Drawing.Size(208, 22);
-            this.CMenu_Packet_CopyToPacketList.Text = "パケットリストへコピー";
-            this.CMenu_Packet_CopyToPacketList.Click += new System.EventHandler(this.CMenu_MultiData_CopyToPacketList_Click);
             // 
             // ViewInstanceImpl
             // 
@@ -504,6 +506,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.GBox_CustomFormat.PerformLayout();
             this.GBox_CharCode.ResumeLayout(false);
             this.GBox_PreviewByteNum.ResumeLayout(false);
+            this.GBox_PreviewByteNum.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_PreviewDataSize)).EndInit();
             this.Split_Main.Panel1.ResumeLayout(false);
             this.Split_Main.Panel2.ResumeLayout(false);
@@ -574,7 +577,6 @@ namespace Ratatoskr.PacketViews.Packet
             CMenu_Packet_CopyToClipboard_Data_Custom.Text = language.CMenu_Packet_CopyToClipboard_DataCustom.Value;
             CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Text = language.CMenu_Packet_CopyToClipboard_NewLineOn.Value;
             CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Text = language.CMenu_Packet_CopyToClipboard_NewLineOff.Value;
-            CMenu_Packet_CopyToPacketList.Text = language.CMenu_Packet_CopyToPacketList.Value;
         }
 
         private void InitializePreviewDataSize(decimal size)
@@ -734,46 +736,6 @@ namespace Ratatoskr.PacketViews.Packet
             }
         }
 
-#if false
-        private void UpdateSelectInformation()
-        {
-            /* 全消去 */
-            RTBox_Info.Clear();
-
-            /* 複数選択以外は情報無し */
-            if (LView_Main.SelectedIndices.Count <= 1)return;
-
-            var indices = LView_Main.SelectedIndices;
-            var index_first = indices[0];
-            var index_last = indices[indices.Count - 1];
-            var packet_first = LView_Main.ItemAt(index_first).Tag as PacketObject;
-            var packet_last = LView_Main.ItemAt(index_last).Tag as PacketObject;
-            var delta = packet_last.MakeTime - packet_first.MakeTime;
-
-            /* 選択パケット数 */
-            RTBox_Info.AppendText(String.Format("<Select Information>\n", indices.Count));
-            RTBox_Info.AppendText(String.Format("  Select Number       : {0}\n", indices.Count));
-            RTBox_Info.AppendText(
-                String.Format(
-                    "  Delta(Last - First) : {0} ({1}ms)\n",
-                    delta.ToString("hh\\:mm\\:ss\\.fff"),
-                    (uint)delta.TotalMilliseconds));
-            RTBox_Info.AppendText("\n");
-
-            /* 最初のパケット情報 */
-            RTBox_Info.AppendText(String.Format("<Information on the first packet selected>\n"));
-            RTBox_Info.AppendText(String.Format("  Packet No.       : {0}\n", index_first + 1));
-            RTBox_Info.AppendText(String.Format("  Date Time(Local) : {0}\n", packet_first.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff")));
-            RTBox_Info.AppendText("\n");
-
-            /* 最終のパケット情報 */
-            RTBox_Info.AppendText(String.Format("<Information on the last selected packet>\n"));
-            RTBox_Info.AppendText(String.Format("  Packet No.       : {0}\n", index_last + 1));
-            RTBox_Info.AppendText(String.Format("  Date Time(Local) : {0}\n", packet_last.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff")));
-            RTBox_Info.AppendText("\n");
-        }
-#endif
-
         private void SetCurrentPacketStatus(PacketObject packet)
         {
             if (packet != null) {
@@ -841,7 +803,7 @@ namespace Ratatoskr.PacketViews.Packet
                 /* 選択パケット数 */
                 if (Menu_ExtView_SelectPacketCount.Checked) {
                     ExtViewItem_SelectPacketCount = new ListViewItem();
-                    ExtViewItem_SelectPacketCount.Text = "選択パケット数";
+                    ExtViewItem_SelectPacketCount.Text = "Select packet count";
                     ExtViewItem_SelectPacketCount.SubItems.Add("");
                     ExtViewItem_SelectPacketCount = LView_ExtInfo.Items.Add(ExtViewItem_SelectPacketCount);
                 }
@@ -849,7 +811,7 @@ namespace Ratatoskr.PacketViews.Packet
                 /* 選択パケットサイズ */
                 if (Menu_ExtView_SelectTotalSize.Checked) {
                     ExtViewItem_SelectTotalSize = new ListViewItem();
-                    ExtViewItem_SelectTotalSize.Text = "選択データパケット合計サイズ";
+                    ExtViewItem_SelectTotalSize.Text = "Select packet total size";
                     ExtViewItem_SelectTotalSize.SubItems.Add("");
                     ExtViewItem_SelectTotalSize = LView_ExtInfo.Items.Add(ExtViewItem_SelectTotalSize);
                 }
@@ -857,7 +819,7 @@ namespace Ratatoskr.PacketViews.Packet
                 /* 選択パケット(最初)の情報 */
                 if (Menu_ExtView_FirstPacketInfo.Checked) {
                     ExtViewItem_FirstPacketInfo = new ListViewItem();
-                    ExtViewItem_FirstPacketInfo.Text = "選択パケット(First)";
+                    ExtViewItem_FirstPacketInfo.Text = "Information on selected packet (first)";
                     ExtViewItem_FirstPacketInfo.SubItems.Add("");
                     ExtViewItem_FirstPacketInfo = LView_ExtInfo.Items.Add(ExtViewItem_FirstPacketInfo);
                 }
@@ -865,7 +827,7 @@ namespace Ratatoskr.PacketViews.Packet
                 /* 選択パケット(最後)の情報 */
                 if (Menu_ExtView_LastPacketInfo.Checked) {
                     ExtViewItem_LastPacketInfo = new ListViewItem();
-                    ExtViewItem_LastPacketInfo.Text = "選択パケット(Last)";
+                    ExtViewItem_LastPacketInfo.Text = "Information on selected packet (last)";
                     ExtViewItem_LastPacketInfo.SubItems.Add("");
                     ExtViewItem_LastPacketInfo = LView_ExtInfo.Items.Add(ExtViewItem_LastPacketInfo);
                 }
@@ -873,7 +835,7 @@ namespace Ratatoskr.PacketViews.Packet
                 /* 選択パケット(最後 - 最初)の差分時間 */
                 if (Menu_ExtView_SelectDelta.Checked) {
                     ExtViewItem_SelectDelta = new ListViewItem();
-                    ExtViewItem_SelectDelta.Text = "差分時間(Last - First)";
+                    ExtViewItem_SelectDelta.Text = "Time difference of selection packet (last-first)";
                     ExtViewItem_SelectDelta.SubItems.Add("");
                     ExtViewItem_SelectDelta = LView_ExtInfo.Items.Add(ExtViewItem_SelectDelta);
                 }
@@ -886,17 +848,17 @@ namespace Ratatoskr.PacketViews.Packet
         private string GetListViewHeaderName(ColumnType type)
         {
             switch (type) {
-                case ColumnType.Alias:                  return ("エイリアス");
-                case ColumnType.Datetime_UTC:           return ("時間(UTC)");
-                case ColumnType.Datetime_Local:         return ("時間(ローカル)");
-                case ColumnType.Mark:                   return ("マーク");
-                case ColumnType.Information:            return ("情報");
-                case ColumnType.Source:                 return ("送信元");
-                case ColumnType.Destination:            return ("送信先");
-                case ColumnType.DataLength:             return ("データ長");
-                case ColumnType.DataPreviewBinary:      return ("データ:バイナリ");
-                case ColumnType.DataPreviewText:        return ("データ:文字列");
-                case ColumnType.DataPreviewCustom:      return ("データ:カスタム");
+                case ColumnType.Alias:                  return (ConfigManager.Language.PacketView.Packet.Column_Alias.Value);
+                case ColumnType.Datetime_UTC:           return (ConfigManager.Language.PacketView.Packet.Column_Datetime_UTC.Value);
+                case ColumnType.Datetime_Local:         return (ConfigManager.Language.PacketView.Packet.Column_Datetime_Local.Value);
+                case ColumnType.Mark:                   return (ConfigManager.Language.PacketView.Packet.Column_Mark.Value);
+                case ColumnType.Information:            return (ConfigManager.Language.PacketView.Packet.Column_Information.Value);
+                case ColumnType.Source:                 return (ConfigManager.Language.PacketView.Packet.Column_Source.Value);
+                case ColumnType.Destination:            return (ConfigManager.Language.PacketView.Packet.Column_Destination.Value);
+                case ColumnType.DataLength:             return (ConfigManager.Language.PacketView.Packet.Column_DataLength.Value);
+                case ColumnType.DataPreviewBinary:      return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewBinary.Value);
+                case ColumnType.DataPreviewText:        return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewText.Value);
+                case ColumnType.DataPreviewCustom:      return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewCustom.Value);
                 default:                                return ("Unknown");
             }
         }

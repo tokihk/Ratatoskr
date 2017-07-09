@@ -15,12 +15,12 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
 
         public override string Name
         {
-            get { return ("バイナリデータ"); }
+            get { return ("Binary data"); }
         }
 
         public override string Detail
         {
-            get { return ("パケットのデータ部分のみを出力します。"); }
+            get { return (Name); }
         }
 
         public override string[] FileExtension

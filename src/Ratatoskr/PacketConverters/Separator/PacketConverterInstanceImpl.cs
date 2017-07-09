@@ -107,7 +107,7 @@ namespace Ratatoskr.PacketConverters.Separator
             this.Btn_Option.Name = "Btn_Option";
             this.Btn_Option.Size = new System.Drawing.Size(75, 20);
             this.Btn_Option.TabIndex = 3;
-            this.Btn_Option.Text = "オプション";
+            this.Btn_Option.Text = "Option";
             this.Btn_Option.UseVisualStyleBackColor = true;
             this.Btn_Option.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Btn_Option_MouseClick);
             // 
@@ -138,19 +138,19 @@ namespace Ratatoskr.PacketConverters.Separator
             this.CMenu_EventDetectDivide,
             this.CMenu_DirChangeDivide});
             this.CMenu_Option.Name = "contextMenuStrip1";
-            this.CMenu_Option.Size = new System.Drawing.Size(233, 48);
+            this.CMenu_Option.Size = new System.Drawing.Size(218, 48);
             // 
             // CMenu_EventDetectDivide
             // 
             this.CMenu_EventDetectDivide.Name = "CMenu_EventDetectDivide";
-            this.CMenu_EventDetectDivide.Size = new System.Drawing.Size(232, 22);
+            this.CMenu_EventDetectDivide.Size = new System.Drawing.Size(217, 22);
             this.CMenu_EventDetectDivide.Text = "イベント検出時に強制出力";
             this.CMenu_EventDetectDivide.Click += new System.EventHandler(this.OptionMenu_Click);
             // 
             // CMenu_DirChangeDivide
             // 
             this.CMenu_DirChangeDivide.Name = "CMenu_DirChangeDivide";
-            this.CMenu_DirChangeDivide.Size = new System.Drawing.Size(232, 22);
+            this.CMenu_DirChangeDivide.Size = new System.Drawing.Size(217, 22);
             this.CMenu_DirChangeDivide.Text = "データ方向変化時に強制出力";
             this.CMenu_DirChangeDivide.Click += new System.EventHandler(this.OptionMenu_Click);
             // 

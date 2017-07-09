@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Generic;
 
-namespace Ratatoskr.PacketViews.Graph.GraphType.Data
+namespace Ratatoskr.PacketViews.Graph.GraphType.Value
 {
     internal class GraphChartObjectImpl : GraphChartObject
     {

@@ -86,7 +86,7 @@
             this.GBox_BaudRate.Size = new System.Drawing.Size(200, 42);
             this.GBox_BaudRate.TabIndex = 0;
             this.GBox_BaudRate.TabStop = false;
-            this.GBox_BaudRate.Text = "ボーレート";
+            this.GBox_BaudRate.Text = "Baudrate (bps)";
             // 
             // CBox_BaudRate
             // 
@@ -105,7 +105,7 @@
             this.GBox_Parity.Size = new System.Drawing.Size(200, 42);
             this.GBox_Parity.TabIndex = 1;
             this.GBox_Parity.TabStop = false;
-            this.GBox_Parity.Text = "パリティ";
+            this.GBox_Parity.Text = "Parity";
             // 
             // CBox_Parity
             // 
@@ -125,7 +125,7 @@
             this.GBox_DataBits.Size = new System.Drawing.Size(200, 42);
             this.GBox_DataBits.TabIndex = 2;
             this.GBox_DataBits.TabStop = false;
-            this.GBox_DataBits.Text = "データビット";
+            this.GBox_DataBits.Text = "Data bit";
             // 
             // CBox_DataBits
             // 
@@ -145,7 +145,7 @@
             this.GBox_StopBits.Size = new System.Drawing.Size(200, 42);
             this.GBox_StopBits.TabIndex = 3;
             this.GBox_StopBits.TabStop = false;
-            this.GBox_StopBits.Text = "ストップビット";
+            this.GBox_StopBits.Text = "Stop bit";
             // 
             // CBox_StopBits
             // 
@@ -167,7 +167,7 @@
             this.GBox_FlowControl.Size = new System.Drawing.Size(413, 245);
             this.GBox_FlowControl.TabIndex = 4;
             this.GBox_FlowControl.TabStop = false;
-            this.GBox_FlowControl.Text = "オプション";
+            this.GBox_FlowControl.Text = "Option";
             // 
             // groupBox3
             // 
@@ -390,7 +390,7 @@
             this.GBox_PortList.Size = new System.Drawing.Size(407, 42);
             this.GBox_PortList.TabIndex = 5;
             this.GBox_PortList.TabStop = false;
-            this.GBox_PortList.Text = "通信ポート";
+            this.GBox_PortList.Text = "Port";
             // 
             // CBox_PortList
             // 

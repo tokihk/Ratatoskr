@@ -252,37 +252,37 @@
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatClassImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatOptionImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatReaderImpl.cs" />
-    <Compile Include="Forms\ConfigForm\ConfigForm.cs">
+    <Compile Include="Forms\OptionForm\OptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ConfigForm\ConfigForm.Designer.cs">
-      <DependentUpon>ConfigForm.cs</DependentUpon>
+    <Compile Include="Forms\OptionForm\OptionForm.Designer.cs">
+      <DependentUpon>OptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ConfigForm\ConfigPage.cs">
+    <Compile Include="Forms\OptionForm\OptionFormPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ConfigForm\Pages\ConfigPage_AutoSave.cs">
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_AutoSave.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ConfigForm\Pages\ConfigPage_AutoSave.Designer.cs">
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_AutoSave.Designer.cs">
       <DependentUpon>ConfigPage_AutoSave.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ConfigForm\Pages\ConfigPage_AutoTimeStamp.cs">
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_AutoTimeStamp.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ConfigForm\Pages\ConfigPage_AutoTimeStamp.Designer.cs">
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_AutoTimeStamp.Designer.cs">
       <DependentUpon>ConfigPage_AutoTimeStamp.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ConfigForm\Pages\ConfigPage_AutoUpdate.cs">
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_AutoUpdate.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ConfigForm\Pages\ConfigPage_AutoUpdate.Designer.cs">
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_AutoUpdate.Designer.cs">
       <DependentUpon>ConfigPage_AutoUpdate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ConfigForm\Pages\ConfigPage_Language.cs">
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_Language.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ConfigForm\Pages\ConfigPage_Language.Designer.cs">
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_Language.Designer.cs">
       <DependentUpon>ConfigPage_Language.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\DebugForm\DebugForm.cs">
@@ -445,6 +445,8 @@
     </Compile>
     <Compile Include="Generic\HexTextEncoder.cs" />
     <Compile Include="Generic\ImageUtil.cs" />
+    <Compile Include="Generic\LicenseFileParser.cs" />
+    <Compile Include="Generic\LicenseInfo.cs" />
     <Compile Include="Generic\Net\WebDownloader.cs" />
     <Compile Include="Generic\Packet\PacketContainer.cs" />
     <Compile Include="Generic\Packet\PacketConverter.cs" />
@@ -545,7 +547,7 @@
     <Compile Include="PacketConverters\Transfer\PacketConverterPropertyImpl.cs" />
     <Compile Include="PacketViews\Graph\GraphChartObject.cs" />
     <Compile Include="PacketViews\Graph\GraphType\Amount\GraphChartObjectImpl.cs" />
-    <Compile Include="PacketViews\Graph\GraphType\Data\GraphChartObjectImpl.cs" />
+    <Compile Include="PacketViews\Graph\GraphType\Value\GraphChartObjectImpl.cs" />
     <Compile Include="PacketViews\Graph\GraphViewData.cs" />
     <Compile Include="PacketViews\Graph\ViewClassImpl.cs" />
     <Compile Include="PacketViews\Graph\ViewInstanceImpl.cs">
@@ -676,19 +678,19 @@
     <EmbeddedResource Include="FileFormats\PacketLog_Binary\FileFormatWriterOptionEditorImpl.resx">
       <DependentUpon>FileFormatWriterOptionEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ConfigForm\ConfigForm.resx">
-      <DependentUpon>ConfigForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OptionForm\OptionForm.resx">
+      <DependentUpon>OptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ConfigForm\Pages\ConfigPage_AutoSave.resx">
+    <EmbeddedResource Include="Forms\OptionForm\Pages\ConfigPage_AutoSave.resx">
       <DependentUpon>ConfigPage_AutoSave.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ConfigForm\Pages\ConfigPage_AutoTimeStamp.resx">
+    <EmbeddedResource Include="Forms\OptionForm\Pages\ConfigPage_AutoTimeStamp.resx">
       <DependentUpon>ConfigPage_AutoTimeStamp.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ConfigForm\Pages\ConfigPage_AutoUpdate.resx">
+    <EmbeddedResource Include="Forms\OptionForm\Pages\ConfigPage_AutoUpdate.resx">
       <DependentUpon>ConfigPage_AutoUpdate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ConfigForm\Pages\ConfigPage_Language.resx">
+    <EmbeddedResource Include="Forms\OptionForm\Pages\ConfigPage_Language.resx">
       <DependentUpon>ConfigPage_Language.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DebugForm\DebugForm.resx">
@@ -877,7 +879,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PacketConverters\Convert\Custom\" />
-    <Folder Include="PacketViews\IcomPcCmd\" />
     <Folder Include="ThirdParty\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

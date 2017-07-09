@@ -83,7 +83,7 @@ namespace Ratatoskr.PacketViews.Sequential
             this.GBox_Common.Size = new System.Drawing.Size(400, 66);
             this.GBox_Common.TabIndex = 3;
             this.GBox_Common.TabStop = false;
-            this.GBox_Common.Text = "共通設定";
+            this.GBox_Common.Text = "Basic setting";
             // 
             // GBox_EndLine
             // 
@@ -95,7 +95,7 @@ namespace Ratatoskr.PacketViews.Sequential
             this.GBox_EndLine.Size = new System.Drawing.Size(176, 41);
             this.GBox_EndLine.TabIndex = 2;
             this.GBox_EndLine.TabStop = false;
-            this.GBox_EndLine.Text = "改行パターン";
+            this.GBox_EndLine.Text = "Line feed pattern";
             // 
             // TBox_EndLine
             // 
@@ -114,7 +114,7 @@ namespace Ratatoskr.PacketViews.Sequential
             this.GBox_ViewMode.Size = new System.Drawing.Size(120, 42);
             this.GBox_ViewMode.TabIndex = 1;
             this.GBox_ViewMode.TabStop = false;
-            this.GBox_ViewMode.Text = "表示モード";
+            this.GBox_ViewMode.Text = "View mode";
             // 
             // CBox_ViewMode
             // 
@@ -134,7 +134,7 @@ namespace Ratatoskr.PacketViews.Sequential
             this.GBox_ShiftBit.Size = new System.Drawing.Size(80, 41);
             this.GBox_ShiftBit.TabIndex = 1;
             this.GBox_ShiftBit.TabStop = false;
-            this.GBox_ShiftBit.Text = "シフトビット数";
+            this.GBox_ShiftBit.Text = "Bit shift";
             // 
             // CBox_ShiftBit
             // 
@@ -154,7 +154,7 @@ namespace Ratatoskr.PacketViews.Sequential
             this.GBox_TextMode.Size = new System.Drawing.Size(135, 66);
             this.GBox_TextMode.TabIndex = 2;
             this.GBox_TextMode.TabStop = false;
-            this.GBox_TextMode.Text = "文字列設定";
+            this.GBox_TextMode.Text = "Text setting";
             // 
             // GBox_CharCode
             // 
@@ -164,7 +164,7 @@ namespace Ratatoskr.PacketViews.Sequential
             this.GBox_CharCode.Size = new System.Drawing.Size(120, 42);
             this.GBox_CharCode.TabIndex = 2;
             this.GBox_CharCode.TabStop = false;
-            this.GBox_CharCode.Text = "文字コード";
+            this.GBox_CharCode.Text = "Character code";
             // 
             // CBox_CharCode
             // 

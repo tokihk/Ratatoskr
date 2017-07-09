@@ -14,12 +14,12 @@ namespace Ratatoskr.Devices.UsbMonitor
 
         public override string Name
         {
-            get { return ("USBモニター"); }
+            get { return ("USB Monitor"); }
         }
 
         public override string Details
         {
-            get { return ("USB通信をモニターします。"); }
+            get { return (Name); }
         }
 
         public override Type GetPropertyType()

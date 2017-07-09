@@ -57,8 +57,6 @@ namespace Ratatoskr.PacketViews.Packet.Forms
         {
             InitializeAllItems(all_items);
             InitializeUserItems(user_items);
-
-            Text = "列の編集";
         }
 
         private void InitializeAllItems(IEnumerable<ColumnType> items)

@@ -14,12 +14,12 @@ namespace Ratatoskr.Devices.AudioFile
 
         public override string Name
         {
-            get { return ("音声ファイル"); }
+            get { return ("Audio file"); }
         }
 
         public override string Details
         {
-            get { return ("音声ファイルからデータを取得します。"); }
+            get { return (Name); }
         }
 
         public override Type GetPropertyType()

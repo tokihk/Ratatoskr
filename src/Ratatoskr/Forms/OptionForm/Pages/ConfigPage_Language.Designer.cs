@@ -1,4 +1,4 @@
-﻿namespace Ratatoskr.Forms.ConfigForm.Pages
+﻿namespace Ratatoskr.Forms.OptionForm.Pages
 {
     partial class ConfigPage_Language
     {
@@ -47,16 +47,16 @@
             this.GBox_LangType.Size = new System.Drawing.Size(320, 49);
             this.GBox_LangType.TabIndex = 4;
             this.GBox_LangType.TabStop = false;
-            this.GBox_LangType.Text = "現在の言語";
+            this.GBox_LangType.Text = "Current language";
             // 
             // Btn_Lang_Ref
             // 
             this.Btn_Lang_Ref.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Btn_Lang_Ref.Location = new System.Drawing.Point(258, 18);
+            this.Btn_Lang_Ref.Location = new System.Drawing.Point(243, 18);
             this.Btn_Lang_Ref.Name = "Btn_Lang_Ref";
-            this.Btn_Lang_Ref.Size = new System.Drawing.Size(56, 20);
+            this.Btn_Lang_Ref.Size = new System.Drawing.Size(71, 20);
             this.Btn_Lang_Ref.TabIndex = 2;
-            this.Btn_Lang_Ref.Text = "参照";
+            this.Btn_Lang_Ref.Text = "Browse...";
             this.Btn_Lang_Ref.UseVisualStyleBackColor = true;
             // 
             // CBox_LangType
@@ -65,7 +65,7 @@
             this.CBox_LangType.FormattingEnabled = true;
             this.CBox_LangType.Location = new System.Drawing.Point(7, 19);
             this.CBox_LangType.Name = "CBox_LangType";
-            this.CBox_LangType.Size = new System.Drawing.Size(245, 20);
+            this.CBox_LangType.Size = new System.Drawing.Size(230, 20);
             this.CBox_LangType.TabIndex = 0;
             // 
             // GBox_WordList
@@ -79,7 +79,7 @@
             this.GBox_WordList.Size = new System.Drawing.Size(514, 191);
             this.GBox_WordList.TabIndex = 5;
             this.GBox_WordList.TabStop = false;
-            this.GBox_WordList.Text = "ワードリスト";
+            this.GBox_WordList.Text = "Word list";
             // 
             // LView_WordList
             // 
@@ -98,7 +98,7 @@
             this.Btn_LangData_Edit.Name = "Btn_LangData_Edit";
             this.Btn_LangData_Edit.Size = new System.Drawing.Size(80, 32);
             this.Btn_LangData_Edit.TabIndex = 1;
-            this.Btn_LangData_Edit.Text = "編集";
+            this.Btn_LangData_Edit.Text = "Customize";
             this.Btn_LangData_Edit.UseVisualStyleBackColor = true;
             // 
             // Btn_LangData_Export
@@ -107,7 +107,7 @@
             this.Btn_LangData_Export.Name = "Btn_LangData_Export";
             this.Btn_LangData_Export.Size = new System.Drawing.Size(80, 32);
             this.Btn_LangData_Export.TabIndex = 6;
-            this.Btn_LangData_Export.Text = "エクスポート";
+            this.Btn_LangData_Export.Text = "Export...";
             this.Btn_LangData_Export.UseVisualStyleBackColor = true;
             // 
             // ConfigPage_Language

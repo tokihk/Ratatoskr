@@ -55,7 +55,7 @@
             this.Btn_Cancel.Name = "Btn_Cancel";
             this.Btn_Cancel.Size = new System.Drawing.Size(75, 28);
             this.Btn_Cancel.TabIndex = 4;
-            this.Btn_Cancel.Text = "キャンセル";
+            this.Btn_Cancel.Text = "Cancel";
             this.Btn_Cancel.UseVisualStyleBackColor = true;
             this.Btn_Cancel.Click += new System.EventHandler(this.Btn_Cancel_Click);
             // 
@@ -88,18 +88,18 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(13, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 12);
+            this.label1.Size = new System.Drawing.Size(89, 12);
             this.label1.TabIndex = 6;
-            this.label1.Text = "表示項目の選択";
+            this.label1.Text = "Display item list";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(280, 13);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 12);
+            this.label2.Size = new System.Drawing.Size(109, 12);
             this.label2.TabIndex = 7;
-            this.label2.Text = "ユーザー設定";
+            this.label2.Text = "Current display item";
             // 
             // Btn_Remove
             // 
@@ -140,7 +140,7 @@
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ColumnHeaderEditForm";
+            this.Text = "Column setting";
             this.ResumeLayout(false);
             this.PerformLayout();
 

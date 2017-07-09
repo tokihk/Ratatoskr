@@ -17,14 +17,12 @@ namespace Ratatoskr.PacketConverters.Convert
 
         public override string Name
         {
-            get { return ("データ変換"); }
+            get { return ("Convert"); }
         }
 
         public override string Details
         {
-            get { return (
-                "パケット内のデータを変換します"
-            ); }
+            get { return ("Edit part of the packet"); }
         }
 
         public override Type GetPropertyType()

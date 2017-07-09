@@ -1,4 +1,4 @@
-﻿namespace Ratatoskr.Forms.ConfigForm.Pages
+﻿namespace Ratatoskr.Forms.OptionForm.Pages
 {
     partial class ConfigPage_AutoSave
     {
@@ -42,6 +42,9 @@
             this.RBtn_Timing_PacketCount = new System.Windows.Forms.RadioButton();
             this.RBtn_Timing_FileSize = new System.Windows.Forms.RadioButton();
             this.RBtn_Timing_Interval = new System.Windows.Forms.RadioButton();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.GBox_SavePrefix.SuspendLayout();
             this.GBox_Basic.SuspendLayout();
             this.GBox_SaveFormat.SuspendLayout();
@@ -60,7 +63,7 @@
             this.GBox_SavePrefix.Size = new System.Drawing.Size(200, 41);
             this.GBox_SavePrefix.TabIndex = 3;
             this.GBox_SavePrefix.TabStop = false;
-            this.GBox_SavePrefix.Text = "保存ファイルの接頭語";
+            this.GBox_SavePrefix.Text = "Save file prefix";
             // 
             // TBox_SavePrefix
             // 
@@ -80,7 +83,7 @@
             this.GBox_Basic.Size = new System.Drawing.Size(514, 120);
             this.GBox_Basic.TabIndex = 4;
             this.GBox_Basic.TabStop = false;
-            this.GBox_Basic.Text = "基本設定";
+            this.GBox_Basic.Text = "Basic setting";
             // 
             // GBox_SaveFormat
             // 
@@ -90,7 +93,7 @@
             this.GBox_SaveFormat.Size = new System.Drawing.Size(200, 41);
             this.GBox_SaveFormat.TabIndex = 4;
             this.GBox_SaveFormat.TabStop = false;
-            this.GBox_SaveFormat.Text = "保存フォーマット";
+            this.GBox_SaveFormat.Text = "Save format";
             // 
             // CBox_SaveFormat
             // 
@@ -113,7 +116,7 @@
             this.GBox_SaveDir.Size = new System.Drawing.Size(502, 49);
             this.GBox_SaveDir.TabIndex = 3;
             this.GBox_SaveDir.TabStop = false;
-            this.GBox_SaveDir.Text = "保存ディレクトリ";
+            this.GBox_SaveDir.Text = "Save directory";
             // 
             // Btn_SaveDir_Ref
             // 
@@ -137,6 +140,9 @@
             // 
             // GBox_Timing
             // 
+            this.GBox_Timing.Controls.Add(this.label2);
+            this.GBox_Timing.Controls.Add(this.label1);
+            this.GBox_Timing.Controls.Add(this.radioButton1);
             this.GBox_Timing.Controls.Add(this.Num_PacketCount);
             this.GBox_Timing.Controls.Add(this.Num_FileSize);
             this.GBox_Timing.Controls.Add(this.Num_Interval);
@@ -145,14 +151,14 @@
             this.GBox_Timing.Controls.Add(this.RBtn_Timing_Interval);
             this.GBox_Timing.Location = new System.Drawing.Point(3, 130);
             this.GBox_Timing.Name = "GBox_Timing";
-            this.GBox_Timing.Size = new System.Drawing.Size(325, 91);
+            this.GBox_Timing.Size = new System.Drawing.Size(356, 123);
             this.GBox_Timing.TabIndex = 5;
             this.GBox_Timing.TabStop = false;
-            this.GBox_Timing.Text = "保存タイミング";
+            this.GBox_Timing.Text = "Auto save timming";
             // 
             // Num_PacketCount
             // 
-            this.Num_PacketCount.Location = new System.Drawing.Point(215, 65);
+            this.Num_PacketCount.Location = new System.Drawing.Point(195, 94);
             this.Num_PacketCount.Maximum = new decimal(new int[] {
             600000,
             0,
@@ -175,7 +181,7 @@
             // 
             // Num_FileSize
             // 
-            this.Num_FileSize.Location = new System.Drawing.Point(215, 40);
+            this.Num_FileSize.Location = new System.Drawing.Point(195, 69);
             this.Num_FileSize.Maximum = new decimal(new int[] {
             600000,
             0,
@@ -198,7 +204,7 @@
             // 
             // Num_Interval
             // 
-            this.Num_Interval.Location = new System.Drawing.Point(215, 15);
+            this.Num_Interval.Location = new System.Drawing.Point(195, 44);
             this.Num_Interval.Maximum = new decimal(new int[] {
             600000,
             0,
@@ -221,33 +227,61 @@
             // 
             // RBtn_Timing_PacketCount
             // 
-            this.RBtn_Timing_PacketCount.Location = new System.Drawing.Point(9, 65);
+            this.RBtn_Timing_PacketCount.Location = new System.Drawing.Point(9, 94);
             this.RBtn_Timing_PacketCount.Name = "RBtn_Timing_PacketCount";
-            this.RBtn_Timing_PacketCount.Size = new System.Drawing.Size(200, 16);
+            this.RBtn_Timing_PacketCount.Size = new System.Drawing.Size(180, 16);
             this.RBtn_Timing_PacketCount.TabIndex = 7;
             this.RBtn_Timing_PacketCount.TabStop = true;
-            this.RBtn_Timing_PacketCount.Text = "パケット数";
+            this.RBtn_Timing_PacketCount.Text = "Packet count";
             this.RBtn_Timing_PacketCount.UseVisualStyleBackColor = true;
             // 
             // RBtn_Timing_FileSize
             // 
-            this.RBtn_Timing_FileSize.Location = new System.Drawing.Point(9, 40);
+            this.RBtn_Timing_FileSize.Location = new System.Drawing.Point(9, 69);
             this.RBtn_Timing_FileSize.Name = "RBtn_Timing_FileSize";
-            this.RBtn_Timing_FileSize.Size = new System.Drawing.Size(200, 16);
+            this.RBtn_Timing_FileSize.Size = new System.Drawing.Size(180, 16);
             this.RBtn_Timing_FileSize.TabIndex = 6;
             this.RBtn_Timing_FileSize.TabStop = true;
-            this.RBtn_Timing_FileSize.Text = "ファイルサイズ(kByte)";
+            this.RBtn_Timing_FileSize.Text = "File size";
             this.RBtn_Timing_FileSize.UseVisualStyleBackColor = true;
             // 
             // RBtn_Timing_Interval
             // 
-            this.RBtn_Timing_Interval.Location = new System.Drawing.Point(9, 15);
+            this.RBtn_Timing_Interval.Location = new System.Drawing.Point(9, 44);
             this.RBtn_Timing_Interval.Name = "RBtn_Timing_Interval";
-            this.RBtn_Timing_Interval.Size = new System.Drawing.Size(200, 16);
+            this.RBtn_Timing_Interval.Size = new System.Drawing.Size(180, 16);
             this.RBtn_Timing_Interval.TabIndex = 5;
             this.RBtn_Timing_Interval.TabStop = true;
-            this.RBtn_Timing_Interval.Text = "時間間隔(分)";
+            this.RBtn_Timing_Interval.Text = "Time interval";
             this.RBtn_Timing_Interval.UseVisualStyleBackColor = true;
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.Location = new System.Drawing.Point(9, 18);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(200, 16);
+            this.radioButton1.TabIndex = 11;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "No save";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(301, 48);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(33, 12);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "hours";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(301, 73);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(33, 12);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "bytes";
             // 
             // ConfigPage_AutoSave
             // 
@@ -256,7 +290,7 @@
             this.Controls.Add(this.GBox_Timing);
             this.Controls.Add(this.GBox_Basic);
             this.Name = "ConfigPage_AutoSave";
-            this.Size = new System.Drawing.Size(525, 227);
+            this.Size = new System.Drawing.Size(525, 256);
             this.GBox_SavePrefix.ResumeLayout(false);
             this.GBox_SavePrefix.PerformLayout();
             this.GBox_Basic.ResumeLayout(false);
@@ -264,6 +298,7 @@
             this.GBox_SaveDir.ResumeLayout(false);
             this.GBox_SaveDir.PerformLayout();
             this.GBox_Timing.ResumeLayout(false);
+            this.GBox_Timing.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_PacketCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_FileSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_Interval)).EndInit();
@@ -288,5 +323,8 @@
         private System.Windows.Forms.RadioButton RBtn_Timing_PacketCount;
         private System.Windows.Forms.RadioButton RBtn_Timing_FileSize;
         private System.Windows.Forms.RadioButton RBtn_Timing_Interval;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.RadioButton radioButton1;
     }
 }

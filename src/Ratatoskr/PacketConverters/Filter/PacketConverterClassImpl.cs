@@ -17,12 +17,12 @@ namespace Ratatoskr.PacketConverters.Filter
 
         public override string Name
         {
-            get { return ("パケットフィルタ"); }
+            get { return ("Filter"); }
         }
 
         public override string Details
         {
-            get { return ("任意のパケットのみを通過させます。"); }
+            get { return ("Passes arbitrary packets only."); }
         }
 
         public override Type GetPropertyType()

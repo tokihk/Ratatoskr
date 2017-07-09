@@ -45,7 +45,7 @@
             this.GBox_ConnectMax.Size = new System.Drawing.Size(100, 41);
             this.GBox_ConnectMax.TabIndex = 7;
             this.GBox_ConnectMax.TabStop = false;
-            this.GBox_ConnectMax.Text = "接続最大数";
+            this.GBox_ConnectMax.Text = "Connect limit";
             // 
             // Num_ConnextMax
             // 
@@ -69,7 +69,7 @@
             this.GBox_LocalPortNo.Size = new System.Drawing.Size(100, 41);
             this.GBox_LocalPortNo.TabIndex = 8;
             this.GBox_LocalPortNo.TabStop = false;
-            this.GBox_LocalPortNo.Text = "ポート番号";
+            this.GBox_LocalPortNo.Text = "Port number";
             // 
             // Num_LocalPortNo
             // 

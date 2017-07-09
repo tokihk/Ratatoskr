@@ -1,6 +1,6 @@
-﻿namespace Ratatoskr.Forms.ConfigForm
+﻿namespace Ratatoskr.Forms.OptionForm
 {
-    partial class ConfigForm
+    partial class OptionForm
     {
         /// <summary>
         /// Required designer variable.
@@ -48,7 +48,7 @@
             this.Btn_Cancel.Name = "Btn_Cancel";
             this.Btn_Cancel.Size = new System.Drawing.Size(90, 30);
             this.Btn_Cancel.TabIndex = 0;
-            this.Btn_Cancel.Text = "キャンセル";
+            this.Btn_Cancel.Text = "Cancel";
             this.Btn_Cancel.UseVisualStyleBackColor = true;
             this.Btn_Cancel.Click += new System.EventHandler(this.Btn_Cancel_Click);
             // 
@@ -126,7 +126,7 @@
             this.Label_PageTitle.TabIndex = 0;
             this.Label_PageTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // ConfigForm
+            // OptionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -134,10 +134,10 @@
             this.Controls.Add(this.Split_Main);
             this.Controls.Add(this.Btn_Ok);
             this.Controls.Add(this.Btn_Cancel);
-            this.Name = "ConfigForm";
+            this.Name = "OptionForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ConfigForm";
+            this.Text = "Option";
             this.Split_Main.Panel1.ResumeLayout(false);
             this.Split_Main.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Split_Main)).EndInit();

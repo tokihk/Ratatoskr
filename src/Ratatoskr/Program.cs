@@ -31,6 +31,7 @@ namespace Ratatoskr
 #if DEBUG
             DebugWindowEnable(true);
 #endif
+            LoadAppInfo();
 
             if (Startup()) {
                 Exec();
@@ -50,10 +51,11 @@ namespace Ratatoskr
         private static bool shutdown_req_ = false;
 
 
-        public static AppVersion Version { get; private set; }
+        public static AppVersion Version   { get; private set; }
+        public static string     Copyright { get; private set; }
 
 
-        private static bool Startup()
+        private static void LoadAppInfo()
         {
             /* バージョン情報取得 */
             Version = new AppVersion(
@@ -62,6 +64,16 @@ namespace Ratatoskr
                     typeof(System.Reflection.AssemblyFileVersionAttribute))
                 ).Version);
 
+            /* Copyright */
+            Copyright = 
+                ((System.Reflection.AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(
+                    System.Reflection.Assembly.GetExecutingAssembly(), 
+                    typeof(System.Reflection.AssemblyCopyrightAttribute))
+                ).Copyright;
+        }
+
+        private static bool Startup()
+        {
             /* マネージャー初期化 */
             ConfigManager.Startup();
             GateManager.Startup();

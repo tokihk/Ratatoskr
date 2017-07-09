@@ -49,7 +49,7 @@
             this.GBox_SamplingRate.Size = new System.Drawing.Size(200, 42);
             this.GBox_SamplingRate.TabIndex = 0;
             this.GBox_SamplingRate.TabStop = false;
-            this.GBox_SamplingRate.Text = "サンプリングレート(Hz)";
+            this.GBox_SamplingRate.Text = "Sampling bit rate (Hz)";
             // 
             // CBox_SamplingRate
             // 
@@ -69,7 +69,7 @@
             this.GBox_BitsPerSample.Size = new System.Drawing.Size(200, 42);
             this.GBox_BitsPerSample.TabIndex = 1;
             this.GBox_BitsPerSample.TabStop = false;
-            this.GBox_BitsPerSample.Text = "量子化ビット数";
+            this.GBox_BitsPerSample.Text = "Quantization bit rate";
             // 
             // CBox_BitsPerSample
             // 
@@ -89,7 +89,7 @@
             this.GBox_ChannelNum.Size = new System.Drawing.Size(200, 42);
             this.GBox_ChannelNum.TabIndex = 2;
             this.GBox_ChannelNum.TabStop = false;
-            this.GBox_ChannelNum.Text = "チャンネル数";
+            this.GBox_ChannelNum.Text = "Channel number";
             // 
             // CBox_ChannelNum
             // 
@@ -109,7 +109,7 @@
             this.GBox_InputDeviceList.Size = new System.Drawing.Size(407, 42);
             this.GBox_InputDeviceList.TabIndex = 5;
             this.GBox_InputDeviceList.TabStop = false;
-            this.GBox_InputDeviceList.Text = "音声入力デバイス";
+            this.GBox_InputDeviceList.Text = "Input device";
             // 
             // CBox_InputDeviceList
             // 

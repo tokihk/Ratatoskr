@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs.UserConfigs;
 
-namespace Ratatoskr.Forms.ConfigForm.Pages
+namespace Ratatoskr.Forms.OptionForm.Pages
 {
-    internal partial class ConfigPage_AutoUpdate : ConfigPage
+    internal partial class ConfigPage_AutoUpdate : OptionFormPage
     {
         public ConfigPage_AutoUpdate()
         {

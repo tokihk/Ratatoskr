@@ -14,12 +14,12 @@ namespace Ratatoskr.Devices.UdpClient
 
         public override string Name
         {
-            get { return ("UDPクライアント"); }
+            get { return ("UDP Client(IPv4/IPv6)"); }
         }
 
         public override string Details
         {
-            get { return ("UDP通信(IPv4/IPv6)を制御します"); }
+            get { return (Name); }
         }
 
         public override Type GetPropertyType()
