@@ -27,7 +27,8 @@ namespace Ratatoskr.Devices.UsbMonitor
         private UsbPcapRecordParser recv_parser_;
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceClass devd, DeviceProperty devp, Guid id, string name) : base(devm, devd, devp, id, name)
+        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+            : base(devm, devconf, devd, devp)
         {
             prop_ = devp as DevicePropertyImpl;
         }

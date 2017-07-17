@@ -42,7 +42,7 @@ namespace Ratatoskr.Forms.MainFrame
         private ToolTip ttip_main_ = new ToolTip();
 
 
-        public MainFrameGate()
+        public MainFrameGate(GateObject gate)
         {
             InitializeComponent();
 
@@ -53,6 +53,8 @@ namespace Ratatoskr.Forms.MainFrame
 
             UpdateView();
             UpdateDeviceControlPanel();
+
+            Gate = gate;
         }
 
         public GateObject Gate
@@ -69,18 +71,15 @@ namespace Ratatoskr.Forms.MainFrame
                 gate_ = value;
 
                 if (gate_ != null) {
+                    /* 背景色更新 */
+                    Btn_Main.BackColor = gate_.GateProperty.Color;
+
                     /* イベント登録 */
                     gate_.StatusChanged += OnGateStatusChanged;
                 }
 
                 UpdateView();
             }
-        }
-
-        public Color ImageColor
-        {
-            get { return (Btn_Main.BackColor); }
-            set { Btn_Main.BackColor = value;  }
         }
 
         private delegate void UpdateViewDelegate();
@@ -101,19 +100,19 @@ namespace Ratatoskr.Forms.MainFrame
             var str = new StringBuilder();
 
             if (   (gate_ != null)
-                && (gate_.Device != null)
+                && (gate_.IsDeviceSetup)
             ) {
-                str.AppendLine(gate_.Device.Class.Name);
-                str.AppendLine(gate_.Device.GetStatusString());
+                str.AppendLine(gate_.DeviceClassName);
+                str.AppendLine(gate_.DeviceStatusText);
                 
-                str.AppendLine("マウス左クリック: 接続/切断");
-                str.AppendLine("マウス右クリック: 編集");
-                str.Append("マウス右ホールド: 解放");
+                str.AppendLine("Left click: Connect/Disconnect");
+                str.AppendLine("Right click: Edit");
+                str.Append("Right hold: Release");
 
             } else {
                 str.AppendLine("Empty");
-                str.AppendLine("マウス左クリック: 編集");
-                str.Append("マウス右ホールド: 編集");
+                str.AppendLine("Left click: Edit");
+                str.Append("Right hold: Edit");
             }
 
             ttip_main_.SetToolTip(Btn_Main, str.ToString());
@@ -123,8 +122,10 @@ namespace Ratatoskr.Forms.MainFrame
         {
             var devcp = (Control)null;
 
-            if ((gate_ != null) && (gate_.Device != null)) {
-                devcp = gate_.Device.CreateControlPanel();
+            if (   (gate_ != null)
+                && (gate_.IsDeviceSetup)
+            ) {
+                devcp = gate_.CreateDeviceControlPanel();
             }
 
             /* コントロールパネル作成 */
@@ -137,43 +138,21 @@ namespace Ratatoskr.Forms.MainFrame
         {
             if (gate_ == null)return;
 
-            /* === 編集 === */
-            var edit_form = new GateEditForm.GateEditForm();
+            var gatep   = gate_.GateProperty;
+            var devconf = gate_.DeviceConfig;
+            var devc_id = gate_.DeviceClassID;
+            var devp    = gate_.DeviceProperty;
 
-            edit_form.Alias = gate_.Alias;
+            /* 編集 */
+            var edit_form = new GateEditForm.GateEditForm(gatep, devconf, devc_id, devp);
 
-            if (gate_.Device != null) {
-                /* === 既存の設定で上書き === */
-                edit_form.Class = gate_.Device.Class;
-                edit_form.Property = gate_.Device.Property.Clone();
-            }
-
-            /* === ゲート編集ダイアログ実行 === */
             if (edit_form.ShowDialog() != DialogResult.OK)return;
 
-            gate_.Alias = edit_form.Alias;
-
-            /* === デバイスインスタンス準備 === */
-            var devi = gate_.Device;
-
-            if (   (gate_.Device == null)                                          /* 設定されているデバイスインスタンスが存在しない   */
-                || (gate_.Device.Class != edit_form.Class)                         /* 異なるデバイスクラスが選択された                 */
-                || (!ClassUtil.Compare(gate_.Device.Property, edit_form.Property)) /* プロパティ値が変化した                           */
-            ) {
-                /* 新規デバイスインスタンス作成 */
-                devi = GateManager.CreateDeviceObject(edit_form.Class.ID, edit_form.Alias, edit_form.Property);
-
-                /* 新規割り当てのときは接続状態から開始 */
-                if (gate_.Device == null) {
-                    gate_.ConnectRequest = true;
-                }
-            }
-
-            /* === ゲートにデバイスインスタンスを設定 */
-            gate_.Device = devi;
+            /* 適用 */
+            gate_.ChangeDevice(edit_form.GateProperty, edit_form.DeviceConfig, edit_form.DeviceClassID, edit_form.DeviceProperty);
         }
 
-        private void OnGateStatusChanged()
+        private void OnGateStatusChanged(object sender, EventArgs e)
         {
             UpdateView();
             UpdateDeviceControlPanel();
@@ -181,7 +160,7 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void OnMouseLeftClick()
         {
-            if ((gate_ != null) && (gate_.Device != null)) {
+            if ((gate_ != null) && (gate_.IsDeviceSetup)) {
                 gate_.ConnectRequest = !gate_.ConnectRequest;
             } else {
                 GateEdit();
@@ -195,10 +174,9 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void OnMouseRightHold()
         {
-            if (gate_.Device != null) {
+            if (gate_.IsDeviceSetup) {
                 if (MessageBox.Show("Do you want to initialize this gate?", "Ratatoskr", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
-                    gate_.Device.ShutdownRequest();
-                    gate_.Device = null;
+                    gate_.ReleaseDevice();
                 }
             }
         }
@@ -249,7 +227,7 @@ namespace Ratatoskr.Forms.MainFrame
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            Btn_Main.Invalidate();
+            Btn_Main.Refresh();
         }
 
         private void Btn_Main_Paint(object sender, PaintEventArgs e)
@@ -284,8 +262,8 @@ namespace Ratatoskr.Forms.MainFrame
                 text_alias = gate_.Alias;
                 text_type = "(Empty)";
 
-                if (gate_.Device != null) {
-                    text_type = gate_.Device.Class.Name;
+                if (gate_.IsDeviceSetup) {
+                    text_type = gate_.DeviceClassName;
                     text_brush = Brushes.Black;
 
                     /* 状態アイコン設定 */

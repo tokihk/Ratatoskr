@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Generic;
 using Ratatoskr.Configs;
+using Ratatoskr.Gate;
 
 namespace Ratatoskr.Devices
 {

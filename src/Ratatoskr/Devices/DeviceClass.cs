@@ -8,16 +8,12 @@ namespace Ratatoskr.Devices
 {
     internal abstract class DeviceClass
     {
-        private Guid id_ = Guid.Empty;
-
-
         public DeviceClass(Guid id)
         {
-            id_ = id;
+            ID = id;
         }
 
-
-        public Guid ID { get { return id_; } }
+        public Guid ID { get; }
 
         public abstract string Name { get; }
         public abstract string Details { get; }
@@ -25,19 +21,34 @@ namespace Ratatoskr.Devices
         public abstract Type GetPropertyType();
         public abstract DeviceProperty CreateProperty();
 
-        public virtual bool CanUse()  { return (true); }
-        public virtual bool CanSend() { return (true); }
-        public virtual bool CanRecv() { return (true); }
+        public virtual bool CanUse      { get { return (true); } }
+        public virtual bool CanSend     { get { return (true); } }
+        public virtual bool CanRecv     { get { return (true); } }
+        public virtual bool CanRedirect { get { return (true); } }
 
 
-        internal DeviceInstance CreateInstance(DeviceManager devm, Guid obj_id, string name, DeviceProperty devp)
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Guid) {
+                return (((Guid)obj) == ID);
+            }
+
+            return (base.Equals(obj));
+        }
+
+        internal DeviceInstance CreateInstance(DeviceManager devm, DeviceConfig devconf, DeviceProperty devp)
         {
             if (devp.GetType() != GetPropertyType())return (null);
 
-            return (OnCreateInstance(devm, obj_id, name, devp));
+            return (OnCreateInstance(devm, devconf, devp));
         }
 
-        protected virtual DeviceInstance OnCreateInstance(DeviceManager devm, Guid obj_id, string name, DeviceProperty devp)
+        protected virtual DeviceInstance OnCreateInstance(DeviceManager devm, DeviceConfig devconf, DeviceProperty devp)
         {
             return (null);
         }

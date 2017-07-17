@@ -39,8 +39,6 @@ namespace Ratatoskr.Forms.MainFrame
 
         private MainFrameSequentialCommandPanel MFDC_CmdListPanel_Control;
 
-        private MainFrameGateRedirectPanel MFDC_RedirectListPanel_Control;
-
 
         public MainFrameDockPanel()
         {
@@ -63,20 +61,11 @@ namespace Ratatoskr.Forms.MainFrame
                 DockState.DockBottomAutoHide,
                 false,
                 MFDC_CmdListPanel_Control = new MainFrameSequentialCommandPanel());
-
-            AddDockContent(
-                "MFDC_RedirectListPanel",
-                "Redirect list",
-                DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
-                DockState.DockBottomAutoHide,
-                false,
-                MFDC_RedirectListPanel_Control = new MainFrameGateRedirectPanel());
         }
 
         public void LoadConfig()
         {
             MFDC_CmdListPanel_Control.LoadConfig();
-            MFDC_RedirectListPanel_Control.LoadConfig();
 
             LoadPacketViewConfig();
             LoadDockConfig();
@@ -88,7 +77,10 @@ namespace Ratatoskr.Forms.MainFrame
 
             /* 設定ファイルから復元 */
             if (config_dock != null) {
-                DockPanel_Main.LoadFromXml(config_dock, GetDockContentFromPersistString);
+                try {
+                    DockPanel_Main.LoadFromXml(config_dock, GetDockContentFromPersistString);
+                } catch (Exception exp) {
+                }
             }
 
             /* 設定ファイルから復元できなかったものはデフォルト値で初期化 */
@@ -118,7 +110,6 @@ namespace Ratatoskr.Forms.MainFrame
         public void BackupConfig()
         {
             MFDC_CmdListPanel_Control.BackupConfig();
-            MFDC_RedirectListPanel_Control.BackupConfig();
 
             BackupPacketViewConfig();
             BackupDockConfig();
@@ -191,8 +182,10 @@ namespace Ratatoskr.Forms.MainFrame
 
             if (viewi == null)return;
 
+            /* Graphオブジェクトのレイアウトが何故か復元できないので、とりあえずパケットビューだけ復元対象から外す */
             var content_info = AddDockContent(
-                                    viewi.ID.ToString(),
+//                                    viewi.ID.ToString(),
+                                    viewi.ID.ToString() + (new Random()).Next(0, 99999).ToString(),
                                     viewi.Class.Name,
                                     DockAreas.Document,
                                     DockState.Document,

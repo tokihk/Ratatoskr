@@ -14,7 +14,8 @@ namespace Ratatoskr.Devices.TcpServer
         private ServerSocket[] servers_ = null;
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceClass devd, DeviceProperty devp, Guid id, string name) : base(devm, devd, devp, id, name)
+        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+            : base(devm, devconf, devd, devp)
         {
         }
 
@@ -77,7 +78,7 @@ namespace Ratatoskr.Devices.TcpServer
                 server.Poll(ref busy);
             }
 
-            return ((busy) ? (PollState.Busy) : (PollState.Idle));
+            return ((busy) ? (PollState.Active) : (PollState.Idle));
         }
 
         private void SendPoll(ref bool busy)

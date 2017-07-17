@@ -46,7 +46,7 @@ namespace Ratatoskr.Actions.ActionModules
             var gates = GateManager.FindGateObjectFromWildcardAlias(gate.Value);
 
             /* 送信実行 */
-            gates.AsParallel().ForAll(obj => obj.SendDataPush(data_bin));
+            gates.AsParallel().ForAll(obj => obj.SendRequest(data_bin));
 
             return (ExecState.Complete);
         }

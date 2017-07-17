@@ -31,15 +31,12 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void LoadGateListConfig()
         {
-            foreach (var config in ConfigManager.User.Gate.Value) {
+            foreach (var config in ConfigManager.User.GateList.Value) {
                 AddGate(
-                    config.Color,
-                    config.Alias,
-                    config.ConnectRequest,
-                    GateManager.CreateDeviceObject(
-                        config.DeviceClassID,
-                        config.Alias,
-                        config.DeviceProperty));
+                    config.GateProperty,
+                    config.DeviceConfig,
+                    config.DeviceClassID,
+                    config.DeviceProperty);
             }
         }
 
@@ -51,19 +48,20 @@ namespace Ratatoskr.Forms.MainFrame
         private void BackupGateListConfig()
         {
             /* 設定を削除 */
-            ConfigManager.User.Gate.Value.Clear();
+            ConfigManager.User.GateList.Value.Clear();
 
             /* ゲートのみをスキャン */
             foreach (var gatec in gatec_list_) {
                 if (gatec.Gate == null)continue;
 
-                ConfigManager.User.Gate.Value.Add(
+                var gate = gatec.Gate;
+
+                ConfigManager.User.GateList.Value.Add(
                     new GateObjectConfig(
-                        gatec.Gate.Alias,
-                        gatec.ImageColor,
-                        gatec.Gate.ConnectRequest,
-                        (gatec.Gate.Device != null) ? (gatec.Gate.Device.Class.ID) : (Guid.Empty),
-                        (gatec.Gate.Device != null) ? (gatec.Gate.Device.Property) : (null)));
+                        gate.GateProperty,
+                        gate.DeviceConfig,
+                        gate.DeviceClassID,
+                        gate.DeviceProperty));
             }
         }
 
@@ -81,16 +79,13 @@ namespace Ratatoskr.Forms.MainFrame
             gatec_list_.Clear();
         }
 
-        public void AddGate(Color color, string alias, bool connect, DeviceInstance devi)
+        public void AddGate(GateProperty gatep, DeviceConfig devconf, Guid devc_id, DeviceProperty devp)
         {
-            var gate = GateManager.CreateGateObject(alias, connect, devi);
+            var gate = GateManager.CreateGateObject(gatep, devconf, devc_id, devp);
 
             if (gate == null)return;
 
-            var gatec = new MainFrameGate();
-
-            gatec.ImageColor = color;
-            gatec.Gate = gate;
+            var gatec = new MainFrameGate(gate);
 
             /* リストへ追加 */
             gatec_list_.Add(gatec);

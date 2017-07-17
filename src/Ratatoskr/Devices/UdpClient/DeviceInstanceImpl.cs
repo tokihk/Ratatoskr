@@ -13,7 +13,7 @@ namespace Ratatoskr.Devices.UdpClient
 {
     internal sealed class DeviceInstanceImpl : DeviceInstance
     {
-        private DevicePropertyImpl prop_;
+        private DevicePropertyImpl devp_;
 
         private List<SendSocket> sockets_send_ = new List<SendSocket>();
         private List<RecvSocket> sockets_recv_ = new List<RecvSocket>();
@@ -24,9 +24,10 @@ namespace Ratatoskr.Devices.UdpClient
         private byte[] send_buffer_ = new byte[2048];
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceClass devd, DeviceProperty devp, Guid id, string name) : base(devm, devd, devp, id, name)
+        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+            : base(devm, devconf, devd, devp)
         {
-            prop_ = devp as DevicePropertyImpl;
+            devp_ = devp as DevicePropertyImpl;
         }
 
         protected override EventResult OnConnectStart()
@@ -62,12 +63,12 @@ namespace Ratatoskr.Devices.UdpClient
 
             SocketPoll(ref busy);
 
-            return ((busy) ? (PollState.Busy) : (PollState.Idle));
+            return ((busy) ? (PollState.Active) : (PollState.Idle));
         }
 
         private void LocalAddressCollectPoll()
         {
-            if (prop_.BindMode.Value != BindModeType.None) {
+            if (devp_.BindMode.Value != BindModeType.None) {
                 /* アドレス取得タスク完了 */
                 if (   (local_addr_task_ != null)
                     && (local_addr_task_.IsCompleted)
@@ -110,7 +111,7 @@ namespace Ratatoskr.Devices.UdpClient
             /* アドレス取得タスク開始 */
             if (remote_addr_task_ == null) {
                 /* DNSからアドレスを取得 */
-                remote_addr_task_ = Dns.GetHostAddressesAsync(prop_.RemoteAddress.Value);
+                remote_addr_task_ = Dns.GetHostAddressesAsync(devp_.RemoteAddress.Value);
             }
         }
 
@@ -212,8 +213,8 @@ namespace Ratatoskr.Devices.UdpClient
                         this,
                         new IPEndPoint(
                             remote_addr,
-                            (int)prop_.RemotePortNo.Value),
-                        prop_.BindMode.Value));
+                            (int)devp_.RemotePortNo.Value),
+                        devp_.BindMode.Value));
 
             } catch {
                 return (null);
@@ -228,8 +229,8 @@ namespace Ratatoskr.Devices.UdpClient
                         this,
                         new IPEndPoint(
                             local_addr,
-                            (int)prop_.LocalPortNo.Value),
-                        prop_.BindMode.Value));
+                            (int)devp_.LocalPortNo.Value),
+                        devp_.BindMode.Value));
             } catch {
                 return (null);
             }

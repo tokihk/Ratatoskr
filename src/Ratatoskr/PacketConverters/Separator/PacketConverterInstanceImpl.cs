@@ -37,15 +37,15 @@ namespace Ratatoskr.PacketConverters.Separator
             {
                 switch (Value) {
                     case RuleType.None:
-                        return ("変換無し");
+                        return ("No convert");
                     case RuleType.DataContentsMatch:
-                        return ("データパターンが一致した箇所");
+                        return ("Data patterns match");
                     case RuleType.DataLengthMatch:
-                        return ("データサイズ");
+                        return ("Data size");
                     case RuleType.MSecPassingFromFirstPacket:
-                        return ("受信間隔");
+                        return ("Interval");
                     case RuleType.MSecPassingFromPrevPacket:
-                        return ("最後に受信してから一定時間が経過");
+                        return ("Receive timeout");
                     default:
                         return (Value.ToString());
                 }
@@ -138,20 +138,20 @@ namespace Ratatoskr.PacketConverters.Separator
             this.CMenu_EventDetectDivide,
             this.CMenu_DirChangeDivide});
             this.CMenu_Option.Name = "contextMenuStrip1";
-            this.CMenu_Option.Size = new System.Drawing.Size(218, 48);
+            this.CMenu_Option.Size = new System.Drawing.Size(305, 70);
             // 
             // CMenu_EventDetectDivide
             // 
             this.CMenu_EventDetectDivide.Name = "CMenu_EventDetectDivide";
-            this.CMenu_EventDetectDivide.Size = new System.Drawing.Size(217, 22);
-            this.CMenu_EventDetectDivide.Text = "イベント検出時に強制出力";
+            this.CMenu_EventDetectDivide.Size = new System.Drawing.Size(304, 22);
+            this.CMenu_EventDetectDivide.Text = "Forced split at event";
             this.CMenu_EventDetectDivide.Click += new System.EventHandler(this.OptionMenu_Click);
             // 
             // CMenu_DirChangeDivide
             // 
             this.CMenu_DirChangeDivide.Name = "CMenu_DirChangeDivide";
-            this.CMenu_DirChangeDivide.Size = new System.Drawing.Size(217, 22);
-            this.CMenu_DirChangeDivide.Text = "データ方向変化時に強制出力";
+            this.CMenu_DirChangeDivide.Size = new System.Drawing.Size(304, 22);
+            this.CMenu_DirChangeDivide.Text = "Forced output when data direction changes";
             this.CMenu_DirChangeDivide.Click += new System.EventHandler(this.OptionMenu_Click);
             // 
             // PacketConverterInstanceImpl

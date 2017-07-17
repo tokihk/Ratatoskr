@@ -724,9 +724,9 @@ namespace Ratatoskr.Generic.Controls
             var menu_root = new ContextMenuStrip();
             var menu = menu_root;
 
-            menu.Items.Add("コピー(16進文字列)", null, MenuAct_Copy_Hex);
-            menu.Items.Add("コピー(UTF-8)", null, MenuAct_Copy_Utf8);
-            menu.Items.Add("コピー(UTF-16)", null, MenuAct_Copy_Utf8);
+            menu.Items.Add("Copy (Hex string)", null, MenuAct_Copy_Hex);
+            menu.Items.Add("Copy (UTF-8)", null, MenuAct_Copy_Utf8);
+            menu.Items.Add("Copy (UTF-16)", null, MenuAct_Copy_Utf8);
 
             return (menu_root);
         }

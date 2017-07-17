@@ -54,13 +54,13 @@ namespace Ratatoskr.Forms.OptionForm
         private void InitializePageMenu()
         {
             var items = new [] {
-//                new { level = 0, text = "アプリケーション",   page = PageId.None },
-//                new { level = 1, text = "言語",               page = PageId.Language },
-//                new { level = 1, text = "自動更新",           page = PageId.AutoUpdate },
-                new { level = 0, text = "ツール",             page = PageId.None },
-                new { level = 1, text = "自動タイムスタンプ", page = PageId.AutoTimeStamp },
-                new { level = 0, text = "ログ",               page = PageId.None },
-                new { level = 1, text = "自動保存",           page = PageId.AutoSave },
+//                new { level = 0, text = "Application",   page = PageId.None },
+//                new { level = 1, text = "Language",               page = PageId.Language },
+//                new { level = 1, text = "Auto update",           page = PageId.AutoUpdate },
+                new { level = 0, text = "Tool",           page = PageId.None },
+                new { level = 1, text = "Auto timestamp", page = PageId.AutoTimeStamp },
+                new { level = 0, text = "Log",            page = PageId.None },
+                new { level = 1, text = "Auto save",      page = PageId.AutoSave },
             };
 
             var node_stack = new Stack<TreeNode>();

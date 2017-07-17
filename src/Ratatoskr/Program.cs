@@ -103,7 +103,6 @@ namespace Ratatoskr
 
             /* イベント処理開始 */
             PacketAutoSaveManager.Update();
-            GateRedirectManager.Startup();
             GateTransferManager.Startup();
             GatePacketManager.Startup();
 
@@ -115,7 +114,6 @@ namespace Ratatoskr
             /* イベント処理停止 */
             GatePacketManager.Shutdown();
             GateTransferManager.Shutdown();
-            GateRedirectManager.Shutdown();
 
             /* メインタイマー破棄 */
             app_timer_.Tick -= OnAppTimer;

@@ -58,18 +58,6 @@ namespace Ratatoskr.Gate
             return (devm_.FindClass(class_id));
         }
 
-        public static DeviceInstance FindDeviceObject(Guid obj_id)
-        {
-            return (devm_.FindInstance(obj_id));
-        }
-
-        public static GateObject FindGateObject(Guid obj_id)
-        {
-            lock (gates_) {
-                return (gates_.Find(gate => gate.ID == obj_id));
-            }
-        }
-
         public static Regex GetWildcardAliasModule(string alias)
         {
             /* aliasをワイルドカードとして扱うために正規表現に変換する */
@@ -98,9 +86,9 @@ namespace Ratatoskr.Gate
             }
         }
 
-        public static DeviceInstance CreateDeviceObject(Guid class_id, string name, DeviceProperty devp)
+        public static DeviceInstance CreateDeviceObject(DeviceConfig devconf, Guid class_id, DeviceProperty devp)
         {
-            return (devm_.CreateInstance(class_id, Guid.NewGuid(), name, devp));
+            return (devm_.CreateInstance(devconf, class_id, devp));
         }
 
         public static DeviceProperty CreateDeviceProperty(Guid class_id)
@@ -108,35 +96,15 @@ namespace Ratatoskr.Gate
             return (devm_.CreateProperty(class_id));
         }
 
-        public static GateObject CreateGateObject(string alias, bool connect, DeviceInstance devi)
+        public static GateObject CreateGateObject(GateProperty gatep, DeviceConfig devconf, Guid devc_id, DeviceProperty devp)
         {
-            var gate = new GateObject(Guid.NewGuid());
-
-            gate.Alias = alias;
-            gate.ConnectRequest = connect;
-            gate.Device = devi;
+            var gate = new GateObject(gatep, devconf, devc_id, devp);
 
             lock (gates_) {
                 gates_.Add(gate);
             }
 
             return (gate);
-        }
-
-        public static string CreateNewAlias()
-        {
-            var alias_new = "GATE_000";
-
-            lock (gates_) {
-                for (var num = 0; num < ConfigManager.Fixed.GateControllerLimit.Value; num++) {
-                    alias_new = String.Format("GATE_{0:D3}", num);
-
-                    /* ゲートのいずれのエイリアスにも一致しない場合はスキャン終了 */
-                    if (gates_.TrueForAll(gate => gate.Alias != alias_new))break;
-                }
-            }
-
-            return (alias_new);
         }
     }
 }

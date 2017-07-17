@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Ratatoskr.Generic.Packet;
@@ -27,14 +28,15 @@ namespace Ratatoskr.Devices
     internal enum PollState
     {
         Idle,
+        Active,
         Busy,
     }
 
     internal abstract class DeviceInstance : IDisposable
     {
-        private const int  DEVICE_THREAD_IVAL_BUSY = 1;
-        private const int  DEVICE_THREAD_IVAL_IDLE = 15;
-
+        private const int  DEVICE_THREAD_IVAL_ACTIVE = 1;
+        private const int  DEVICE_THREAD_IVAL_IDLE   = 15;
+        
         private const long DISPOSE_TIMEOUT = 60000;
 
         private enum ConnectSequence
@@ -48,23 +50,24 @@ namespace Ratatoskr.Devices
         }
 
 
-        public delegate void PacketCreatedDelegate(PacketObject packet);
         public delegate void StatusChangedDelegate();
         public delegate void SendDataRequstDelegate();
 
-        public event PacketCreatedDelegate PacketCreated = delegate(PacketObject packet) { };
         public event StatusChangedDelegate StatusChanged = delegate() { };
         public event SendDataRequstDelegate SendDataRequest = delegate() { };
 
 
         private DeviceManager  devm_ = null;
+        private DeviceConfig   devconf_ = null;
         private DeviceClass    devd_ = null;
         private DeviceProperty devp_ = null;
 
         private Thread devt_;
 
-        private Guid   id_;
-        private string name_;
+        private string alias_ = "";
+        private string alias_redirect_ = "";
+
+        private DeviceInstance[] redirect_list_ = null;
 
         private bool shutdown_req_   = false;
         private bool shutdown_state_ = false;
@@ -72,26 +75,22 @@ namespace Ratatoskr.Devices
         private bool connect_req_ = false;
         private bool reboot_req_ = false;
 
-        private bool send_enable_ = true;
-        private bool recv_enable_ = true;
+        private Queue<byte[]> send_data_user_ = new Queue<byte[]>();
+        private Queue<byte[]> send_data_redirect_ = new Queue<byte[]>();
 
-        private Queue<byte[]> send_data_queue_ = new Queue<byte[]>();
-        private byte[]        send_data_ = null;
-        private int           send_data_offset_ = 0;
-        private object        send_data_sync_ = new object();
+        private byte[] send_data_busy_ = null;
+        private int    send_data_offset_ = 0;
+        private object send_data_sync_ = new object();
 
         private volatile ConnectSequence connect_seq_ = ConnectSequence.Disconnected;
 
 
-        public DeviceInstance(DeviceManager devm, DeviceClass devd, DeviceProperty devp, Guid id, string name)
+        public DeviceInstance(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
         {
             devm_ = devm;
+            devconf_ = devconf;
             devd_ = devd;
             devp_ = devp;
-            id_ = id;
-            name_ = name;
-
-            ThreadStart();
         }
 
         public virtual void Dispose()
@@ -101,6 +100,62 @@ namespace Ratatoskr.Devices
 
         protected virtual void OnDispose()
         {
+        }
+
+        public DeviceManager Manager
+        {
+            get { return (devm_); }
+        }
+
+        public DeviceConfig Config
+        {
+            get { return (devconf_); }
+        }
+
+        public DeviceClass Class
+        {
+            get { return (devd_); }
+        }
+
+        public DeviceProperty Property
+        {
+            get { return (devp_); }
+        }
+
+        public string Alias
+        {
+            get { return (alias_); }
+            set
+            {
+                alias_ = (value != null) ? (value) : ("");
+                devm_.UpdateRedirectMap();
+            }
+        }
+
+        public string RedirectAlias
+        {
+            get { return (alias_redirect_); }
+            set
+            {
+                alias_redirect_ = (value != null) ? (value) : ("");
+                devm_.UpdateRedirectMap();
+            }
+        }
+
+        public bool IsShutdown
+        {
+            get { return ((shutdown_req_) && (shutdown_state_)); }
+        }
+
+        public void DeviceStart()
+        {
+            ThreadStart();
+        }
+
+        public void DeviceShutdownRequest()
+        {
+            shutdown_req_ = true;
+            ThreadStop();
         }
 
         private void ThreadStart()
@@ -124,37 +179,6 @@ namespace Ratatoskr.Devices
                 /* タスク実行 */
                 Poll();
             }
-        }
-
-        public DeviceManager Manager
-        {
-            get { return (devm_); }
-        }
-
-        public DeviceClass Class
-        {
-            get { return (devd_); }
-        }
-
-        public DeviceProperty Property
-        {
-            get { return (devp_); }
-        }
-
-        public Guid ID
-        {
-            get { return (id_); }
-        }
-
-        public bool IsShutdown
-        {
-            get { return ((shutdown_req_) && (shutdown_state_)); }
-        }
-
-        public void ShutdownRequest()
-        {
-            shutdown_req_ = true;
-            ThreadStop();
         }
 
         public virtual string GetStatusString()
@@ -196,55 +220,90 @@ namespace Ratatoskr.Devices
             reboot_req_ = true;
         }
 
-        private void LoadSendData()
+        public bool PushSendData(byte[] data)
         {
+            if (data == null)return (false);
+
+            /* 送信禁止状態のときは失敗 */
+            if (!Config.SendEnable)return (false);
+
+            /* 接続状態ではないときは失敗 */
+            if (ConnectStatus != ConnectState.Connected)return (false);
+
             lock (send_data_sync_) {
-                if (send_data_ == null) {
-                    
-                }
-            }
-        }
+                /* 送信データキューに空が無い場合は失敗 */
+                if (send_data_user_.Count >= Config.SendDataQueueLimit)return (false);
 
-        public void PushSendDataBlock(byte[] data)
-        {
-            if (data == null)return;
-            if (ConnectStatus != ConnectState.Connected)return;
-
-            /* 送信データブロックを追加 */
-            lock (send_data_queue_) {
-                send_data_queue_.Enqueue(data);
+                /* 送信データを追加 */
+                send_data_user_.Enqueue(data);
             }
 
             /* 送信割込み */
-            OnSendInterrupt();
+            OnSendRequest();
+
+            return (true);
         }
 
-        private byte[] PopSendDataBlock()
+        private void PushRedirectData(byte[] data)
         {
-            lock (send_data_queue_) {
-                if (send_data_queue_.Count == 0)return (null);
+            /* リダイレクト禁止状態のときは失敗 */
+            if (!Config.RedirectEnable)return;
 
-                return (send_data_queue_.Dequeue());
-            }
-        }
+            /* 接続状態ではないときは失敗 */
+            if (ConnectStatus != ConnectState.Connected)return;
 
-        private void UpdateSendDataBlock()
-        {
             lock (send_data_sync_) {
-                /* バッファにデータが存在しない場合は新しいデータブロックを読み込み */
-                if ((send_data_ == null) || (send_data_offset_ >= send_data_.Length)) {
-                    /* データブロックキューが空の場合は上層にデータを要求 */
-                    if (send_data_queue_.Count == 0) {
-                        SendDataRequest();
-                    }
+                /* 送信データキューに空が無い場合は失敗 */
+                if (send_data_redirect_.Count >= Config.RedirectDataQueueLimit)return;
 
-                    /* データブロックキューからデータを取得 */
-                    send_data_ = PopSendDataBlock();
-                    if (send_data_ != null) {
+                /* 送信データを追加 */
+                send_data_redirect_.Enqueue(data);
+            }
+
+            /* 送信割込み */
+            OnSendRequest();
+        }
+
+        private byte[] PopSendData()
+        {
+            /* リダイレクトデータ */
+            if (send_data_redirect_.Count > 0) {
+                return (send_data_redirect_.Dequeue());
+            }
+
+            /* 通常送信データ */
+            if (send_data_user_.Count > 0) {
+                return (send_data_user_.Dequeue());
+            }
+
+            return (null);
+        }
+
+        private void ReloadSendDataTry()
+        {
+            /* データキューから読込 */
+            lock (send_data_sync_) {
+                if (send_data_busy_ == null) {
+                    send_data_busy_ = PopSendData();
+                    if (send_data_busy_ != null) {
                         send_data_offset_ = 0;
                     }
                 }
             }
+        }
+
+        private void ReloadSendData()
+        {
+            /* データキューから読込 */
+            ReloadSendDataTry();
+
+            /* データが存在しないときは送信データを要求する */
+            if (send_data_busy_ == null) {
+                SendDataRequest();
+            }
+
+            /* もう一度データキューから読込 */
+            ReloadSendDataTry();
         }
 
         protected int GetSendData(byte[] buffer, int size)
@@ -255,49 +314,96 @@ namespace Ratatoskr.Devices
 
             if (size == 0)return (0);
 
-            UpdateSendDataBlock();
+            /* 送信データ準備 */
+            ReloadSendData();
 
             lock (send_data_sync_) {
-                if (send_data_ == null)return (0);
+                /* 送信データが存在しないときは終了 */
+                if (send_data_busy_ == null)return (0);
 
                 /* コピーサイズ取得 */
-                size = Math.Min(size, send_data_.Length - send_data_offset_);
+                var send_size = Math.Min(size, send_data_busy_.Length - send_data_offset_);
 
                 /* 送信データをバッファにコピー */
-                Array.Copy(send_data_, send_data_offset_, buffer, 0, size);
-                send_data_offset_ += size;
+                if (send_size > 0) {
+                    Array.Copy(send_data_busy_, send_data_offset_, buffer, 0, send_size);
+                    send_data_offset_ += send_size;
+                }
 
-                return (size);
+                /* 最後まで送信したときはバッファをクリア */
+                if (send_data_offset_ >= send_data_busy_.Length) {
+                    send_data_offset_ = 0;
+                    send_data_busy_ = null;
+                }
+
+                return (send_size);
             }
         }
 
         protected byte[] GetSendData()
         {
-            UpdateSendDataBlock();
+            /* 送信データ準備 */
+            ReloadSendData();
 
             lock (send_data_sync_) {
-                if (send_data_ == null)return (null);
+                /* 送信データが存在しないときは終了 */
+                if (send_data_busy_ == null)return (null);
 
-                var data = (byte[])null;
+                var send_data = (byte[])null;
 
                 if (send_data_offset_ == 0) {
-                    data = send_data_;
+                    send_data = send_data_busy_;
+
                 } else {
-                    data = new byte[send_data_.Length - send_data_offset_];
-                    Array.Copy(send_data_, send_data_offset_, data, 0, data.Length);
+                    var send_size = Math.Max(0, send_data_busy_.Length - send_data_offset_);
+
+                    if (send_size > 0) {
+                        send_data = new byte[send_size];
+                        Array.Copy(send_data_busy_, send_data_offset_, send_data, 0, send_size);
+                    }
                 }
 
-                send_data_offset_ += data.Length;
+                send_data_busy_ = null;
+                send_data_offset_ = 0;
 
-                return (data);
+                return (send_data);
+            }
+        }
+
+        internal void UpdateRedirectMap(IEnumerable<DeviceInstance> devi_list_all)
+        {
+            var alias_list = RedirectAlias.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            /* パターン一致するデバイスを検索 */
+            var devi_list = from alias in alias_list
+                            from devi in devi_list_all
+                            where devi != this
+                            where !devi.IsShutdown
+                            where alias == devi.Alias
+                            select devi;
+
+            if (   (devi_list != null)
+                && (devi_list.Count() > 0)
+            ) {
+                redirect_list_ = devi_list.ToArray();
+            } else {
+                redirect_list_ = null;
+            }
+        }
+
+        private void SetupRedirectData(byte[] data)
+        {
+            var redirect_list = redirect_list_;
+
+            if (redirect_list_ == null)return;
+
+            foreach (var target in redirect_list_) {
+                target.PushRedirectData(data);
             }
         }
 
         public void NotifyPacket(PacketObject packet)
         {
-            /* パケット生成イベント */
-            PacketCreated(packet);
-
             /* パケットを登録 */
             devm_.SetupPacket(packet);
         }
@@ -307,7 +413,7 @@ namespace Ratatoskr.Devices
             NotifyPacket(
                 new MessagePacketObject(
                     PacketFacility.Device,
-                    name_,
+                    alias_,
                     PacketPriority.Standard,
                     DateTime.UtcNow,
                     info,
@@ -320,7 +426,7 @@ namespace Ratatoskr.Devices
             NotifyPacket(
                 new StaticDataPacketObject(
                     PacketFacility.Device,
-                    name_,
+                    alias_,
                     PacketPriority.Standard,
                     dt_utc,
                     info,
@@ -338,10 +444,16 @@ namespace Ratatoskr.Devices
 
         public void NotifyRecvComplete(DateTime dt_utc, string info, string src, string dst, byte[] data)
         {
+            /* 受信禁止状態のときは無視 */
+            if (!Config.RecvEnable)return;
+
+            /* リダイレクト要求 */
+            SetupRedirectData(data);
+
             NotifyPacket(
                 new StaticDataPacketObject(
                     PacketFacility.Device,
-                    name_,
+                    alias_,
                     PacketPriority.Standard,
                     dt_utc,
                     info,
@@ -360,6 +472,27 @@ namespace Ratatoskr.Devices
         public void Poll()
         {
             var state = PollState.Idle;
+
+            /* 接続/切断処理 */
+            state = ConnectPoll();
+
+            /* シャットダウン判定 */
+            if (   (shutdown_req_)
+                && (connect_seq_ == ConnectSequence.Disconnected)
+            ) {
+                shutdown_state_ = true;
+            }
+
+            /* スリープ処理 */
+            switch (state) {
+                case PollState.Active:  Thread.Sleep(DEVICE_THREAD_IVAL_ACTIVE);    break;
+                case PollState.Idle:    Thread.Sleep(DEVICE_THREAD_IVAL_IDLE);      break;
+            }
+        }
+
+        private PollState ConnectPoll()
+        {
+            var state = PollState.Idle;
             var connect_seq_prev = connect_seq_;
             var connect_req =  (connect_req_)
                             && (!reboot_req_)
@@ -367,27 +500,21 @@ namespace Ratatoskr.Devices
 
             /* 接続/切断処理 */
             if (connect_req) {
-                state = ConnectPoll();
+                state = ConnectProc();
             } else {
-                state = DisconnectPoll();
+                state = DisconnectProc();
             }
 
+            /* 状態変化チェック */
             if (connect_seq_prev != connect_seq_) {
-                /* 状態変化を確認 */
                 StatusChanged();
-            } else {
-                /* 状態変化がないときのみスレッドスリープ */
-                Thread.Sleep((state == PollState.Busy) ? (DEVICE_THREAD_IVAL_BUSY) : (DEVICE_THREAD_IVAL_IDLE));
+                state = PollState.Active;
             }
 
-            if (   (shutdown_req_)
-                && (connect_seq_ == ConnectSequence.Disconnected)
-            ) {
-                shutdown_state_ = true;
-            }
+            return (state);
         }
 
-        private PollState ConnectPoll()
+        private PollState ConnectProc()
         {
             var state = PollState.Idle;
 
@@ -397,7 +524,7 @@ namespace Ratatoskr.Devices
                     NotifyMessage(PacketPriority.Notice, "<< Connect Start >>", "");
                     OnConnectStart();
                     connect_seq_++;
-                    state = PollState.Busy;
+                    state = PollState.Active;
                 }
                     break;
 
@@ -407,7 +534,7 @@ namespace Ratatoskr.Devices
                         NotifyMessage(PacketPriority.Notice, "<< Connected >>", "");
                         OnConnected();
                         connect_seq_++;
-                        state = PollState.Busy;
+                        state = PollState.Active;
                     }
                 }
                     break;
@@ -415,8 +542,8 @@ namespace Ratatoskr.Devices
                 case ConnectSequence.Connected:
                 {
                     state = OnPoll();
-
-                    UpdateSendDataBlock();
+                    
+                    ReloadSendData();
                 }
                     break;
 
@@ -428,7 +555,7 @@ namespace Ratatoskr.Devices
             return (state);
         }
 
-        private PollState DisconnectPoll()
+        private PollState DisconnectProc()
         {
             var state = PollState.Idle;
 
@@ -438,7 +565,7 @@ namespace Ratatoskr.Devices
                     NotifyMessage(PacketPriority.Notice, "<< Disconnect Start >>", "");
                     OnDisconnectStart();
                     connect_seq_--;
-                    state = PollState.Busy;
+                    state = PollState.Active;
                 }
                     break;
 
@@ -448,7 +575,7 @@ namespace Ratatoskr.Devices
                         NotifyMessage(PacketPriority.Notice, "<< Disconnected >>", "");
                         OnDisconnected();
                         connect_seq_--;
-                        state = PollState.Busy;
+                        state = PollState.Active;
                     }
                 }
                     break;
@@ -480,6 +607,6 @@ namespace Ratatoskr.Devices
 
         protected virtual PollState   OnPoll() { return (PollState.Idle); }
 
-        protected virtual void        OnSendInterrupt() { }
+        protected virtual void        OnSendRequest() { }
     }
 }

@@ -34,12 +34,29 @@
             this.GBox_DeviceProperty = new System.Windows.Forms.GroupBox();
             this.GBox_DeviceType = new System.Windows.Forms.GroupBox();
             this.CBox_DeviceType = new System.Windows.Forms.ComboBox();
+            this.TabPage_General = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.Num_RedirectQueueLimit = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.Num_SendQueueLimit = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.GBox_RedirectList = new System.Windows.Forms.GroupBox();
+            this.TBox_RedirectTargetAlias = new System.Windows.Forms.TextBox();
+            this.GBox_Operation = new System.Windows.Forms.GroupBox();
+            this.ChkBox_RedirectEnable = new System.Windows.Forms.CheckBox();
+            this.ChkBox_RecvEnable = new System.Windows.Forms.CheckBox();
+            this.ChkBox_SendEnable = new System.Windows.Forms.CheckBox();
             this.GBox_Alias = new System.Windows.Forms.GroupBox();
             this.TBox_Alias = new System.Windows.Forms.TextBox();
-            this.TabPage_Option = new System.Windows.Forms.TabPage();
             this.TabCtrl_Main.SuspendLayout();
             this.TabPage_Device.SuspendLayout();
             this.GBox_DeviceType.SuspendLayout();
+            this.TabPage_General.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_RedirectQueueLimit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_SendQueueLimit)).BeginInit();
+            this.GBox_RedirectList.SuspendLayout();
+            this.GBox_Operation.SuspendLayout();
             this.GBox_Alias.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,7 +88,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TabCtrl_Main.Controls.Add(this.TabPage_Device);
-            this.TabCtrl_Main.Controls.Add(this.TabPage_Option);
+            this.TabCtrl_Main.Controls.Add(this.TabPage_General);
             this.TabCtrl_Main.Location = new System.Drawing.Point(12, 12);
             this.TabCtrl_Main.Name = "TabCtrl_Main";
             this.TabCtrl_Main.SelectedIndex = 0;
@@ -83,7 +100,6 @@
             // 
             this.TabPage_Device.Controls.Add(this.GBox_DeviceProperty);
             this.TabPage_Device.Controls.Add(this.GBox_DeviceType);
-            this.TabPage_Device.Controls.Add(this.GBox_Alias);
             this.TabPage_Device.Location = new System.Drawing.Point(4, 22);
             this.TabPage_Device.Name = "TabPage_Device";
             this.TabPage_Device.Padding = new System.Windows.Forms.Padding(3);
@@ -97,9 +113,9 @@
             this.GBox_DeviceProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.GBox_DeviceProperty.Location = new System.Drawing.Point(6, 102);
+            this.GBox_DeviceProperty.Location = new System.Drawing.Point(6, 54);
             this.GBox_DeviceProperty.Name = "GBox_DeviceProperty";
-            this.GBox_DeviceProperty.Size = new System.Drawing.Size(620, 308);
+            this.GBox_DeviceProperty.Size = new System.Drawing.Size(620, 356);
             this.GBox_DeviceProperty.TabIndex = 5;
             this.GBox_DeviceProperty.TabStop = false;
             this.GBox_DeviceProperty.Text = "Device parameter";
@@ -107,7 +123,7 @@
             // GBox_DeviceType
             // 
             this.GBox_DeviceType.Controls.Add(this.CBox_DeviceType);
-            this.GBox_DeviceType.Location = new System.Drawing.Point(6, 54);
+            this.GBox_DeviceType.Location = new System.Drawing.Point(6, 6);
             this.GBox_DeviceType.Name = "GBox_DeviceType";
             this.GBox_DeviceType.Size = new System.Drawing.Size(240, 42);
             this.GBox_DeviceType.TabIndex = 4;
@@ -123,7 +139,159 @@
             this.CBox_DeviceType.Name = "CBox_DeviceType";
             this.CBox_DeviceType.Size = new System.Drawing.Size(234, 20);
             this.CBox_DeviceType.TabIndex = 0;
-            this.CBox_DeviceType.SelectedIndexChanged += new System.EventHandler(this.OnDeviceChanged);
+            this.CBox_DeviceType.SelectedIndexChanged += new System.EventHandler(this.CBox_DeviceType_SelectedIndexChanged);
+            // 
+            // TabPage_General
+            // 
+            this.TabPage_General.Controls.Add(this.groupBox1);
+            this.TabPage_General.Controls.Add(this.GBox_RedirectList);
+            this.TabPage_General.Controls.Add(this.GBox_Operation);
+            this.TabPage_General.Controls.Add(this.GBox_Alias);
+            this.TabPage_General.Location = new System.Drawing.Point(4, 22);
+            this.TabPage_General.Name = "TabPage_General";
+            this.TabPage_General.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPage_General.Size = new System.Drawing.Size(632, 416);
+            this.TabPage_General.TabIndex = 1;
+            this.TabPage_General.Text = "General";
+            this.TabPage_General.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.Num_RedirectQueueLimit);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.Num_SendQueueLimit);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Location = new System.Drawing.Point(6, 148);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(278, 72);
+            this.groupBox1.TabIndex = 7;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Performance setting";
+            // 
+            // Num_RedirectQueueLimit
+            // 
+            this.Num_RedirectQueueLimit.Location = new System.Drawing.Point(172, 44);
+            this.Num_RedirectQueueLimit.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.Num_RedirectQueueLimit.Name = "Num_RedirectQueueLimit";
+            this.Num_RedirectQueueLimit.Size = new System.Drawing.Size(94, 19);
+            this.Num_RedirectQueueLimit.TabIndex = 5;
+            this.Num_RedirectQueueLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_RedirectQueueLimit.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(6, 44);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(160, 23);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Redirect data queue limit";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // Num_SendQueueLimit
+            // 
+            this.Num_SendQueueLimit.Location = new System.Drawing.Point(172, 19);
+            this.Num_SendQueueLimit.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.Num_SendQueueLimit.Name = "Num_SendQueueLimit";
+            this.Num_SendQueueLimit.Size = new System.Drawing.Size(94, 19);
+            this.Num_SendQueueLimit.TabIndex = 1;
+            this.Num_SendQueueLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_SendQueueLimit.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(6, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(160, 23);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Send data queue limit";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // GBox_RedirectList
+            // 
+            this.GBox_RedirectList.Controls.Add(this.TBox_RedirectTargetAlias);
+            this.GBox_RedirectList.Location = new System.Drawing.Point(252, 6);
+            this.GBox_RedirectList.Name = "GBox_RedirectList";
+            this.GBox_RedirectList.Size = new System.Drawing.Size(240, 136);
+            this.GBox_RedirectList.TabIndex = 6;
+            this.GBox_RedirectList.TabStop = false;
+            this.GBox_RedirectList.Text = "Receive data redirect alias";
+            // 
+            // TBox_RedirectTargetAlias
+            // 
+            this.TBox_RedirectTargetAlias.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TBox_RedirectTargetAlias.Location = new System.Drawing.Point(3, 15);
+            this.TBox_RedirectTargetAlias.Multiline = true;
+            this.TBox_RedirectTargetAlias.Name = "TBox_RedirectTargetAlias";
+            this.TBox_RedirectTargetAlias.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.TBox_RedirectTargetAlias.Size = new System.Drawing.Size(234, 118);
+            this.TBox_RedirectTargetAlias.TabIndex = 0;
+            // 
+            // GBox_Operation
+            // 
+            this.GBox_Operation.Controls.Add(this.ChkBox_RedirectEnable);
+            this.GBox_Operation.Controls.Add(this.ChkBox_RecvEnable);
+            this.GBox_Operation.Controls.Add(this.ChkBox_SendEnable);
+            this.GBox_Operation.Location = new System.Drawing.Point(6, 54);
+            this.GBox_Operation.Name = "GBox_Operation";
+            this.GBox_Operation.Size = new System.Drawing.Size(240, 88);
+            this.GBox_Operation.TabIndex = 5;
+            this.GBox_Operation.TabStop = false;
+            this.GBox_Operation.Text = "Operation";
+            // 
+            // ChkBox_RedirectEnable
+            // 
+            this.ChkBox_RedirectEnable.AutoCheck = false;
+            this.ChkBox_RedirectEnable.AutoSize = true;
+            this.ChkBox_RedirectEnable.Location = new System.Drawing.Point(7, 63);
+            this.ChkBox_RedirectEnable.Name = "ChkBox_RedirectEnable";
+            this.ChkBox_RedirectEnable.Size = new System.Drawing.Size(134, 16);
+            this.ChkBox_RedirectEnable.TabIndex = 2;
+            this.ChkBox_RedirectEnable.Text = "Receive data redirect";
+            this.ChkBox_RedirectEnable.ThreeState = true;
+            this.ChkBox_RedirectEnable.UseVisualStyleBackColor = true;
+            this.ChkBox_RedirectEnable.Click += new System.EventHandler(this.ChkBox_RedirectEnable_Click);
+            // 
+            // ChkBox_RecvEnable
+            // 
+            this.ChkBox_RecvEnable.AutoCheck = false;
+            this.ChkBox_RecvEnable.AutoSize = true;
+            this.ChkBox_RecvEnable.Location = new System.Drawing.Point(7, 41);
+            this.ChkBox_RecvEnable.Name = "ChkBox_RecvEnable";
+            this.ChkBox_RecvEnable.Size = new System.Drawing.Size(89, 16);
+            this.ChkBox_RecvEnable.TabIndex = 1;
+            this.ChkBox_RecvEnable.Text = "Data receive";
+            this.ChkBox_RecvEnable.ThreeState = true;
+            this.ChkBox_RecvEnable.UseVisualStyleBackColor = true;
+            this.ChkBox_RecvEnable.Click += new System.EventHandler(this.ChkBox_RecvEnable_Click);
+            // 
+            // ChkBox_SendEnable
+            // 
+            this.ChkBox_SendEnable.AutoCheck = false;
+            this.ChkBox_SendEnable.AutoSize = true;
+            this.ChkBox_SendEnable.Location = new System.Drawing.Point(7, 19);
+            this.ChkBox_SendEnable.Name = "ChkBox_SendEnable";
+            this.ChkBox_SendEnable.Size = new System.Drawing.Size(76, 16);
+            this.ChkBox_SendEnable.TabIndex = 0;
+            this.ChkBox_SendEnable.Text = "Data send";
+            this.ChkBox_SendEnable.ThreeState = true;
+            this.ChkBox_SendEnable.UseVisualStyleBackColor = true;
+            this.ChkBox_SendEnable.Click += new System.EventHandler(this.ChkBox_SendEnable_Click);
             // 
             // GBox_Alias
             // 
@@ -131,7 +299,7 @@
             this.GBox_Alias.Location = new System.Drawing.Point(6, 6);
             this.GBox_Alias.Name = "GBox_Alias";
             this.GBox_Alias.Size = new System.Drawing.Size(240, 42);
-            this.GBox_Alias.TabIndex = 3;
+            this.GBox_Alias.TabIndex = 4;
             this.GBox_Alias.TabStop = false;
             this.GBox_Alias.Text = "Alias";
             // 
@@ -144,16 +312,6 @@
             this.TBox_Alias.Name = "TBox_Alias";
             this.TBox_Alias.Size = new System.Drawing.Size(234, 19);
             this.TBox_Alias.TabIndex = 0;
-            // 
-            // TabPage_Option
-            // 
-            this.TabPage_Option.Location = new System.Drawing.Point(4, 22);
-            this.TabPage_Option.Name = "TabPage_Option";
-            this.TabPage_Option.Padding = new System.Windows.Forms.Padding(3);
-            this.TabPage_Option.Size = new System.Drawing.Size(632, 416);
-            this.TabPage_Option.TabIndex = 1;
-            this.TabPage_Option.Text = "Option";
-            this.TabPage_Option.UseVisualStyleBackColor = true;
             // 
             // GateEditForm
             // 
@@ -170,6 +328,14 @@
             this.TabCtrl_Main.ResumeLayout(false);
             this.TabPage_Device.ResumeLayout(false);
             this.GBox_DeviceType.ResumeLayout(false);
+            this.TabPage_General.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Num_RedirectQueueLimit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_SendQueueLimit)).EndInit();
+            this.GBox_RedirectList.ResumeLayout(false);
+            this.GBox_RedirectList.PerformLayout();
+            this.GBox_Operation.ResumeLayout(false);
+            this.GBox_Operation.PerformLayout();
             this.GBox_Alias.ResumeLayout(false);
             this.GBox_Alias.PerformLayout();
             this.ResumeLayout(false);
@@ -185,8 +351,19 @@
         private System.Windows.Forms.GroupBox GBox_DeviceProperty;
         private System.Windows.Forms.GroupBox GBox_DeviceType;
         private System.Windows.Forms.ComboBox CBox_DeviceType;
+        private System.Windows.Forms.TabPage TabPage_General;
         private System.Windows.Forms.GroupBox GBox_Alias;
         private System.Windows.Forms.TextBox TBox_Alias;
-        private System.Windows.Forms.TabPage TabPage_Option;
+        private System.Windows.Forms.GroupBox GBox_RedirectList;
+        private System.Windows.Forms.TextBox TBox_RedirectTargetAlias;
+        private System.Windows.Forms.GroupBox GBox_Operation;
+        private System.Windows.Forms.CheckBox ChkBox_RecvEnable;
+        private System.Windows.Forms.CheckBox ChkBox_SendEnable;
+        private System.Windows.Forms.CheckBox ChkBox_RedirectEnable;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.NumericUpDown Num_RedirectQueueLimit;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown Num_SendQueueLimit;
+        private System.Windows.Forms.Label label1;
     }
 }

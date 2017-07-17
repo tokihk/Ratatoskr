@@ -18,7 +18,7 @@ namespace Ratatoskr.Configs.UserConfigs
 
         public MainWindowConfig      MainWindow      { get; } = new MainWindowConfig();
 
-        public GateConfig            Gate            { get; } = new GateConfig();
+        public GateListConfig        GateList        { get; } = new GateListConfig();
         public PacketViewConfig      PacketView      { get; } = new PacketViewConfig();
         public PacketConverterConfig PacketConverter { get; } = new PacketConverterConfig();
 

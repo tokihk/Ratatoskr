@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Generic.Packet;
 
@@ -72,19 +71,10 @@ namespace Ratatoskr.Devices
             return (true);
         }
 
-        public DeviceInstance FindInstance(Guid obj_id)
-        {
-            try {
-                return (GetInstances().First(devi => devi.ID == obj_id));
-            } catch {
-                return (null);
-            }
-        }
-
         public void RemoveAllInstance()
         {
             foreach (var devi in GetInstances()) {
-                devi.ShutdownRequest();
+                devi.DeviceShutdownRequest();
             }
         }
 
@@ -95,7 +85,7 @@ namespace Ratatoskr.Devices
             }
         }
 
-        public DeviceInstance CreateInstance(Guid class_id, Guid obj_id, string name, DeviceProperty devp)
+        public DeviceInstance CreateInstance(DeviceConfig devconf, Guid class_id, DeviceProperty devp)
         {
             /* クラスIDからクラスを検索 */
             var devd = FindClass(class_id);
@@ -103,14 +93,20 @@ namespace Ratatoskr.Devices
             if (devd == null)return (null);
 
             /* インスタンス作成 */
-            var devi = devd.CreateInstance(this, obj_id, name, devp);
+            var devi = devd.CreateInstance(this, devconf, devp);
 
             if (devi == null)return (null);
 
             /* インスタンス登録 */
             lock (devi_list_) {
                 devi_list_.Add(devi);
+
+                /* 各インスタンスのリダイレクト先を更新 */
+                UpdateRedirectMap();
             }
+
+            /* デバイス処理開始 */
+            devi.DeviceStart();
 
             return (devi);
         }
@@ -130,11 +126,21 @@ namespace Ratatoskr.Devices
             pktm_.Enqueue(packet);
         }
 
+        internal void UpdateRedirectMap()
+        {
+            foreach (var devi in devi_list_) {
+                devi.UpdateRedirectMap(devi_list_);
+            }
+        }
+
         public void Poll()
         {
             lock (devi_list_) {
                 /* 終了済みインスタンスを破棄 */
-                devi_list_.RemoveAll(devi => devi.IsShutdown);
+                if (devi_list_.RemoveAll(devi => devi.IsShutdown) > 0) {
+                    /* 各インスタンスのリダイレクト先を更新 */
+                    UpdateRedirectMap();
+                }
             }
         }
     }

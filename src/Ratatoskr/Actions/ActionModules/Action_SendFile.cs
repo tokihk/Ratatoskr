@@ -30,7 +30,6 @@ namespace Ratatoskr.Actions.ActionModules
             public void Poll()
             {
                 if (IsComplete)return;
-                if (!gate_.SendDataEmpty)return;
 
                 /* 送信データ位置補正 */
                 file_.Seek(send_pos_, SeekOrigin.Begin);
@@ -41,9 +40,13 @@ namespace Ratatoskr.Actions.ActionModules
                 if (read_size == 0)return;
 
                 /* 送信実行 */
-                gate_.SendDataPush(send_buffer_.Take(read_size).ToArray());
+                var result = gate_.SendRequest(send_buffer_.Take(read_size).ToArray());
 
-                send_pos_ += read_size;
+                if (   (result == GateObject.SendRequestResult.Accept)
+                    || (result == GateObject.SendRequestResult.Cancel)
+                ) {
+                    send_pos_ += read_size;
+                }
             }
 
             public bool IsComplete

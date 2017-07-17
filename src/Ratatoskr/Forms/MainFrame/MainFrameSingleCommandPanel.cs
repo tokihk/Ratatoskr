@@ -39,17 +39,18 @@ namespace Ratatoskr.Forms.MainFrame
         {
             ttip_target_.SetToolTip(
                 CBox_TargetList,
-@"コマンドのターゲットとなるゲートをワイルドカードで指定してください。
-  Ex1: GATE_001
-  Ex2: GATE_00*");
+@"Specify the command target with a wildcard.
+  Ex) GATE_001
+  Ex) GATE_00*");
 
             ttip_command_.SetToolTip(
                 CBox_CommandList,
-@"送信データを16進数で入力してください。シングルクォテーションで囲むと文字列を直接入力できます。
-  <>で囲むと文字列の文字コードを指定できます。
-  Ex1: 001122334455
-  Ex2: 02'test'03
-  Ex3: 02<utf8>'あいうえお'03
+@"Enter the transmission data in hexadecimal.
+  Enclose the string in single quotation marks.
+  Enclose it with <> to specify the character code of the character string.
+  Ex) 001122334455
+  Ex) 02'test'03 => 027465737403
+  Ex) 02<utf-8>'あいうえお'03 => 02E38182E38184E38186E38188E3818A03
 ");
         }
 

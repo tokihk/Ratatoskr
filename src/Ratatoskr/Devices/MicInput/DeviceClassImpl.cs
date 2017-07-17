@@ -32,9 +32,9 @@ namespace Ratatoskr.Devices.MicInput
             return (new DevicePropertyImpl());
         }
 
-        protected override DeviceInstance OnCreateInstance(DeviceManager devm, Guid obj_id, string name, DeviceProperty devp)
+        protected override DeviceInstance OnCreateInstance(DeviceManager devm, DeviceConfig devconf, DeviceProperty devp)
         {
-            return (new DeviceInstanceImpl(devm, this, devp, obj_id, name));
+            return (new DeviceInstanceImpl(devm, devconf, this, devp));
         }
 
         public override string ToString()

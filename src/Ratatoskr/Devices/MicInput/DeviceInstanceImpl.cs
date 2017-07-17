@@ -17,7 +17,8 @@ namespace Ratatoskr.Devices.MicInput
         private WaveIn wave_in_ = null;
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceClass devd, DeviceProperty devp, Guid id, string name) : base(devm, devd, devp, id, name)
+        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+            : base(devm, devconf, devd, devp)
         {
             devp_ = devp as DevicePropertyImpl;
         }

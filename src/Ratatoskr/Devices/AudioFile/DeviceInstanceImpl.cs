@@ -30,7 +30,8 @@ namespace Ratatoskr.Devices.AudioFile
         private byte[]              sampling_buffer_;
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceClass devd, DeviceProperty devp, Guid id, string name) : base(devm, devd, devp, id, name)
+        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+            : base(devm, devconf, devd, devp)
         {
             devp_ = devp as DevicePropertyImpl;
 
@@ -133,7 +134,7 @@ namespace Ratatoskr.Devices.AudioFile
                 }
             }
 
-            return (PollState.Busy);
+            return (PollState.Active);
         }
 
         private void OnSampling(object sender, System.Timers.ElapsedEventArgs e)

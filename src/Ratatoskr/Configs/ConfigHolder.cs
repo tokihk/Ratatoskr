@@ -65,7 +65,7 @@ namespace Ratatoskr.Configs
             /* プロパティの実体を取得 */
             var prop_obj = prop.GetValue(this);
 
-            /* プロパティがIConfigDataを継承していなければ無視 */
+            /* プロパティがIConfigWriterを継承していなければ無視 */
             if (!(prop_obj is IConfigWriter))return (true);
 
             /* 保存用メソッドを取得 */

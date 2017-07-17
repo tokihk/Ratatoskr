@@ -20,7 +20,8 @@ namespace Ratatoskr.Devices.Ethernet
         private object send_sync_ = new object();
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceClass devd, DeviceProperty devp, Guid id, string name) : base(devm, devd, devp, id, name)
+        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+            : base(devm, devconf, devd, devp)
         {
         }
 
@@ -106,10 +107,10 @@ namespace Ratatoskr.Devices.Ethernet
 
             SendPoll(ref busy);
 
-            return ((busy) ? (PollState.Busy) : (PollState.Idle));
+            return ((busy) ? (PollState.Active) : (PollState.Idle));
         }
 
-        protected override void OnSendInterrupt()
+        protected override void OnSendRequest()
         {
             var busy = false;
 

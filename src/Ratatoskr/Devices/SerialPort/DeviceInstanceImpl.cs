@@ -32,9 +32,9 @@ namespace Ratatoskr.Devices.SerialPort
         private IntPtr       task_recv_event_ = IntPtr.Zero;
 #endif
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceClass devd, DeviceProperty devp, Guid id, string name) : base(devm, devd, devp, id, name)
+        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+            : base(devm, devconf, devd, devp)
         {
-
         }
 
         protected override EventResult OnConnectStart()
@@ -197,11 +197,11 @@ namespace Ratatoskr.Devices.SerialPort
             SendPoll(ref busy);
             RecvPoll(ref busy);
 
-            return ((busy) ? (PollState.Busy) : (PollState.Idle));
+            return ((busy) ? (PollState.Active) : (PollState.Idle));
 #endif
         }
 
-        protected override void OnSendInterrupt()
+        protected override void OnSendRequest()
         {
             SendPoll();
 //            NativeMethods.SetCommMask(handle_, COMM_MASK);

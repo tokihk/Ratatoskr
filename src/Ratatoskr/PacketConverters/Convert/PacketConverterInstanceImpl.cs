@@ -39,15 +39,15 @@ namespace Ratatoskr.PacketConverters.Convert
             {
                 switch (Value) {
                     case AlgorithmType.None:
-                        return ("変換無し");
+                        return ("No convert");
                     case AlgorithmType.ChangeAlias:
-                        return ("エイリアス変更");
+                        return ("Change alias");
                     case AlgorithmType.CodeExtentionEncode:
-                        return ("コード拡張 (エンコード)");
+                        return ("Code encode");
                     case AlgorithmType.CodeExtentionDecode:
-                        return ("コード拡張 (デコード)");
+                        return ("Code decode");
                     case AlgorithmType.RemoveData:
-                        return ("データ削除");
+                        return ("Data remove");
 //                    case AlgorithmType.Custom:
 //                        return ("(カスタム)");
                     default:

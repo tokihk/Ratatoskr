@@ -47,6 +47,7 @@
     <None Include="Icons\app_icon_48x48.xcf" />
     <None Include="Icons\app_logo_300x60.xcf" />
     <None Include="Icons\app_logo_420x80.xcf" />
+    <None Include="packages.config" />
     <None Include="Scripts\Expression\Parser\ExpressionLexer.l" />
     <None Include="Scripts\Expression\Parser\ExpressionParser.y" />
     <None Include="Scripts\Expression\Parser\parser-build.bat" />
@@ -102,7 +103,7 @@
     <Compile Include="Configs\Types\SizeConfig.cs" />
     <Compile Include="Configs\Types\StringConfig.cs" />
     <Compile Include="Configs\Types\StringListConfig.cs" />
-    <Compile Include="Configs\UserConfigs\GateConfig.cs" />
+    <Compile Include="Configs\UserConfigs\GateListConfig.cs" />
     <Compile Include="Configs\UserConfigs\GateRedirectListConfig.cs" />
     <Compile Include="Configs\UserConfigs\MainWindowConfig.cs" />
     <Compile Include="Configs\UserConfigs\OptionConfig.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Devices\AudioFile\DevicePropertyImpl.cs" />
     <Compile Include="Devices\AudioFile\MicDeviceInfo.cs" />
     <Compile Include="Devices\DeviceClass.cs" />
+    <Compile Include="Devices\DeviceConfig.cs" />
     <Compile Include="Devices\DeviceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -369,12 +371,6 @@
     <Compile Include="Forms\MainFrame\MainFrameGatePanel.Designer.cs">
       <DependentUpon>MainFrameGatePanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainFrameGateRedirectPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainFrameGateRedirectPanel.Designer.cs">
-      <DependentUpon>MainFrameGateRedirectPanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\MainFrame\MainFramePacketConverter.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -406,7 +402,7 @@
     <Compile Include="Gate\GateManager.cs" />
     <Compile Include="Gate\GateObject.cs" />
     <Compile Include="Gate\GatePacketManager.cs" />
-    <Compile Include="Gate\GateRedirectManager.cs" />
+    <Compile Include="Gate\GateProperty.cs" />
     <Compile Include="Gate\GateTransferManager.cs" />
     <Compile Include="Gate\PacketAutoSave\PacketAutoSaveManager.cs" />
     <Compile Include="Gate\PacketAutoSave\PacketAutoSaveObject.cs" />
@@ -624,14 +620,14 @@
     <Reference Include="NAudio, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.8.0\lib\net35\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="PacketDotNet, Version=0.13.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PacketDotNet.0.13.0\lib\net\PacketDotNet.dll</HintPath>
+    <Reference Include="PacketDotNet, Version=0.15.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PacketDotNet.0.15.0\lib\PacketDotNet.dll</HintPath>
     </Reference>
     <Reference Include="QUT.ShiftReduceParser">
       <HintPath>.\QUT.ShiftReduceParser.dll</HintPath>
     </Reference>
-    <Reference Include="SharpPcap, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpPcap.4.2.0\lib\net\SharpPcap.dll</HintPath>
+    <Reference Include="SharpPcap, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.4.3.0\lib\SharpPcap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -728,9 +724,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainFrame\MainFrameGatePanel.resx">
       <DependentUpon>MainFrameGatePanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainFrameGateRedirectPanel.resx">
-      <DependentUpon>MainFrameGateRedirectPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainFrame\MainFramePacketConverter.resx">
       <DependentUpon>MainFramePacketConverter.cs</DependentUpon>

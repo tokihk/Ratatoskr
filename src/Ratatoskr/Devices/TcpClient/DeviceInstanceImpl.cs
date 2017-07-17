@@ -35,7 +35,8 @@ namespace Ratatoskr.Devices.TcpClient
         private object recv_sync_ = new object();
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceClass devd, DeviceProperty devp, Guid id, string name) : base(devm, devd, devp, id, name)
+        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+            : base(devm, devconf, devd, devp)
         {
         }
 
@@ -166,7 +167,7 @@ namespace Ratatoskr.Devices.TcpClient
             RecvPoll(ref busy);
             ReconnectPoll(ref busy);
 
-            return ((busy) ? (PollState.Busy) : (PollState.Idle));
+            return ((busy) ? (PollState.Active) : (PollState.Idle));
         }
 
         private IPEndPoint LoadEndPoint()
