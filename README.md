@@ -8,25 +8,26 @@ Ratatoskr can monitor and tie various devices and protocols.
 
 ### Prerequisites
 
-Windows 7/8/8.1/10
+* Windows 7
+* Windows 8/8.1
+* Windows 10
 
-.NET Framework 4.7
+__ and __
+
+* .NET Framework 4.7
 
 ### Installing
 
+#### Install
+Extract it to an arbitrary directory before using it.
 
+#### Uninstall
+Delete the file decompressed by installation.
+Please delete [(Users) / AppData / Roaming / Ratatoskr].
 
 ## Screenshots
 
 ![image](./doc/images/screenshot-sample.png)
-
-## Built With
-
-## Contributing
-
-
-## Versioning
-
 
 ## Authors
 
@@ -35,6 +36,7 @@ Windows 7/8/8.1/10
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
+GNU GENERAL PUBLIC LICENSE v3
 
 ## Acknowledgments
 
