@@ -8,7 +8,7 @@ using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using Ratatoskr.Scripts.Expression.Terms;
+using Ratatoskr.Scripts.PacketFilterExp.Terms;
 using Ratatoskr.Generic;
 
 namespace Ratatoskr.Actions.ActionModules

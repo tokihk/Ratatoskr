@@ -4,9 +4,9 @@
 
 // GPPG version 1.5.2
 // Machine:  KPC-2456
-// DateTime: 2016/10/14 12:15:19
+// DateTime: 2017/07/24 15:40:05
 // UserName: i32719
-// Input file <ExpressionParser.y - 2016/10/14 12:15:15>
+// Input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/07/24 15:39:55>
 
 // options: no-lines gplex
 
@@ -18,7 +18,7 @@ using System.Text;
 using QUT.Gppg;
 using System.Diagnostics;
 
-namespace Ratatoskr.Scripts.Expression.Parser
+namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 {
 internal enum Tokens {error=2,EOF=3,VALUE_ID=4,VALUE_BOOL=5,VALUE_INTEGER=6,
     VALUE_DOUBLE=7,VALUE_TEXT=8,VALUE_BINTEXT=9,VALUE_PATTERN=10,VALUE_TIME=11,ARMOP_SET=12,
@@ -53,9 +53,9 @@ internal class ScanObj {
 [GeneratedCodeAttribute( "Gardens Point Parser Generator", "1.5.2")]
 internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
 {
-  // Verbatim content from ExpressionParser.y - 2016/10/14 12:15:15
+  // Verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/07/24 15:39:55
     private ExpressionObject exp_ = new ExpressionObject();
-  // End verbatim content from ExpressionParser.y - 2016/10/14 12:15:15
+  // End verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/07/24 15:39:55
 
 #pragma warning disable 649
   private static Dictionary<int, string> aliases;
@@ -343,7 +343,6 @@ internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
     else
         return CharToString((char)terminal);
   }
-
 
     private ExpressionParser() : base(null) { }
 

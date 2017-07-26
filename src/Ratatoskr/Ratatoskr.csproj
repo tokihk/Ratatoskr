@@ -12,6 +12,8 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -40,6 +42,17 @@
   <PropertyGroup>
     <ApplicationIcon>Icons\app_icon_48x48.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Label="YltParsers">
+    <Names>PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-Parser</Names>
+  </PropertyGroup>
+  <PropertyGroup Label="YltProperties">
+    <YltTools>$(SolutionDir)packages\YaccLexTools.0.2.2\tools\</YltTools>
+    <GplexTool>"$(YltTools)gplex.exe"</GplexTool>
+    <GppgTool>"$(YltTools)gppg.exe"</GppgTool>
+  </PropertyGroup>
+  <PropertyGroup Label="GeneratePacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserProperties">
+    <PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser>$(ProjectDir)Scripts\PacketFilterExp\Parser\PacketFilterExp</PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Icons\app_icon_128x128.xcf" />
@@ -48,9 +61,6 @@
     <None Include="Icons\app_logo_300x60.xcf" />
     <None Include="Icons\app_logo_420x80.xcf" />
     <None Include="packages.config" />
-    <None Include="Scripts\Expression\Parser\ExpressionLexer.l" />
-    <None Include="Scripts\Expression\Parser\ExpressionParser.y" />
-    <None Include="Scripts\Expression\Parser\parser-build.bat" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\ActionManager.cs" />
@@ -456,6 +466,7 @@
     <Compile Include="Generic\TextUtil.cs" />
     <Compile Include="Generic\Wildcard.cs" />
     <Compile Include="Generic\XmlUtil.cs" />
+    <Compile Include="ThirdParty\GPPG\GplexBuffers.cs" />
     <Compile Include="Native\Shell.cs" />
     <Compile Include="Native\WinAPI.cs" />
     <Compile Include="PacketConverters\Convert\AlgorithmObject.cs">
@@ -591,43 +602,36 @@
     <Compile Include="Protocol\ProtocolSequentialElement.cs" />
     <Compile Include="Protocol\ProtocolUnionElement.cs" />
     <Compile Include="Scripts\CommandRunner.cs" />
-    <Compile Include="Scripts\Expression\ExpressionCommand.cs" />
-    <Compile Include="Scripts\Expression\ExpressionCompiler.cs" />
-    <Compile Include="Scripts\Expression\ExpressionFilter.cs" />
-    <Compile Include="Scripts\Expression\ExpressionParameter.cs" />
-    <Compile Include="Scripts\Expression\Parser\ExpressionCallStack.cs" />
-    <Compile Include="Scripts\Expression\Parser\ExpressionLexer.cs" />
-    <Compile Include="Scripts\Expression\Parser\ExpressionObject.cs" />
-    <Compile Include="Scripts\Expression\Parser\ExpressionParser.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term_Array.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term_Binary.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term_Bool.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term_DateTime.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term_Double.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term_Id.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term_Regex.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term_Text.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term_TimeSpan.cs" />
-    <Compile Include="Scripts\Expression\Terms\Term_Void.cs" />
+    <Compile Include="Scripts\PacketFilterExp\ExpressionCommand.cs" />
+    <Compile Include="Scripts\PacketFilterExp\ExpressionCompiler.cs" />
+    <Compile Include="Scripts\PacketFilterExp\ExpressionFilter.cs" />
+    <Compile Include="Scripts\PacketFilterExp\ExpressionParameter.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Parser\ExpressionCallStack.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Parser\ExpressionObject.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Array.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Binary.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Bool.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_DateTime.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Double.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Id.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Regex.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Text.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_TimeSpan.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Void.cs" />
+    <Compile Include="ThirdParty\GPPG\ShiftReduceParserCode.cs" />
     <Compile Include="Update\UpdateManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.Standard, Version=4.7.0.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Antlr4.Runtime.Standard.4.7.1\lib\net35\Antlr4.Runtime.Standard.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="NAudio, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.8.0\lib\net35\NAudio.dll</HintPath>
+    <Reference Include="NAudio, Version=1.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.1\lib\net35\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="PacketDotNet, Version=0.15.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PacketDotNet.0.15.0\lib\PacketDotNet.dll</HintPath>
+    <Reference Include="PacketDotNet, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PacketDotNet.0.16.0\lib\PacketDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="QUT.ShiftReduceParser">
-      <HintPath>.\QUT.ShiftReduceParser.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpPcap, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpPcap.4.3.0\lib\SharpPcap.dll</HintPath>
+    <Reference Include="SharpPcap, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.4.4.0\lib\SharpPcap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -637,9 +641,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.15.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.16.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DockPanelSuite.2.15.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <HintPath>..\packages\DockPanelSuite.2.16.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -809,6 +813,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Icons\memo_32x32.png" />
     <EmbeddedResource Include="Forms\AboutForm\LicenseList.xml" />
     <Content Include="Forms\WeifenLuo.WinFormsUI.Docking.dll" />
     <None Include="Icons\app_icon_48x48.ico" />
@@ -866,13 +871,40 @@
     <None Include="Icons\target_ng_22x22.png" />
     <None Include="Icons\target_ok_22x22.png" />
     <None Include="Icons\view_setting.png" />
-    <Content Include="Scripts\Expression\Parser\ExpressionParser.lst" />
-    <Content Include="Scripts\Expression\Parser\gplex.exe" />
-    <Content Include="Scripts\Expression\Parser\Gppg.exe" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PacketConverters\Convert\Custom\" />
-    <Folder Include="ThirdParty\" />
+  </ItemGroup>
+  <ItemGroup Label="PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserFiles">
+    <Compile Include="Scripts\PacketFilterExp\Parser\PacketFilterExp.Parser.Generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PacketFilterExp.Language.grammar.y</DependentUpon>
+    </Compile>
+    <Compile Include="Scripts\PacketFilterExp\Parser\PacketFilterExp.Scanner.Generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PacketFilterExp.Language.analyzer.lex</DependentUpon>
+    </Compile>
+    <None Include="Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.analyzer.lex">
+      <DependentUpon>PacketFilterExp.parser</DependentUpon>
+    </None>
+    <None Include="Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y">
+      <DependentUpon>PacketFilterExp.parser</DependentUpon>
+    </None>
+    <None Include="Scripts\PacketFilterExp\Parser\PacketFilterExp.parser" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="BeforeBuild" DependsOnTargets="YltBuildGen" />
+  <Target Name="YltBuildGen" DependsOnTargets="GeneratePacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-Parser" />
+  <Target Name="GeneratePacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-Parser" Inputs="$(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser).Language.analyzer.lex;$(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser).Language.grammar.y" Outputs="$(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser).Scanner.Generated.cs;$(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser).Parser.Generated.cs">
+    <Message Text="Generating scanner for $(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser) ..." />
+    <Exec Command="$(GplexTool) &quot;/out:$(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser).Scanner.Generated.cs&quot; &quot;$(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser).Language.analyzer.lex&quot;" WorkingDirectory="$(ProjectDir)" Outputs="$(GenDir)Scanner.cs">
+      <Output TaskParameter="Outputs" ItemName="PacketFilterExpScanner" />
+    </Exec>
+    <Message Text="Generating parser for $(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser) ..." />
+    <Exec Command="$(GppgTool) /no-lines /gplex &quot;$(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser).Language.grammar.y&quot; &gt; &quot;$(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser).Parser.Generated.cs&quot;" WorkingDirectory="$(ProjectDir)" Outputs="$(PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserParser).Parser.Generated.cs">
+      <Output TaskParameter="Outputs" ItemName="PacketFilterExp" />
+    </Exec>
+  </Target>
 </Project>

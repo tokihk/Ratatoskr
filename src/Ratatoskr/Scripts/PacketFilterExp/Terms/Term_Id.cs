@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ratatoskr.Actions;
-using Ratatoskr.Scripts.Expression.Parser;
+using Ratatoskr.Scripts.PacketFilterExp.Parser;
 using Ratatoskr.Generic.Packet;
 using Ratatoskr.Generic.Packet.Types;
 
-namespace Ratatoskr.Scripts.Expression.Terms
+namespace Ratatoskr.Scripts.PacketFilterExp.Terms
 {
     internal sealed class Term_Id : Term
     {

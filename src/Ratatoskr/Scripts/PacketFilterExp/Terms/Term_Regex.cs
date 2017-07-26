@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Ratatoskr.Scripts.Expression.Parser;
+using Ratatoskr.Scripts.PacketFilterExp.Parser;
 
-namespace Ratatoskr.Scripts.Expression.Terms
+namespace Ratatoskr.Scripts.PacketFilterExp.Terms
 {
     internal sealed class Term_Regex : Term
     {

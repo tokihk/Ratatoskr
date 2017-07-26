@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Scripts.Expression.Parser;
-using Ratatoskr.Scripts.Expression;
+using Ratatoskr.Scripts.PacketFilterExp.Parser;
+using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Generic;
 using Ratatoskr.Generic.Packet;
 
@@ -112,7 +112,9 @@ namespace Ratatoskr.PacketConverters.Filter
 
             /* 表示更新 */
             if (text_new.Length > 0) {
-                CBox_Exp.BackColor = (ExpressionFilter.Build(text_new, null) != null) ? (Color.LightSkyBlue) : (Color.LightPink);
+//                CBox_Exp.BackColor = (ExpressionFilter.Build(text_new, null) != null) ? (Color.LightSkyBlue) : (Color.LightPink);
+
+
             } else {
                 CBox_Exp.BackColor = Color.White;
             }

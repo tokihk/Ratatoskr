@@ -1,20 +1,9 @@
-
-// ==========================================================================
-//  GPPG error listing for yacc source file <ExpressionParser.y - 2016/10/13 20:41:24>
-// ==========================================================================
-//  Version:  1.5.2
-//  Machine:  KPC-2456
-//  DateTime: 2016/10/13 20:43:22
-//  UserName: i32719
-// ==========================================================================
-
-
 // http://www.quut.com/c/ANSI-C-grammar-y.html
 // http://www.quut.com/c/ANSI-C-grammar-l-2011.html
 
 %using System.Diagnostics;
 
-%namespace Ratatoskr.Scripts.Expression.Parser
+%namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 
 %visibility internal
 %parsertype ExpressionParser
@@ -37,7 +26,7 @@
 
 %token	LOGOP_AND LOGOP_OR
 
-%token	ARRAY CALL LP RP COMMA
+%token	ARRAY CALL REFERENCE LP RP LB RB COMMA
 
 %%
 
@@ -55,7 +44,7 @@ expression
 
 assignment_expression
 	: logical_or_expression
-	| VALUE_ID ARMOP_SET logical_or_expression
+	| assignment_expression ARMOP_SET logical_or_expression
 	{
 		exp_.Add(Tokens.ARMOP_SET);
 	}
@@ -123,9 +112,6 @@ additive_expression
 
 multiplicative_expression
 	: postfix_expression
-	: assignment_expression
-// Error: Syntax error, unexpected ':'
-// -----------------------------------
 	| multiplicative_expression ARMOP_MUL postfix_expression
 	{
 		exp_.Add(Tokens.ARMOP_MUL);
@@ -141,14 +127,23 @@ multiplicative_expression
 	;
 
 postfix_expression
-	: primary_expression
-	| VALUE_ID LP expression_list RP
+	: box_expression
+	| box_expression LP expression_list RP
 	{
 		exp_.Add(Tokens.CALL);
 	}
-	| VALUE_ID LP RP
+	| box_expression LP RP
 	{
+		exp_.Add(new Terms.Term_Void());
 		exp_.Add(Tokens.CALL);
+	}
+	;
+
+box_expression
+	: primary_expression
+	| primary_expression LB expression RB
+	{
+		exp_.Add(Tokens.REFERENCE);
 	}
 	;
 
@@ -210,5 +205,3 @@ primary_expression
          
          return (parser.exp_);
     }
-// ==========================================================================
-

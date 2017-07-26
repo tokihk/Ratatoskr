@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Scripts.Expression.Parser;
+using Ratatoskr.Scripts.PacketFilterExp.Parser;
 using Ratatoskr.Generic.Packet;
 using Ratatoskr.Generic.Packet.Types;
 
-namespace Ratatoskr.Scripts.Expression
+namespace Ratatoskr.Scripts.PacketFilterExp
 {
     internal sealed class ExpressionCommand
     {

@@ -9,7 +9,7 @@ using Ratatoskr.Gate;
 using Ratatoskr.Generic;
 using Ratatoskr.Generic.Packet;
 using Ratatoskr.Generic.Packet.Types;
-using Ratatoskr.Scripts.Expression.Terms;
+using Ratatoskr.Scripts.PacketFilterExp.Terms;
 
 namespace Ratatoskr.Actions.ActionModules
 {

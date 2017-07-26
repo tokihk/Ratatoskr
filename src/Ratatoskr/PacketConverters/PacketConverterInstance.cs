@@ -8,8 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
-using Ratatoskr.Scripts.Expression.Parser;
-using Ratatoskr.Scripts.Expression;
+using Ratatoskr.Scripts.PacketFilterExp.Parser;
+using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Generic.Packet;
 
 namespace Ratatoskr.PacketConverters

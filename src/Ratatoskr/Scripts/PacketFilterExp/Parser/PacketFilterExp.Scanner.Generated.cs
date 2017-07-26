@@ -6,9 +6,9 @@
 //
 //  GPLEX Version:  1.2.2
 //  Machine:  KPC-2456
-//  DateTime: 2016/10/14 12:15:19
+//  DateTime: 2017/07/24 15:40:04
 //  UserName: i32719
-//  GPLEX input file <ExpressionLexer.l - 2016/10/14 12:05:06>
+//  GPLEX input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.analyzer.lex - 2017/07/24 15:39:45>
 //  GPLEX frame file <embedded resource>
 //
 //  Option settings: parser, noFiles, minimize
@@ -35,7 +35,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using System.Diagnostics;
 
-namespace Ratatoskr.Scripts.Expression.Parser
+namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 {   
     /// <summary>
     /// Summary Canonical example of GPLEX automaton

@@ -13,8 +13,8 @@ using Ratatoskr.Actions;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Scripts;
-using Ratatoskr.Scripts.Expression.Parser;
-using Ratatoskr.Scripts.Expression;
+using Ratatoskr.Scripts.PacketFilterExp.Parser;
+using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Generic;
 
 namespace Ratatoskr.Forms.MainFrame

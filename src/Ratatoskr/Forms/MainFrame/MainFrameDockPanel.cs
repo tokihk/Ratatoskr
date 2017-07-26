@@ -57,6 +57,7 @@ namespace Ratatoskr.Forms.MainFrame
             AddDockContent(
                 "MFDC_CmdListPanel",
                 "Command list",
+                Icon.FromHandle(Properties.Resources.memo_32x32.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottomAutoHide,
                 false,

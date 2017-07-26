@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ratatoskr.Scripts.Expression
+namespace Ratatoskr.Scripts.PacketFilterExp
 {
     internal sealed class ExpressionParameter
     {

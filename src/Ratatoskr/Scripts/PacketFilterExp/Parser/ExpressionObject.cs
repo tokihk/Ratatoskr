@@ -5,7 +5,7 @@ using System.Text;
 using Ratatoskr.Generic.Packet;
 using Ratatoskr.Generic.Packet.Types;
 
-namespace Ratatoskr.Scripts.Expression.Parser
+namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 {
     internal sealed class ExpressionObject
     {

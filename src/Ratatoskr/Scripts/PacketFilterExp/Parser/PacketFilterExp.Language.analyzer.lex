@@ -5,7 +5,7 @@
 
 %visibility internal
 
-%namespace Ratatoskr.Scripts.Expression.Parser
+%namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 %option noFiles
 
 %{

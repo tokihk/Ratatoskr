@@ -134,7 +134,7 @@
             // 
             this.Menu_FileFunc_Transfer.Name = "Menu_FileFunc_Transfer";
             this.Menu_FileFunc_Transfer.Size = new System.Drawing.Size(132, 22);
-            this.Menu_FileFunc_Transfer.Text = "ファイル転送";
+            this.Menu_FileFunc_Transfer.Text = "Transfer - File";
             this.Menu_FileFunc_Transfer.Click += new System.EventHandler(this.Menu_FileFunc_Transfer_Click);
             // 
             // MainFrameSingleCommandPanel

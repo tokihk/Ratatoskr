@@ -89,7 +89,7 @@
             // 
             this.ChkBox_FilterEnable.Name = "ChkBox_FilterEnable";
             this.ChkBox_FilterEnable.Size = new System.Drawing.Size(660, 22);
-            this.ChkBox_FilterEnable.Text = "制御ルールを適用するパケットを指定(パケットフィルタ)";
+            this.ChkBox_FilterEnable.Text = "Target filter";
             this.ChkBox_FilterEnable.Click += new System.EventHandler(this.ChkBox_FilterEnable_Click);
             // 
             // sep

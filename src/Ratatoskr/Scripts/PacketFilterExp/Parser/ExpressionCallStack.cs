@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ratatoskr.Actions;
-using Ratatoskr.Scripts.Expression.Terms;
+using Ratatoskr.Scripts.PacketFilterExp.Terms;
 using Ratatoskr.Generic.Packet;
 
-namespace Ratatoskr.Scripts.Expression.Parser
+namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 {
     [Flags]
     internal enum ExecuteFlags

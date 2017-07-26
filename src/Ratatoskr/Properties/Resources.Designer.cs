@@ -393,6 +393,16 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap memo_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("memo_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap no_1 {
             get {
                 object obj = ResourceManager.GetObject("no_1", resourceCulture);
