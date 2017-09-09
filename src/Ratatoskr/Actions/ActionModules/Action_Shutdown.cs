@@ -16,12 +16,12 @@ namespace Ratatoskr.Actions.ActionModules
         {
         }
 
-        protected override ExecState OnExecStart()
+        protected override void OnExecStart()
         {
             /* メインループ停止 */
             Program.ShutdownRequest();
 
-            return (ExecState.Complete);
+            SetResult(ActionResultType.Success, null);
         }
     }
 }

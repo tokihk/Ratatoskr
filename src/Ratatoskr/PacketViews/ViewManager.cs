@@ -26,8 +26,8 @@ namespace Ratatoskr.PacketViews
         public event StatusUpdatedDelegate   StatusUpdated   = delegate() { };
 
 
-        private List<ViewClass>    viewd_list_ = new List<ViewClass>();
-        private List<ViewInstance> viewi_list_ = new List<ViewInstance>();
+        private List<ViewClass>   viewd_list_ = new List<ViewClass>();
+        private List<ViewControl> viewc_list_ = new List<ViewControl>();
 
         private Stopwatch draw_timer_ = new Stopwatch();
         private int       draw_timer_ival_ = DRAW_IVAL_MIN;
@@ -91,18 +91,18 @@ namespace Ratatoskr.PacketViews
             return (true);
         }
 
-        public IEnumerable<ViewInstance> GetInstances()
+        public IEnumerable<ViewControl> GetInstances()
         {
-            var devi_list_all = new List<ViewInstance>();
+            var devi_list_all = new List<ViewControl>();
 
-            lock (viewi_list_) {
-                devi_list_all.AddRange(viewi_list_);
+            lock (viewc_list_) {
+                devi_list_all.AddRange(viewc_list_);
             }
 
             return (devi_list_all.ToArray());
         }
 
-        public ViewInstance CreateInstance(Guid class_id, Guid obj_id, ViewProperty viewp)
+        public ViewControl CreateControl(Guid class_id, Guid obj_id, ViewProperty viewp)
         {
             /* ビューIDからデバイスを検索 */
             var viewd = FindClass(class_id);
@@ -114,9 +114,11 @@ namespace Ratatoskr.PacketViews
 
             if (viewi == null)return (null);
 
+            var viewc = new ViewControl(this, viewi);
+
             /* デバイスインスタンス登録 */
-            lock (viewi_list_) {
-                viewi_list_.Add(viewi);
+            lock (viewc_list_) {
+                viewc_list_.Add(viewc);
             }
 
             /* 初期化完了 */
@@ -127,24 +129,24 @@ namespace Ratatoskr.PacketViews
 
             InstanceUpdated();
 
-            return (viewi);
+            return (viewc);
         }
 
-        public ViewInstance CreateInstance(string class_id, Guid obj_id, ViewProperty viewp)
+        public ViewControl CreateControl(string class_id, Guid obj_id, ViewProperty viewp)
         {
             var id = Guid.Empty;
 
             if (!Guid.TryParse(class_id, out id))return (null);
 
-            return (CreateInstance(id, obj_id, viewp));
+            return (CreateControl(id, obj_id, viewp));
         }
 
-        public void RemoveInstance(ViewInstance viewi)
+        public void RemoveInstance(ViewControl viewi)
         {
             if (viewi == null)return;
 
-            lock (viewi_list_) {
-                viewi_list_.Remove(viewi);
+            lock (viewc_list_) {
+                viewc_list_.Remove(viewi);
             }
 
             InstanceUpdated();
@@ -174,8 +176,8 @@ namespace Ratatoskr.PacketViews
             }
 
             /* ビュークリア */
-            lock (viewi_list_) {
-                viewi_list_.ForEach(viewi => viewi.ClearPacket());
+            lock (viewc_list_) {
+                viewc_list_.ForEach(viewi => viewi.ClearPacket());
             }
         }
 
@@ -195,8 +197,8 @@ namespace Ratatoskr.PacketViews
             if (hispeed_mode_)return;
 
             /* 全てのビューの表示処理を停止 */
-            lock (viewi_list_) {
-                viewi_list_.ForEach(viewi => viewi.Hide());
+            lock (viewc_list_) {
+                viewc_list_.ForEach(viewi => viewi.Hide());
             }
 
             hispeed_mode_ = true;
@@ -210,8 +212,8 @@ namespace Ratatoskr.PacketViews
             if (!hispeed_mode_)return;
 
             /* 全てのビューの表示処理を再開 */
-            lock (viewi_list_) {
-                viewi_list_.ForEach(viewi => viewi.Show());
+            lock (viewc_list_) {
+                viewc_list_.ForEach(viewi => viewi.Show());
             }
 
             hispeed_mode_ = false;
@@ -297,14 +299,14 @@ namespace Ratatoskr.PacketViews
 
             /* 描画開始 */
             lock (draw_sync_) {
-                viewi_list_.ForEach(viewi => viewi.BeginDrawPacket(AutoScroll));
+                viewc_list_.ForEach(viewi => viewi.BeginDrawPacket(AutoScroll));
 
                 /* 描画時間の測定開始 */
                 draw_busy_timer.Restart();
 
                 while ((draw_packets = PopDrawPackets()) != null) {
                     /* 描画実行 */
-                    viewi_list_.ForEach(viewi => viewi.DrawPacket(draw_packets));
+                    viewc_list_.ForEach(viewi => viewi.DrawPacket(draw_packets));
 
                     /* 描画処理のタイムアウト */
                     if (draw_busy_timer.ElapsedMilliseconds > (draw_timer_ival_ / 2)) {
@@ -313,7 +315,7 @@ namespace Ratatoskr.PacketViews
                 }
 
                 /* 描画終了 */
-                viewi_list_.ForEach(viewi => viewi.EndDrawPacket(AutoScroll));
+                viewc_list_.ForEach(viewi => viewi.EndDrawPacket(AutoScroll));
             }
 
             return (true);

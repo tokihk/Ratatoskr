@@ -10,6 +10,12 @@ using Ratatoskr.Generic.Generic;
 
 namespace Ratatoskr.Configs.UserConfigs
 {
+    internal enum SendPanelType
+    {
+        Data,
+        File,
+    }
+
     [Serializable]
     internal sealed class UserConfig : ConfigManagerBase<UserConfig>
     {
@@ -22,19 +28,20 @@ namespace Ratatoskr.Configs.UserConfigs
         public PacketViewConfig      PacketView      { get; } = new PacketViewConfig();
         public PacketConverterConfig PacketConverter { get; } = new PacketConverterConfig();
 
-        public StringConfig  CurrentDirectory { get; } = new StringConfig("");
+        public StringConfig CurrentDirectory { get; } = new StringConfig("");
 
-        public SingleCommandTargetConfig   SingleCommandTarget   { get; } = new SingleCommandTargetConfig();
-        public SingleCommandContentsConfig SingleCommandContents { get; } = new SingleCommandContentsConfig();
-        public IntegerConfig               SingleCommandLogLimit { get; } = new IntegerConfig(20);
-        public StringConfig                SingleCommandFormat   { get; } = new StringConfig("Send(\"${target}\",\"${command}\")");
+        public IntegerConfig                 SendPanelLogLimit   { get; } = new IntegerConfig(20);
+        public EnumConfig<SendPanelType>     SendPanelType       { get; } = new EnumConfig<SendPanelType>(UserConfigs.SendPanelType.Data);
+        public StringListConfig              SendPanelTargetList { get; } = new StringListConfig();
+        public StringListConfig              SendPanel_ExpList   { get; } = new StringListConfig();
+        public StringListConfig              SendPanel_FileList  { get; } = new StringListConfig();
 
-        public SequentialCommandListConfig SequentialCommandList   { get; } = new SequentialCommandListConfig();
-        public StringConfig                SequentialCommandTarget { get; } = new StringConfig("*");
-        public IntegerConfig               SequentialCommandLimit  { get; } = new IntegerConfig(200);
-        public IntegerConfig               SequentialCommandRepeat { get; } = new IntegerConfig(1);
+        public BoolConfig                    SendPanel_ExpList_Preview { get; } = new BoolConfig(true);
 
-        public GateRedirectListConfig GateRedirectList { get; } = new GateRedirectListConfig();
+        public SendDataListConfig SendDataList       { get; } = new SendDataListConfig();
+        public StringConfig       SendDataListTarget { get; } = new StringConfig("*");
+        public IntegerConfig      SendDataListLimit  { get; } = new IntegerConfig(200);
+        public IntegerConfig      SendDataListRepeat { get; } = new IntegerConfig(1);
 
         public PacketListConfig PacketList       { get; } = new PacketListConfig();
         public IntegerConfig    PacketListLimit  { get; } = new IntegerConfig(2000);
@@ -56,6 +63,12 @@ namespace Ratatoskr.Configs.UserConfigs
 
         public UserConfig() : base("user")
         {
+            SendPanelTargetList.Value.Add("*");
+            SendPanelTargetList.Value.Add("GATE_001");
+            SendPanelTargetList.Value.Add("GATE_002");
+            SendPanelTargetList.Value.Add("GATE_003");
+            SendPanelTargetList.Value.Add("GATE_004");
+            SendPanelTargetList.Value.Add("GATE_005");
         }
 
         public string GetProfilePath()

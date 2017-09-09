@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,18 +14,28 @@ namespace Ratatoskr.Actions.ActionModules
 {
     internal sealed class Action_FileOpen : ActionObject
     {
-        public Action_FileOpen()
+        public enum Argument
         {
-            InitParameter<Term_Text>("path");
+            Path,
         }
 
-        protected override ExecState OnExecStart()
+        public Action_FileOpen()
         {
-            var value_path = GetParameter<Term_Text>("path");
+            RegisterArgument(Argument.Path.ToString(), typeof(string), "");
+        }
 
-            FileOpen((value_path != null) ? (value_path.Value) : (null));
+        public Action_FileOpen(string path) : this()
+        {
+            SetArgumentValue(Argument.Path.ToString(), path);
+        }
 
-            return (ExecState.Complete);
+        protected override void OnExecStart()
+        {
+            var value_path = GetArgumentValue(Argument.Path.ToString()) as string;
+
+            FileOpen(value_path);
+
+            SetResult(ActionResultType.Success, null);
         }
 
         private delegate void FileOpenDelegate(string path);
@@ -35,7 +46,7 @@ namespace Ratatoskr.Actions.ActionModules
                 return;
             }
 
-            if (path != null) {
+            if (File.Exists(path)) {
                 FormUiManager.FileOpen(new [] { path }, null);
             } else {
                 FormUiManager.FileOpen();

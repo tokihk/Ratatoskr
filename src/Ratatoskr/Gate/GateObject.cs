@@ -13,7 +13,12 @@ namespace Ratatoskr.Gate
 {
     internal sealed class GateObject
     {
-        public enum SendRequestResult { Cancel, Busy, Accept }
+        public enum SendRequestStatus
+        {
+            Accept,         // 正常に受理された/キューに追加された
+            Ignore,         // 無視された/捨てられた
+            Pending,        // 今は判断できない/後で再トライ
+        }
 
         private const int SEND_DATA_QUEUE_LIMIT = 4;
 
@@ -28,8 +33,8 @@ namespace Ratatoskr.Gate
         private DeviceConfig   devconf_;
         private DeviceInstance devi_;
 
-        private Queue<byte[]> send_data_queue_ = new Queue<byte[]>();
-        private object        send_sync_ = new object();
+        private Queue<byte[]> send_queue_ = new Queue<byte[]>();
+        private object        send_queue_sync_ = new object();
 
 
         public GateObject(GateProperty gatep, DeviceConfig devconf, Guid devc_id, DeviceProperty devp)
@@ -164,7 +169,7 @@ namespace Ratatoskr.Gate
             }
 
             /* インスタンス入れ替え */
-            lock (send_sync_) {
+            lock (send_queue_sync_) {
                 devi_ = devi;
             }
         }
@@ -177,47 +182,44 @@ namespace Ratatoskr.Gate
 
         private void SendExec()
         {
-            lock (send_sync_) {
-                /* 送信データが存在しないときは無視 */
-                if (send_data_queue_.Count == 0)return;
+            lock (send_queue_sync_) {
+                if (   (send_queue_.Count > 0)
+                    && (devi_ != null)
+                ) {
+                    var data = send_queue_.Peek();
 
-                /* デバイスインスタンスが存在しないときは無視 */
-                if (devi_ == null)return;
-
-                /* デバイスに送信データをセット */
-                if (!devi_.PushSendData(send_data_queue_.First()))return;
-
-                /* データをセットできたときのみキューからデータを削除 */
-                send_data_queue_.Dequeue();
+                    if (devi_.PushSendUserData(data).discard_req) {
+                        /* データをセットできたときのみキューからデータを削除 */
+                        send_queue_.Dequeue();
+                    }
+                }
             }
         }
 
-        public SendRequestResult SendRequest(byte[] data)
+        public (bool discard_req, SendRequestStatus status) SendRequest(byte[] data)
         {
-            lock (send_sync_) {
-                /* 切断/送信禁止時はキャンセル要求 */
+            lock (send_queue_sync_) {
+                /* 切断/送信禁止時は無視 */
                 if (   (!gatep_.ConnectRequest)
                     || (!devconf_.SendEnable)
                     || (devi_ == null)
                 ) {
-                    return (SendRequestResult.Cancel);
+                    return (true, SendRequestStatus.Ignore);
                 }
 
                 /* 送信データキューがいっぱいのときは再送要求 */
-                if (send_data_queue_.Count >= SEND_DATA_QUEUE_LIMIT) {
-                    return (SendRequestResult.Busy);
+                if (send_queue_.Count >= SEND_DATA_QUEUE_LIMIT) {
+                    return (false, SendRequestStatus.Pending);
                 }
 
                 /* 送信データキューにデータをセット */
-                send_data_queue_.Enqueue(data);
+                send_queue_.Enqueue(data);
             }
 
             /* 送信実行 */
             SendExec();
 
-            lock (send_sync_) {
-                return ((send_data_queue_.Count == 0) ? (SendRequestResult.Accept) : (SendRequestResult.Busy));
-            }
+            return (true, SendRequestStatus.Accept);
         }
 
         private void OnDeviceStatusChanged()

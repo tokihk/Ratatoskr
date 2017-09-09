@@ -56,7 +56,7 @@ namespace Ratatoskr.Devices.SerialPort
 
         private void InitializePortList()
         {
-            var ports = SerialPortInfo.GetSerialPortList();
+            var ports = ComPortInfo.GetSerialPortList();
            
             CBox_PortList.BeginUpdate();
             {
@@ -163,7 +163,7 @@ namespace Ratatoskr.Devices.SerialPort
 
         public override void Flush()
         {
-            devp_.PortName.Value = (CBox_PortList.SelectedItem as SerialPortInfo).DeviceName;
+            devp_.PortName.Value = (CBox_PortList.SelectedItem as ComPortInfo).DeviceName;
             devp_.BaudRate.Value = uint.Parse(CBox_BaudRate.Text);
             devp_.Parity.Value = (Parity)CBox_Parity.SelectedItem;
             devp_.DataBits.Value = (byte)CBox_DataBits.SelectedItem;

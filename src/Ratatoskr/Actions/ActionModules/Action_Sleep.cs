@@ -10,31 +10,46 @@ namespace Ratatoskr.Actions.ActionModules
 {
     internal sealed class Action_Sleep : ActionObject
     {
+        public enum Argument
+        {
+            TimeMS,
+        }
+
+        
         private Stopwatch timeout_timer_ = new Stopwatch();
         private int       timeout_value_ = 0;
 
 
         public Action_Sleep()
         {
-            InitParameter<Term_Double>("timeout");
+            RegisterArgument(Argument.TimeMS.ToString(), typeof(int), null);
         }
 
-        protected override ExecState OnExecStart()
+        public Action_Sleep(int time_ms) : this()
+        {
+            SetArgumentValue(Argument.TimeMS.ToString(), time_ms);
+        }
+
+        protected override void OnExecStart()
         {
             /* 停止時間取得 */
-            timeout_value_ = (int)GetParameter<Term_Double>("timeout").Value;
+            timeout_value_ = (int)GetArgumentValue(Argument.TimeMS.ToString());
 
             /* 計測開始 */
             timeout_timer_.Start();
 
-            return ((timeout_timer_.ElapsedMilliseconds > (int)timeout_value_) ? (ExecState.Complete) : (ExecState.Busy));
+            if (timeout_timer_.ElapsedMilliseconds > timeout_value_) {
+                SetResult(ActionResultType.Success, null);
+            }
         }
 
-        protected override ExecState OnExecPoll()
+        protected override void OnExecPoll()
         {
             System.Threading.Thread.Sleep(1);
 
-            return ((timeout_timer_.ElapsedMilliseconds > (int)timeout_value_) ? (ExecState.Complete) : (ExecState.Busy));
+            if (timeout_timer_.ElapsedMilliseconds > timeout_value_) {
+                SetResult(ActionResultType.Success, null);
+            }
         }
     }
 }

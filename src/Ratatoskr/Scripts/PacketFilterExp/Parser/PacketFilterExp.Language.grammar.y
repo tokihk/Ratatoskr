@@ -2,6 +2,7 @@
 // http://www.quut.com/c/ANSI-C-grammar-l-2011.html
 
 %using System.Diagnostics;
+%using Ratatoskr.Generic;
 
 %namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 
@@ -16,9 +17,11 @@
 	public Terms.Term term;
 }
 
-%token	<term>VALUE_ID VALUE_BOOL VALUE_INTEGER VALUE_DOUBLE VALUE_TEXT VALUE_BINTEXT VALUE_PATTERN VALUE_TIME
+%token	<term>VALUE_BOOL VALUE_NUMBER VALUE_TEXT VALUE_BINARY VALUE_REGEX VALUE_DATETIME VALUE_DATETIMEOFFSET VALUE_STATUS
 
-%token	ARMOP_SET ARMOP_ADD ARMOP_SUB ARMOP_MUL ARMOP_DIV ARMOP_REM
+%token	ARMOP_SET ARMOP_NEG
+
+%token	ARMOP_ADD ARMOP_SUB ARMOP_MUL ARMOP_DIV ARMOP_REM
 
 %token 	RELOP_GREATER RELOP_LESS RELOP_GREATEREQUAL RELOP_LESSEQUAL
 
@@ -26,41 +29,30 @@
 
 %token	LOGOP_AND LOGOP_OR
 
-%token	ARRAY CALL REFERENCE LP RP LB RB COMMA
+%token	LP RP
 
 %%
 
-expression_list
-	: expression
-	| expression_list COMMA expression
-	{
-		exp_.Add(Tokens.ARRAY);
-	}
-	;
 
 expression
 	: assignment_expression
 	;
 
 assignment_expression
-	: logical_or_expression
-	| assignment_expression ARMOP_SET logical_or_expression
+	: logical_expression
+	| logical_expression ARMOP_SET logical_expression
 	{
 		exp_.Add(Tokens.ARMOP_SET);
 	}
 	;
 
-logical_or_expression
-	: logical_and_expression
-	| logical_or_expression LOGOP_OR logical_and_expression
+logical_expression
+	: equality_expression
+	| equality_expression LOGOP_OR equality_expression
 	{
 		exp_.Add(Tokens.LOGOP_OR);
 	}
-	;
-
-logical_and_expression
-	: equality_expression
-	| logical_and_expression LOGOP_AND equality_expression
+	| equality_expression LOGOP_AND equality_expression
 	{
 		exp_.Add(Tokens.LOGOP_AND);
 	}
@@ -68,11 +60,11 @@ logical_and_expression
 
 equality_expression
 	: relational_expression
-	| equality_expression RELOP_EQUAL relational_expression
+	| relational_expression RELOP_EQUAL relational_expression
 	{
 		exp_.Add(Tokens.RELOP_EQUAL);
 	}
-	| equality_expression RELOP_UNEQUAL relational_expression
+	| relational_expression RELOP_UNEQUAL relational_expression
 	{
 		exp_.Add(Tokens.RELOP_UNEQUAL);
 	}
@@ -80,7 +72,7 @@ equality_expression
 
 relational_expression
 	: additive_expression
-	| relational_expression RELOP_GREATEREQUAL additive_expression
+	| additive_expression RELOP_GREATEREQUAL additive_expression
 	{
 		exp_.Add(Tokens.RELOP_GREATEREQUAL);
 	}
@@ -100,67 +92,51 @@ relational_expression
 
 additive_expression
 	: multiplicative_expression
-	| additive_expression ARMOP_ADD multiplicative_expression
+	| multiplicative_expression ARMOP_ADD multiplicative_expression
 	{
 		exp_.Add(Tokens.ARMOP_ADD);
 	}
-	| additive_expression ARMOP_SUB multiplicative_expression
+	| multiplicative_expression ARMOP_SUB multiplicative_expression
 	{
 		exp_.Add(Tokens.ARMOP_SUB);
 	}
 	;
 
 multiplicative_expression
-	: postfix_expression
-	| multiplicative_expression ARMOP_MUL postfix_expression
+	: negative_expression
+	| negative_expression ARMOP_MUL negative_expression
 	{
 		exp_.Add(Tokens.ARMOP_MUL);
 	}
-	| multiplicative_expression ARMOP_DIV postfix_expression
+	| negative_expression ARMOP_DIV negative_expression
 	{
 		exp_.Add(Tokens.ARMOP_DIV);
 	}
-	| multiplicative_expression ARMOP_REM postfix_expression
+	| negative_expression ARMOP_REM negative_expression
 	{
 		exp_.Add(Tokens.ARMOP_REM);
 	}
 	;
 
-postfix_expression
-	: box_expression
-	| box_expression LP expression_list RP
+negative_expression
+	: postfix_expression
+	| ARMOP_NEG postfix_expression
 	{
-		exp_.Add(Tokens.CALL);
-	}
-	| box_expression LP RP
-	{
-		exp_.Add(new Terms.Term_Void());
-		exp_.Add(Tokens.CALL);
+		exp_.Add(Tokens.ARMOP_NEG);
 	}
 	;
 
-box_expression
+postfix_expression
 	: primary_expression
-	| primary_expression LB expression RB
-	{
-		exp_.Add(Tokens.REFERENCE);
-	}
+	| primary_expression LP expression RP
 	;
 
 primary_expression
-	: VALUE_ID
+	: VALUE_BOOL
 	{
 		exp_.Add($1);
 	}
-	| VALUE_BOOL
-	{
-		exp_.Add($1);
-	}
-	| VALUE_INTEGER
-	{
-		exp_.Add($1);
-	}
-	| VALUE_DOUBLE
+	| VALUE_NUMBER
 	{
 		exp_.Add($1);
 	}
@@ -168,21 +144,27 @@ primary_expression
 	{
 		exp_.Add($1);
 	}
-	| VALUE_BINTEXT
+	| VALUE_BINARY
 	{
 		exp_.Add($1);
 	}
-	| VALUE_PATTERN
+	| VALUE_REGEX
 	{
 		exp_.Add($1);
 	}
-	| VALUE_TIME
+	| VALUE_DATETIME
 	{
 		exp_.Add($1);
 	}
-	| LP expression_list RP
+	| VALUE_DATETIMEOFFSET
+	{
+		exp_.Add($1);
+	}
+	| VALUE_STATUS
+	{
+		exp_.Add($1);
+	}
 	;
-
 
 %%
 

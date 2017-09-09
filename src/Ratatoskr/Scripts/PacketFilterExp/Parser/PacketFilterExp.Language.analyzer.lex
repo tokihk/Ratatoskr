@@ -2,10 +2,12 @@
 // http://www.quut.com/c/ANSI-C-grammar-l-2011.html
 
 %using System.Diagnostics;
+%using Ratatoskr.Generic;
 
 %visibility internal
 
 %namespace Ratatoskr.Scripts.PacketFilterExp.Parser
+
 %option noFiles
 
 %{
@@ -28,9 +30,9 @@ CP  (u|U|L)
 SP  (u8|u|U|L)
 ES  ([a-fA-F0-9]+)
 WS  [ \t\v\n\f]
-Ty  ([0-9]{4})
+TY  ([0-9]{4})
 TM  ([0][0-9]|1[0-2])
-Td  ([0-2][0-9]|3[0-1])
+TD  ([0-2][0-9]|3[0-1])
 Th  ([0-1][0-9]|2[0-3])
 Tm  ([0-5][0-9])
 Ts  ([0-5][0-9])
@@ -42,34 +44,34 @@ Tf  ([0-9]{3})
 
 %%
 
-// --- 整数(10進数) --------------------------
-<INITIAL>[0]|([1-9][0-9]*) {
-	yylval.term = new Terms.Term_Double(double.Parse(yytext));
-	return (int)Tokens.VALUE_INTEGER;
+// --- 数字(10進数) --------------------------
+<INITIAL>[0]|([1-9][0-9]*)(\.[0-9]+){0,1} {
+	yylval.term = new Terms.Term_Number(double.Parse(yytext));
+	return (int)Tokens.VALUE_NUMBER;
 }
 
-// --- 小数 ----------------------------------
-<INITIAL>[0-9]+\.[0-9]+ {
-	yylval.term = new Terms.Term_Double(double.Parse(yytext));
-	return (int)Tokens.VALUE_DOUBLE;
+// --- 数字(16進数) --------------------------
+<INITIAL>0[xX][0-9a-fA-F]{1,8} {
+	yylval.term = new Terms.Term_Number((double)uint.Parse(yytext, System.Globalization.NumberStyles.HexNumber));
+	return (int)Tokens.VALUE_NUMBER;
 }
 
-// --- 変数/関数(1層) ------------------------
-<INITIAL>[A-Za-z][A-Za-z0-9]* {
-	yylval.term = new Terms.Term_Id(yytext);
-	return (int)Tokens.VALUE_ID;
+// --- バイナリ配列 --------------------------
+<INITIAL>[\[][0-9a-fA-F]+[\]] {
+	yylval.term = new Terms.Term_Binary(HexTextEncoder.ToByteArray(yytext.Substring(1, yytext.Length - 2)));
+	return (int)Tokens.VALUE_BINARY;
 }
 
-// --- 変数/関数(2層) ------------------------
-<INITIAL>[A-Za-z][A-Za-z0-9]*[\.][A-Za-z][A-Za-z0-9]* {
-	yylval.term = new Terms.Term_Id(yytext);
-	return (int)Tokens.VALUE_ID;
+// --- 時刻(ISO8601) --------------------------
+<INITIAL>{TY}-{TM}-{TD}T{Th}:{Tm}:{Ts}(\.{Tf})([\+\-]{Th}:{Tm}|Z) {
+	yylval.term = new Terms.Term_DateTime(yytext);
+	return (int)Tokens.VALUE_DATETIME;
 }
 
-// --- 変数/関数(3層) ------------------------
-<INITIAL>[A-Za-z][A-Za-z0-9]*[\.][A-Za-z][A-Za-z0-9]*[\.][A-Za-z][A-Za-z0-9]* {
-	yylval.term = new Terms.Term_Id(yytext);
-	return (int)Tokens.VALUE_ID;
+// --- 時刻(オフセット) --------------------------
+<INITIAL>{Th}:{Tm}:{Ts}(\.{Tf}) {
+	yylval.term = new Terms.Term_DateTimeOffset(yytext);
+	return (int)Tokens.VALUE_DATETIMEOFFSET;
 }
 
 // --- 文字列 ["xxx"] -------------------------
@@ -78,28 +80,92 @@ Tf  ([0-9]{3})
 	return (int)Tokens.VALUE_TEXT;
 }
 
-// --- 16進テキスト[%xxx%] ----------------
-<INITIAL>%[^%]*% {
-	yylval.term = new Terms.Term_Binary(yytext.Substring(1, yytext.Length - 2));
-	return (int)Tokens.VALUE_BINTEXT;
-}
-
 // --- 正規表現 -------------------------------
 <INITIAL>\/[^/]*\/ {
 	yylval.term = new Terms.Term_Regex(yytext.Substring(1, yytext.Length - 2));
-	return (int)Tokens.VALUE_PATTERN;
+	return (int)Tokens.VALUE_REGEX;
 }
 
-// --- 絶対時間 [$yyyy/MM/dd hh:mm:ss.fff$] ---
-<INITIAL>\${Ty}(/{TM}){0,1}(/{Td}){0,1}([ ]{Th}){0,1}(:{Tm}){0,1}(:{Ts}){0,1}([\.]{Tf}){0,1}\$ {
-	yylval.term = new Terms.Term_DateTime(yytext.Substring(1, yytext.Length - 2));
-	return (int)Tokens.VALUE_TIME;
+// --- ステータス -----------------------------
+<INITIAL>PacketCount {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.PacketCount);
+	return (int)Tokens.VALUE_STATUS;
 }
-
-// --- 時間間隔 [$hh:mm:ss.fff$] ---
-<INITIAL>\${Th}(:{Tm}){0,1}(:{Ts}){0,1}([\.]{Tf}){0,1}\$ {
-	yylval.term = new Terms.Term_TimeSpan(yytext.Substring(1, yytext.Length - 2));
-	return (int)Tokens.VALUE_TIME;
+<INITIAL>LastDelta {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.LastPacketDelta);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Control {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_IsControl);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Message {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_IsMessage);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Data {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_IsData);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Alias {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Alias);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>DateTime {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_MakeTime);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Information {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Information);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Mark {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Mark);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Send {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_IsSend);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Recv {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_IsRecv);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Source {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Source);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Destination {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Destination);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>DataSize {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Length);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>BitText {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_BitText);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>HexText {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_HexText);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>AsciiText {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_AsciiText);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>Utf8Text {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Utf8Text);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>UnicodeLText {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_UnicodeLText);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>UnicodeBText {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_UnicodeBText);
+	return (int)Tokens.VALUE_STATUS;
 }
 
 <INITIAL>"="  { return (int)Tokens.ARMOP_SET;      }
@@ -108,6 +174,7 @@ Tf  ([0-9]{3})
 <INITIAL>"*"  { return (int)Tokens.ARMOP_MUL;      }
 <INITIAL>"/"  { return (int)Tokens.ARMOP_SUB;      }
 <INITIAL>"%"  { return (int)Tokens.ARMOP_REM;      }
+<INITIAL>"!"  { return (int)Tokens.ARMOP_NEG;      }
 
 <INITIAL>">"  { return (int)Tokens.RELOP_GREATER;      }
 <INITIAL>"<"  { return (int)Tokens.RELOP_LESS;         }
@@ -122,11 +189,6 @@ Tf  ([0-9]{3})
 
 <INITIAL>"(" { return (int)Tokens.LP; }
 <INITIAL>")" { return (int)Tokens.RP; }
-
-<INITIAL>"[" { return (int)Tokens.LB; }
-<INITIAL>"]" { return (int)Tokens.RB; }
-
-<INITIAL>"," { return (int)Tokens.COMMA; }
 
 <INITIAL>{WS} { }
 

@@ -14,9 +14,8 @@ namespace Ratatoskr.PacketViews.Sequential
     internal sealed class ViewInstanceImpl : ViewInstance
     {
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RichTextBox RTBox_Main;
         private System.Windows.Forms.GroupBox GBox_ShiftBit;
-        private System.Windows.Forms.GroupBox GBox_TextMode;
-        private System.Windows.Forms.GroupBox GBox_Common;
         private System.Windows.Forms.GroupBox GBox_EndLine;
         private System.Windows.Forms.TextBox TBox_EndLine;
         private System.Windows.Forms.GroupBox GBox_ViewMode;
@@ -36,63 +35,80 @@ namespace Ratatoskr.PacketViews.Sequential
         private int         char_cache_limit_ = 0;
 
         private byte[] lf_code_ = null;
-        private System.Windows.Forms.TextBox RTBox_Main;
+        private System.Windows.Forms.CheckBox ChkBox_EchoBack;
         private int    lf_code_pos_ = 0;
 
 
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.GBox_Common = new System.Windows.Forms.GroupBox();
-            this.GBox_EndLine = new System.Windows.Forms.GroupBox();
-            this.TBox_EndLine = new System.Windows.Forms.TextBox();
-            this.GBox_ViewMode = new System.Windows.Forms.GroupBox();
-            this.CBox_ViewMode = new System.Windows.Forms.ComboBox();
-            this.GBox_ShiftBit = new System.Windows.Forms.GroupBox();
-            this.CBox_ShiftBit = new System.Windows.Forms.ComboBox();
-            this.GBox_TextMode = new System.Windows.Forms.GroupBox();
+            this.ChkBox_EchoBack = new System.Windows.Forms.CheckBox();
             this.GBox_CharCode = new System.Windows.Forms.GroupBox();
             this.CBox_CharCode = new System.Windows.Forms.ComboBox();
-            this.RTBox_Main = new System.Windows.Forms.TextBox();
+            this.GBox_EndLine = new System.Windows.Forms.GroupBox();
+            this.TBox_EndLine = new System.Windows.Forms.TextBox();
+            this.GBox_ShiftBit = new System.Windows.Forms.GroupBox();
+            this.CBox_ShiftBit = new System.Windows.Forms.ComboBox();
+            this.GBox_ViewMode = new System.Windows.Forms.GroupBox();
+            this.CBox_ViewMode = new System.Windows.Forms.ComboBox();
+            this.RTBox_Main = new System.Windows.Forms.RichTextBox();
             this.panel1.SuspendLayout();
-            this.GBox_Common.SuspendLayout();
-            this.GBox_EndLine.SuspendLayout();
-            this.GBox_ViewMode.SuspendLayout();
-            this.GBox_ShiftBit.SuspendLayout();
-            this.GBox_TextMode.SuspendLayout();
             this.GBox_CharCode.SuspendLayout();
+            this.GBox_EndLine.SuspendLayout();
+            this.GBox_ShiftBit.SuspendLayout();
+            this.GBox_ViewMode.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.GBox_Common);
-            this.panel1.Controls.Add(this.GBox_TextMode);
+            this.panel1.Controls.Add(this.ChkBox_EchoBack);
+            this.panel1.Controls.Add(this.GBox_CharCode);
+            this.panel1.Controls.Add(this.GBox_EndLine);
+            this.panel1.Controls.Add(this.GBox_ShiftBit);
+            this.panel1.Controls.Add(this.GBox_ViewMode);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(640, 78);
+            this.panel1.Size = new System.Drawing.Size(922, 54);
             this.panel1.TabIndex = 0;
             // 
-            // GBox_Common
+            // ChkBox_EchoBack
             // 
-            this.GBox_Common.Controls.Add(this.GBox_EndLine);
-            this.GBox_Common.Controls.Add(this.GBox_ViewMode);
-            this.GBox_Common.Controls.Add(this.GBox_ShiftBit);
-            this.GBox_Common.Location = new System.Drawing.Point(6, 3);
-            this.GBox_Common.Name = "GBox_Common";
-            this.GBox_Common.Size = new System.Drawing.Size(400, 66);
-            this.GBox_Common.TabIndex = 3;
-            this.GBox_Common.TabStop = false;
-            this.GBox_Common.Text = "Basic setting";
+            this.ChkBox_EchoBack.AutoSize = true;
+            this.ChkBox_EchoBack.Location = new System.Drawing.Point(493, 21);
+            this.ChkBox_EchoBack.Name = "ChkBox_EchoBack";
+            this.ChkBox_EchoBack.Size = new System.Drawing.Size(77, 16);
+            this.ChkBox_EchoBack.TabIndex = 3;
+            this.ChkBox_EchoBack.Text = "Echo back";
+            this.ChkBox_EchoBack.UseVisualStyleBackColor = true;
+            this.ChkBox_EchoBack.CheckedChanged += new System.EventHandler(this.ChkBox_EchoBack_CheckedChanged);
+            // 
+            // GBox_CharCode
+            // 
+            this.GBox_CharCode.Controls.Add(this.CBox_CharCode);
+            this.GBox_CharCode.Location = new System.Drawing.Point(366, 7);
+            this.GBox_CharCode.Name = "GBox_CharCode";
+            this.GBox_CharCode.Size = new System.Drawing.Size(120, 41);
+            this.GBox_CharCode.TabIndex = 2;
+            this.GBox_CharCode.TabStop = false;
+            this.GBox_CharCode.Text = "Character code";
+            // 
+            // CBox_CharCode
+            // 
+            this.CBox_CharCode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CBox_CharCode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_CharCode.FormattingEnabled = true;
+            this.CBox_CharCode.Location = new System.Drawing.Point(3, 15);
+            this.CBox_CharCode.Name = "CBox_CharCode";
+            this.CBox_CharCode.Size = new System.Drawing.Size(114, 20);
+            this.CBox_CharCode.TabIndex = 0;
             // 
             // GBox_EndLine
             // 
-            this.GBox_EndLine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.GBox_EndLine.Controls.Add(this.TBox_EndLine);
-            this.GBox_EndLine.Location = new System.Drawing.Point(218, 19);
+            this.GBox_EndLine.Location = new System.Drawing.Point(215, 7);
             this.GBox_EndLine.Name = "GBox_EndLine";
-            this.GBox_EndLine.Size = new System.Drawing.Size(176, 41);
+            this.GBox_EndLine.Size = new System.Drawing.Size(145, 41);
             this.GBox_EndLine.TabIndex = 2;
             this.GBox_EndLine.TabStop = false;
             this.GBox_EndLine.Text = "Line feed pattern";
@@ -102,34 +118,14 @@ namespace Ratatoskr.PacketViews.Sequential
             this.TBox_EndLine.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TBox_EndLine.Location = new System.Drawing.Point(3, 15);
             this.TBox_EndLine.Name = "TBox_EndLine";
-            this.TBox_EndLine.Size = new System.Drawing.Size(170, 19);
+            this.TBox_EndLine.Size = new System.Drawing.Size(139, 19);
             this.TBox_EndLine.TabIndex = 0;
             this.TBox_EndLine.TextChanged += new System.EventHandler(this.TBox_EndLine_TextChanged);
-            // 
-            // GBox_ViewMode
-            // 
-            this.GBox_ViewMode.Controls.Add(this.CBox_ViewMode);
-            this.GBox_ViewMode.Location = new System.Drawing.Point(6, 18);
-            this.GBox_ViewMode.Name = "GBox_ViewMode";
-            this.GBox_ViewMode.Size = new System.Drawing.Size(120, 42);
-            this.GBox_ViewMode.TabIndex = 1;
-            this.GBox_ViewMode.TabStop = false;
-            this.GBox_ViewMode.Text = "View mode";
-            // 
-            // CBox_ViewMode
-            // 
-            this.CBox_ViewMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CBox_ViewMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CBox_ViewMode.FormattingEnabled = true;
-            this.CBox_ViewMode.Location = new System.Drawing.Point(3, 15);
-            this.CBox_ViewMode.Name = "CBox_ViewMode";
-            this.CBox_ViewMode.Size = new System.Drawing.Size(114, 20);
-            this.CBox_ViewMode.TabIndex = 0;
             // 
             // GBox_ShiftBit
             // 
             this.GBox_ShiftBit.Controls.Add(this.CBox_ShiftBit);
-            this.GBox_ShiftBit.Location = new System.Drawing.Point(132, 18);
+            this.GBox_ShiftBit.Location = new System.Drawing.Point(129, 7);
             this.GBox_ShiftBit.Name = "GBox_ShiftBit";
             this.GBox_ShiftBit.Size = new System.Drawing.Size(80, 41);
             this.GBox_ShiftBit.TabIndex = 1;
@@ -146,48 +142,39 @@ namespace Ratatoskr.PacketViews.Sequential
             this.CBox_ShiftBit.Size = new System.Drawing.Size(74, 20);
             this.CBox_ShiftBit.TabIndex = 0;
             // 
-            // GBox_TextMode
+            // GBox_ViewMode
             // 
-            this.GBox_TextMode.Controls.Add(this.GBox_CharCode);
-            this.GBox_TextMode.Location = new System.Drawing.Point(412, 3);
-            this.GBox_TextMode.Name = "GBox_TextMode";
-            this.GBox_TextMode.Size = new System.Drawing.Size(135, 66);
-            this.GBox_TextMode.TabIndex = 2;
-            this.GBox_TextMode.TabStop = false;
-            this.GBox_TextMode.Text = "Text setting";
+            this.GBox_ViewMode.Controls.Add(this.CBox_ViewMode);
+            this.GBox_ViewMode.Location = new System.Drawing.Point(3, 6);
+            this.GBox_ViewMode.Name = "GBox_ViewMode";
+            this.GBox_ViewMode.Size = new System.Drawing.Size(120, 42);
+            this.GBox_ViewMode.TabIndex = 1;
+            this.GBox_ViewMode.TabStop = false;
+            this.GBox_ViewMode.Text = "View mode";
             // 
-            // GBox_CharCode
+            // CBox_ViewMode
             // 
-            this.GBox_CharCode.Controls.Add(this.CBox_CharCode);
-            this.GBox_CharCode.Location = new System.Drawing.Point(9, 18);
-            this.GBox_CharCode.Name = "GBox_CharCode";
-            this.GBox_CharCode.Size = new System.Drawing.Size(120, 42);
-            this.GBox_CharCode.TabIndex = 2;
-            this.GBox_CharCode.TabStop = false;
-            this.GBox_CharCode.Text = "Character code";
-            // 
-            // CBox_CharCode
-            // 
-            this.CBox_CharCode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CBox_CharCode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CBox_CharCode.FormattingEnabled = true;
-            this.CBox_CharCode.Location = new System.Drawing.Point(3, 15);
-            this.CBox_CharCode.Name = "CBox_CharCode";
-            this.CBox_CharCode.Size = new System.Drawing.Size(114, 20);
-            this.CBox_CharCode.TabIndex = 0;
+            this.CBox_ViewMode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CBox_ViewMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_ViewMode.FormattingEnabled = true;
+            this.CBox_ViewMode.Location = new System.Drawing.Point(3, 15);
+            this.CBox_ViewMode.Name = "CBox_ViewMode";
+            this.CBox_ViewMode.Size = new System.Drawing.Size(114, 20);
+            this.CBox_ViewMode.TabIndex = 0;
             // 
             // RTBox_Main
             // 
             this.RTBox_Main.BackColor = System.Drawing.Color.White;
+            this.RTBox_Main.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RTBox_Main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.RTBox_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.RTBox_Main.Location = new System.Drawing.Point(0, 78);
-            this.RTBox_Main.Multiline = true;
+            this.RTBox_Main.Location = new System.Drawing.Point(0, 54);
             this.RTBox_Main.Name = "RTBox_Main";
             this.RTBox_Main.ReadOnly = true;
-            this.RTBox_Main.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.RTBox_Main.Size = new System.Drawing.Size(640, 388);
+            this.RTBox_Main.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+            this.RTBox_Main.Size = new System.Drawing.Size(922, 510);
             this.RTBox_Main.TabIndex = 1;
+            this.RTBox_Main.Text = "";
             // 
             // ViewInstanceImpl
             // 
@@ -195,17 +182,15 @@ namespace Ratatoskr.PacketViews.Sequential
             this.Controls.Add(this.RTBox_Main);
             this.Controls.Add(this.panel1);
             this.Name = "ViewInstanceImpl";
-            this.Size = new System.Drawing.Size(640, 466);
+            this.Size = new System.Drawing.Size(922, 564);
             this.panel1.ResumeLayout(false);
-            this.GBox_Common.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.GBox_CharCode.ResumeLayout(false);
             this.GBox_EndLine.ResumeLayout(false);
             this.GBox_EndLine.PerformLayout();
-            this.GBox_ViewMode.ResumeLayout(false);
             this.GBox_ShiftBit.ResumeLayout(false);
-            this.GBox_TextMode.ResumeLayout(false);
-            this.GBox_CharCode.ResumeLayout(false);
+            this.GBox_ViewMode.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -216,13 +201,15 @@ namespace Ratatoskr.PacketViews.Sequential
 
         public ViewInstanceImpl(ViewManager viewm, ViewClass viewd, ViewProperty viewp, Guid id) : base(viewm, viewd, viewp, id)
         {
-            var prop = Property as ViewPropertyImpl;
+            prop_ = Property as ViewPropertyImpl;
 
             InitializeComponent();
-            InitializeViewMode(prop.DataView.Value);
-            InitializeShiftBit((int)prop.ShiftBit.Value);
-            InitializeEndLineCode(prop.EndLinePattern.Value);
-            InitializeCharCodeType(prop.CharCode.Value);
+            InitializeViewMode(prop_.DataView.Value);
+            InitializeShiftBit((int)prop_.ShiftBit.Value);
+            InitializeEndLineCode(prop_.EndLinePattern.Value);
+            InitializeCharCodeType(prop_.CharCode.Value);
+
+            ChkBox_EchoBack.Checked = prop_.EchoBack.Value;
         }
 
         private void InitializeViewMode(DataViewType type)
@@ -269,6 +256,17 @@ namespace Ratatoskr.PacketViews.Sequential
             CBox_CharCode.EndUpdate();
         }
 
+        protected override void OnBackupProperty()
+        {
+            prop_ = Property as ViewPropertyImpl;
+
+            prop_.DataView.Value = (DataViewType)CBox_ViewMode.SelectedItem;
+            prop_.ShiftBit.Value = (int)CBox_ShiftBit.SelectedItem;
+            prop_.EndLinePattern.Value = TBox_EndLine.Text;
+            prop_.CharCode.Value = (CharCodeType)CBox_CharCode.SelectedItem;
+            prop_.EchoBack.Value = ChkBox_EchoBack.Checked;
+        }
+
         private void LoadCurrentProperty()
         {
             
@@ -298,18 +296,18 @@ namespace Ratatoskr.PacketViews.Sequential
 
         private void DrawMessagePacket(MessagePacketObject packet)
         {
-//            RTBox_Main.SelectionColor = Color.Green;
+            RTBox_Main.SelectionColor = Color.Green;
 
             var str = new StringBuilder();
 
-            str.AppendFormat("[{0}] ", packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+            str.AppendFormat("[{0}] {1}", packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"), packet.Alias);
 
-            if (packet.Alias.Length > 0) {
-                str.AppendFormat("{0} - ", packet.Alias);
+            if (packet.Information.Length > 0) {
+                str.AppendFormat(" - {0}", packet.Information);
             }
 
             if (packet.Message.Length > 0) {
-                str.Append(packet.Message);
+                str.AppendFormat(" - {0}", packet.Message);
             }
 
             str.AppendLine();
@@ -319,16 +317,20 @@ namespace Ratatoskr.PacketViews.Sequential
 
         private void DrawDataPacket(DataPacketObject packet)
         {
-            if (packet.Direction != PacketDirection.Recv)return;
+            if (   (!prop_.EchoBack.Value)
+                && (packet.Direction != PacketDirection.Recv)
+            ) {
+                return;
+            }
 
             var view_type = prop_.DataView.Value;
 
             /* 表示色設定 */
-//            switch (view_type) {
-//                case DataViewType.Char:     RTBox_Main.SelectionColor = Color.Red;      break;
-//                case DataViewType.HexText:  RTBox_Main.SelectionColor = Color.Blue;     break;
-//                case DataViewType.BinCode:  RTBox_Main.SelectionColor = Color.Brown;    break;
-//            }
+            switch (view_type) {
+                case DataViewType.Char:     RTBox_Main.SelectionColor = Color.Red;      break;
+                case DataViewType.HexText:  RTBox_Main.SelectionColor = Color.Blue;     break;
+                case DataViewType.BinCode:  RTBox_Main.SelectionColor = Color.Brown;    break;
+            }
 
             /* 表示処理 */
             var str = new StringBuilder();
@@ -472,16 +474,6 @@ namespace Ratatoskr.PacketViews.Sequential
             }
         }
 
-        protected override void OnBackupProperty()
-        {
-            prop_ = Property as ViewPropertyImpl;
-
-            prop_.DataView.Value = (DataViewType)CBox_ViewMode.SelectedItem;
-            prop_.ShiftBit.Value = (int)CBox_ShiftBit.SelectedItem;
-            prop_.EndLinePattern.Value = TBox_EndLine.Text;
-            prop_.CharCode.Value = (CharCodeType)CBox_CharCode.SelectedItem;
-        }
-
         protected override void OnClearPacket()
         {
             RTBox_Main.Clear();
@@ -536,6 +528,11 @@ namespace Ratatoskr.PacketViews.Sequential
         private void TBox_EndLine_TextChanged(object sender, EventArgs e)
         {
             UpdateEndLineView();
+        }
+
+        private void ChkBox_EchoBack_CheckedChanged(object sender, EventArgs e)
+        {
+            BackupProperty();
         }
     }
 }

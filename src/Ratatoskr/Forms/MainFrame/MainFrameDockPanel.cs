@@ -37,7 +37,7 @@ namespace Ratatoskr.Forms.MainFrame
         private Dictionary<string, DockContentInfo> DockContents = new Dictionary<string, DockContentInfo>();
 
 
-        private MainFrameSequentialCommandPanel MFDC_CmdListPanel_Control;
+        private MainFrameSendDataListPanel MFDC_CmdListPanel_Control;
 
 
         public MainFrameDockPanel()
@@ -61,7 +61,7 @@ namespace Ratatoskr.Forms.MainFrame
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottomAutoHide,
                 false,
-                MFDC_CmdListPanel_Control = new MainFrameSequentialCommandPanel());
+                MFDC_CmdListPanel_Control = new MainFrameSendDataListPanel());
         }
 
         public void LoadConfig()
@@ -132,10 +132,10 @@ namespace Ratatoskr.Forms.MainFrame
             ConfigManager.User.PacketView.Value.Clear();
 
             /* パケットビューのみをスキャン */
-            foreach (var viewi in FormTaskManager.GetPacketViewInstances()) {
-                viewi.BackupProperty();
+            foreach (var viewc in FormTaskManager.GetPacketViewControls()) {
+                viewc.BackupProperty();
                 ConfigManager.User.PacketView.Value.Add(
-                    new PacketViewObjectConfig(viewi.Class.ID, viewi.ID, viewi.Property));
+                    new PacketViewObjectConfig(viewc.Instance.Class.ID, viewc.Instance.ID, viewc.Instance.Property));
             }
         }
 
@@ -179,19 +179,19 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void AddPacketView(Guid class_id, Guid obj_id, ViewProperty viewp, bool init)
         {
-            var viewi = FormTaskManager.CreatePacketView(class_id, obj_id, viewp);
+            var viewc = FormTaskManager.CreatePacketView(class_id, obj_id, viewp);
 
-            if (viewi == null)return;
+            if (viewc == null)return;
 
             /* Graphオブジェクトのレイアウトが何故か復元できないので、とりあえずパケットビューだけ復元対象から外す */
             var content_info = AddDockContent(
 //                                    viewi.ID.ToString(),
-                                    viewi.ID.ToString() + (new Random()).Next(0, 99999).ToString(),
-                                    viewi.Class.Name,
+                                    viewc.Instance.ID.ToString() + (new Random()).Next(0, 99999).ToString(),
+                                    viewc.Instance.Class.Name,
                                     DockAreas.Document,
                                     DockState.Document,
                                     true,
-                                    new MainFramePacketView(viewi));
+                                    viewc);
             
             if ((content_info != null) && (init)) {
                 content_info.Content.Show(DockPanel_Main, content_info.DefaultState);
@@ -214,11 +214,11 @@ namespace Ratatoskr.Forms.MainFrame
 
             if (dock == null)return;
 
-            var view = dock.ContentControl as MainFramePacketView;
+            var viewc = dock.ContentControl as ViewControl;
 
-            if (view == null)return;
+            if (viewc == null)return;
 
-            FormTaskManager.RemovePacketView(view.Instance);
+            FormTaskManager.RemovePacketView(viewc);
         }
     }
 }

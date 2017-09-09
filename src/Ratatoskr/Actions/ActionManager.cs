@@ -35,23 +35,7 @@ namespace Ratatoskr.Actions
         {
             exit_state_ = true;
 
-            lock (act_list_interrupt_) {
-                foreach (var act in act_list_interrupt_) {
-                    act.Cancel();
-                }
-            }
-
-            lock (act_list_normal_) {
-                foreach (var act in act_list_normal_) {
-                    act.Cancel();
-                }
-            }
-
-            while (   (act_list_interrupt_.Count > 0)
-                   || (act_list_normal_.Count > 0)
-            ) {
-                Thread.Sleep(1);
-            }
+            ClearAction();
         }
 
         private static void ThreadStart()
@@ -74,6 +58,27 @@ namespace Ratatoskr.Actions
             /* === スレッド継続判定 === */
             if (!exit_state_) {
                 thread_.Change(THREAD_IVAL, 0);            // スレッドタイマー再開
+            }
+        }
+
+        public static void ClearAction()
+        {
+            lock (act_list_interrupt_) {
+                foreach (var act in act_list_interrupt_) {
+                    act.Cancel();
+                }
+            }
+
+            lock (act_list_normal_) {
+                foreach (var act in act_list_normal_) {
+                    act.Cancel();
+                }
+            }
+
+            while (   (act_list_interrupt_.Count > 0)
+                   || (act_list_normal_.Count > 0)
+            ) {
+                Thread.Sleep(1);
             }
         }
 

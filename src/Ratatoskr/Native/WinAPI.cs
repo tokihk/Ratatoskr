@@ -24,8 +24,51 @@ namespace Ratatoskr.Native
 
         public const UInt32 ERROR_IO_PENDING = 997;
 
+        public static readonly IntPtr HWND_TOP       = new IntPtr(0);
+        public static readonly IntPtr HWND_BOTTOM    = new IntPtr(1);
+        public static readonly IntPtr HWND_TOPMOST   = new IntPtr(-1);
+        public static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
 
-        public const UInt32 WM_SETREDRAW = 0x000B;
+        public const UInt32 SWP_NOSIZE           = 0x0001;
+        public const UInt32 SWP_NOMOVE           = 0x0002;
+        public const UInt32 SWP_NOZORDER         = 0x0004;
+        public const UInt32 SWP_NOREDRAW         = 0x0008;
+        public const UInt32 SWP_NOACTIVATE       = 0x0010;
+        public const UInt32 SWP_FRAMECHANGED     = 0x0020;  /* The frame changed: send WM_NCCALCSIZE */
+        public const UInt32 SWP_SHOWWINDOW       = 0x0040;
+        public const UInt32 SWP_HIDEWINDOW       = 0x0080;
+        public const UInt32 SWP_NOCOPYBITS       = 0x0100;
+        public const UInt32 SWP_NOOWNERZORDER    = 0x0200;  /* Don't do owner Z ordering */
+        public const UInt32 SWP_NOSENDCHANGING   = 0x0400;  /* Don't send WM_WINDOWPOSCHANGING */
+
+        public const UInt32 SWP_DRAWFRAME       = SWP_FRAMECHANGED;
+        public const UInt32 SWP_NOREPOSITION    = SWP_NOOWNERZORDER;
+
+        public const UInt32 WM_SETREDRAW        = 0x000B;
+        public const UInt32 WM_DEVMODECHANGE    = 0x001B;
+        public const UInt32 WM_ACTIVATEAPP      = 0x001C;
+        public const UInt32 WM_FONTCHANGE       = 0x001D;
+        public const UInt32 WM_TIMECHANGE       = 0x001E;
+        public const UInt32 WM_CANCELMODE       = 0x001F;
+        public const UInt32 WM_SETCURSOR        = 0x0020;
+        public const UInt32 WM_MOUSEACTIVATE    = 0x0021;
+        public const UInt32 WM_CHILDACTIVATE    = 0x0022;
+        public const UInt32 WM_QUEUESYNC        = 0x0023;
+
+        public const UInt32 WM_GETMINMAXINFO    = 0x0024;
+
+        public const Int32 WS_EX_DLGMODALFRAME  = 0x00000001;
+        public const Int32 WS_EX_NOPARENTNOTIFY = 0x00000004;
+        public const Int32 WS_EX_TOPMOST        = 0x00000008;
+        public const Int32 WS_EX_ACCEPTFILES    = 0x00000010;
+        public const Int32 WS_EX_TRANSPARENT    = 0x00000020;
+
+        public const Int32 WS_EX_NOACTIVATE     = 0x08000000;
+
+        public const UInt32 MA_ACTIVATE         = 1;
+        public const UInt32 MA_ACTIVATEANDEAT   = 2;
+        public const UInt32 MA_NOACTIVATE       = 3;
+        public const UInt32 MA_NOACTIVATEANDEAT = 4;
 
         public const UInt32 SC_MANAGER_ALL_ACCESS         = 0xF003FU;
         public const UInt32 SC_MANAGER_CONNECT            = 0x00001U;
@@ -135,15 +178,19 @@ namespace Ratatoskr.Native
         public const UInt32 RTS_CONTROL_HANDSHAKE = 0x02;
         public const UInt32 RTS_CONTROL_TOGGLE    = 0x03;
 
-        public const UInt32 EV_RXCHAR  = 0x0001;
-        public const UInt32 EV_RXFLAG  = 0x0002;
-        public const UInt32 EV_TXEMPTY = 0x0004;
-        public const UInt32 EV_CTS     = 0x0008;
-        public const UInt32 EV_DSR     = 0x0010;
-        public const UInt32 EV_RLSD    = 0x0020;
-        public const UInt32 EV_BREAK   = 0x0040;
-        public const UInt32 EV_ERR     = 0x0080;
-        public const UInt32 EV_RING    = 0x0100;
+        public const UInt32 EV_RXCHAR   = 0x0001;
+        public const UInt32 EV_RXFLAG   = 0x0002;
+        public const UInt32 EV_TXEMPTY  = 0x0004;
+        public const UInt32 EV_CTS      = 0x0008;
+        public const UInt32 EV_DSR      = 0x0010;
+        public const UInt32 EV_RLSD     = 0x0020;
+        public const UInt32 EV_BREAK    = 0x0040;
+        public const UInt32 EV_ERR      = 0x0080;
+        public const UInt32 EV_RING     = 0x0100;
+        public const UInt32 EV_PERR     = 0x0200;  // Printer error occured
+        public const UInt32 EV_RX80FULL = 0x0400;  // Receive buffer is 80 percent full
+        public const UInt32 EV_EVENT1   = 0x0800;  // Provider specific event 1
+        public const UInt32 EV_EVENT2   = 0x1000;  // Provider specific event 2
 
         public const UInt32 CE_RXOVER   = 0x0001;  // Receive Queue overflow
         public const UInt32 CE_OVERRUN  = 0x0002;  // Receive Overrun Error
@@ -712,6 +759,9 @@ namespace Ratatoskr.Native
         }
         [DllImport("kernel32.dll", SetLastError = true)]
         public extern static uint GetLastError();
+
+        [DllImport("user32.dll", SetLastError=true)]
+        public extern static bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, UInt32 uFlags);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public extern static IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);

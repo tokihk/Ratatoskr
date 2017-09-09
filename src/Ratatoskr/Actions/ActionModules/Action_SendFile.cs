@@ -12,6 +12,13 @@ namespace Ratatoskr.Actions.ActionModules
 {
     internal sealed class Action_SendFile : ActionObject
     {
+        public enum Argument
+        {
+            Gate,
+            FilePath,
+            BlockSize,
+        }
+
         private sealed class SendPartObject
         {
             private FileStream file_;
@@ -31,6 +38,12 @@ namespace Ratatoskr.Actions.ActionModules
             {
                 if (IsComplete)return;
 
+                if (!gate_.ConnectRequest) {
+                    /* 切断時はすぐに終端に移動 */
+                    send_pos_ = file_.Length;
+                    return;
+                }
+
                 /* 送信データ位置補正 */
                 file_.Seek(send_pos_, SeekOrigin.Begin);
                 
@@ -40,11 +53,7 @@ namespace Ratatoskr.Actions.ActionModules
                 if (read_size == 0)return;
 
                 /* 送信実行 */
-                var result = gate_.SendRequest(send_buffer_.Take(read_size).ToArray());
-
-                if (   (result == GateObject.SendRequestResult.Accept)
-                    || (result == GateObject.SendRequestResult.Cancel)
-                ) {
+                if (gate_.SendRequest(send_buffer_.Take(read_size).ToArray()).discard_req) {
                     send_pos_ += read_size;
                 }
             }
@@ -62,65 +71,58 @@ namespace Ratatoskr.Actions.ActionModules
 
         public Action_SendFile()
         {
-            InitParameter<Term_Text>("gate");
-            InitParameter<Term_Text>("path");
-            InitParameter<Term_Double>("block-size");
+            RegisterArgument(Argument.Gate.ToString(), typeof(string), null);
+            RegisterArgument(Argument.FilePath.ToString(), typeof(string), null);
+            RegisterArgument(Argument.BlockSize.ToString(), typeof(int), null);
         }
 
-        public override bool OnParameterCheck()
+        public Action_SendFile(string gate, string file_path, int block_size) : this()
         {
-            /* gate */
-            if (GetParameter<Term_Text>("gate") == null) {
-                return (false);
-            }
+            SetArgumentValue(Argument.Gate.ToString(), gate);
+            SetArgumentValue(Argument.FilePath.ToString(), file_path);
+            SetArgumentValue(Argument.BlockSize.ToString(), block_size);
+        }
 
-            /* path */
-            var path = GetParameter<Term_Text>("path");
-                
-            if (   (path == null)
-                || (!File.Exists(path.Value))
-            ) {
+        protected override bool OnArgumentCheck()
+        {
+            /* file_path */
+            var file_path = GetArgumentValue(Argument.FilePath.ToString()) as string;
+
+            if (!File.Exists(file_path)) {
                 return (false);
             }
 
             /* block-size */
-            var block_size = GetParameter<Term_Double>("block-size");
+            var block_size = (int)GetArgumentValue(Argument.BlockSize.ToString());
 
-            if (   (block_size == null)
-                || (block_size.Value <= 0)
-            ) {
+            if (block_size == 0) {
                 return (false);
             }
 
             return (true);
         }
 
-        protected override ExecState OnExecStart()
+        protected override void OnExecStart()
         {
-            if (!ParameterCheck()) {
-                return (ExecState.Complete);
-            }
-
-            var param_gate = GetParameter<Term_Text>("gate");
-            var param_path = GetParameter<Term_Text>("path");
-            var param_block_size = GetParameter<Term_Double>("block-size");
+            var param_gate = GetArgumentValue(Argument.Gate.ToString()) as string;
+            var param_file_path = GetArgumentValue(Argument.FilePath.ToString()) as string;
+            var param_block_size = (int)GetArgumentValue(Argument.BlockSize.ToString());
 
             /* 送信ファイル取得 */
-            file_ = File.OpenRead(param_path.Value);
+            file_ = File.OpenRead(param_file_path);
 
             if (file_ == null) {
-                return (ExecState.Complete);
+                SetResult(ActionResultType.Error_FileOpen, null);
+                return;
             }
 
             /* 送信先ゲート取得 */
-            var gates = GateManager.FindGateObjectFromWildcardAlias(param_gate.Value);
+            var gates = GateManager.FindGateObjectFromWildcardAlias(param_gate);
 
             /* 送信オブジェクト生成 */
             foreach (var gate in gates) {
-                send_objs_.Add(new SendPartObject(file_, gate, (int)param_block_size.Value));
+                send_objs_.Add(new SendPartObject(file_, gate, param_block_size));
             }
-
-            return (ExecState.Busy);
         }
 
         protected override void OnExecComplete()
@@ -130,7 +132,7 @@ namespace Ratatoskr.Actions.ActionModules
             }
         }
 
-        protected override ExecState OnExecPoll()
+        protected override void OnExecPoll()
         {
             /* 送信実行 */
             send_objs_.ForEach(obj => obj.Poll());
@@ -138,7 +140,9 @@ namespace Ratatoskr.Actions.ActionModules
             /* 完了オブジェクトを解放 */
             send_objs_.RemoveAll(obj => obj.IsComplete);
 
-            return ((send_objs_.Count > 0) ? (ExecState.Busy) : (ExecState.Complete));
+            if (send_objs_.Count == 0) {
+                SetResult(ActionResultType.Success, null);
+            }
         }
     }
 }

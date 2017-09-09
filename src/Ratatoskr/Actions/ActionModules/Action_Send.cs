@@ -11,44 +11,51 @@ namespace Ratatoskr.Actions.ActionModules
 {
     internal sealed class Action_Send : ActionObject
     {
-        public Action_Send()
+        public enum Argument
         {
-            InitParameter<Term_Text>("gate");
-            InitParameter<Term_Text>("data");
+            Gate,
+            Data,
         }
 
-        public override bool OnParameterCheck()
+        public Action_Send()
+        {
+            RegisterArgument(Argument.Gate.ToString(), typeof(string), null);
+            RegisterArgument(Argument.Data.ToString(), typeof(string), null);
+        }
+
+        public Action_Send(string gate, string data) : this()
+        {
+            SetArgumentValue(Argument.Gate.ToString(), gate);
+            SetArgumentValue(Argument.Data.ToString(), data);
+        }
+
+        protected override bool OnArgumentCheck()
         {
             /* data */
-            var data_bin = HexTextEncoder.ToByteArray(GetParameter<Term_Text>("data").Value);
-
-            if (data_bin == null) {
+            if (HexTextEncoder.ToByteArray(GetArgumentValue(Argument.Data.ToString()) as string) == null) {
                 return (false);
             }
             
             return (true);
         }
 
-        protected override ExecState OnExecStart()
+        protected override void OnExecStart()
         {
-            if (!ParameterCheck()) {
-                return (ExecState.Complete);
-            }
-
             /* 宛先取得 */
-            var gate = GetParameter<Term_Text>("gate");
+            var gate = GetArgumentValue(Argument.Gate.ToString()) as string;
 
             /* データ取得 */
-            var data = GetParameter<Term_Text>("data");
-            var data_bin = HexTextEncoder.ToByteArray(data.Value);
+            var data_bin = HexTextEncoder.ToByteArray(GetArgumentValue(Argument.Data.ToString()) as string);
 
             /* 送信先ゲート取得 */
-            var gates = GateManager.FindGateObjectFromWildcardAlias(gate.Value);
+            var gates = GateManager.FindGateObjectFromWildcardAlias(gate);
 
             /* 送信実行 */
-            gates.AsParallel().ForAll(obj => obj.SendRequest(data_bin));
+            foreach (var obj in gates) {
+                obj.SendRequest(data_bin);
+            }
 
-            return (ExecState.Complete);
+            SetResult(ActionResultType.Success, null);
         }
     }
 }

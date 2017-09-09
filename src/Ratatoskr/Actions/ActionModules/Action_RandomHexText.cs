@@ -11,24 +11,36 @@ namespace Ratatoskr.Actions.ActionModules
 {
     internal sealed class Action_RandomHexText : ActionObject
     {
-        public Action_RandomHexText()
+        public enum Argument
         {
-            InitParameter<Term_Double>("size");
-
-            InitResult<Term_Text>("value");
+            Size,
         }
 
-        protected override ExecState OnExecStart()
+        public enum Result
         {
-            var param_size = GetParameter<Term_Double>("size");
+            Value,
+        }
 
-            var data = new byte[(int)param_size.Value];
+        public Action_RandomHexText()
+        {
+            RegisterArgument(Argument.Size.ToString(), typeof(int), null);
+        }
+
+        public Action_RandomHexText(int size) : this()
+        {
+            SetArgumentValue(Argument.Size.ToString(), size);
+        }
+
+        protected override void OnExecStart()
+        {
+            var size = (int)GetArgumentValue(Argument.Size.ToString());
+            var data = new byte[size];
 
             (new Random()).NextBytes(data);
 
-            SetResult("value", new Term_Text(HexTextEncoder.ToHexText(data)));
-
-            return (ExecState.Complete);
+            SetResult(ActionResultType.Success, new [] {
+                new ActionParam(Result.Value.ToString(), typeof(string), HexTextEncoder.ToHexText(data))
+            });
         }
     }
 }

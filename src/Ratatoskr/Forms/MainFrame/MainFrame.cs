@@ -61,6 +61,11 @@ namespace Ratatoskr.Forms.MainFrame
         {
             if (menu == null)return;
 
+            /* 規定動作ありのメニュー */
+            if (menu.Name == "MenuBar_File_Exit") {
+                return;
+            }
+
             /* パケット変換器リスト */
             if (menu.Name == "MenuBar_View_PacketConverterAdd") {
                 BuildPacketConverterMenu(menu);
@@ -76,7 +81,7 @@ namespace Ratatoskr.Forms.MainFrame
             /* 子持ちメニュー */
             if (menu.HasDropDownItems) {
                 /* 共通イベントを削除 */
-                menu.Click -= OnMenuClick;
+                menu.Click -= OnMenuBarClick;
 
                 /* サブメニューに対して同等の処理 */
                 foreach (ToolStripItem item in menu.DropDownItems) {
@@ -87,7 +92,7 @@ namespace Ratatoskr.Forms.MainFrame
             }
 
             /* 終端メニューの場合は共通イベントを設定 */
-            menu.Click += OnMenuClick;
+            menu.Click += OnMenuBarClick;
 
             /* メニューのタグをActionShortcutIdに変換 */
             if (menu.Tag is string) {
@@ -303,8 +308,9 @@ namespace Ratatoskr.Forms.MainFrame
             /* 自動的に終了するのを禁止 */
             e.Cancel = true;
 
-            /* アプリケーション終了 */
-            ActionManager.AddNormalAction(new Action_Shutdown());
+            /* アクションにするとアクション実行中はシャットダウンできなくなるので
+             * アクションではなく直接シャットダウンする */
+            Program.ShutdownRequest();
         }
 
         protected override void OnResize(EventArgs e)
@@ -314,7 +320,7 @@ namespace Ratatoskr.Forms.MainFrame
             ConfigManager.User.MainWindow.Maximize.Value = (WindowState == FormWindowState.Maximized);
         }
 
-        private void OnMenuClick(object sender, EventArgs e)
+        private void OnMenuBarClick(object sender, EventArgs e)
         {
             var menu = sender as ToolStripMenuItem;
 
@@ -324,7 +330,14 @@ namespace Ratatoskr.Forms.MainFrame
             ActionShortcutManager.Exec((ActionShortcutId)menu.Tag, OnActionCompleted);
         }
 
-        private void OnActionCompleted(object sender, ActionObject.ActionResultStatus result)
+        private void MenuBar_File_Exit_Click(object sender, EventArgs e)
+        {
+            /* アクションにするとアクション実行中はシャットダウンできなくなるので
+             * アクションではなく直接シャットダウンする */
+            Program.ShutdownRequest();
+        }
+
+        private void OnActionCompleted(object sender, ActionObject.ActionResultType result, ActionParam[] result_values)
         {
             UpdateMenuBar();
         }

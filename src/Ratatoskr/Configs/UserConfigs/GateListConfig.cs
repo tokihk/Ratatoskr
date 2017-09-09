@@ -101,6 +101,9 @@ namespace Ratatoskr.Configs.UserConfigs
             /* redirect-data-queue-limit */
             newobj.DeviceConfig.RedirectDataQueueLimit = uint.Parse(XmlUtil.GetAttribute(xml_node, "redirect-data-queue-limit", "0"));
 
+            /* redirect-alias */
+            newobj.GateProperty.RedirectAlias = XmlUtil.GetAttribute(xml_node, "redirect-alias", "");
+
             /* device-class-id */
             newobj.DeviceClassID = Guid.Parse(XmlUtil.GetAttribute(xml_node, "device-class-id", Guid.Empty.ToString()));
 
@@ -150,12 +153,15 @@ namespace Ratatoskr.Configs.UserConfigs
 
                 /* redirect-enable */
                 xml_data.SetAttribute("redirect-enable", config.DeviceConfig.RedirectEnable.ToString());
-
+                
                 /* send-data-queue-limit */
                 xml_data.SetAttribute("send-data-queue-limit", config.DeviceConfig.SendDataQueueLimit.ToString());
 
                 /* redirect-data-queue-limit */
                 xml_data.SetAttribute("redirect-data-queue-limit", config.DeviceConfig.RedirectDataQueueLimit.ToString());
+
+                /* redirect-alias */
+                xml_data.SetAttribute("redirect-alias", config.GateProperty.RedirectAlias);
 
                 /* device-class-id */
                 xml_data.SetAttribute("device-class-id", config.DeviceClassID.ToString());

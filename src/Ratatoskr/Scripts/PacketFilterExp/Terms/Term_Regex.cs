@@ -9,7 +9,7 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
 {
     internal sealed class Term_Regex : Term
     {
-        private Regex value_ = new Regex("", RegexOptions.Compiled);
+        private Regex value_ = null;
 
 
         public Term_Regex()
@@ -18,18 +18,7 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
 
         public Term_Regex(string text)
         {
-            try {
-                if ((text != null) && (text.Length > 0)) {
-                    value_ = new Regex(text, RegexOptions.Compiled);
-                }
-            } catch (Exception) {
-                value_ = null;
-            }
-        }
-
-        public override bool ErrorCheck(ExpressionCallStack cs)
-        {
-            return (value_ == null);
+            value_ = new Regex(text, RegexOptions.Compiled);
         }
 
         public string Value
@@ -42,34 +31,14 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
             return (value_ != null);
         }
 
-        protected override Term Exec_RELOP_EQUAL(ExpressionCallStack cs, Term right)
+        protected override Term Exec_RELOP_EQUAL(ExpressionCallStack cs, Term term_sub)
         {
-            try {
-                /* === Term_Binary === */
-                {
-                    var right_r = right as Term_Binary;
-
-                    if (right_r != null) {
-                        var str = Encoding.ASCII.GetString(right_r.Value);
-
-                        return (new Term_Bool(value_.IsMatch(str)));
-                    }
-                }
-
-                /* === Term_Text === */
-                {
-                    var right_r = right as Term_Text;
-
-                    if (right_r != null) {
-                        return (new Term_Bool(value_.IsMatch(right_r.Value)));
-                    }
-                }
-
-                return (null);
-
-            } catch (Exception) {
-                return (null);
+            /* === Term_Text === */
+            if (term_sub.GetType() == typeof(Term_Text)) {
+                return (new Term_Bool(value_.IsMatch((term_sub as Term_Text).Value)));
             }
+
+            return (null);
         }
     }
 }

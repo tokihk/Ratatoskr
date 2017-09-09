@@ -131,7 +131,7 @@ namespace Ratatoskr.Forms
             return (viewm_.GetClasses());
         }
 
-        public static IEnumerable<ViewInstance> GetPacketViewInstances()
+        public static IEnumerable<ViewControl> GetPacketViewControls()
         {
             return (viewm_.GetInstances());
         }
@@ -141,17 +141,17 @@ namespace Ratatoskr.Forms
             get { return (viewm_.GetInstances().Count() < PACKET_VIEW_LIMIT); }
         }
 
-        public static ViewInstance CreatePacketView(Guid class_id, Guid obj_id, ViewProperty viewp)
+        public static ViewControl CreatePacketView(Guid class_id, Guid obj_id, ViewProperty viewp)
         {
-            return (viewm_.CreateInstance(class_id, obj_id, viewp));
+            return (viewm_.CreateControl(class_id, obj_id, viewp));
         }
 
-        public static ViewInstance CreatePacketView(Guid class_id, ViewProperty viewp)
+        public static ViewControl CreatePacketView(Guid class_id, ViewProperty viewp)
         {
             return (CreatePacketView(class_id, Guid.NewGuid(), viewp));
         }
 
-        public static void RemovePacketView(ViewInstance viewi)
+        public static void RemovePacketView(ViewControl viewi)
         {
             viewm_.RemoveInstance(viewi);
         }

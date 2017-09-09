@@ -13,11 +13,11 @@ namespace Ratatoskr.Actions.ActionModules
         {
         }
 
-        protected override ExecState OnExecStart()
+        protected override void OnExecStart()
         {
             FormTaskManager.RedrawPacketRequest();
 
-            return (ExecState.Complete);
+            SetResult(ActionResultType.Success, null);
         }
     }
 }

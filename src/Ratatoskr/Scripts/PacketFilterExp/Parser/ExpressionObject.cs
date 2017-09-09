@@ -32,12 +32,13 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 
             if (args_.Count == 0)return (false);
 
+            if (cs.PrevPacket == null) {
+                cs.PrevPacket = cs.LastPacket;
+            }
+
             var term_stack = new Stack<Terms.Term>();
 
             foreach (var arg in args_) {
-                /* 中断要求 */
-                if (cs.ExecuteCancelRequest)return (false);
-
                 /* --- 項 --- */
                 if (arg is Terms.Term) {
                     term_stack.Push(arg as Terms.Term);
@@ -59,22 +60,11 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Parser
                         term_left = term_stack.Pop();
                     }
 
-                    /* 左辺の場合は、メソッド呼び出しではないときに項がエラーの場合は構文エラー */
-                    if (   (term_left != null)
-                        && ((Tokens)arg != Tokens.CALL)
-                        && (term_left.ErrorCheck(cs))
-                    ) {
-                        return (false);
-                    }
-
-                    if ((term_right != null) && (term_right.ErrorCheck(cs)))return (false);
-
-                    /* --- 計算実行 --- */
+                    /* 計算実行 */
                     var term_result = term_left.Exec(cs, (Tokens)arg, term_right);
 
-                    /* --- 計算ができない場合は構文エラー --- */
+                    /* 計算ができない場合は構文エラー */
                     if (term_result == null)return (false);
-                    if (term_result.ErrorCheck(cs))return (false);
 
                     /* --- 計算結果を次の計算対象に含める --- */
                     term_stack.Push(term_result);
@@ -83,13 +73,12 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 
             /* --- 項が余っている場合は構文エラー --- */
             if (term_stack.Count != 1)return (false);
-            if (term_stack.First().ErrorCheck(cs))return (false);
 
             /* 最終オブジェクトの真偽を結果として返す */
             hitstate = term_stack.First().ToBool(cs);
 
             /* === コールスタック更新 === */
-            cs.PrevPacket = cs.CurrentPacket;
+            cs.PrevPacket = cs.LastPacket;
 
             return (true);
         }

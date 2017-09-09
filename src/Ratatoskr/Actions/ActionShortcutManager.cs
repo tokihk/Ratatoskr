@@ -52,7 +52,7 @@ namespace Ratatoskr.Actions
                     action = new Action_ScreenUpdate();
                     break;
                 case ActionShortcutId.EventPacketClear:
-                    action = new Action_EventClear();
+                    action = new Action_PacketClear();
                     break;
                 case ActionShortcutId.FileOpen:
                     action = new Action_FileOpen();

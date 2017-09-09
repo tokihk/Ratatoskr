@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,8 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
         {
             get { return (new [] { "rtcap" }); }
         }
+
+        public override Image Icon => Properties.Resources.app_icon_32x32;
 
         public override FileFormatReader CreateReader()
         {

@@ -30,18 +30,9 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
             return (value_);
         }
 
-        protected override Term Exec_RELOP_EQUAL(ExpressionCallStack cs, Term right)
+        protected override Term Exec_RELOP_EQUAL(ExpressionCallStack cs, Term term_sub)
         {
-            /* === Term_Bool === */
-            {
-                var right_r = right as Term_Bool;
-
-                if (right_r != null) {
-                    return (new Term_Bool(value_ == right_r.value_));
-                }
-            }
-
-            return (null);
+            return (new Term_Bool(value_ == term_sub.ToBool(cs)));
         }
     }
 }

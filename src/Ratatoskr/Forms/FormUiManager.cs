@@ -273,11 +273,18 @@ namespace Ratatoskr.Forms
             }
         }
 
-        public static string AnyFileOpen()
+        public static string AnyFileOpen(string init_dir = null)
         {
             var dialog = new OpenFileDialog();
 
-            dialog.InitialDirectory = ConfigManager.GetCurrentDirectory();
+            if (   (init_dir != null)
+                && (Directory.Exists(init_dir))
+            ) {
+                dialog.InitialDirectory = init_dir;
+            } else {
+                dialog.InitialDirectory = ConfigManager.GetCurrentDirectory();
+            }
+
             dialog.Multiselect = false;
 
             if (dialog.ShowDialog() != DialogResult.OK)return (null);

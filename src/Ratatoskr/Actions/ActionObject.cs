@@ -12,29 +12,34 @@ namespace Ratatoskr.Actions
     {
         protected enum ExecState
         {
+            Idle,
             Busy,
-            Complete,
         }
 
-        public enum ActionResultStatus
+        public enum ActionResultType
         {
             Success,
-            Error,
+            Error_Default,
+            Error_Running,
+            Error_Cancel,
+            Error_Argument,
+            Error_FileOpen,
+            Error_Unknown,
         }
-
-
-        public delegate void ActionCompletedDelegate(ActionObject sender, ActionResultStatus result);
-        public event ActionCompletedDelegate ActionCompleted = delegate(ActionObject sender, ActionResultStatus result) { };
 
 
         private bool init_state_ = false;
+        private bool exit_req_ = false;
         private bool exit_state_ = false;
-        private bool cancel_req_ = false;
 
         private List<ActionParam> params_ = new List<ActionParam>();
-        private List<ActionParam> results_ = new List<ActionParam>();
+        private ActionResultType  result_status_ = ActionResultType.Error_Running;
+        private ActionParam[]     result_values_ = null;
 
-        public ActionResultStatus ResultStatus { get; protected set; } = ActionResultStatus.Success;
+        private object running_sync_ = new object();
+
+        public delegate void ActionCompletedDelegate(object sender, ActionResultType result, ActionParam[] result_values);
+        public event ActionCompletedDelegate ActionCompleted = delegate(object sender, ActionResultType result, ActionParam[] result_values) { };
 
         public ExpressionCallStack CallStack { get; set; } = null;
 
@@ -43,208 +48,141 @@ namespace Ratatoskr.Actions
         {
         }
 
+        protected void RegisterArgument(string name, Type value_type, object value = null)
+        {
+            lock (running_sync_) {
+                /* 同じ名前の引数を削除 */
+                params_.RemoveAll(param => param.Name == name);
+
+                /* パラメータを追加 */
+                params_.Add(new ActionParam(name, value_type, value));
+            }
+        }
+
+        private void SetArgumentValue(ActionParam container, object value)
+        {
+            if (container == null)return;
+
+            /* 引数のタイプが異なる場合は無視 */
+            if (   (value != null)
+                && (container.ValueType != null)
+                && (value.GetType() != container.ValueType)
+            ) {
+                return;
+            }
+
+            /* 引数変更 */
+            container.Value = value;
+        }
+
+        public void SetArgumentValue(string name, object value)
+        {
+            lock (running_sync_) {
+                SetArgumentValue(params_.Find(param => param.Name == name), value);
+            }
+        }
+
+        public void SetArgumentValue(int index, object value)
+        {
+            lock (running_sync_) {
+                if (index >= params_.Count)return;
+
+                SetArgumentValue(params_[index], value);
+            }
+        }
+
+        protected object GetArgumentValue(string name)
+        {
+            lock (running_sync_) {
+                var container = params_.Find(param => param.Name == name);
+
+                if (container == null)return (null);
+
+                return (container.Value);
+            }
+        }
+
+        protected object GetArgumentValue(int index)
+        {
+            lock (running_sync_) {
+                if (index >= params_.Count)return (null);
+
+                var container = params_[index];
+
+                return (container.Value);
+            }
+        }
+
+        public void SetResult(ActionResultType result, ActionParam[] result_values)
+        {
+            lock (running_sync_) {
+                result_status_ = result;
+                result_values_ = result_values;
+                exit_req_ = true;
+            }
+        }
+
+        public ActionResultType GetResultStatus()
+        {
+            return (result_status_);
+        }
+
+        public ActionParam[] GetResultValues()
+        {
+            return (result_values_);
+        }
+
         public bool IsComplete
         {
             get { return (exit_state_); }
         }
 
-        protected void InitParameter<T>(string name)
-            where T : Term
+        public bool ArgumentCheck()
         {
-            /* 重複パラメータを削除 */
-            params_.RemoveAll(param => param.Name == name);
-
-            /* 終端にパラメータを追加 */
-            params_.Add(new ActionParam(name, null, typeof(T)));
-        }
-
-        public void SetParameter(uint index, Term value)
-        {
-            if (index >= params_.Count)return;
-            if (value == null)return;
-
-            var param = params_[(int)index];
-
-            /* 設定パラメータがVoidのときは初期値を設定 */
-            if (value.GetType() == typeof(Term_Void)) {
-                value = param.ValueType.InvokeMember(
-                                            null,
-                                            System.Reflection.BindingFlags.CreateInstance,
-                                            null,
-                                            null,
-                                            new object[] { }) as Term_Void;
+            foreach (var param in params_) {
+                if (param.Value == null) {
+                    return (false);
+                }
             }
 
-            /* 引数の型と設定パラメータの型が一致しない */
-            if (   (param.ValueType != typeof(Term_Void)
-                && (param.ValueType != value.GetType()))
-            ) {
-                return;
-            }
-
-            /* パラメータを設定 */
-            param.Value = value;
-        }
-
-        public void SetParameter(string name, Term value)
-        {
-            SetParameter((uint)params_.FindIndex(param => param.Name == name), value);
-        }
-
-        protected Term GetParameter(uint index)
-        {
-            if (index >= params_.Count) {
-                return (new Term_Void());
-            }
-
-            /* 一致するIDのパラメータを取得 */
-            var param = params_[(int)index];
-
-            if (param.Name == null) {
-                return (new Term_Void());
-            }
-
-            return (param.Value);
-        }
-
-        protected T GetParameter<T>(uint index)
-            where T : Term
-        {
-            return (GetParameter(index) as T);
-        }
-
-        protected Term GetParameter(string name)
-        {
-            return (GetParameter((uint)params_.FindIndex(param => param.Name == name)));
-        }
-
-        protected T GetParameter<T>(string name)
-            where T : Term
-        {
-            return (GetParameter(name) as T);
-        }
-
-        protected void InitResult<T>(string name)
-            where T : Term, new()
-        {
-            /* 重複パラメータを削除 */
-            results_.RemoveAll(result => result.Name == name);
-
-            /* 終端にパラメータを追加 */
-            results_.Add(new ActionParam(name, new T(), typeof(T)));
-        }
-
-        public void SetResult(uint index, Term value)
-        {
-            if (index >= results_.Count)return;
-
-            var result = results_[(int)index];
-
-            /* 設定パラメータがVoidのときは初期値を設定 */
-            if (value.GetType() == typeof(Term_Void)) {
-                value = result.ValueType.InvokeMember(
-                                            null,
-                                            System.Reflection.BindingFlags.CreateInstance,
-                                            null,
-                                            null,
-                                            new object[] { }) as Term_Void;
-            }
-
-            /* 引数の型と設定パラメータの型が一致しない */
-            if (   (result.ValueType != typeof(Term_Void)
-                && (result.ValueType != value.GetType()))
-            ) {
-                return;
-            }
-
-            /* パラメータを設定 */
-            result.Value = value;
-        }
-
-        public void SetResult(string name, Term value)
-        {
-            SetResult((uint)results_.FindIndex(result => result.Name == name), value);
-        }
-
-        public Term GetResult(uint index)
-        {
-            if (index >= (uint)results_.Count) {
-                return (new Term_Void());
-            }
-
-            /* 一致するIDのパラメータを取得 */
-            var result = results_[(int)index];
-
-            if (result.Name == null) {
-                return (new Term_Void());
-            }
-
-            return (result.Value);
-        }
-
-        public T GetResult<T>(uint index)
-            where T : Term
-        {
-            return (GetResult(index) as T);
-        }
-
-        public Term GetResult(string name)
-        {
-            return (GetResult((uint)results_.FindIndex(result => result.Name == name)));
-        }
-
-        public T GetResult<T>(string name)
-            where T : Term
-        {
-            return (GetResult(name) as T);
-        }
-
-        public KeyValuePair<string, Term>[] GetAllResult()
-        {
-            return (from result in results_
-                    select new KeyValuePair<string, Term>(result.Name, result.Value)
-                   ).ToArray();
+            return (OnArgumentCheck());
         }
 
         public void Cancel()
         {
-            cancel_req_ = true;
-        }
-
-        public bool ParameterCheck()
-        {
-            foreach (var param in params_) {
-                if (param.Value == null)return (false);
-            }
-
-            return (OnParameterCheck());
+            SetResult(ActionResultType.Error_Cancel, null);
         }
 
         public void Poll()
         {
             if (exit_state_)return;
 
-            var cancel_req = cancel_req_;
-
             /* 初期化処理 */
-            if ((!cancel_req) && (!init_state_)) {
-                cancel_req = (OnExecStart() == ExecState.Complete);
-                init_state_ = true;
+            if ((!exit_req_) && (!init_state_)) {
+                /* 引数チェック */
+                if (ArgumentCheck()) {
+                    OnExecStart();
+                    init_state_ = true;
+
+                } else {
+                    /* 引数エラー */
+                    SetResult(ActionResultType.Error_Argument, null);
+                }
             }
 
             /* 実行処理 */
-            if (!cancel_req) {
-                cancel_req = (OnExecPoll() == ExecState.Complete);
+            if (!exit_req_) {
+                OnExecPoll();
             }
 
             /* 終了処理 */
-            if ((cancel_req) && (!exit_state_)) {
+            if ((exit_req_) && (!exit_state_)) {
                 /* 初期化処理が実行されたときのみ終了処理を呼ぶ */
                 if (init_state_) {
                     OnExecComplete();
                 }
 
-                ActionCompleted(this, ResultStatus);
+                ActionCompleted(this, result_status_, result_values_);
                 exit_state_ = true;
             }
         }
@@ -256,10 +194,21 @@ namespace Ratatoskr.Actions
             }
         }
 
-        public virtual bool OnParameterCheck() { return (true); }
+        protected virtual void OnExecStart()
+        {
+        }
 
-        protected virtual ExecState OnExecStart()    { return (ExecState.Busy); }
-        protected virtual ExecState OnExecPoll()     { return (ExecState.Complete); }
-        protected virtual void      OnExecComplete() { }
+        protected virtual void OnExecPoll()
+        {
+        }
+
+        protected virtual void OnExecComplete()
+        {
+        }
+
+        protected virtual bool OnArgumentCheck()
+        {
+            return (true);
+        }
     }
 }

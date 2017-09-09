@@ -15,6 +15,21 @@ namespace Ratatoskr.Actions.ActionModules
 {
     internal sealed class Action_RecvWait : ActionObject
     {
+        public enum Argument
+        {
+            Gate,
+            InputFormat,
+            CheckPattern,
+            TimeOut,
+        }
+
+        public enum Result
+        {
+            RecvState,
+            MatchGate,
+            MatchData,
+        }
+
         private Regex     gate_regex_ = null;
 
         private string    input_format_ = "";
@@ -28,63 +43,38 @@ namespace Ratatoskr.Actions.ActionModules
 
         public Action_RecvWait()
         {
-            InitParameter<Term_Text>("gate");
-            InitParameter<Term_Text>("input_format");
-            InitParameter<Term_Text>("check_pattern");
-            InitParameter<Term_Double>("timeout");
-
-            InitResult<Term_Bool>("recv");
-            InitResult<Term_Text>("gate");
-            InitResult<Term_Text>("data");
+            RegisterArgument(Argument.Gate.ToString(), typeof(string), null);
+            RegisterArgument(Argument.InputFormat.ToString(), typeof(string), null);
+            RegisterArgument(Argument.CheckPattern.ToString(), typeof(string), null);
+            RegisterArgument(Argument.TimeOut.ToString(), typeof(int), null);
         }
 
-        public override bool OnParameterCheck()
+        public Action_RecvWait(string gate, string input_format, string check_pattern, int timeout) : this()
         {
-            /* gate */
-            if (GetParameter<Term_Text>("gate") == null) {
-                return (false);
-            }
-
-            /* input_format */
-            if (GetParameter<Term_Text>("input_format") == null) {
-                return (false);
-            }
-
-            /* check_pattern */
-            if (GetParameter<Term_Text>("check_pattern") == null) {
-                return (false);
-            }
-
-            /* timeout */
-            if (GetParameter<Term_Double>("timeout") == null) {
-                return (false);
-            }
-
-            return (true);
+            SetArgumentValue(Argument.Gate.ToString(), gate);
+            SetArgumentValue(Argument.InputFormat.ToString(), input_format);
+            SetArgumentValue(Argument.CheckPattern.ToString(), check_pattern);
+            SetArgumentValue(Argument.TimeOut.ToString(), timeout);
         }
 
-        protected override ExecState OnExecStart()
+        protected override void OnExecStart()
         {
-            if (!ParameterCheck()) {
-                return (ExecState.Complete);
-            }
-
-            var param_gate = GetParameter<Term_Text>("gate");
-            var param_format = GetParameter<Term_Text>("input_format");
-            var param_pattern = GetParameter<Term_Text>("check_pattern");
-            var param_timeout = GetParameter<Term_Double>("timeout");
+            var param_gate = GetArgumentValue(Argument.Gate.ToString()) as string;
+            var param_format = GetArgumentValue(Argument.InputFormat.ToString()) as string;
+            var param_pattern = GetArgumentValue(Argument.CheckPattern.ToString()) as string;
+            var param_timeout = (int)GetArgumentValue(Argument.TimeOut.ToString());
 
             /* ゲート検出用正規表現モジュール生成 */
-            gate_regex_ = GateManager.GetWildcardAliasModule(param_gate.Value);
+            gate_regex_ = GateManager.GetWildcardAliasModule(param_gate);
 
             /* 入力データフォーマットバックアップ */
-            input_format_ = param_format.Value;
+            input_format_ = param_format;
 
             /* パターンバックアップ */
-            wildcard_pattern_ = param_pattern.Value;
+            wildcard_pattern_ = param_pattern;
 
             /* タイムアウト設定 */
-            timeout_value_ = (int)param_timeout.Value;
+            timeout_value_ = param_timeout;
             if (timeout_value_ > 0) {
                 timeout_timer_.Restart();
             }
@@ -92,20 +82,20 @@ namespace Ratatoskr.Actions.ActionModules
             /* イベント登録 */
             GatePacketManager.EventPacketCleared += OnEventPacketCleared;
             GatePacketManager.EventPacketEntried += OnEventPacketEntried;
-
-            return (ExecState.Busy);
         }
 
-        protected override ExecState OnExecPoll()
+        protected override void OnExecPoll()
         {
             /* パターン検出 */
             lock (wildcard_data_) {
                 foreach (var wildcard in wildcard_data_) {
                     if (wildcard.Value.IsMatch) {
-                        SetResult("recv", new Term_Bool(true));
-                        SetResult("gate", new Term_Text(wildcard.Key));
-                        SetResult("data", new Term_Text(wildcard.Value.MatchText));
-                        return (ExecState.Complete);
+                        SetResult(ActionResultType.Success, new [] {
+                            new ActionParam(Result.RecvState.ToString(), typeof(bool), true),
+                            new ActionParam(Result.MatchGate.ToString(), typeof(string), wildcard.Key),
+                            new ActionParam(Result.MatchData.ToString(), typeof(string), wildcard.Value.MatchText)
+                        });
+                        return;
                     }
                 }
             }
@@ -114,13 +104,14 @@ namespace Ratatoskr.Actions.ActionModules
             if (   (timeout_timer_.IsRunning)
                 && (timeout_timer_.ElapsedMilliseconds > timeout_value_)
             ) {
-                SetResult("recv", new Term_Bool(false));
-                return (ExecState.Complete);
+                SetResult(ActionResultType.Success, new [] {
+                    new ActionParam(Result.RecvState.ToString(), typeof(bool), false)
+                });
+
+                return;
             }
 
             System.Threading.Thread.Sleep(1);
-
-            return (ExecState.Busy);
         }
 
         protected override void OnExecComplete()

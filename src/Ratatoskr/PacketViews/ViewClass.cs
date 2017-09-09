@@ -37,6 +37,9 @@ namespace Ratatoskr.PacketViews
             return (OnCreateInstance(viewm, obj_id, viewp));
         }
 
-        protected virtual ViewInstance OnCreateInstance(ViewManager devm, Guid obj_id, ViewProperty devp) { return (null); }
+        protected virtual ViewInstance OnCreateInstance(ViewManager devm, Guid obj_id, ViewProperty devp)
+        {
+            return (null);
+        }
     }
 }

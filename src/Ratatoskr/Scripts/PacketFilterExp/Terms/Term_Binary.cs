@@ -26,11 +26,6 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
             value_ = data;
         }
 
-        public override bool ErrorCheck(ExpressionCallStack cs)
-        {
-            return (value_ == null);
-        }
-
         public byte[] Value
         {
             get { return (value_); }
@@ -41,15 +36,11 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
             return ((value_ != null) && (value_.Length > 0));
         }
 
-        protected override Term Exec_RELOP_EQUAL(ExpressionCallStack cs, Term right)
+        protected override Term Exec_RELOP_EQUAL(ExpressionCallStack cs, Term term_sub)
         {
             /* === Term_Binary === */
-            {
-                var right_r = right as Term_Binary;
-
-                if (right_r != null) {
-                    return (new Term_Bool(value_.SequenceEqual(right_r.value_)));
-                }
+            if (term_sub.GetType() == typeof(Term_Binary)) {
+                return (new Term_Bool(value_.SequenceEqual((term_sub as Term_Binary).Value)));
             }
 
             return (null);

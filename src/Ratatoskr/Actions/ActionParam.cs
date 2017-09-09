@@ -9,15 +9,15 @@ namespace Ratatoskr.Actions
 {
     internal sealed class ActionParam
     {
-        public ActionParam(string name, Term value, Type value_type)
+        public ActionParam(string name, Type value_type, object value)
         {
             Name = name;
-            Value = value;
             ValueType = value_type;
+            Value = value;
         }
 
         public string Name      { get; }
-        public Term   Value     { get; set; }
         public Type   ValueType { get; }
+        public object Value     { get; set; }
     }
 }

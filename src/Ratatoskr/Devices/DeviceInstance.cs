@@ -49,6 +49,13 @@ namespace Ratatoskr.Devices
             Connected,
         }
 
+        public enum SendRequestStatus
+        {
+            Accept,         // 正常に受理された/キューに追加された
+            Ignore,         // 無視された/捨てられた
+            Pending,        // 今は判断できない/後で再トライ
+        }
+
 
         public delegate void StatusChangedDelegate();
         public delegate void SendDataRequstDelegate();
@@ -75,8 +82,9 @@ namespace Ratatoskr.Devices
         private bool connect_req_ = false;
         private bool reboot_req_ = false;
 
-        private Queue<byte[]> send_data_user_ = new Queue<byte[]>();
-        private Queue<byte[]> send_data_redirect_ = new Queue<byte[]>();
+        private Queue<byte[]> send_queue_user_ = new Queue<byte[]>();
+        private Queue<byte[]> send_queue_redirect_ = new Queue<byte[]>();
+        private object        send_queue_sync_ = new object();
 
         private byte[] send_data_busy_ = null;
         private int    send_data_offset_ = 0;
@@ -220,68 +228,59 @@ namespace Ratatoskr.Devices
             reboot_req_ = true;
         }
 
-        public bool PushSendData(byte[] data)
+        private (bool discard_req, SendRequestStatus status) PushSendData(Queue<byte[]> data_queue, uint queue_limit, byte[] data)
         {
-            if (data == null)return (false);
-
-            /* 送信禁止状態のときは失敗 */
-            if (!Config.SendEnable)return (false);
-
-            /* 接続状態ではないときは失敗 */
-            if (ConnectStatus != ConnectState.Connected)return (false);
-
-            lock (send_data_sync_) {
-                /* 送信データキューに空が無い場合は失敗 */
-                if (send_data_user_.Count >= Config.SendDataQueueLimit)return (false);
-
-                /* 送信データを追加 */
-                send_data_user_.Enqueue(data);
+            if (   (data == null)           // データが存在しない
+                || (!Config.SendEnable)     // 送信禁止状態
+                || (!connect_req_)          // 切断要求
+            ) {
+                return (true, SendRequestStatus.Ignore);
             }
 
-            /* 送信割込み */
+            lock (send_queue_sync_) {
+                /* 送信データキューに空が無い場合は失敗 */
+                if (data_queue.Count >= queue_limit) {
+                    return (false, SendRequestStatus.Pending);
+                }
+
+                /* 送信データを追加 */
+                data_queue.Enqueue(data);
+            }
+
             OnSendRequest();
 
-            return (true);
+            return (true, SendRequestStatus.Accept);
         }
 
-        private void PushRedirectData(byte[] data)
+        public (bool discard_req, SendRequestStatus status) PushSendUserData(byte[] data)
         {
-            /* リダイレクト禁止状態のときは失敗 */
-            if (!Config.RedirectEnable)return;
+            return (PushSendData(send_queue_user_, Config.SendDataQueueLimit, data));
+        }
 
-            /* 接続状態ではないときは失敗 */
-            if (ConnectStatus != ConnectState.Connected)return;
-
-            lock (send_data_sync_) {
-                /* 送信データキューに空が無い場合は失敗 */
-                if (send_data_redirect_.Count >= Config.RedirectDataQueueLimit)return;
-
-                /* 送信データを追加 */
-                send_data_redirect_.Enqueue(data);
-            }
-
-            /* 送信割込み */
-            OnSendRequest();
+        public (bool discard_req, SendRequestStatus status) PushRedirectData(byte[] data)
+        {
+            return (PushSendData(send_queue_redirect_, Config.RedirectDataQueueLimit, data));
         }
 
         private byte[] PopSendData()
         {
-            /* リダイレクトデータ */
-            if (send_data_redirect_.Count > 0) {
-                return (send_data_redirect_.Dequeue());
-            }
+            lock (send_queue_sync_) {
+                /* リダイレクトデータ */
+                if (send_queue_redirect_.Count > 0) {
+                    return (send_queue_redirect_.Dequeue());
+                }
 
-            /* 通常送信データ */
-            if (send_data_user_.Count > 0) {
-                return (send_data_user_.Dequeue());
-            }
+                /* 通常送信データ */
+                if (send_queue_user_.Count > 0) {
+                    return (send_queue_user_.Dequeue());
+                }
 
-            return (null);
+                return (null);
+            }
         }
 
-        private void ReloadSendDataTry()
+        private void LoadSendBuffer()
         {
-            /* データキューから読込 */
             lock (send_data_sync_) {
                 if (send_data_busy_ == null) {
                     send_data_busy_ = PopSendData();
@@ -292,30 +291,16 @@ namespace Ratatoskr.Devices
             }
         }
 
-        private void ReloadSendData()
-        {
-            /* データキューから読込 */
-            ReloadSendDataTry();
-
-            /* データが存在しないときは送信データを要求する */
-            if (send_data_busy_ == null) {
-                SendDataRequest();
-            }
-
-            /* もう一度データキューから読込 */
-            ReloadSendDataTry();
-        }
-
         protected int GetSendData(byte[] buffer, int size)
         {
             if (buffer == null)return (0);
 
+            /* 読込サイズをバッファサイズで補正 */
             size = Math.Min(buffer.Length, size);
-
             if (size == 0)return (0);
 
             /* 送信データ準備 */
-            ReloadSendData();
+            LoadSendBuffer();
 
             lock (send_data_sync_) {
                 /* 送信データが存在しないときは終了 */
@@ -343,7 +328,7 @@ namespace Ratatoskr.Devices
         protected byte[] GetSendData()
         {
             /* 送信データ準備 */
-            ReloadSendData();
+            LoadSendBuffer();
 
             lock (send_data_sync_) {
                 /* 送信データが存在しないときは終了 */
@@ -352,9 +337,11 @@ namespace Ratatoskr.Devices
                 var send_data = (byte[])null;
 
                 if (send_data_offset_ == 0) {
+                    /* 送信バッファを全てセットするのでオブジェクトをそのまま流用 */
                     send_data = send_data_busy_;
 
                 } else {
+                    /* 送信バッファの途中から適用するのでバッファを用意 */
                     var send_size = Math.Max(0, send_data_busy_.Length - send_data_offset_);
 
                     if (send_size > 0) {
@@ -363,6 +350,7 @@ namespace Ratatoskr.Devices
                     }
                 }
 
+                /* 送信バッファをクリア */
                 send_data_busy_ = null;
                 send_data_offset_ = 0;
 
@@ -391,13 +379,14 @@ namespace Ratatoskr.Devices
             }
         }
 
-        private void SetupRedirectData(byte[] data)
+        private void RedirectRequest(byte[] data)
         {
+            /* 途中でリダイレクト先が変化しないようにバックアップで処理 */
             var redirect_list = redirect_list_;
 
-            if (redirect_list_ == null)return;
+            if (redirect_list == null)return;
 
-            foreach (var target in redirect_list_) {
+            foreach (var target in redirect_list) {
                 target.PushRedirectData(data);
             }
         }
@@ -448,7 +437,7 @@ namespace Ratatoskr.Devices
             if (!Config.RecvEnable)return;
 
             /* リダイレクト要求 */
-            SetupRedirectData(data);
+            RedirectRequest(data);
 
             NotifyPacket(
                 new StaticDataPacketObject(
@@ -541,9 +530,12 @@ namespace Ratatoskr.Devices
 
                 case ConnectSequence.Connected:
                 {
+                    /* データが存在しないときは送信データを要求する */
+                    if (send_data_busy_ == null) {
+                        SendDataRequest();
+                    }
+
                     state = OnPoll();
-                    
-                    ReloadSendData();
                 }
                     break;
 

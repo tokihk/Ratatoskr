@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,8 @@ namespace Ratatoskr.FileFormats.PacketLog_Pcap
         {
             get { return (new [] { "pcap" }); }
         }
+
+        public override Image Icon => Properties.Resources.wireshark_32x32;
 
         public override FileFormatReader CreateReader()
         {

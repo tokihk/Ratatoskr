@@ -28,6 +28,7 @@ namespace Ratatoskr.PacketViews.Sequential
         public EnumConfig<CharCodeType> CharCode       { get; } = new EnumConfig<CharCodeType>(CharCodeType.ASCII);
         public StringConfig             EndLinePattern { get; } = new StringConfig("");
         public IntegerConfig            ShiftBit       { get; } = new IntegerConfig(0);
+        public BoolConfig               EchoBack       { get; } = new BoolConfig(false);
 
 
         public override ViewProperty Clone()

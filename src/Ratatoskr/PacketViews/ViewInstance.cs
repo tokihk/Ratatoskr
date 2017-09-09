@@ -8,8 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
-using Ratatoskr.Scripts.PacketFilterExp.Parser;
-using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Generic.Packet;
 
 namespace Ratatoskr.PacketViews
@@ -19,7 +17,6 @@ namespace Ratatoskr.PacketViews
         internal bool InitializeComplete { get; set; } = false;
 
         private ViewManager      viewm_;
-        private ExpressionFilter filter_obj_ = null;
 
 
         public ViewInstance(ViewManager viewm, ViewClass viewd, ViewProperty viewp, Guid id)
@@ -30,8 +27,6 @@ namespace Ratatoskr.PacketViews
             Class = viewd;
             Property = viewp;
             ID = id;
-
-            UpdateFilter();
         }
 
         public ViewInstance()
@@ -43,21 +38,6 @@ namespace Ratatoskr.PacketViews
         public ViewClass    Class    { get; }
         public ViewProperty Property { get; }
 
-        public static bool CheckFilter(string filter)
-        {
-            return (ExpressionFilter.Build(filter, null) != null);
-        }
-
-        public void UpdateFilter()
-        {
-            if (Property.TargetFilterEnable.Value) {
-                filter_obj_ = ExpressionFilter.Build(Property.TargetFilterValue.Value, null);
-            } else {
-                filter_obj_ = null;
-            }
-
-            FormTaskManager.RedrawPacketRequest();
-        }
 
         public void BackupProperty()
         {
@@ -68,10 +48,6 @@ namespace Ratatoskr.PacketViews
 
         internal void ClearPacket()
         {
-            if (filter_obj_ != null) {
-                filter_obj_.CallStack = new ExpressionCallStack();
-            }
-
             OnClearPacket();
         }
 
@@ -90,20 +66,9 @@ namespace Ratatoskr.PacketViews
             OnDrawPacketEnd(auto_scroll);
         }
 
-        internal void DrawPacket(IEnumerable<PacketObject> packets)
-        {
-            foreach (var packet in packets) {
-                DrawPacket(packet);
-            }
-        }
-
         internal void DrawPacket(PacketObject packet)
         {
-            if (   (filter_obj_ == null)
-                || (filter_obj_.Input(packet))
-            ) {
-                OnDrawPacket(packet);
-            }
+            OnDrawPacket(packet);
         }
 
         protected virtual void OnBackupProperty() { }

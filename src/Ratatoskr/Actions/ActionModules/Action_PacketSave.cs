@@ -13,35 +13,37 @@ namespace Ratatoskr.Actions.ActionModules
 {
     internal sealed class Action_PacketSave : ActionObject
     {
+        public enum Argument
+        {
+            OverWrite,
+            ConvertEnable,
+        }
+
+        public enum Result
+        {
+            State,
+        }
+
         public Action_PacketSave()
         {
-            InitParameter<Term_Bool>("overwrite");
-            InitParameter<Term_Bool>("rule");
+            RegisterArgument(Argument.OverWrite.ToString(), typeof(bool), null);
+            RegisterArgument(Argument.ConvertEnable.ToString(), typeof(bool), null);
         }
 
-        public Action_PacketSave(bool over, bool rule) : this()
+        public Action_PacketSave(bool over_write, bool filter) : this()
         {
-            SetParameter("overwrite", new Term_Bool(over));
-            SetParameter("rule",      new Term_Bool(rule));
+            SetArgumentValue(Argument.OverWrite.ToString(), over_write);
+            SetArgumentValue(Argument.ConvertEnable.ToString(), filter);
         }
 
-        protected override ExecState OnExecStart()
+        protected override void OnExecStart()
         {
-            var over = GetParameter<Term_Bool>("overwrite");
+            var over_write = (bool)GetArgumentValue(Argument.OverWrite.ToString());
+            var convert_enable = (bool)GetArgumentValue(Argument.ConvertEnable.ToString());
 
-            if (over == null) {
-                return (ExecState.Complete);
-            }
+            PacketSave(over_write, convert_enable);
 
-            var rule = GetParameter<Term_Bool>("rule");
-
-            if (rule == null) {
-                return (ExecState.Complete);
-            }
-
-            PacketSave(over.Value, rule.Value);
-
-            return (ExecState.Complete);
+            SetResult(ActionResultType.Success, null);
         }
 
         private delegate void PacketSaveDelegate(bool over, bool rule);

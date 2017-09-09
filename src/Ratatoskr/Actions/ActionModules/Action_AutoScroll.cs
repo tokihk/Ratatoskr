@@ -13,34 +13,39 @@ namespace Ratatoskr.Actions.ActionModules
 {
     internal sealed class Action_AutoScroll : ActionObject
     {
+        public enum Argument
+        {
+            Value,
+        }
+
+        public enum Result
+        {
+            State,
+        }
+
         public Action_AutoScroll()
         {
-            InitParameter<Term_Bool>("value");
-            InitResult<Term_Bool>("value");
+            RegisterArgument(Argument.Value.ToString(), typeof(bool), null);
         }
 
         public Action_AutoScroll(bool value) : this()
         {
-            SetParameter("value", new Term_Bool(value));
+            SetArgumentValue(Argument.Value.ToString(), value);
         }
 
-        protected override ExecState OnExecStart()
+        protected override void OnExecStart()
         {
-            if (!ParameterCheck()) {
-                return (ExecState.Complete);
-            }
+            var value = GetArgumentValue(Argument.Value.ToString());
 
-            var value = GetParameter<Term_Bool>("value");
-
+            /* 設定処理 */
             if (value != null) {
-                /* 設定値更新 */
-                ConfigManager.User.Option.AutoScroll.Value = value.Value;
+                ConfigManager.User.Option.AutoScroll.Value = (bool)value;
             }
 
-            /* === 戻り値 === */
-            SetResult("value", new Term_Bool(ConfigManager.User.Option.AutoScroll.Value));
-
-            return (ExecState.Complete);
+            SetResult(
+                ActionResultType.Success,
+                new [] {
+                    new ActionParam(Result.State.ToString(), typeof(bool), ConfigManager.User.Option.AutoScroll.Value) });
         }
 
         protected override void OnExecComplete()

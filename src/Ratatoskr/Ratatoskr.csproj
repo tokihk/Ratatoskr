@@ -14,6 +14,21 @@
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -40,7 +55,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icons\app_icon_48x48.ico</ApplicationIcon>
+    <ApplicationIcon>app_icon_48x48.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Label="YltParsers">
     <Names>PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-Parser</Names>
@@ -55,11 +70,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Icons\app_icon_128x128.xcf" />
-    <None Include="Icons\app_icon_256x256.xcf" />
-    <None Include="Icons\app_icon_48x48.xcf" />
-    <None Include="Icons\app_logo_300x60.xcf" />
-    <None Include="Icons\app_logo_420x80.xcf" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -67,12 +77,11 @@
     <Compile Include="Actions\ActionModules\Action_AutoPacketSave.cs" />
     <Compile Include="Actions\ActionModules\Action_AutoScroll.cs" />
     <Compile Include="Actions\ActionModules\Action_AutoTimeStamp.cs" />
-    <Compile Include="Actions\ActionModules\Action_EventClear.cs" />
+    <Compile Include="Actions\ActionModules\Action_PacketClear.cs" />
     <Compile Include="Actions\ActionModules\Action_FileOpen.cs" />
-    <Compile Include="Actions\ActionModules\Action_LastActionResult.cs" />
     <Compile Include="Actions\ActionModules\Action_PacketSave.cs" />
     <Compile Include="Actions\ActionModules\Action_PlayRecord.cs" />
-    <Compile Include="Actions\ActionModules\Action_PrintOut.cs" />
+    <Compile Include="Actions\ActionModules\Action_TextOut.cs" />
     <Compile Include="Actions\ActionModules\Action_RandomHexText.cs" />
     <Compile Include="Actions\ActionModules\Action_RandomInt.cs" />
     <Compile Include="Actions\ActionModules\Action_RecvWait.cs" />
@@ -114,16 +123,13 @@
     <Compile Include="Configs\Types\StringConfig.cs" />
     <Compile Include="Configs\Types\StringListConfig.cs" />
     <Compile Include="Configs\UserConfigs\GateListConfig.cs" />
-    <Compile Include="Configs\UserConfigs\GateRedirectListConfig.cs" />
     <Compile Include="Configs\UserConfigs\MainWindowConfig.cs" />
     <Compile Include="Configs\UserConfigs\OptionConfig.cs" />
     <Compile Include="Configs\UserConfigs\PacketConverterConfig.cs" />
     <Compile Include="Configs\UserConfigs\PacketListConfig.cs" />
     <Compile Include="Configs\UserConfigs\PacketViewConfig.cs" />
-    <Compile Include="Configs\UserConfigs\SequentialCommandListConfig.cs" />
+    <Compile Include="Configs\UserConfigs\SendDataListConfig.cs" />
     <Compile Include="Configs\UserConfigs\ShortcutKeyConfig.cs" />
-    <Compile Include="Configs\UserConfigs\SingleCommandContentsConfig.cs" />
-    <Compile Include="Configs\UserConfigs\SingleCommandTargetConfig.cs" />
     <Compile Include="Configs\UserConfigs\UserConfig.cs" />
     <Compile Include="Devices\AudioFile\DeviceClassImpl.cs" />
     <Compile Include="Devices\AudioFile\DeviceInstanceImpl.cs" />
@@ -173,7 +179,14 @@
     </Compile>
     <Compile Include="Devices\MicInput\DevicePropertyImpl.cs" />
     <Compile Include="Devices\MicInput\MicDeviceInfo.cs" />
+    <Compile Include="Devices\SerialPort\ComPortParam.cs" />
     <Compile Include="Devices\SerialPort\DeviceClassImpl.cs" />
+    <Compile Include="Devices\SerialPort\DeviceControlPanelImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Devices\SerialPort\DeviceControlPanelImpl.Designer.cs">
+      <DependentUpon>DeviceControlPanelImpl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Devices\SerialPort\DeviceInstanceImpl.cs" />
     <Compile Include="Devices\SerialPort\DevicePropertyEditorImpl.cs">
       <SubType>UserControl</SubType>
@@ -182,7 +195,8 @@
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
     <Compile Include="Devices\SerialPort\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\SerialPort\SerialPortInfo.cs" />
+    <Compile Include="Devices\SerialPort\ComPort.cs" />
+    <Compile Include="Devices\SerialPort\ComPortInfo.cs" />
     <Compile Include="Devices\TcpClient\DeviceClassImpl.cs" />
     <Compile Include="Devices\TcpClient\DeviceInstanceImpl.cs" />
     <Compile Include="Devices\TcpClient\DevicePropertyEditorImpl.cs">
@@ -264,6 +278,21 @@
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatClassImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatOptionImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatReaderImpl.cs" />
+    <Compile Include="Forms\MainFrame\MainFrameSendPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainFrame\MainFrameSendDataPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainFrame\MainFrameSendDataPanel.Designer.cs">
+      <DependentUpon>MainFrameSendDataPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainFrame\MainFrameSendFilePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainFrame\MainFrameSendFilePanel.Designer.cs">
+      <DependentUpon>MainFrameSendFilePanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\OptionForm\OptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -390,23 +419,17 @@
     <Compile Include="Forms\MainFrame\MainFramePacketConverterPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainFramePacketView.cs">
+    <Compile Include="Forms\MainFrame\MainFrameSendDataListPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainFramePacketView.Designer.cs">
-      <DependentUpon>MainFramePacketView.cs</DependentUpon>
+    <Compile Include="Forms\MainFrame\MainFrameSendDataListPanel.Designer.cs">
+      <DependentUpon>MainFrameSendDataListPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainFrameSequentialCommandPanel.cs">
+    <Compile Include="Forms\MainFrame\MainFrameSendPanelContainer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainFrameSequentialCommandPanel.Designer.cs">
-      <DependentUpon>MainFrameSequentialCommandPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainFrameSingleCommandPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainFrameSingleCommandPanel.Designer.cs">
-      <DependentUpon>MainFrameSingleCommandPanel.cs</DependentUpon>
+    <Compile Include="Forms\MainFrame\MainFrameSendPanelContainer.Designer.cs">
+      <DependentUpon>MainFrameSendPanelContainer.cs</DependentUpon>
     </Compile>
     <Compile Include="Gate\AutoTimeStamp\AutoTimeStampManager.cs" />
     <Compile Include="Gate\GateManager.cs" />
@@ -440,6 +463,12 @@
     <Compile Include="Generic\Controls\ListViewEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Generic\Controls\PreviewLabel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generic\Controls\PreviewLabel.Designer.cs">
+      <DependentUpon>PreviewLabel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Generic\Controls\PanelEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -466,6 +495,13 @@
     <Compile Include="Generic\TextUtil.cs" />
     <Compile Include="Generic\Wildcard.cs" />
     <Compile Include="Generic\XmlUtil.cs" />
+    <Compile Include="PacketViews\ViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketViews\ViewControl.Designer.cs">
+      <DependentUpon>ViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Status.cs" />
     <Compile Include="ThirdParty\GPPG\GplexBuffers.cs" />
     <Compile Include="Native\Shell.cs" />
     <Compile Include="Native\WinAPI.cs" />
@@ -601,24 +637,18 @@
     <Compile Include="Protocol\ProtocolManager.cs" />
     <Compile Include="Protocol\ProtocolSequentialElement.cs" />
     <Compile Include="Protocol\ProtocolUnionElement.cs" />
-    <Compile Include="Scripts\CommandRunner.cs" />
-    <Compile Include="Scripts\PacketFilterExp\ExpressionCommand.cs" />
     <Compile Include="Scripts\PacketFilterExp\ExpressionCompiler.cs" />
     <Compile Include="Scripts\PacketFilterExp\ExpressionFilter.cs" />
-    <Compile Include="Scripts\PacketFilterExp\ExpressionParameter.cs" />
     <Compile Include="Scripts\PacketFilterExp\Parser\ExpressionCallStack.cs" />
     <Compile Include="Scripts\PacketFilterExp\Parser\ExpressionObject.cs" />
     <Compile Include="Scripts\PacketFilterExp\Terms\Term.cs" />
-    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Array.cs" />
     <Compile Include="Scripts\PacketFilterExp\Terms\Term_Binary.cs" />
     <Compile Include="Scripts\PacketFilterExp\Terms\Term_Bool.cs" />
     <Compile Include="Scripts\PacketFilterExp\Terms\Term_DateTime.cs" />
-    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Double.cs" />
-    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Id.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Number.cs" />
     <Compile Include="Scripts\PacketFilterExp\Terms\Term_Regex.cs" />
     <Compile Include="Scripts\PacketFilterExp\Terms\Term_Text.cs" />
-    <Compile Include="Scripts\PacketFilterExp\Terms\Term_TimeSpan.cs" />
-    <Compile Include="Scripts\PacketFilterExp\Terms\Term_Void.cs" />
+    <Compile Include="Scripts\PacketFilterExp\Terms\Term_DateTimeOffset.cs" />
     <Compile Include="ThirdParty\GPPG\ShiftReduceParserCode.cs" />
     <Compile Include="Update\UpdateManager.cs" />
   </ItemGroup>
@@ -657,6 +687,9 @@
     <EmbeddedResource Include="Devices\MicInput\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Devices\SerialPort\DeviceControlPanelImpl.resx">
+      <DependentUpon>DeviceControlPanelImpl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Devices\SerialPort\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
@@ -677,6 +710,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FileFormats\PacketLog_Binary\FileFormatWriterOptionEditorImpl.resx">
       <DependentUpon>FileFormatWriterOptionEditorImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainFrame\MainFrameSendDataPanel.resx">
+      <DependentUpon>MainFrameSendDataPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainFrame\MainFrameSendFilePanel.resx">
+      <DependentUpon>MainFrameSendFilePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OptionForm\OptionForm.resx">
       <DependentUpon>OptionForm.cs</DependentUpon>
@@ -735,20 +774,20 @@
     <EmbeddedResource Include="Forms\MainFrame\MainFramePacketConverterPanel.resx">
       <DependentUpon>MainFramePacketConverterPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainFramePacketView.resx">
-      <DependentUpon>MainFramePacketView.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainFrame\MainFrameSendDataListPanel.resx">
+      <DependentUpon>MainFrameSendDataListPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainFrameSequentialCommandPanel.resx">
-      <DependentUpon>MainFrameSequentialCommandPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainFrameSingleCommandPanel.resx">
-      <DependentUpon>MainFrameSingleCommandPanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainFrame\MainFrameSendPanelContainer.resx">
+      <DependentUpon>MainFrameSendPanelContainer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generic\Controls\BinEditBox.resx">
       <DependentUpon>BinEditBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generic\Controls\ListViewEx.resx">
       <DependentUpon>ListViewEx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generic\Controls\PreviewLabel.resx">
+      <DependentUpon>PreviewLabel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generic\Controls\TextViewEx.resx">
       <DependentUpon>TextViewEx.cs</DependentUpon>
@@ -795,6 +834,9 @@
     <EmbeddedResource Include="PacketViews\Graph\ViewInstanceImpl.resx">
       <DependentUpon>ViewInstanceImpl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PacketViews\ViewControl.resx">
+      <DependentUpon>ViewControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PacketViews\Packet\Forms\ColumnHeaderEditForm.resx">
       <DependentUpon>ColumnHeaderEditForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -810,70 +852,18 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Icons\memo_32x32.png" />
     <EmbeddedResource Include="Forms\AboutForm\LicenseList.xml" />
+    <Content Include="app_icon_48x48.ico" />
     <Content Include="Forms\WeifenLuo.WinFormsUI.Docking.dll" />
-    <None Include="Icons\app_icon_48x48.ico" />
-    <None Include="Icons\app_icon_128x128.ico" />
-    <None Include="Icons\app_icon_128x128.png" />
-    <None Include="Icons\app_icon_256x256.ico" />
-    <None Include="Icons\app_logo_300x60.png" />
-    <None Include="Icons\app_logo_420x80.png" />
-    <None Include="Icons\app_logo_600x120.png" />
-    <None Include="Icons\arrow_down_16x16.png" />
-    <None Include="Icons\arrow_down_32x32.png" />
-    <None Include="Icons\arrow_up_16x16.png" />
-    <None Include="Icons\arrow_up_32x32.png" />
-    <None Include="Icons\cancel.png" />
-    <None Include="Icons\cancel_22x22.png" />
-    <None Include="Icons\cancel_red_16x16.png" />
-    <None Include="Icons\checkg_16x16.png" />
-    <None Include="Icons\checkr_16x16.png" />
-    <None Include="Icons\close_16x16.png" />
-    <None Include="Icons\close_red_16x16.png" />
-    <None Include="Icons\cmd_list.png" />
-    <None Include="Icons\cmd_repeat.png" />
-    <None Include="Icons\cmd_target.png" />
-    <None Include="Icons\connect_busy.png" />
-    <None Include="Icons\connect_error.png" />
-    <None Include="Icons\connect_off.png" />
-    <None Include="Icons\connect_on.png" />
-    <None Include="Icons\database_add_32x32.png" />
-    <None Include="Icons\database_remove_32x32.png" />
-    <None Include="Icons\document.png" />
-    <None Include="Icons\document_24x24.png" />
-    <None Include="Icons\export_24x24.png" />
-    <None Include="Icons\export_32x32.png" />
-    <None Include="Icons\import_24x24.png" />
-    <None Include="Icons\import_32x32.png" />
-    <None Include="Icons\no_1.png" />
-    <None Include="Icons\off_20x20.png" />
-    <None Include="Icons\on_20x20.png" />
-    <None Include="Icons\output_16x16.png" />
-    <None Include="Icons\packet_filter.png" />
-    <None Include="Icons\packet_pattern.png" />
-    <None Include="Icons\packet_rule.png" />
-    <None Include="Icons\pause_32x32.png" />
-    <None Include="Icons\pkt_convert.png" />
-    <None Include="Icons\pkt_group.png" />
-    <None Include="Icons\pkt_item.png" />
-    <None Include="Icons\play_32x32.png" />
-    <None Include="Icons\reload_16x16.png" />
-    <None Include="Icons\setting00_16x16.png" />
-    <None Include="Icons\show_info.png" />
-    <None Include="Icons\stop_32x32.png" />
-    <None Include="Icons\target_22x22.png" />
-    <None Include="Icons\target_32x32.png" />
-    <None Include="Icons\target_ng_20x20.png" />
-    <None Include="Icons\target_ng_22x22.png" />
-    <None Include="Icons\target_ok_22x22.png" />
-    <None Include="Icons\view_setting.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Actions\ActionTerms\" />
     <Folder Include="PacketConverters\Convert\Custom\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup Label="PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserFiles">
     <Compile Include="Scripts\PacketFilterExp\Parser\PacketFilterExp.Parser.Generated.cs">
@@ -893,6 +883,13 @@
       <DependentUpon>PacketFilterExp.parser</DependentUpon>
     </None>
     <None Include="Scripts\PacketFilterExp\Parser\PacketFilterExp.parser" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" DependsOnTargets="YltBuildGen" />

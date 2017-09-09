@@ -29,6 +29,8 @@ namespace Ratatoskr.Devices.SerialPort
     {
         public StringConfig         PortName { get; } = new StringConfig("COM1");
 
+        public BoolConfig           AsyncMode { get; } = new BoolConfig(false);
+
         public IntegerConfig        BaudRate { get; } = new IntegerConfig(9600);
         public EnumConfig<Parity>   Parity   { get; } = new EnumConfig<System.IO.Ports.Parity>(System.IO.Ports.Parity.None);
         public IntegerConfig        DataBits { get; } = new IntegerConfig(8);

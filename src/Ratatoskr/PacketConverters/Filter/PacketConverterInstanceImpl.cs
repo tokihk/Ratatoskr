@@ -18,7 +18,11 @@ namespace Ratatoskr.PacketConverters.Filter
 
         private PacketConverterPropertyImpl prop_;
 
-        private ExpressionFilter filter_obj_ = null;
+        private string           filter_exp_busy_ = "";
+        private ExpressionFilter filter_obj_busy_ = null;
+
+        private string           filter_exp_new_ = "";
+        private ExpressionFilter filter_obj_new_ = null;
 
 
         private System.Windows.Forms.ComboBox CBox_Exp;
@@ -93,11 +97,8 @@ namespace Ratatoskr.PacketConverters.Filter
 
         private void Apply()
         {
-            if ((prop_.ExpList.Value.Count > 0) && (prop_.ExpList.Value.First().Length > 0)) {
-                filter_obj_ = ExpressionFilter.Build(prop_.ExpList.Value.First(), null);
-            } else {
-                filter_obj_ = null;
-            }
+            filter_exp_busy_ = filter_exp_new_;
+            filter_obj_busy_ = filter_obj_new_;
 
             UpdateView();
 
@@ -107,20 +108,19 @@ namespace Ratatoskr.PacketConverters.Filter
 
         private void UpdateView()
         {
-            var text_new = CBox_Exp.Text;
-            var text_now = ((prop_.ExpList.Value.Count > 0) ? (prop_.ExpList.Value.First()) : (""));
+            /* 表示中のフィルター式をコンパイル */
+            filter_exp_new_ = CBox_Exp.Text;
+            filter_obj_new_ = ExpressionFilter.Build(filter_exp_new_);
 
             /* 表示更新 */
-            if (text_new.Length > 0) {
-//                CBox_Exp.BackColor = (ExpressionFilter.Build(text_new, null) != null) ? (Color.LightSkyBlue) : (Color.LightPink);
-
-
+            if (filter_exp_new_.Length > 0) {
+                CBox_Exp.BackColor = (filter_obj_new_ != null) ? (Color.LightSkyBlue) : (Color.LightPink);
             } else {
                 CBox_Exp.BackColor = Color.White;
             }
 
             /* 変更状態確認 */
-            CBox_Exp.ForeColor = (text_new != text_now) ? (Color.Gray) : (Color.Black);
+            CBox_Exp.ForeColor = (filter_exp_busy_ != filter_exp_new_) ? (Color.Gray) : (Color.Black);
         }
 
         private void AddExpLog(string exp)
@@ -154,14 +154,14 @@ namespace Ratatoskr.PacketConverters.Filter
 
         protected override void OnInputStatusClear()
         {
-            if (filter_obj_ != null) {
-                filter_obj_.CallStack = new ExpressionCallStack();
+            if (filter_obj_busy_ != null) {
+                filter_obj_busy_.CallStack = new ExpressionCallStack();
             }
         }
 
         protected override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
-            if ((filter_obj_ == null) || (filter_obj_.Input(input))) {
+            if ((filter_obj_busy_ == null) || (filter_obj_busy_.Input(input))) {
                 output.Add(input);
             }
         }

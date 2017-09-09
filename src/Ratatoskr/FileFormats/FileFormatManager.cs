@@ -65,7 +65,6 @@ namespace Ratatoskr.FileFormats
         public FileFormatClass GetOpenFormatFromPath(string path)
         {
             var formats = Formats.FindAll(obj => obj.CanRead);
-
             var format = GetFormatFromPath(formats, path);
 
             if (format == null) {
@@ -110,7 +109,7 @@ namespace Ratatoskr.FileFormats
                 return (formats.ElementAt(dialog.FilterIndex - 1));
             } else {
                 /* === ファイル名からフォーマットを選出 === */
-                return (GetFormatFromPath(formats, paths.First()));
+                return (GetOpenFormatFromPath(paths.First()));
             }
         }
 

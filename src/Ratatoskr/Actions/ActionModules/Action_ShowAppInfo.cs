@@ -17,11 +17,11 @@ namespace Ratatoskr.Actions.ActionModules
         {
         }
 
-        protected override ExecState OnExecPoll()
+        protected override void OnExecStart()
         {
             ShowDialog();
 
-            return (ExecState.Complete);
+            SetResult(ActionResultType.Success, null);
         }
 
         private delegate void ShowDialogDelegate();

@@ -67,13 +67,13 @@ namespace Ratatoskr.PacketConverters
 
         public static bool CheckFilter(string filter)
         {
-            return (ExpressionFilter.Build(filter, null) != null);
+            return (ExpressionFilter.Build(filter) != null);
         }
 
         public void UpdateFilter()
         {
             if (Property.TargetFilterEnable.Value) {
-                filter_obj_ = ExpressionFilter.Build(Property.TargetFilterValue.Value, null);
+                filter_obj_ = ExpressionFilter.Build(Property.TargetFilterValue.Value);
             } else {
                 filter_obj_ = null;
             }

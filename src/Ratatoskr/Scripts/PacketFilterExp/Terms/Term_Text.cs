@@ -20,11 +20,6 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
             value_ = text;
         }
 
-        public override bool ErrorCheck(ExpressionCallStack cs)
-        {
-            return (value_ == null);
-        }
-
         public string Value
         {
             get { return (value_); }
@@ -35,39 +30,26 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
             return ((value_ != null) && (value_.Length > 0));
         }
 
-        protected override Term Exec_RELOP_EQUAL(ExpressionCallStack cs, Term right)
+        protected override Term Exec_RELOP_EQUAL(ExpressionCallStack cs, Term term_sub)
         {
             /* === Term_Text === */
-            {
-                var right_r = right as Term_Text;
-
-                if (right_r != null) {
-                    return (new Term_Bool(value_ == right_r.Value));
-                }
+            if (term_sub.GetType() == typeof(Term_Text)) {
+                return (new Term_Bool(value_ == (term_sub as Term_Text).Value));
             }
 
             /* === Term_Regex === */
-            {
-                var right_r = right as Term_Regex;
-
-                if (right_r != null) {
-                    return (right_r.Exec(cs, Tokens.RELOP_EQUAL, this));
-                }
+            if (term_sub.GetType() == typeof(Term_Regex)) {
+                return ((term_sub as Term_Regex).Exec(cs, Tokens.RELOP_EQUAL, this));
             }
 
             return (null);
         }
 
-        protected override Term Exec_ARMOP_ADD(ExpressionCallStack cs, Term right)
+        protected override Term Exec_ARMOP_ADD(ExpressionCallStack cs, Term term_sub)
         {
             /* === Term_Text === */
-            {
-                var right_r = right as Term_Text;
-
-                if (right_r != null) {
-                    value_ += right_r.Value;
-                    return (this);
-                }
+            if (term_sub.GetType() == typeof(Term_Text)) {
+                return (new Term_Text(value_ + (term_sub as Term_Text).Value));
             }
 
             return (null);

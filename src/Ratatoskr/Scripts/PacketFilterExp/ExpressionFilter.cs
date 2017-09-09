@@ -10,10 +10,10 @@ namespace Ratatoskr.Scripts.PacketFilterExp
 {
     internal sealed class ExpressionFilter
     {
-        public static ExpressionFilter Build(string exp_text, ExpressionParameter param)
+        public static ExpressionFilter Build(string exp_text)
         {
             /* 式オブジェクトに変換 */
-            var exp = ExpressionCompiler.Compile(null, exp_text, param);
+            var exp = ExpressionCompiler.Compile(exp_text);
 
             if (exp == null)return (null);
 
@@ -37,7 +37,7 @@ namespace Ratatoskr.Scripts.PacketFilterExp
             if (exp_ == null)return (true);
 
             /* カレントパケット更新 */
-            CallStack.CurrentPacket = packet;
+            CallStack.LastPacket = packet;
 
             /* ヒットテスト */
             var hitstate = false;

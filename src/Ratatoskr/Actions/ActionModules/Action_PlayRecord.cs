@@ -13,17 +13,41 @@ namespace Ratatoskr.Actions.ActionModules
 {
     internal sealed class Action_PlayRecord : ActionObject
     {
-        public Action_PlayRecord()
+        public enum Argument
         {
-            InitParameter<Term_Text>("path");
-            InitParameter<Term_Text>("");
+            Path,
+            Target,
         }
 
-        protected override ExecState OnExecPoll()
+        public enum ArgumentTarget
+        {
+            RecvDataOnly,
+            SendDataOnly,
+            Both,
+        }
+
+        public enum Result
+        {
+            State,
+        }
+
+        public Action_PlayRecord()
+        {
+            RegisterArgument(Argument.Path.ToString(), typeof(string), null);
+            RegisterArgument(Argument.Target.ToString(), typeof(string), ArgumentTarget.RecvDataOnly.ToString());
+        }
+
+        public Action_PlayRecord(string path, string target) : this()
+        {
+            SetArgumentValue(Argument.Path.ToString(), path);
+            SetArgumentValue(Argument.Target.ToString(), target);
+        }
+
+        protected override void OnExecPoll()
         {
             ShowDialog();
 
-            return (ExecState.Complete);
+            SetResult(ActionResultType.Success, null);
         }
 
         private delegate void ShowDialogDelegate();
