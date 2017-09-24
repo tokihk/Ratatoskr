@@ -104,6 +104,12 @@ namespace Ratatoskr.Configs.UserConfigs
             /* redirect-alias */
             newobj.GateProperty.RedirectAlias = XmlUtil.GetAttribute(xml_node, "redirect-alias", "");
 
+            /* data-rate-target */
+            newobj.GateProperty.DataRateTarget = (DeviceDataRateTarget)Enum.Parse(typeof(DeviceDataRateTarget), XmlUtil.GetAttribute(xml_node, "data-rate-target", "0"));
+
+            /* data-rate-graph-limit */
+            newobj.GateProperty.DataRateGraphLimit = ulong.Parse(XmlUtil.GetAttribute(xml_node, "data-rate-graph-limit", "1000000"));
+
             /* device-class-id */
             newobj.DeviceClassID = Guid.Parse(XmlUtil.GetAttribute(xml_node, "device-class-id", Guid.Empty.ToString()));
 
@@ -162,6 +168,12 @@ namespace Ratatoskr.Configs.UserConfigs
 
                 /* redirect-alias */
                 xml_data.SetAttribute("redirect-alias", config.GateProperty.RedirectAlias);
+
+                /* data-rate-target */
+                xml_data.SetAttribute("data-rate-target", config.GateProperty.DataRateTarget.ToString());
+
+                /* data-rate-graph-limit */
+                xml_data.SetAttribute("data-rate-graph-limit", config.GateProperty.DataRateGraphLimit.ToString());
 
                 /* device-class-id */
                 xml_data.SetAttribute("device-class-id", config.DeviceClassID.ToString());

@@ -13,6 +13,14 @@ namespace Ratatoskr.PacketViews.Sequential
 {
     internal sealed class ViewInstanceImpl : ViewInstance
     {
+        private enum DrawDataType
+        {
+            Control,
+            Message,
+            Data,
+        }
+
+
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RichTextBox RTBox_Main;
         private System.Windows.Forms.GroupBox GBox_ShiftBit;
@@ -23,6 +31,7 @@ namespace Ratatoskr.PacketViews.Sequential
         private System.Windows.Forms.ComboBox CBox_ShiftBit;
         private System.Windows.Forms.GroupBox GBox_CharCode;
         private System.Windows.Forms.ComboBox CBox_CharCode;
+        private System.Windows.Forms.CheckBox ChkBox_EchoBack;
 
         private ViewPropertyImpl prop_;
         private Encoding encoder_;
@@ -35,8 +44,10 @@ namespace Ratatoskr.PacketViews.Sequential
         private int         char_cache_limit_ = 0;
 
         private byte[] lf_code_ = null;
-        private System.Windows.Forms.CheckBox ChkBox_EchoBack;
         private int    lf_code_pos_ = 0;
+
+        private StringBuilder   draw_buffer_ = null;
+        private PacketAttribute draw_data_type_ = 0;
 
 
         private void InitializeComponent()
@@ -267,6 +278,56 @@ namespace Ratatoskr.PacketViews.Sequential
             prop_.EchoBack.Value = ChkBox_EchoBack.Checked;
         }
 
+        private void DrawBufferReset()
+        {
+            draw_buffer_ = new StringBuilder(2048);
+            draw_data_type_ = 0;
+        }
+
+        private void DrawBufferPushBegin(PacketAttribute type)
+        {
+            /* データタイプが変化した場合は現在溜まっているバッファを出力 */
+            if (draw_data_type_ != type) {
+                DrawBufferFlush();
+            }
+
+            draw_data_type_ = type;
+        }
+
+        private void DrawBufferPush(string text)
+        {
+            draw_buffer_.Append(text);
+        }
+
+        private void DrawBufferPushEndLine()
+        {
+            draw_buffer_.AppendLine();
+        }
+
+        private void DrawBufferFlush()
+        {
+            var color_fore = Color.Black;
+
+            switch (draw_data_type_) {
+                case PacketAttribute.Message:
+                    color_fore = Color.Green;
+                    break;
+                case PacketAttribute.Data:
+                    switch (prop_.DataView.Value) {
+                        case DataViewType.Char:    color_fore = Color.Red;      break;
+                        case DataViewType.HexText: color_fore = Color.Blue;     break;
+                        case DataViewType.BinCode: color_fore = Color.Brown;    break;
+                    }
+                    break;
+            }
+
+            RTBox_Main.SelectionColor = color_fore;
+            RTBox_Main.AppendText(draw_buffer_.ToString());
+
+            DrawBufferReset();
+        }
+
+
         private void LoadCurrentProperty()
         {
             
@@ -296,8 +357,6 @@ namespace Ratatoskr.PacketViews.Sequential
 
         private void DrawMessagePacket(MessagePacketObject packet)
         {
-            RTBox_Main.SelectionColor = Color.Green;
-
             var str = new StringBuilder();
 
             str.AppendFormat("[{0}] {1}", packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"), packet.Alias);
@@ -312,7 +371,8 @@ namespace Ratatoskr.PacketViews.Sequential
 
             str.AppendLine();
 
-            RTBox_Main.AppendText(str.ToString());
+            DrawBufferPushBegin(PacketAttribute.Message);
+            DrawBufferPush(str.ToString());
         }
 
         private void DrawDataPacket(DataPacketObject packet)
@@ -323,33 +383,22 @@ namespace Ratatoskr.PacketViews.Sequential
                 return;
             }
 
-            var view_type = prop_.DataView.Value;
-
-            /* 表示色設定 */
-            switch (view_type) {
-                case DataViewType.Char:     RTBox_Main.SelectionColor = Color.Red;      break;
-                case DataViewType.HexText:  RTBox_Main.SelectionColor = Color.Blue;     break;
-                case DataViewType.BinCode:  RTBox_Main.SelectionColor = Color.Brown;    break;
-            }
-
             /* 表示処理 */
-            var str = new StringBuilder();
             var draw_data = (byte)0;
 
+            DrawBufferPushBegin(PacketAttribute.Data);
             foreach (var data_one in packet.GetData()) {
                 /* 入力データをシフト処理 */
                 draw_data = DataShift(data_one);
 
                 /* 表示文字列を作成 */
-                str.Append(DataToText(view_type, draw_data));
+                DrawBufferPush(DataToText(prop_.DataView.Value, draw_data));
 
                 /* 改行判定 */
                 if (DataDivideCheck(draw_data)) {
-                    str.AppendLine();
+                    DrawBufferPushEndLine();
                 }
             }
-
-            RTBox_Main.AppendText(str.ToString());
         }
 
         private byte DataShift(byte data)
@@ -370,7 +419,8 @@ namespace Ratatoskr.PacketViews.Sequential
         {
             switch (type) {
                 case DataViewType.Char:
-                    return (CharToText(data));
+                    /* リッチテキストは何故か\r単体でも改行してしまうので\rをスペースに変換する */
+                    return (CharToText(data).Replace('\r', ' '));
 
                 case DataViewType.BinCode:
                     return (HexTextEncoder.BinCode[data] + ' ');
@@ -492,6 +542,9 @@ namespace Ratatoskr.PacketViews.Sequential
             /* エディターの最後にキャレットを移動 */
             RTBox_Main.SelectionStart = RTBox_Main.TextLength;
 
+            /* 出力バッファ初期化 */
+            DrawBufferReset();
+
             if (auto_scroll) {
                 /* 自動スクロール中は選択状態を解除して強制的にスクロール */
                 RTBox_Main.HideSelection = false;
@@ -503,6 +556,9 @@ namespace Ratatoskr.PacketViews.Sequential
 
         protected override void OnDrawPacketEnd(bool auto_scroll)
         {
+            /* 未出力データを表示 */
+            DrawBufferFlush();
+
             if (!auto_scroll) {
                 /* 選択状態を復元 */
                 RTBox_Main.SelectionStart = select_pos_start_;

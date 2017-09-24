@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
 using Ratatoskr.Scripts.PacketFilterExp;
-using Ratatoskr.Generic;
 using Ratatoskr.Generic.Packet;
 
 namespace Ratatoskr.PacketConverters.Filter
@@ -24,7 +23,8 @@ namespace Ratatoskr.PacketConverters.Filter
         private string           filter_exp_new_ = "";
         private ExpressionFilter filter_obj_new_ = null;
 
-
+        private ToolTip TTip_Filter;
+        private System.ComponentModel.IContainer components;
         private System.Windows.Forms.ComboBox CBox_Exp;
 
 
@@ -40,6 +40,49 @@ namespace Ratatoskr.PacketConverters.Filter
 
             InitializeComponent();
 
+            TTip_Filter.SetToolTip(
+                CBox_Exp,
+@"通過させるパケットのルールを記述します。
+  Ex: Data && HexText == /02.*03/
+  Ex: DateTime >= 2017-09-11T16:44:50.000+09:00
+
+[使用可能な算術演算子]
+  + - * / ! ()
+
+[使用可能な論理演算子]
+  && ||
+
+[使用可能な比較演算子]
+  == != >= <= < >
+
+以下のデータを定義できます。
+  0～99999999     :<Number>10進数
+  0x0～0xFFFFFFFF :<Number>16進数
+  ISO8601形式     :<DateTime>時刻情報(ISO8601形式)
+  ""...""         :<Text>文字列
+  /.../           :<Text>正規表現
+
+以下の状態変数を使用できます。
+  PacketCount     :<Number>入力されたパケットの総数
+  LastDelta       :<Number>現在のパケットと直前のパケットの差分時刻(msec)
+  IsMessage       :<Bool>メッセージパケットのときはTrueになります。
+  IsData          :<Bool>データパケットのときはTrueになります。
+  Alias           :<Text>パケットのエイリアス
+  DateTime        :<DateTime>パケットのUTC時刻
+  Information     :<Text>パケットの付加情報
+  IsSend          :<Bool>送信データのときはTrueになります。
+  IsRecv          :<Bool>受信データのときはTrueになります。
+  Source          :<Text>パケットの送信元情報。
+  Destination     :<Text>パケットの送信先情報。
+  DataSize        :<Number>パケットのペイロードデータサイズ。
+  BitText         :<Text>パケットのペイロードデータ(2進数文字列) 01010101...
+  HexText         :<Text>パケットのペイロードデータ(16進数文字列) F0F1F2F3...
+  AsciiText       :<Text>パケットのペイロードデータ(アスキー文字列)
+  Utf8Text        :<Text>パケットのペイロードデータ(UTF-8文字列)
+  UnicodeLText    :<Text>パケットのペイロードデータ(UTF-32 Little Endian)
+  UnicodeBText    :<Text>パケットのペイロードデータ(UTF-32 Bit Endian)
+");
+
             SetExpList(prop_.ExpList.Value);
 
             Apply();
@@ -47,7 +90,9 @@ namespace Ratatoskr.PacketConverters.Filter
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.CBox_Exp = new System.Windows.Forms.ComboBox();
+            this.TTip_Filter = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // CBox_Exp
@@ -63,6 +108,12 @@ namespace Ratatoskr.PacketConverters.Filter
             this.CBox_Exp.TabIndex = 1;
             this.CBox_Exp.TextChanged += new System.EventHandler(this.CBox_Exp_TextChanged);
             this.CBox_Exp.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CBox_Exp_KeyDown);
+            // 
+            // TTip_Filter
+            // 
+            this.TTip_Filter.AutoPopDelay = 10000;
+            this.TTip_Filter.InitialDelay = 500;
+            this.TTip_Filter.ReshowDelay = 100;
             // 
             // PacketConverterInstanceImpl
             // 

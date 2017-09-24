@@ -12,11 +12,16 @@ namespace Ratatoskr.Configs.FixedConfigs
     {
         public FixedConfig() : base("fixed")
         {
+            ApplicationName.Value = AppInfo.Name;
+            Copyright.Value = AppInfo.Copyright;
+            Version.Value = AppInfo.Version;
+
             ApplicationListUrl.Value.Add("");
         }
 
-        public StringConfig  ApplicationName     { get; } = new StringConfig("Ratatoskr");
-        public StringConfig  Copyright           { get; } = new StringConfig("Copyright 2017 H.Kouno");
+        public StringConfig  ApplicationName     { get; } = new StringConfig("");
+        public StringConfig  Copyright           { get; } = new StringConfig("");
+        public StringConfig  Version             { get; } = new StringConfig("");
 
         public StringConfig  SystemConfigPath    { get; } = new StringConfig("startup.ini");
 

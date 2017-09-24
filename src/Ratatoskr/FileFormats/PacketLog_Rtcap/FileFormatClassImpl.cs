@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ratatoskr.Configs;
 
 namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 {
@@ -19,7 +20,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 
         public override string Name
         {
-            get { return ("Ratatoskr format"); }
+            get { return (ConfigManager.Fixed.ApplicationName.Value + " format"); }
         }
 
         public override string Detail

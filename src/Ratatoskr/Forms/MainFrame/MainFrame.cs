@@ -11,6 +11,9 @@ using System.Windows.Forms;
 using Ratatoskr.Actions;
 using Ratatoskr.Actions.ActionModules;
 using Ratatoskr.Configs;
+using Ratatoskr.Gate;
+using Ratatoskr.Generic;
+using Ratatoskr.Generic.Packet;
 using Ratatoskr.PacketConverters;
 using Ratatoskr.PacketViews;
 
@@ -21,6 +24,7 @@ namespace Ratatoskr.Forms.MainFrame
         public MainFrame()
         {
             InitializeComponent();
+            InitializeText();
             InitializeMenuBar();
 
             ConfigManager.Language.Loaded += Language_Loaded;
@@ -34,7 +38,7 @@ namespace Ratatoskr.Forms.MainFrame
             Visible = false;
         }
 
-        private void Language_Loaded(object sender, EventArgs e)
+        private void InitializeText()
         {
             Text = GetTitleText();
 
@@ -47,7 +51,7 @@ namespace Ratatoskr.Forms.MainFrame
             MenuBar_File_SaveAs_Original.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs_Original.Value;
             MenuBar_File_SaveAs_Shaping.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs_Shaping.Value;
             MenuBar_File_Exit.Text = ConfigManager.Language.MainUI.MenuBar_File_Exit.Value;
-
+            MenuBar_Help_About.Text = ConfigManager.Language.MainUI.MenuBar_Help_About.Value;
         }
 
         private void InitializeMenuBar()
@@ -138,11 +142,13 @@ namespace Ratatoskr.Forms.MainFrame
 
             /* パケット変換器一覧からメニューを作成 */
             foreach (var viewd in FormTaskManager.GetPacketConverterClasses()) {
-                var menu_sub = new ToolStripMenuItem();
+                var menu_sub = new ToolStripMenuItem()
+                {
+                    Text = viewd.Name,
+                    ToolTipText = viewd.Details,
+                    Tag = viewd,
+                };
 
-                menu_sub.Text = viewd.Name;
-                menu_sub.ToolTipText = viewd.Details;
-                menu_sub.Tag = viewd;
                 menu_sub.Click += OnMenuClick_PacketConverterAdd;
 
                 menu.DropDownItems.Add(menu_sub);
@@ -156,11 +162,13 @@ namespace Ratatoskr.Forms.MainFrame
 
             /* パケットビュー一覧からメニューを作成 */
             foreach (var viewd in FormTaskManager.GetPacketViewClasses()) {
-                var menu_sub = new ToolStripMenuItem();
+                var menu_sub = new ToolStripMenuItem()
+                {
+                    Text = viewd.Name,
+                    ToolTipText = viewd.Details,
+                    Tag = viewd,
+                };
 
-                menu_sub.Text = viewd.Name;
-                menu_sub.ToolTipText = viewd.Details;
-                menu_sub.Tag = viewd;
                 menu_sub.Click += OnMenuClick_PacketViewAdd;
 
                 menu.DropDownItems.Add(menu_sub);
@@ -184,6 +192,11 @@ namespace Ratatoskr.Forms.MainFrame
             Size = ConfigManager.User.MainWindow.Size.Value;
             Location = ConfigManager.User.MainWindow.Position.Value;
             WindowState = (ConfigManager.User.MainWindow.Maximize.Value) ? (FormWindowState.Maximized) : (FormWindowState.Normal);
+
+            Menu_DataRate_SendData.Checked = ConfigManager.User.DataRateTarget.Value.HasFlag(PacketDataRateTarget.SendData);
+            Menu_DataRate_RecvData.Checked = ConfigManager.User.DataRateTarget.Value.HasFlag(PacketDataRateTarget.RecvData);
+
+            ApplyDataRateTarget();
         }
 
         public void BackupConfig()
@@ -192,6 +205,10 @@ namespace Ratatoskr.Forms.MainFrame
             SingleCmdPanel_Main.BackupConfig();
 
             BackupWindowConfig();
+
+            ConfigManager.User.DataRateTarget.Value = 0;
+            ConfigManager.User.DataRateTarget.Value |= (Menu_DataRate_SendData.Checked) ? (PacketDataRateTarget.SendData) : (0);
+            ConfigManager.User.DataRateTarget.Value |= (Menu_DataRate_RecvData.Checked) ? (PacketDataRateTarget.RecvData) : (0);
         }
 
         private void BackupWindowConfig()
@@ -203,6 +220,26 @@ namespace Ratatoskr.Forms.MainFrame
 
             ConfigManager.User.MainWindow.Size.Value = Size;
             ConfigManager.User.MainWindow.Position.Value = Location;
+        }
+
+        private void ApplyDataRateTarget()
+        {
+            var target = (PacketDataRateTarget)0;
+
+            if (Menu_DataRate_SendData.Checked) {
+                target |= PacketDataRateTarget.SendData;
+            }
+
+            if (Menu_DataRate_RecvData.Checked) {
+                target |= PacketDataRateTarget.RecvData;
+            }
+
+            GatePacketManager.BasePacketManager.DataRateTarget = target;
+        }
+
+        private void Language_Loaded(object sender, EventArgs e)
+        {
+            InitializeText();
         }
 
         private delegate void UpdateMenuBarDelegate();
@@ -235,18 +272,22 @@ namespace Ratatoskr.Forms.MainFrame
             }
         }
 
-        private delegate void SetPacketCounterDelegate(ulong count_base, ulong count_proc, ulong count_busy);
-        public void SetPacketCounter(ulong count_base, ulong count_proc, ulong count_busy)
+        private delegate void SetFormStatusHandler(FormStatus status);
+        public void SetFormStatus(FormStatus status)
         {
             if (InvokeRequired) {
-                BeginInvoke(new SetPacketCounterDelegate(SetPacketCounter), count_base, count_proc, count_busy);
+                BeginInvoke(new SetFormStatusHandler(SetFormStatus), status);
                 return;
             }
 
+            SetStatusText(status.MainStatusBar_Text);
+            SetProgressBar(status.MainProgressBar_Visible, status.MainProgressBar_Value, 100);
+
             /* ステータスバーのカウンターを更新 */
-            Label_PktCount_Raw.Text = String.Format("Raw: {0,9}", count_base);
-            Label_PktCount_View.Text = String.Format("View: {0,9}", count_proc);
-            Label_PktCount_Busy.Text = String.Format("Busy: {0,9}", count_busy);
+            DDBtn_DataRate.Text = String.Format("Rate: {0,6}B/s", TextUtil.DecToText(status.PacketBytePSec_All));
+            Label_PktCount_Raw.Text = String.Format("Raw: {0,9}", status.PacketCount_All);
+            Label_PktCount_View.Text = String.Format("View: {0,9}", status.PacketCount_DrawAll);
+            Label_PktCount_Busy.Text = String.Format("Busy: {0,9}", status.PacketCount_DrawBusy);
 
             /* 変換器のカウンターを更新 */
             Panel_Center.UpdatePacketConverterView();
@@ -311,6 +352,13 @@ namespace Ratatoskr.Forms.MainFrame
             /* アクションにするとアクション実行中はシャットダウンできなくなるので
              * アクションではなく直接シャットダウンする */
             Program.ShutdownRequest();
+        }
+
+        protected override void OnDeactivate(EventArgs e)
+        {
+            base.OnDeactivate(e);
+
+            SingleCmdPanel_Main.OnMainFormDeactivated();
         }
 
         protected override void OnResize(EventArgs e)
@@ -403,6 +451,24 @@ namespace Ratatoskr.Forms.MainFrame
         private void Label_ViewDrawMode_DoubleClick(object sender, EventArgs e)
         {
             FormTaskManager.HiSpeedDrawToggle();
+        }
+
+        private void OnDataRateTargetUpdate(object sender, EventArgs e)
+        {
+            var menu = sender as ToolStripMenuItem;
+
+            if (menu == null)return;
+
+            /* 選択したメニューのチェック状態を反転 */
+            menu.Checked = !menu.Checked;
+
+            /* 設定を適用 */
+            ApplyDataRateTarget();
+        }
+
+        private void Menu_DataRate_AliasValue_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

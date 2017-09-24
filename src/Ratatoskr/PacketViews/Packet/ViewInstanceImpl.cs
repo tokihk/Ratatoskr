@@ -39,6 +39,7 @@ namespace Ratatoskr.PacketViews.Packet
         private ListViewItem ExtViewItem_FirstPacketInfo = null;
         private ListViewItem ExtViewItem_LastPacketInfo = null;
         private ListViewItem ExtViewItem_SelectDelta = null;
+        private ListViewItem ExtViewItem_SelectRate = null;
 
         private System.ComponentModel.IContainer components;
         private System.Windows.Forms.Panel Panel_ToolBar;
@@ -78,6 +79,7 @@ namespace Ratatoskr.PacketViews.Packet
         private ColumnHeader LView_ExtInfoColumn_Name;
         private ColumnHeader LView_ExtInfoColumn_Value;
         private Label label1;
+        private ToolStripMenuItem Menu_ExtView_SelectRate;
         private TextBox TBox_CustomFormat;
 
 
@@ -119,6 +121,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_CopyToClipboard_Data_Custom = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff = new System.Windows.Forms.ToolStripMenuItem();
+            this.Menu_ExtView_SelectRate = new System.Windows.Forms.ToolStripMenuItem();
             this.Panel_ToolBar.SuspendLayout();
             this.GBox_CustomFormat.SuspendLayout();
             this.GBox_CharCode.SuspendLayout();
@@ -346,45 +349,46 @@ namespace Ratatoskr.PacketViews.Packet
             this.Menu_ExtView_SelectTotalSize,
             this.Menu_ExtView_FirstPacketInfo,
             this.Menu_ExtView_LastPacketInfo,
-            this.Menu_ExtView_SelectDelta});
+            this.Menu_ExtView_SelectDelta,
+            this.Menu_ExtView_SelectRate});
             this.Menu_ExtView.Image = ((System.Drawing.Image)(resources.GetObject("Menu_ExtView.Image")));
             this.Menu_ExtView.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Menu_ExtView.Name = "Menu_ExtView";
-            this.Menu_ExtView.Size = new System.Drawing.Size(117, 22);
+            this.Menu_ExtView.Size = new System.Drawing.Size(132, 22);
             this.Menu_ExtView.Text = "Display item select";
             // 
             // Menu_ExtView_SelectPacketCount
             // 
             this.Menu_ExtView_SelectPacketCount.Name = "Menu_ExtView_SelectPacketCount";
-            this.Menu_ExtView_SelectPacketCount.Size = new System.Drawing.Size(311, 22);
+            this.Menu_ExtView_SelectPacketCount.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_SelectPacketCount.Text = "Select packet count";
             this.Menu_ExtView_SelectPacketCount.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_SelectTotalSize
             // 
             this.Menu_ExtView_SelectTotalSize.Name = "Menu_ExtView_SelectTotalSize";
-            this.Menu_ExtView_SelectTotalSize.Size = new System.Drawing.Size(311, 22);
+            this.Menu_ExtView_SelectTotalSize.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_SelectTotalSize.Text = "Select packet total size";
             this.Menu_ExtView_SelectTotalSize.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_FirstPacketInfo
             // 
             this.Menu_ExtView_FirstPacketInfo.Name = "Menu_ExtView_FirstPacketInfo";
-            this.Menu_ExtView_FirstPacketInfo.Size = new System.Drawing.Size(311, 22);
+            this.Menu_ExtView_FirstPacketInfo.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_FirstPacketInfo.Text = "Information on selected packet (first)";
             this.Menu_ExtView_FirstPacketInfo.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_LastPacketInfo
             // 
             this.Menu_ExtView_LastPacketInfo.Name = "Menu_ExtView_LastPacketInfo";
-            this.Menu_ExtView_LastPacketInfo.Size = new System.Drawing.Size(311, 22);
+            this.Menu_ExtView_LastPacketInfo.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_LastPacketInfo.Text = "Information on selected packet (last)";
             this.Menu_ExtView_LastPacketInfo.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_SelectDelta
             // 
             this.Menu_ExtView_SelectDelta.Name = "Menu_ExtView_SelectDelta";
-            this.Menu_ExtView_SelectDelta.Size = new System.Drawing.Size(311, 22);
+            this.Menu_ExtView_SelectDelta.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_SelectDelta.Text = "Time difference of selection packet (last-first)";
             this.Menu_ExtView_SelectDelta.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
@@ -393,7 +397,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CMenu_Packet_CopyToClipboard});
             this.CMenu_Packet.Name = "CMenu_Data";
-            this.CMenu_Packet.Size = new System.Drawing.Size(169, 26);
+            this.CMenu_Packet.Size = new System.Drawing.Size(178, 26);
             // 
             // CMenu_Packet_CopyToClipboard
             // 
@@ -403,13 +407,13 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_CopyToClipboard_Data_Hex,
             this.CMenu_Packet_CopyToClipboard_Data_Custom});
             this.CMenu_Packet_CopyToClipboard.Name = "CMenu_Packet_CopyToClipboard";
-            this.CMenu_Packet_CopyToClipboard.Size = new System.Drawing.Size(168, 22);
+            this.CMenu_Packet_CopyToClipboard.Size = new System.Drawing.Size(177, 22);
             this.CMenu_Packet_CopyToClipboard.Text = "Copy to clipboard";
             // 
             // CMenu_Packet_CopyToClipboard_AllInfo_Csv
             // 
             this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Name = "CMenu_Packet_CopyToClipboard_AllInfo_Csv";
-            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Size = new System.Drawing.Size(226, 22);
+            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Size = new System.Drawing.Size(252, 22);
             this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Text = "All information (CSV format)";
             this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_AllInfo_Csv_Click);
             // 
@@ -419,7 +423,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn,
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff});
             this.CMenu_Packet_CopyToClipboard_Data_String.Name = "CMenu_Packet_CopyToClipboard_Data_String";
-            this.CMenu_Packet_CopyToClipboard_Data_String.Size = new System.Drawing.Size(226, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_String.Size = new System.Drawing.Size(252, 22);
             this.CMenu_Packet_CopyToClipboard_Data_String.Tag = "0";
             this.CMenu_Packet_CopyToClipboard_Data_String.Text = "Data: Raw text";
             this.CMenu_Packet_CopyToClipboard_Data_String.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_String_Click);
@@ -427,7 +431,7 @@ namespace Ratatoskr.PacketViews.Packet
             // CMenu_Packet_CopyToClipboard_Data_String_NewLineOn
             // 
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Name = "CMenu_Packet_CopyToClipboard_Data_String_NewLineOn";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Size = new System.Drawing.Size(140, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Size = new System.Drawing.Size(148, 22);
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Tag = "1";
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Text = "Line feed on";
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_String_Click);
@@ -435,7 +439,7 @@ namespace Ratatoskr.PacketViews.Packet
             // CMenu_Packet_CopyToClipboard_Data_String_NewLineOff
             // 
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Name = "CMenu_Packet_CopyToClipboard_Data_String_NewLineOff";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Size = new System.Drawing.Size(140, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Size = new System.Drawing.Size(148, 22);
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Tag = "0";
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Text = "Line feed off";
             this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_String_Click);
@@ -446,7 +450,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn,
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff});
             this.CMenu_Packet_CopyToClipboard_Data_Hex.Name = "CMenu_Packet_CopyToClipboard_Data_Hex";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex.Size = new System.Drawing.Size(226, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Hex.Size = new System.Drawing.Size(252, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Hex.Tag = "0";
             this.CMenu_Packet_CopyToClipboard_Data_Hex.Text = "Data: HEX text";
             this.CMenu_Packet_CopyToClipboard_Data_Hex.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Hex_Click);
@@ -454,7 +458,7 @@ namespace Ratatoskr.PacketViews.Packet
             // CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn
             // 
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Name = "CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Size = new System.Drawing.Size(140, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Size = new System.Drawing.Size(148, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Tag = "1";
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Text = "Line feed on";
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Hex_Click);
@@ -462,7 +466,7 @@ namespace Ratatoskr.PacketViews.Packet
             // CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff
             // 
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Name = "CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Size = new System.Drawing.Size(140, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Size = new System.Drawing.Size(148, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Tag = "0";
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Text = "Line feed off";
             this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Hex_Click);
@@ -473,7 +477,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn,
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff});
             this.CMenu_Packet_CopyToClipboard_Data_Custom.Name = "CMenu_Packet_CopyToClipboard_Data_Custom";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom.Size = new System.Drawing.Size(226, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Custom.Size = new System.Drawing.Size(252, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Custom.Tag = "0";
             this.CMenu_Packet_CopyToClipboard_Data_Custom.Text = "Data: Custom preview format";
             this.CMenu_Packet_CopyToClipboard_Data_Custom.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Custom_Click);
@@ -481,7 +485,7 @@ namespace Ratatoskr.PacketViews.Packet
             // CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn
             // 
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Name = "CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Size = new System.Drawing.Size(140, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Size = new System.Drawing.Size(148, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Tag = "1";
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Text = "Line feed on";
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Custom_Click);
@@ -489,10 +493,17 @@ namespace Ratatoskr.PacketViews.Packet
             // CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff
             // 
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Name = "CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Size = new System.Drawing.Size(140, 22);
+            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Size = new System.Drawing.Size(148, 22);
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Tag = "0";
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Text = "Line feed off";
             this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Custom_Click);
+            // 
+            // Menu_ExtView_SelectRate
+            // 
+            this.Menu_ExtView_SelectRate.Name = "Menu_ExtView_SelectRate";
+            this.Menu_ExtView_SelectRate.Size = new System.Drawing.Size(373, 22);
+            this.Menu_ExtView_SelectRate.Text = "Communication rate of Selection packet (last-first)";
+            this.Menu_ExtView_SelectRate.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // ViewInstanceImpl
             // 
@@ -549,6 +560,7 @@ namespace Ratatoskr.PacketViews.Packet
             Menu_ExtView_FirstPacketInfo.Checked = prop_.ExtViewFirstPacketInfo.Value;
             Menu_ExtView_LastPacketInfo.Checked = prop_.ExtViewLastPacketInfo.Value;
             Menu_ExtView_SelectDelta.Checked = prop_.ExtViewSelectDelta.Value;
+            Menu_ExtView_SelectRate.Checked = prop_.ExtViewSelectRate.Value;
             BuildExtView();
 
             /* --- 適用 --- */
@@ -681,12 +693,36 @@ namespace Ratatoskr.PacketViews.Packet
             var index_last = 0;
             var packet_first = (PacketObject)null;
             var packet_last = (PacketObject)null;
+            var select_total_size = (ulong)0;
+            var select_delta = TimeSpan.Zero;
 
             if (indices.Count > 0) {
                 index_first = indices[0];
                 index_last = indices[indices.Count - 1];
                 packet_first = LView_Main.ItemAt(index_first).Tag as PacketObject;
                 packet_last = LView_Main.ItemAt(index_last).Tag as PacketObject;
+            }
+
+            /* 選択中のパケットサイズを取得 */
+            if (   (ExtViewItem_SelectTotalSize != null)
+                || (ExtViewItem_SelectRate != null)
+            ) {
+                var packet_d = (DataPacketObject)null;
+
+                foreach (int index in indices) {
+                    packet_d = LView_Main.ItemAt(index).Tag as DataPacketObject;
+                    if (packet_d == null)continue;
+                    select_total_size += (ulong)packet_d.GetDataSize();
+                }
+            }
+
+            /* 選択パケットの時間差を取得 */
+            if (   (ExtViewItem_SelectDelta != null)
+                || (ExtViewItem_SelectRate != null)
+            ) {
+                if ((packet_first != null) && (packet_last != null)) {
+                    select_delta = packet_last.MakeTime - packet_first.MakeTime;
+                }
             }
 
             /* 選択パケット数 */
@@ -696,16 +732,7 @@ namespace Ratatoskr.PacketViews.Packet
 
             /* 選択パケットサイズ */
             if (ExtViewItem_SelectTotalSize != null) {
-                var total_size = (ulong)0;
-                var packet_d = (DataPacketObject)null;
-
-                foreach (int index in indices) {
-                    packet_d = LView_Main.ItemAt(index).Tag as DataPacketObject;
-                    if (packet_d == null)continue;
-                    total_size += (ulong)packet_d.GetDataSize();
-                }
-
-                ExtViewItem_SelectTotalSize.SubItems[1].Text = String.Format("{0} byte", total_size);
+                ExtViewItem_SelectTotalSize.SubItems[1].Text = String.Format("{0} byte", select_total_size);
             }
 
             /* 選択パケット(最初)の情報 */
@@ -729,10 +756,17 @@ namespace Ratatoskr.PacketViews.Packet
             /* 選択パケット(最後 - 最初)の差分時間 */
             if (ExtViewItem_SelectDelta != null) {
                 if ((packet_first != null) && (packet_last != null)) {
-                    ExtViewItem_SelectDelta.SubItems[1].Text = String.Format("{0} ms", (uint)((packet_last.MakeTime - packet_first.MakeTime).TotalMilliseconds));
+                    ExtViewItem_SelectDelta.SubItems[1].Text = String.Format("{0} msec", (uint)(select_delta.TotalMilliseconds));
                 } else {
                     ExtViewItem_SelectDelta.SubItems[1].Text = "";
                 }
+            }
+
+            /* 選択パケット(最後 - 最初)の通信レート */
+            if (ExtViewItem_SelectRate != null) {
+                var comm_rate_bps = (ulong)(select_total_size / select_delta.TotalSeconds);
+
+                ExtViewItem_SelectRate.SubItems[1].Text = String.Format("{0}B/s ({1})", TextUtil.DecToText(comm_rate_bps), comm_rate_bps);
             }
         }
 
@@ -838,6 +872,14 @@ namespace Ratatoskr.PacketViews.Packet
                     ExtViewItem_SelectDelta.Text = "Time difference of selection packet (last-first)";
                     ExtViewItem_SelectDelta.SubItems.Add("");
                     ExtViewItem_SelectDelta = LView_ExtInfo.Items.Add(ExtViewItem_SelectDelta);
+                }
+
+                /* 選択パケット(最後 - 最初)の通信レート */
+                if (Menu_ExtView_SelectRate.Checked) {
+                    ExtViewItem_SelectRate = new ListViewItem();
+                    ExtViewItem_SelectRate.Text = "Communication rate of selection packet (last-first)";
+                    ExtViewItem_SelectRate.SubItems.Add("");
+                    ExtViewItem_SelectRate = LView_ExtInfo.Items.Add(ExtViewItem_SelectRate);
                 }
             }
             LView_ExtInfo.EndUpdate();
@@ -1120,6 +1162,7 @@ namespace Ratatoskr.PacketViews.Packet
             prop_.ExtViewFirstPacketInfo.Value = Menu_ExtView_FirstPacketInfo.Checked;
             prop_.ExtViewLastPacketInfo.Value = Menu_ExtView_LastPacketInfo.Checked;
             prop_.ExtViewSelectDelta.Value = Menu_ExtView_SelectDelta.Checked;
+            prop_.ExtViewSelectRate.Value = Menu_ExtView_SelectRate.Checked;
         }
 
         protected override void OnClearPacket()

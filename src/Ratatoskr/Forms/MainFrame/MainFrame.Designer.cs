@@ -33,6 +33,11 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.Label_Status = new System.Windows.Forms.ToolStripStatusLabel();
             this.PBar_Status = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.DDBtn_DataRate = new System.Windows.Forms.ToolStripDropDownButton();
+            this.Menu_DataRate_SendData = new System.Windows.Forms.ToolStripMenuItem();
+            this.Menu_DataRate_RecvData = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.Label_PktCount_Raw = new System.Windows.Forms.ToolStripStatusLabel();
             this.Label_PktCount_View = new System.Windows.Forms.ToolStripStatusLabel();
             this.Label_PktCount_Busy = new System.Windows.Forms.ToolStripStatusLabel();
@@ -86,11 +91,11 @@
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.Panel_Center);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.SingleCmdPanel_Main);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(784, 513);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(944, 509);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(784, 562);
+            this.toolStripContainer1.Size = new System.Drawing.Size(944, 562);
             this.toolStripContainer1.TabIndex = 0;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -105,19 +110,22 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Label_Status,
             this.PBar_Status,
+            this.toolStripStatusLabel2,
+            this.DDBtn_DataRate,
+            this.toolStripStatusLabel1,
             this.Label_PktCount_Raw,
             this.Label_PktCount_View,
             this.Label_PktCount_Busy,
             this.Label_ViewDrawMode});
             this.statusStrip1.Location = new System.Drawing.Point(0, 0);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(784, 23);
+            this.statusStrip1.Size = new System.Drawing.Size(944, 27);
             this.statusStrip1.TabIndex = 0;
             // 
             // Label_Status
             // 
             this.Label_Status.Name = "Label_Status";
-            this.Label_Status.Size = new System.Drawing.Size(117, 18);
+            this.Label_Status.Size = new System.Drawing.Size(189, 22);
             this.Label_Status.Spring = true;
             this.Label_Status.Text = "起動完了";
             this.Label_Status.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -125,7 +133,49 @@
             // PBar_Status
             // 
             this.PBar_Status.Name = "PBar_Status";
-            this.PBar_Status.Size = new System.Drawing.Size(200, 17);
+            this.PBar_Status.Size = new System.Drawing.Size(200, 21);
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(4, 22);
+            // 
+            // DDBtn_DataRate
+            // 
+            this.DDBtn_DataRate.AutoSize = false;
+            this.DDBtn_DataRate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DDBtn_DataRate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Menu_DataRate_SendData,
+            this.Menu_DataRate_RecvData});
+            this.DDBtn_DataRate.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.DDBtn_DataRate.Image = ((System.Drawing.Image)(resources.GetObject("DDBtn_DataRate.Image")));
+            this.DDBtn_DataRate.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DDBtn_DataRate.Name = "DDBtn_DataRate";
+            this.DDBtn_DataRate.Size = new System.Drawing.Size(125, 25);
+            this.DDBtn_DataRate.Text = "Rate: 99.999MB/s";
+            // 
+            // Menu_DataRate_SendData
+            // 
+            this.Menu_DataRate_SendData.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.Menu_DataRate_SendData.Name = "Menu_DataRate_SendData";
+            this.Menu_DataRate_SendData.Size = new System.Drawing.Size(148, 22);
+            this.Menu_DataRate_SendData.Text = "Send data";
+            this.Menu_DataRate_SendData.Click += new System.EventHandler(this.OnDataRateTargetUpdate);
+            // 
+            // Menu_DataRate_RecvData
+            // 
+            this.Menu_DataRate_RecvData.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.Menu_DataRate_RecvData.Name = "Menu_DataRate_RecvData";
+            this.Menu_DataRate_RecvData.Size = new System.Drawing.Size(148, 22);
+            this.Menu_DataRate_RecvData.Text = "Receive data";
+            this.Menu_DataRate_RecvData.Click += new System.EventHandler(this.OnDataRateTargetUpdate);
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(4, 22);
             // 
             // Label_PktCount_Raw
             // 
@@ -135,8 +185,8 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.Label_PktCount_Raw.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Label_PktCount_Raw.Name = "Label_PktCount_Raw";
-            this.Label_PktCount_Raw.Size = new System.Drawing.Size(130, 18);
-            this.Label_PktCount_Raw.Text = "Raw: 9999999";
+            this.Label_PktCount_Raw.Size = new System.Drawing.Size(115, 22);
+            this.Label_PktCount_Raw.Text = "Raw: 999999999";
             // 
             // Label_PktCount_View
             // 
@@ -146,8 +196,8 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.Label_PktCount_View.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Label_PktCount_View.Name = "Label_PktCount_View";
-            this.Label_PktCount_View.Size = new System.Drawing.Size(130, 18);
-            this.Label_PktCount_View.Text = "View: 9999999";
+            this.Label_PktCount_View.Size = new System.Drawing.Size(115, 22);
+            this.Label_PktCount_View.Text = "View: 999999999";
             // 
             // Label_PktCount_Busy
             // 
@@ -157,8 +207,8 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.Label_PktCount_Busy.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Label_PktCount_Busy.Name = "Label_PktCount_Busy";
-            this.Label_PktCount_Busy.Size = new System.Drawing.Size(130, 18);
-            this.Label_PktCount_Busy.Text = "Busy: 9999999";
+            this.Label_PktCount_Busy.Size = new System.Drawing.Size(115, 22);
+            this.Label_PktCount_Busy.Text = "Busy: 999999999";
             // 
             // Label_ViewDrawMode
             // 
@@ -171,7 +221,7 @@
             this.Label_ViewDrawMode.DoubleClickEnabled = true;
             this.Label_ViewDrawMode.Font = new System.Drawing.Font("メイリオ", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Label_ViewDrawMode.Name = "Label_ViewDrawMode";
-            this.Label_ViewDrawMode.Size = new System.Drawing.Size(60, 18);
+            this.Label_ViewDrawMode.Size = new System.Drawing.Size(60, 22);
             this.Label_ViewDrawMode.Text = "High";
             this.Label_ViewDrawMode.DoubleClick += new System.EventHandler(this.Label_ViewDrawMode_DoubleClick);
             // 
@@ -180,17 +230,17 @@
             this.Panel_Center.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Panel_Center.Location = new System.Drawing.Point(0, 0);
             this.Panel_Center.Name = "Panel_Center";
-            this.Panel_Center.Size = new System.Drawing.Size(784, 469);
+            this.Panel_Center.Size = new System.Drawing.Size(944, 465);
             this.Panel_Center.TabIndex = 3;
             // 
             // SingleCmdPanel_Main
             // 
             this.SingleCmdPanel_Main.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.SingleCmdPanel_Main.Location = new System.Drawing.Point(0, 469);
+            this.SingleCmdPanel_Main.Location = new System.Drawing.Point(0, 465);
             this.SingleCmdPanel_Main.MaximumSize = new System.Drawing.Size(4096, 44);
             this.SingleCmdPanel_Main.MinimumSize = new System.Drawing.Size(0, 44);
             this.SingleCmdPanel_Main.Name = "SingleCmdPanel_Main";
-            this.SingleCmdPanel_Main.Size = new System.Drawing.Size(784, 44);
+            this.SingleCmdPanel_Main.Size = new System.Drawing.Size(944, 44);
             this.SingleCmdPanel_Main.TabIndex = 2;
             // 
             // MBar_Main
@@ -204,7 +254,7 @@
             this.MenuBar_Help});
             this.MBar_Main.Location = new System.Drawing.Point(0, 0);
             this.MBar_Main.Name = "MBar_Main";
-            this.MBar_Main.Size = new System.Drawing.Size(784, 26);
+            this.MBar_Main.Size = new System.Drawing.Size(944, 26);
             this.MBar_Main.TabIndex = 0;
             this.MBar_Main.Text = "menuStrip1";
             // 
@@ -418,7 +468,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 562);
+            this.ClientSize = new System.Drawing.Size(944, 562);
             this.Controls.Add(this.toolStripContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
@@ -485,5 +535,10 @@
         private System.Windows.Forms.ToolStripStatusLabel Label_PktCount_Busy;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Edit_TimeStamp;
+        private System.Windows.Forms.ToolStripDropDownButton DDBtn_DataRate;
+        private System.Windows.Forms.ToolStripMenuItem Menu_DataRate_SendData;
+        private System.Windows.Forms.ToolStripMenuItem Menu_DataRate_RecvData;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
     }
 }

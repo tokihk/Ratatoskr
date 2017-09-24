@@ -46,8 +46,8 @@ namespace Ratatoskr.Devices.SerialPort
         public EnumConfig<fDtrControlType>  fDtrControl { get; } = new EnumConfig<fDtrControlType>(fDtrControlType.DTR_CONTROL_DISABLE);
         public EnumConfig<fRtsControlType>  fRtsControl { get; } = new EnumConfig<fRtsControlType>(fRtsControlType.RTS_CONTROL_DISABLE);
 
-        public IntegerConfig        XonLim   { get; } = new IntegerConfig(0);
-        public IntegerConfig        XoffLim  { get; } = new IntegerConfig(0);
+        public IntegerConfig        XonLim   { get; } = new IntegerConfig(2048);
+        public IntegerConfig        XoffLim  { get; } = new IntegerConfig(2048);
         public IntegerConfig        XonChar  { get; } = new IntegerConfig(0x11);
         public IntegerConfig        XoffChar { get; } = new IntegerConfig(0x13);
 

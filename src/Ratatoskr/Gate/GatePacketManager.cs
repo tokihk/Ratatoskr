@@ -30,7 +30,7 @@ namespace Ratatoskr.Gate
         private static IAsyncResult ar_save_ = null;
 
 
-        public static PacketManager BasePacketManager { get; } = new PacketManager();
+        public static PacketManager BasePacketManager { get; } = new PacketManager(true);
 
 
         public static event EventHandler       EventPacketCleared = delegate() { };
@@ -50,6 +50,8 @@ namespace Ratatoskr.Gate
         {
             AutoTimeStampManager.Poll();
 
+            PacketAutoSaveManager.Poll();
+
             /* パケット処理 */
             PacketPoll();
         }
@@ -60,8 +62,13 @@ namespace Ratatoskr.Gate
             if ((ar_load_ != null) && (!ar_load_.IsCompleted))return;
             if ((ar_save_ != null) && (!ar_save_.IsCompleted))return;
 
+            var rate = (ulong)0;
+
             /* 溜まっている全イベントパケットを取得 */
-            AddPacket(BasePacketManager.DequeueAll());
+            AddPacket(BasePacketManager.DequeueAll(ref rate));
+
+            /* 通信レート更新 */
+            FormUiManager.SetCommRate(rate);
         }
 
         private static void OnPacketEntry(PacketObject packet, ref bool ignore)
@@ -75,12 +82,12 @@ namespace Ratatoskr.Gate
             set { enable_ = value;  }
         }
 
-        public static ulong EventPacketCount
+        public static ulong PacketCount
         {
             get { return (packets_.Count); }
         }
 
-        public static IEnumerable<PacketObject> GetEventPackets()
+        public static IEnumerable<PacketObject> GetPackets()
         {
             return (packets_);
         }
@@ -216,7 +223,13 @@ namespace Ratatoskr.Gate
         private delegate void LoadPacketFileExecTaskDelegate(PacketContainer packets, string path, FileFormatReader reader, FileFormatOption option);
         private static void LoadPacketFileExecTask(PacketContainer packets, string path, FileFormatReader reader, FileFormatOption option)
         {
-            reader.Read(packets, option, path);
+            if (!reader.Open(option, path)) {
+                return;
+            }
+
+            reader.Read(packets, option);
+
+            reader.Close();
         }
 
         public static void SavePacketFile(string path, FileFormatWriter writer, FileFormatOption option, IEnumerable<PacketConverterInstance> pcvt_list)
@@ -231,14 +244,16 @@ namespace Ratatoskr.Gate
         private delegate void SavePacketFileTaskDelegate(string path, FileFormatWriter writer, FileFormatOption option, IEnumerable<PacketConverterInstance> pcvt_list);
         private static void SavePacketFileTask(string path, FileFormatWriter writer, FileFormatOption option, IEnumerable<PacketConverterInstance> pcvt_list)
         {
+            /* ファイルオープン */
+            if (!writer.Open(option, path, false)) {
+                return;
+            }
+
             var progress_max = Math.Max(packets_.Count, 1);
 
             /* ステータスバーを初期化 */
             FormUiManager.SetStatusText(StatusTextId.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileSaving.Value);
             FormUiManager.SetProgressBar(0, true);
-
-            /* ファイル初期化 */
-            writer.Write(null, null, path, false);
 
             var task_method = new SavePacketFileExecTaskDelegate(SavePacketFileExecTask);
             var task_result = (IAsyncResult)null;
@@ -265,12 +280,7 @@ namespace Ratatoskr.Gate
                     task_result = task_method.BeginInvoke(task_packets, path, writer, option, null, null);
 
                     /* プログレスバー更新 */
-                    FormUiManager.SetProgressBar((byte)((double)(++count) / packets_.Count * 100), false);
-                }
-
-                /* 変換済みパケットを出力 */
-                if (task_packets != null) {
-                    task_result = task_method.BeginInvoke(task_packets, path, writer, option, null, null);
+                    FormUiManager.SetProgressBar((byte)((double)(++count) / progress_max * 100), false);
                 }
 
                 /* 変換器内の残りパケットを処理 */
@@ -304,12 +314,15 @@ namespace Ratatoskr.Gate
             /* ステータスバーを終了 */
             FormUiManager.SetStatusText(StatusTextId.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileSaveComplete.Value);
             FormUiManager.SetProgressBar(100, true);
+
+            /* ファイルクローズ */
+            writer.Close();
         }
 
         private delegate void SavePacketFileExecTaskDelegate(IEnumerable<PacketObject> packets, string path, FileFormatWriter writer, FileFormatOption option);
         private static void SavePacketFileExecTask(IEnumerable<PacketObject> packets, string path, FileFormatWriter writer, FileFormatOption option)
         {
-            writer.Write(packets, option, path, true);
+            writer.Write(packets);
         }
     }
 }

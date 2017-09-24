@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -203,6 +204,21 @@ namespace Ratatoskr.Native
         public const UInt32 CE_DNS      = 0x0800;  // LPTx Device not selected
         public const UInt32 CE_OOP      = 0x1000;  // LPTx Out-Of-Paper
         public const UInt32 CE_MODE     = 0x8000;  // Requested mode unsupported
+
+        public const UInt32 PURGE_TXABORT = 0x0001;  // Kill the pending/current writes to the comm port.
+        public const UInt32 PURGE_RXABORT = 0x0002;  // Kill the pending/current reads to the comm port.
+        public const UInt32 PURGE_TXCLEAR = 0x0004;  // Kill the transmit queue if there.
+        public const UInt32 PURGE_RXCLEAR = 0x0008;  // Kill the typeahead buffer if there.
+
+        public const UInt32 SETXOFF  = 1;       // Simulate XOFF received
+        public const UInt32 SETXON   = 2;       // Simulate XON received
+        public const UInt32 SETRTS   = 3;       // Set RTS high
+        public const UInt32 CLRRTS   = 4;       // Set RTS low
+        public const UInt32 SETDTR   = 5;       // Set DTR high
+        public const UInt32 CLRDTR   = 6;       // Set DTR low
+        public const UInt32 RESETDEV = 7;       // Reset device if possible
+        public const UInt32 SETBREAK = 8;       // Set the device break line.
+        public const UInt32 CLRBREAK = 9;       // Clear the device break line.
 
         public const UInt32 DIGCF_DEFAULT         = 0x00000001;  // only valid with DIGCF_DEVICEINTERFACE
         public const UInt32 DIGCF_PRESENT         = 0x00000002;
@@ -505,20 +521,20 @@ namespace Ratatoskr.Native
 
             public enum FlagsParamOffset
             {
-                Binary           = 31,
-                Parity           = 30,
-                OutxCtsFlow      = 29,
-                OutxDsrFlow      = 28,
-                DtrControl       = 26,
-                DsrSensitivity   = 25,
-                TXContinueOnXoff = 24,
-                OutX             = 23,
-                InX              = 22,
-                ErrorChar        = 21,
-                Null             = 20,
-                RtsControl       = 18,
-                AbortOnError     = 17,
-                Dummy2           = 0,
+                Binary           = 0,
+                Parity           = 1,
+                OutxCtsFlow      = 2,
+                OutxDsrFlow      = 3,
+                DtrControl       = 4,
+                DsrSensitivity   = 6,
+                TXContinueOnXoff = 7,
+                OutX             = 8,
+                InX              = 9,
+                ErrorChar        = 10,
+                Null             = 11,
+                RtsControl       = 12,
+                AbortOnError     = 14,
+                Dummy2           = 15,
             }
 
             public UInt32 fBinary
@@ -547,13 +563,13 @@ namespace Ratatoskr.Native
 
             public UInt32 fRtsControl
             {
-                get { return ((Flags >> (int)FlagsParamOffset.RtsControl) & 2u); }
+                get { return ((Flags >> (int)FlagsParamOffset.RtsControl) & 3u); }
                 set { Flags = (Flags & (~(3u << (int)FlagsParamOffset.RtsControl))) | ((value & 3u) << (int)FlagsParamOffset.RtsControl); }
             }
 
             public UInt32 fDtrControl
             {
-                get { return ((Flags >> (int)FlagsParamOffset.DtrControl) & 2u); }
+                get { return ((Flags >> (int)FlagsParamOffset.DtrControl) & 3u); }
                 set { Flags = (Flags & (~(3u << (int)FlagsParamOffset.DtrControl))) | ((value & 3u) << (int)FlagsParamOffset.DtrControl); }
             }
 

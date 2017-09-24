@@ -128,7 +128,6 @@ negative_expression
 
 postfix_expression
 	: primary_expression
-	| primary_expression LP expression RP
 	;
 
 primary_expression
@@ -164,6 +163,7 @@ primary_expression
 	{
 		exp_.Add($1);
 	}
+	| LP expression RP
 	;
 
 %%

@@ -54,7 +54,7 @@ namespace Ratatoskr.Generic.Packet
         Send,
     }
 
-
+    [Serializable]
     internal abstract class PacketObject
     {
         public PacketObject(

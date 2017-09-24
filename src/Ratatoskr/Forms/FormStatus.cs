@@ -17,5 +17,7 @@ namespace Ratatoskr.Forms
         public ulong  PacketCount_All      = 0;
         public ulong  PacketCount_DrawAll  = 0;
         public ulong  PacketCount_DrawBusy = 0;
+
+        public ulong  PacketBytePSec_All = 0;
     }
 }

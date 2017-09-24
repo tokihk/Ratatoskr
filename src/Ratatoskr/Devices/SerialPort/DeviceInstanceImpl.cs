@@ -56,8 +56,11 @@ namespace Ratatoskr.Devices.SerialPort
         private IntPtr           recv_event_end_;
         private bool             recv_async_busy_ = false;
         private uint             recv_size_ = 0;
-
 #else
+        private bool exit_req_ = false;
+
+        private IAsyncResult device_task_send_ar_;
+        private IAsyncResult device_task_recv_ar_;
 #endif
 
         public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
@@ -127,6 +130,11 @@ namespace Ratatoskr.Devices.SerialPort
             /* 送信/受信タスク開始 */
             device_task_ar_ = (new DeviceTaskHandler(DeviceTask)).BeginInvoke(null, null);
 #else
+            exit_req_ = false;
+
+            /* 送信/受信タスク開始 */
+            device_task_send_ar_ = (new DeviceTaskHandler(DeviceSendTask)).BeginInvoke(null, null);
+            device_task_recv_ar_ = (new DeviceTaskHandler(DeviceRecvTask)).BeginInvoke(null, null);
 #endif
         }
 
@@ -158,6 +166,25 @@ namespace Ratatoskr.Devices.SerialPort
             NativeMethods.CloseHandle(recv_event_end_);
             recv_event_end_ = IntPtr.Zero;
 #else
+            exit_req_ = true;
+
+            /* 処理中の操作を全てキャンセル */
+            NativeMethods.PurgeComm(
+                handle_,
+                  NativeMethods.PURGE_RXABORT
+                | NativeMethods.PURGE_RXCLEAR
+                | NativeMethods.PURGE_TXABORT
+                | NativeMethods.PURGE_TXCLEAR);
+
+            NativeMethods.EscapeCommFunction(handle_, NativeMethods.CLRDTR);
+            NativeMethods.SetCommMask(handle_, 0);
+
+            /* 受信タスク停止 */
+            while (   ((device_task_send_ar_ != null) && (!device_task_send_ar_.IsCompleted))
+                   || ((device_task_recv_ar_ != null) && (!device_task_recv_ar_.IsCompleted))
+            ) {
+                Thread.Sleep(1);
+            }
 #endif
 
             /* ポートクローズ */
@@ -169,12 +196,7 @@ namespace Ratatoskr.Devices.SerialPort
 
         protected override PollState OnPoll()
         {
-            var busy = false;
-
-            DeviceSendExec(ref busy);
-            DeviceRecvExec(ref busy);
-
-            return ((busy) ? (PollState.Busy) : (PollState.Idle));
+            return (PollState.Idle);
         }
 
         protected override void OnSendRequest()
@@ -354,6 +376,32 @@ namespace Ratatoskr.Devices.SerialPort
 
 #else
 
+        private void DeviceSendTask()
+        {
+            var busy = false;
+
+            while (!exit_req_) {
+                DeviceSendExec(ref busy);
+
+                if (!busy) {
+                    System.Threading.Thread.Sleep(10);
+                }
+            }
+        }
+
+        private void DeviceRecvTask()
+        {
+            var busy = false;
+
+            while (!exit_req_) {
+                DeviceRecvExec(ref busy);
+
+                if (!busy) {
+                    System.Threading.Thread.Sleep(10);
+                }
+            }
+        }
+
         private void DeviceSendExec()
         {
             bool busy = false;
@@ -363,6 +411,8 @@ namespace Ratatoskr.Devices.SerialPort
 
         private void DeviceSendExec(ref bool busy)
         {
+            busy = false;
+
             lock (send_sync_)
             {
                 /* === 送信キュー状態を取得 === */
@@ -390,6 +440,7 @@ namespace Ratatoskr.Devices.SerialPort
                 uint send_size = 0;
 
                 if (!NativeMethods.WriteFile(handle_, send_buffer_, (uint)send_buffer_.Length, out send_size, NativeMethods.Null))return;
+
                 if (send_size == 0)return;
 
                 SendComplete(send_buffer_, send_size);
@@ -400,7 +451,9 @@ namespace Ratatoskr.Devices.SerialPort
 
         private void DeviceRecvExec(ref bool busy)
         {
-            /* === 受信キュー状態を取得 === */
+            busy = false;
+
+            /* === 受信サイズを取得 === */
             var comm_error = (uint)0;
             var comm_stat = new NativeMethods.COMSTAT();
 
@@ -431,8 +484,6 @@ namespace Ratatoskr.Devices.SerialPort
         {
             /* === COMポート設定読み込み === */
             var dcb = new NativeMethods.DCB();
-
-            dcb.DCBlength = (uint)Marshal.SizeOf(dcb.GetType());
 
             NativeMethods.GetCommState(handle, out dcb);
 
@@ -498,10 +549,9 @@ namespace Ratatoskr.Devices.SerialPort
             /* === タイムアウト設定 === */
             var timeout = new NativeMethods.COMMTIMEOUTS();
 
-            timeout.ReadIntervalTimeout = 20;
-            timeout.ReadTotalTimeoutMultiplier = 10;
-            timeout.ReadTotalTimeoutConstant = 100;
-            timeout.WriteTotalTimeoutMultiplier = 10;
+            timeout.ReadIntervalTimeout = 0;
+            timeout.ReadTotalTimeoutMultiplier = 0;
+            timeout.ReadTotalTimeoutConstant = 10;
             timeout.WriteTotalTimeoutConstant = 100;
 
             NativeMethods.SetCommTimeouts(handle, ref timeout);
@@ -509,15 +559,16 @@ namespace Ratatoskr.Devices.SerialPort
             /* === イベント設定 === */
             if (!NativeMethods.SetCommMask(
                 handle,
-                  NativeMethods.EV_BREAK
-                | NativeMethods.EV_CTS
-                | NativeMethods.EV_DSR
-                | NativeMethods.EV_ERR
-                | NativeMethods.EV_RING
-                | NativeMethods.EV_RLSD
-                | NativeMethods.EV_RXCHAR
-                | NativeMethods.EV_RXFLAG
-                | NativeMethods.EV_TXEMPTY)
+//                  NativeMethods.EV_BREAK
+//                | NativeMethods.EV_CTS
+//                | NativeMethods.EV_DSR
+//                | NativeMethods.EV_ERR
+//                | NativeMethods.EV_RING
+//                | NativeMethods.EV_RLSD
+                  NativeMethods.EV_RXCHAR
+//                | NativeMethods.EV_RXFLAG
+//                | NativeMethods.EV_TXEMPTY
+                )
             ) {
                 return;
             }

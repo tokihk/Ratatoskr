@@ -35,6 +35,12 @@
             this.GBox_DeviceType = new System.Windows.Forms.GroupBox();
             this.CBox_DeviceType = new System.Windows.Forms.ComboBox();
             this.TabPage_General = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.Num_DataRate_GraphLimit = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.ChkBox_DaraRateTarget_Recv = new System.Windows.Forms.CheckBox();
+            this.ChkBox_DaraRateTarget_Send = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Num_RedirectQueueLimit = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
@@ -52,6 +58,8 @@
             this.TabPage_Device.SuspendLayout();
             this.GBox_DeviceType.SuspendLayout();
             this.TabPage_General.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_DataRate_GraphLimit)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_RedirectQueueLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_SendQueueLimit)).BeginInit();
@@ -63,7 +71,7 @@
             // Btn_Cancel
             // 
             this.Btn_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Btn_Cancel.Location = new System.Drawing.Point(552, 460);
+            this.Btn_Cancel.Location = new System.Drawing.Point(592, 640);
             this.Btn_Cancel.Name = "Btn_Cancel";
             this.Btn_Cancel.Size = new System.Drawing.Size(100, 30);
             this.Btn_Cancel.TabIndex = 4;
@@ -74,7 +82,7 @@
             // Btn_Ok
             // 
             this.Btn_Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Btn_Ok.Location = new System.Drawing.Point(446, 460);
+            this.Btn_Ok.Location = new System.Drawing.Point(486, 640);
             this.Btn_Ok.Name = "Btn_Ok";
             this.Btn_Ok.Size = new System.Drawing.Size(100, 30);
             this.Btn_Ok.TabIndex = 3;
@@ -92,7 +100,7 @@
             this.TabCtrl_Main.Location = new System.Drawing.Point(12, 12);
             this.TabCtrl_Main.Name = "TabCtrl_Main";
             this.TabCtrl_Main.SelectedIndex = 0;
-            this.TabCtrl_Main.Size = new System.Drawing.Size(640, 442);
+            this.TabCtrl_Main.Size = new System.Drawing.Size(680, 622);
             this.TabCtrl_Main.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.TabCtrl_Main.TabIndex = 5;
             // 
@@ -103,7 +111,7 @@
             this.TabPage_Device.Location = new System.Drawing.Point(4, 22);
             this.TabPage_Device.Name = "TabPage_Device";
             this.TabPage_Device.Padding = new System.Windows.Forms.Padding(3);
-            this.TabPage_Device.Size = new System.Drawing.Size(632, 416);
+            this.TabPage_Device.Size = new System.Drawing.Size(672, 596);
             this.TabPage_Device.TabIndex = 0;
             this.TabPage_Device.Text = "Device";
             this.TabPage_Device.UseVisualStyleBackColor = true;
@@ -115,7 +123,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.GBox_DeviceProperty.Location = new System.Drawing.Point(6, 54);
             this.GBox_DeviceProperty.Name = "GBox_DeviceProperty";
-            this.GBox_DeviceProperty.Size = new System.Drawing.Size(620, 356);
+            this.GBox_DeviceProperty.Size = new System.Drawing.Size(660, 536);
             this.GBox_DeviceProperty.TabIndex = 5;
             this.GBox_DeviceProperty.TabStop = false;
             this.GBox_DeviceProperty.Text = "Device parameter";
@@ -143,6 +151,7 @@
             // 
             // TabPage_General
             // 
+            this.TabPage_General.Controls.Add(this.groupBox2);
             this.TabPage_General.Controls.Add(this.groupBox1);
             this.TabPage_General.Controls.Add(this.GBox_RedirectList);
             this.TabPage_General.Controls.Add(this.GBox_Operation);
@@ -150,10 +159,82 @@
             this.TabPage_General.Location = new System.Drawing.Point(4, 22);
             this.TabPage_General.Name = "TabPage_General";
             this.TabPage_General.Padding = new System.Windows.Forms.Padding(3);
-            this.TabPage_General.Size = new System.Drawing.Size(632, 416);
+            this.TabPage_General.Size = new System.Drawing.Size(672, 596);
             this.TabPage_General.TabIndex = 1;
             this.TabPage_General.Text = "General";
             this.TabPage_General.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.Num_DataRate_GraphLimit);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.ChkBox_DaraRateTarget_Recv);
+            this.groupBox2.Controls.Add(this.ChkBox_DaraRateTarget_Send);
+            this.groupBox2.Location = new System.Drawing.Point(6, 226);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(330, 88);
+            this.groupBox2.TabIndex = 8;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Data rate view setting";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(298, 65);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(25, 12);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "B/s";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // Num_DataRate_GraphLimit
+            // 
+            this.Num_DataRate_GraphLimit.Location = new System.Drawing.Point(172, 62);
+            this.Num_DataRate_GraphLimit.Maximum = new decimal(new int[] {
+            -727379969,
+            232,
+            0,
+            0});
+            this.Num_DataRate_GraphLimit.Name = "Num_DataRate_GraphLimit";
+            this.Num_DataRate_GraphLimit.Size = new System.Drawing.Size(120, 19);
+            this.Num_DataRate_GraphLimit.TabIndex = 6;
+            this.Num_DataRate_GraphLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_DataRate_GraphLimit.ThousandsSeparator = true;
+            this.Num_DataRate_GraphLimit.Value = new decimal(new int[] {
+            -727379969,
+            232,
+            0,
+            0});
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(5, 59);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(160, 23);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Graph maximum rate";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // ChkBox_DaraRateTarget_Recv
+            // 
+            this.ChkBox_DaraRateTarget_Recv.AutoSize = true;
+            this.ChkBox_DaraRateTarget_Recv.Location = new System.Drawing.Point(7, 40);
+            this.ChkBox_DaraRateTarget_Recv.Name = "ChkBox_DaraRateTarget_Recv";
+            this.ChkBox_DaraRateTarget_Recv.Size = new System.Drawing.Size(133, 16);
+            this.ChkBox_DaraRateTarget_Recv.TabIndex = 1;
+            this.ChkBox_DaraRateTarget_Recv.Text = "Receive data monitor";
+            this.ChkBox_DaraRateTarget_Recv.UseVisualStyleBackColor = true;
+            // 
+            // ChkBox_DaraRateTarget_Send
+            // 
+            this.ChkBox_DaraRateTarget_Send.AutoSize = true;
+            this.ChkBox_DaraRateTarget_Send.Location = new System.Drawing.Point(7, 18);
+            this.ChkBox_DaraRateTarget_Send.Name = "ChkBox_DaraRateTarget_Send";
+            this.ChkBox_DaraRateTarget_Send.Size = new System.Drawing.Size(117, 16);
+            this.ChkBox_DaraRateTarget_Send.TabIndex = 0;
+            this.ChkBox_DaraRateTarget_Send.Text = "Send data monitor";
+            this.ChkBox_DaraRateTarget_Send.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -225,9 +306,9 @@
             // GBox_RedirectList
             // 
             this.GBox_RedirectList.Controls.Add(this.TBox_RedirectTargetAlias);
-            this.GBox_RedirectList.Location = new System.Drawing.Point(252, 6);
+            this.GBox_RedirectList.Location = new System.Drawing.Point(6, 320);
             this.GBox_RedirectList.Name = "GBox_RedirectList";
-            this.GBox_RedirectList.Size = new System.Drawing.Size(240, 136);
+            this.GBox_RedirectList.Size = new System.Drawing.Size(278, 136);
             this.GBox_RedirectList.TabIndex = 6;
             this.GBox_RedirectList.TabStop = false;
             this.GBox_RedirectList.Text = "Receive data redirect alias";
@@ -239,7 +320,7 @@
             this.TBox_RedirectTargetAlias.Multiline = true;
             this.TBox_RedirectTargetAlias.Name = "TBox_RedirectTargetAlias";
             this.TBox_RedirectTargetAlias.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.TBox_RedirectTargetAlias.Size = new System.Drawing.Size(234, 118);
+            this.TBox_RedirectTargetAlias.Size = new System.Drawing.Size(272, 118);
             this.TBox_RedirectTargetAlias.TabIndex = 0;
             // 
             // GBox_Operation
@@ -249,7 +330,7 @@
             this.GBox_Operation.Controls.Add(this.ChkBox_SendEnable);
             this.GBox_Operation.Location = new System.Drawing.Point(6, 54);
             this.GBox_Operation.Name = "GBox_Operation";
-            this.GBox_Operation.Size = new System.Drawing.Size(240, 88);
+            this.GBox_Operation.Size = new System.Drawing.Size(278, 88);
             this.GBox_Operation.TabIndex = 5;
             this.GBox_Operation.TabStop = false;
             this.GBox_Operation.Text = "Operation";
@@ -317,7 +398,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 502);
+            this.ClientSize = new System.Drawing.Size(704, 682);
             this.Controls.Add(this.TabCtrl_Main);
             this.Controls.Add(this.Btn_Ok);
             this.Controls.Add(this.Btn_Cancel);
@@ -329,6 +410,9 @@
             this.TabPage_Device.ResumeLayout(false);
             this.GBox_DeviceType.ResumeLayout(false);
             this.TabPage_General.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_DataRate_GraphLimit)).EndInit();
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Num_RedirectQueueLimit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_SendQueueLimit)).EndInit();
@@ -365,5 +449,11 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown Num_SendQueueLimit;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown Num_DataRate_GraphLimit;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox ChkBox_DaraRateTarget_Recv;
+        private System.Windows.Forms.CheckBox ChkBox_DaraRateTarget_Send;
     }
 }

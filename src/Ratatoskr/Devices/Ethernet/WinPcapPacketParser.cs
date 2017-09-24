@@ -27,7 +27,6 @@ namespace Ratatoskr.Devices.Ethernet
             }
         }
 
-
         public static PacketObject Convert(RawCapture packet, WinPcapPacketParserOption option)
         {
             var info = Parse(packet, option);

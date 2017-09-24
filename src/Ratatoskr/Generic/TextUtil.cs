@@ -9,6 +9,9 @@ namespace Ratatoskr.Generic
 {
     internal static class TextUtil
     {
+        const string UNIT_CODE_INT = " kMGTPEZY";
+        const string UNIT_CODE_DEC = "munpfazy";
+
         public static string[] ReadCsvLine(StreamReader reader)
         {
             var csv_line = new List<string>();
@@ -99,6 +102,25 @@ namespace Ratatoskr.Generic
             /* ダブルクォテーションで囲っているので終端には必ずカンマを付ける */
 
             return (str.ToString());
+        }
+
+        public static string DecToText(ulong value)
+        {
+            var value_int = value;
+            var value_dec = "";
+            var unit_code = "";
+
+            /* 整数部分と最上位桁に合わせた単位を取得 */
+            foreach (var code in UNIT_CODE_INT) {
+                if (value_int < 1000) {
+                    unit_code = code.ToString();
+                    break;
+                }
+                value_dec = string.Format(".{0:D2}", (value_int % 1000) / 10);
+                value_int /= 1000;
+            }
+
+            return ((value_int.ToString() + value_dec + unit_code).TrimEnd());
         }
     }
 }

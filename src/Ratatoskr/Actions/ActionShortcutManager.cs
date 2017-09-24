@@ -27,7 +27,6 @@ namespace Ratatoskr.Actions
         PacketSaveAsRuleOff,
         PacketSaveAsRuleOn,
 
-        AutoSaveToggle,
         AutoTimeStampToggle,
         AutoScrollToggle,
 
@@ -74,9 +73,6 @@ namespace Ratatoskr.Actions
                     break;
                 case ActionShortcutId.AutoTimeStampToggle:
                     action = new Action_AutoTimeStamp(!ConfigManager.User.Option.AutoTimeStamp.Value);
-                    break;
-                case ActionShortcutId.AutoSaveToggle:
-                    action = new Action_AutoPacketSave(!ConfigManager.User.Option.AutoSave.Value);
                     break;
                 case ActionShortcutId.ShowAppInformation:
                     action = new Action_ShowAppInfo();

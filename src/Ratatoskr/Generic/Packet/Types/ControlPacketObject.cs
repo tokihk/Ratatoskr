@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.Generic.Packet.Types
 {
+    [Serializable]
     internal sealed class ControlPacketObject : PacketObject
     {
         public uint   ControlCommand { get; }

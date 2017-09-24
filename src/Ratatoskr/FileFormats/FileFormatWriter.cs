@@ -22,27 +22,70 @@ namespace Ratatoskr.FileFormats
             set { progress_value_ = value;  }
         }
 
-        public bool Write(object obj, FileFormatOption option, string path, bool is_append = false)
+        public bool IsOpen { get; private set; } = false;
+
+        protected FileStream       BaseStream { get; private set; } = null;
+        protected FileFormatOption FormatOption { get; private set; } = null;
+
+
+        public bool Open(FileFormatOption option, string path, bool is_append = false)
         {
-            var success = false;
+            Close();
 
-            progress_value_ = 0;
+            FormatOption = option;
 
-            try {
-                using (var stream = new FileStream(path, (is_append) ? (FileMode.Append) : (FileMode.Create))) {
-                    success = OnWrite(obj, option, stream);
-                }
-            } catch {
-            }
+            IsOpen = OnOpenPath(option, path, is_append);
 
-            if (success) {
-                progress_value_ = 100;
-            }
-
-            return (success);
+            return (IsOpen);
         }
 
-        protected virtual bool OnWrite(object obj, FileFormatOption option, Stream stream)
+        public virtual void Close()
+        {
+            IsOpen = false;
+
+            if (BaseStream != null) {
+                BaseStream.Close();
+                BaseStream = null;
+            }
+
+            progress_value_ = 0;
+        }
+
+        public bool Write(object obj)
+        {
+            if (!IsOpen)return (false);
+
+            if (BaseStream != null) {
+                return (OnWriteStream(obj, FormatOption, BaseStream));
+            } else {
+                return (OnWriteCustom(obj, FormatOption));
+            }
+        }
+
+        protected virtual bool OnOpenPath(FileFormatOption option, string path, bool is_append)
+        {
+            try {
+                BaseStream = new FileStream(path, (is_append) ? (FileMode.Append) : (FileMode.Create));
+
+                if (!OnOpenStream(FormatOption, BaseStream))return (false);
+            
+                return (true);
+            } catch {
+                return (false);
+            }
+        }
+
+        protected virtual bool OnOpenStream(FileFormatOption option, Stream stream)
+        {
+            return (true);
+        }
+
+        protected virtual bool OnWriteStream(object obj, FileFormatOption option, Stream stream)
+        {
+            return (true);
+        }
+
+        protected virtual bool OnWriteCustom(object obj, FileFormatOption option)
         {
             return (true);
         }

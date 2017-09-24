@@ -45,7 +45,7 @@ Tf  ([0-9]{3})
 %%
 
 // --- 数字(10進数) --------------------------
-<INITIAL>[0]|([1-9][0-9]*)(\.[0-9]+){0,1} {
+<INITIAL>[0]|([1-9][0-9]{0,8})(\.[0-9]{1,8}){0,1} {
 	yylval.term = new Terms.Term_Number(double.Parse(yytext));
 	return (int)Tokens.VALUE_NUMBER;
 }
@@ -87,83 +87,83 @@ Tf  ([0-9]{3})
 }
 
 // --- ステータス -----------------------------
-<INITIAL>PacketCount {
+<INITIAL>[Pp]acket[Cc]ount {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.PacketCount);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>LastDelta {
+<INITIAL>[Llast[Dd]elta {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.LastPacketDelta);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Control {
+<INITIAL>[Ii]s[Cc]ontrol {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_IsControl);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Message {
+<INITIAL>[Ii]s[Mm]essage {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_IsMessage);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Data {
+<INITIAL>[Ii]s[Dd]ata {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_IsData);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Alias {
+<INITIAL>[Aa]lias {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Alias);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>DateTime {
+<INITIAL>[Dd]ate[Tt]ime {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_MakeTime);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Information {
+<INITIAL>[Ii]nformation {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Information);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Mark {
+<INITIAL>[Mm]ark {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Mark);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Send {
+<INITIAL>[Ii]s[Ss]end {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_IsSend);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Recv {
+<INITIAL>[Ii]s[Rr]ecv {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_IsRecv);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Source {
+<INITIAL>[Ss]ource {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Source);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Destination {
+<INITIAL>[Dd]estination {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Destination);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>DataSize {
+<INITIAL>[Dd]ataSize {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Length);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>BitText {
+<INITIAL>[Bb]it[Tt]ext {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_BitText);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>HexText {
+<INITIAL>[Hh]ex[Tt]ext {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_HexText);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>AsciiText {
+<INITIAL>[Aa]scii[Tt]ext {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_AsciiText);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>Utf8Text {
+<INITIAL>[Uu]tf8[Tt]ext {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Utf8Text);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>UnicodeLText {
+<INITIAL>[Uu]nicode[Ll][Tt]ext {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_UnicodeLText);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>UnicodeBText {
+<INITIAL>[Uu]nicode[Bb][Tt]ext {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_UnicodeBText);
 	return (int)Tokens.VALUE_STATUS;
 }

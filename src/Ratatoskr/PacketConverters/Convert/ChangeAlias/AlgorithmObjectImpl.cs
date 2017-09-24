@@ -60,14 +60,14 @@ namespace Ratatoskr.PacketConverters.Convert.ChangeAlias
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label1.Size = new System.Drawing.Size(63, 18);
+            this.label1.Size = new System.Drawing.Size(80, 18);
             this.label1.TabIndex = 12;
-            this.label1.Text = "変更後の値";
+            this.label1.Text = "Changed value";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // TBox_Value
             // 
-            this.TBox_Value.Location = new System.Drawing.Point(72, 3);
+            this.TBox_Value.Location = new System.Drawing.Point(89, 3);
             this.TBox_Value.Name = "TBox_Value";
             this.TBox_Value.Size = new System.Drawing.Size(200, 19);
             this.TBox_Value.TabIndex = 18;

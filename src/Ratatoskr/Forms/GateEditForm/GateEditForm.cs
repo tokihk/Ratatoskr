@@ -33,7 +33,7 @@ namespace Ratatoskr.Forms.GateEditForm
             gatep_ = gatep;
             devconf_ = devconf;
             devc_id_ = devc_id;
-            devp_ = devp;
+            devp_ = (devp != null) ? (devp.Clone()) : (null);
 
             /* 初期値設定 */
             TBox_Alias.Text = gatep.Alias;
@@ -41,6 +41,9 @@ namespace Ratatoskr.Forms.GateEditForm
             Num_SendQueueLimit.Value = devconf.SendDataQueueLimit;
             Num_RedirectQueueLimit.Value = devconf.RedirectDataQueueLimit;
             TBox_RedirectTargetAlias.Text = gatep.RedirectAlias;
+            ChkBox_DaraRateTarget_Send.Checked = gatep.DataRateTarget.HasFlag(DeviceDataRateTarget.SendData);
+            ChkBox_DaraRateTarget_Recv.Checked = gatep.DataRateTarget.HasFlag(DeviceDataRateTarget.RecvData);
+            Num_DataRate_GraphLimit.Value = gatep.DataRateGraphLimit;
         }
 
         private void InitializeDeviceType()
@@ -157,6 +160,9 @@ namespace Ratatoskr.Forms.GateEditForm
             /* 基本設定の設定値をオブジェクトに反映 */
             gatep_.Alias = TBox_Alias.Text;
             gatep_.RedirectAlias = TBox_RedirectTargetAlias.Text;
+            gatep_.DataRateTarget = ((ChkBox_DaraRateTarget_Send.Checked) ? (DeviceDataRateTarget.SendData) : (0))
+                                  | ((ChkBox_DaraRateTarget_Recv.Checked) ? (DeviceDataRateTarget.RecvData) : (0));
+            gatep_.DataRateGraphLimit = (ulong)Num_DataRate_GraphLimit.Value;
             devconf_.RecvEnable = (ChkBox_RecvEnable.CheckState != CheckState.Unchecked);
             devconf_.SendEnable = (ChkBox_SendEnable.CheckState != CheckState.Unchecked);
             devconf_.RedirectEnable = (ChkBox_RedirectEnable.CheckState != CheckState.Unchecked);

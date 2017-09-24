@@ -273,7 +273,7 @@ namespace Ratatoskr.Forms
                     viewm_.HiSpeedDrawStart(false);
 
                     /* 現在のパケットを全て描画パケットにセットアップ */
-                    DrawPacketPush(GatePacketManager.GetEventPackets());
+                    DrawPacketPush(GatePacketManager.GetPackets());
 
                     redraw_seq_++;
                 }
@@ -377,6 +377,7 @@ namespace Ratatoskr.Forms
             /* パケット数を更新 */
             packet_count_all_ = 0;
             packet_count_draw_ = 0;
+
             UpdatePacketCount();
         }
 
@@ -401,7 +402,7 @@ namespace Ratatoskr.Forms
                     draw_packets_.Enqueue(packets_block);
                 }
 
-                packet_count_all_ += (ulong)packets.LongCount();
+                packet_count_all_ += (ulong)packets.Count();
             }
         }
 
@@ -435,20 +436,6 @@ namespace Ratatoskr.Forms
             if (DrawConvertPacketPoll())return;
         }
 
-        private static bool DrawConvertPacketPoll()
-        {
-            /* 変換器が自動生成したパケットを取得 */
-            var packets = pcvtm_.InputPoll();
-
-            /* パケットが存在しなければ次の処理に渡す */
-            if ((packets == null) || (packets.Count() == 0))return (false);
-
-            /* 変換せずに表示 */
-            DrawPacketExec(packets);
-
-            return (true);
-        }
-
         private static bool DrawNormalPacketPoll()
         {
             /* 描画パケットを取得 */
@@ -470,6 +457,20 @@ namespace Ratatoskr.Forms
 
             /* 描画実行 */
             draw_packet_ar_ = (new DrawPacketTaskDelegate(DrawPacketTask)).BeginInvoke(packets_list, null, null);
+
+            return (true);
+        }
+
+        private static bool DrawConvertPacketPoll()
+        {
+            /* 変換器が自動生成したパケットを取得 */
+            var packets = pcvtm_.InputPoll();
+
+            /* パケットが存在しなければ次の処理に渡す */
+            if ((packets == null) || (packets.Count() == 0))return (false);
+
+            /* 変換せずに表示 */
+            DrawPacketExec(packets);
 
             return (true);
         }

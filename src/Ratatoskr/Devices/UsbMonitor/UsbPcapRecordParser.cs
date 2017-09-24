@@ -38,7 +38,7 @@ namespace Ratatoskr.Devices.UsbMonitor
         {
             public UInt16  headerLen; /* This header length */
             public UInt64  irpId;     /* I/O Request packet ID */
-            public Int32   status;    /* USB status code
+            public UInt32  status;    /* USB status code
                                     (on return from host controller) */
             public UInt16  function;  /* URB Function */
             public Byte    info;      /* I/O Request info */
@@ -147,10 +147,22 @@ namespace Ratatoskr.Devices.UsbMonitor
                              | (UInt16)((UInt16)reader.ReadByte() << 8));
 
             /* irpId */
-            reader.ReadBytes(8);
+            header.irpId = (UInt64)(
+                           ((UInt64)reader.ReadByte() << 0)
+                         | ((UInt64)reader.ReadByte() << 8)
+                         | ((UInt64)reader.ReadByte() << 16)
+                         | ((UInt64)reader.ReadByte() << 24)
+                         | ((UInt64)reader.ReadByte() << 32)
+                         | ((UInt64)reader.ReadByte() << 40)
+                         | ((UInt64)reader.ReadByte() << 48)
+                         | ((UInt64)reader.ReadByte() << 56));
 
             /* status */
-            reader.ReadBytes(4);
+            header.status = (UInt32)(
+                            ((UInt32)reader.ReadByte() << 0)
+                          | ((UInt32)reader.ReadByte() << 8)
+                          | ((UInt32)reader.ReadByte() << 16)
+                          | ((UInt32)reader.ReadByte() << 24));
 
             /* function */
             header.function = (UInt16)(
@@ -161,7 +173,9 @@ namespace Ratatoskr.Devices.UsbMonitor
             header.info = reader.ReadByte();
 
             /* bus */
-            reader.ReadBytes(2);
+            header.bus = (UInt16)(
+                         (UInt16)((UInt16)reader.ReadByte() << 0)
+                       | (UInt16)((UInt16)reader.ReadByte() << 8));
 
             /* device */
             header.device = (UInt16)(
@@ -169,7 +183,7 @@ namespace Ratatoskr.Devices.UsbMonitor
                           | (UInt16)((UInt16)reader.ReadByte() << 8));
 
             /* endpoint */
-            reader.ReadBytes(1);
+            header.endpoint = reader.ReadByte();
 
             /* transfer */
             header.transfer = reader.ReadByte();

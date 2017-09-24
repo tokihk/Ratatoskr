@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.Types;
-using Ratatoskr.Generic.Generic;
+using Ratatoskr.Gate.PacketAutoSave;
+using Ratatoskr.Generic.Packet;
+
 
 namespace Ratatoskr.Configs.UserConfigs
 {
@@ -30,13 +32,15 @@ namespace Ratatoskr.Configs.UserConfigs
 
         public StringConfig CurrentDirectory { get; } = new StringConfig("");
 
-        public IntegerConfig                 SendPanelLogLimit   { get; } = new IntegerConfig(20);
-        public EnumConfig<SendPanelType>     SendPanelType       { get; } = new EnumConfig<SendPanelType>(UserConfigs.SendPanelType.Data);
-        public StringListConfig              SendPanelTargetList { get; } = new StringListConfig();
-        public StringListConfig              SendPanel_ExpList   { get; } = new StringListConfig();
-        public StringListConfig              SendPanel_FileList  { get; } = new StringListConfig();
+        public EnumConfig<PacketDataRateTarget>  DataRateTarget { get; } = new EnumConfig<PacketDataRateTarget>(PacketDataRateTarget.RecvData);
 
-        public BoolConfig                    SendPanel_ExpList_Preview { get; } = new BoolConfig(true);
+        public IntegerConfig               SendPanelLogLimit   { get; } = new IntegerConfig(20);
+        public EnumConfig<SendPanelType>   SendPanelType       { get; } = new EnumConfig<SendPanelType>(UserConfigs.SendPanelType.Data);
+        public StringListConfig            SendPanelTargetList { get; } = new StringListConfig();
+        public StringListConfig            SendPanel_ExpList   { get; } = new StringListConfig();
+        public StringListConfig            SendPanel_FileList  { get; } = new StringListConfig();
+
+        public BoolConfig                  SendPanel_ExpList_Preview { get; } = new BoolConfig(true);
 
         public SendDataListConfig SendDataList       { get; } = new SendDataListConfig();
         public StringConfig       SendDataListTarget { get; } = new StringConfig("*");
@@ -53,10 +57,16 @@ namespace Ratatoskr.Configs.UserConfigs
         {
             get { return (option_); }
             set {
+                var value_old = option_;
+
+                option_ = value;
+
                 /* === ここに設定更新時の反映処理を入れる === */
+                if (IsUpdated_AutoSaveSetting(value, value_old)) {
+                    PacketAutoSaveManager.Setup();
+                }
 
                 /* ========================================== */
-                option_ = value;
             }
         }
 
@@ -124,6 +134,18 @@ namespace Ratatoskr.Configs.UserConfigs
 
             /* プロファイルを保存 */
             return (SaveConfig(path_config));
+        }
+
+        private bool IsUpdated_AutoSaveSetting(OptionConfig cfg_new, OptionConfig cfg_old)
+        {
+            return (   (cfg_new.AutoSaveDirectory.Value != cfg_old.AutoSaveDirectory.Value)
+                    || (cfg_new.AutoSaveFormat.Value != cfg_old.AutoSaveFormat.Value)
+                    || (cfg_new.AutoSavePrefix.Value != cfg_old.AutoSavePrefix.Value)
+                    || (cfg_new.AutoSaveTimming.Value != cfg_old.AutoSaveTimming.Value)
+                    || (cfg_new.AutoSaveValue_FileSize.Value != cfg_old.AutoSaveValue_FileSize.Value)
+                    || (cfg_new.AutoSaveValue_Interval.Value != cfg_old.AutoSaveValue_Interval.Value)
+                    || (cfg_new.AutoSaveValue_PacketCount.Value != cfg_old.AutoSaveValue_PacketCount.Value)
+                );
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NAudio.Wave;
 
-namespace Ratatoskr.Devices.MicInput
+namespace Ratatoskr.Devices.AudioDevice
 {
     internal sealed class MicDeviceInfo
     {

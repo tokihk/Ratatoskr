@@ -17,9 +17,11 @@ namespace Ratatoskr.Gate
             Color = color;
         }
 
-        public string Alias { get; set; } = "";
-        public Color  Color { get; set; } = Color.White;
-        public bool   ConnectRequest { get; set; } = true;
-        public string RedirectAlias { get; set; } = "";
+        public string               Alias              { get; set; } = "";
+        public Color                Color              { get; set; } = Color.White;
+        public bool                 ConnectRequest     { get; set; } = true;
+        public string               RedirectAlias      { get; set; } = "";
+        public DeviceDataRateTarget DataRateTarget     { get; set; } = DeviceDataRateTarget.RecvData;
+        public ulong                DataRateGraphLimit { get; set; } = 0;
     }
 }

@@ -38,7 +38,13 @@ namespace Ratatoskr.Gate.PacketAutoSave
 
             public void Write(IEnumerable<PacketObject> packets)
             {
-                writer_.Write(packets, option_, path_, true);
+                if (!writer_.Open(option_, path_, true)) {
+                    return;
+                }
+
+                writer_.Write(packets);
+
+                writer_.Close();
             }
         }
 
@@ -50,12 +56,26 @@ namespace Ratatoskr.Gate.PacketAutoSave
         {
         }
 
-        private FileFormatClass LoadFormatClass()
+        private FileFormatClass LoadFormatClass(ref FileFormatOption option)
         {
+            var ffmtc = (FileFormatClass)null;
+
             switch (ConfigManager.User.Option.AutoSaveFormat.Value) {
-                case AutoSaveFormatType.Ratatoskr:  return (new FileFormats.PacketLog_Rtcap.FileFormatClassImpl());
-                default:                            return (null);
+                case AutoSaveFormatType.Ratatoskr:
+                    ffmtc = new FileFormats.PacketLog_Rtcap.FileFormatClassImpl();
+                    break;
+                case AutoSaveFormatType.CSV:
+                    ffmtc = new FileFormats.PacketLog_Csv.FileFormatClassImpl();
+                    break;
+                case AutoSaveFormatType.Binary:
+                    ffmtc = new FileFormats.PacketLog_Binary.FileFormatClassImpl();
+                    break;
             }
+
+            /* デフォルトの書き込み設定 */
+            option = ffmtc.CreateWriterOption();
+
+            return (ffmtc);
         }
 
         private string LoadOutputPath(FileFormatClass format)
@@ -85,7 +105,8 @@ namespace Ratatoskr.Gate.PacketAutoSave
 
         protected Writer GetWriter()
         {
-            var format = LoadFormatClass();
+            var option = (FileFormatOption)null;
+            var format = LoadFormatClass(ref option);
 
             if (format == null)return (null);
 
@@ -97,7 +118,7 @@ namespace Ratatoskr.Gate.PacketAutoSave
 
             if (writer == null)return (null);
 
-            return (new Writer(writer, format.CreateWriterOption(), path));
+            return (new Writer(writer, option, path));
         }
 
         public virtual void Output(IEnumerable<PacketObject> packets)

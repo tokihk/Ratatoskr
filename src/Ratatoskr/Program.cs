@@ -52,24 +52,12 @@ namespace Ratatoskr
 
 
         public static AppVersion Version   { get; private set; }
-        public static string     Copyright { get; private set; }
 
 
         private static void LoadAppInfo()
         {
             /* バージョン情報取得 */
-            Version = new AppVersion(
-                ((System.Reflection.AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(
-                    System.Reflection.Assembly.GetExecutingAssembly(), 
-                    typeof(System.Reflection.AssemblyFileVersionAttribute))
-                ).Version);
-
-            /* Copyright */
-            Copyright = 
-                ((System.Reflection.AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(
-                    System.Reflection.Assembly.GetExecutingAssembly(), 
-                    typeof(System.Reflection.AssemblyCopyrightAttribute))
-                ).Copyright;
+            Version = new AppVersion(AppInfo.Version);
         }
 
         private static bool Startup()
@@ -102,7 +90,7 @@ namespace Ratatoskr
             app_timer_.Interval = (int)ConfigManager.System.ApplicationCore.AppTimerInterval.Value;
 
             /* イベント処理開始 */
-            PacketAutoSaveManager.Update();
+            PacketAutoSaveManager.Setup();
             GateTransferManager.Startup();
             GatePacketManager.Startup();
 
@@ -192,7 +180,7 @@ namespace Ratatoskr
 
         public static string GetWorkspaceDirectory(string subdir = null)
         {
-            var path_root = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Ratatoskr";
+            var path_root = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + ConfigManager.Fixed.ApplicationName.Value;
 
             if (subdir != null) {
                 path_root = path_root + "\\" + subdir;

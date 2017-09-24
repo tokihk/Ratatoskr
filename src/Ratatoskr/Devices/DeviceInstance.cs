@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -32,10 +33,17 @@ namespace Ratatoskr.Devices
         Busy,
     }
 
+    [Flags]
+    internal enum DeviceDataRateTarget
+    {
+        SendData = 1 << 0,
+        RecvData = 1 << 1,
+    }
+
     internal abstract class DeviceInstance : IDisposable
     {
-        private const int  DEVICE_THREAD_IVAL_ACTIVE = 1;
-        private const int  DEVICE_THREAD_IVAL_IDLE   = 15;
+        private const int  DEVICE_THREAD_IVAL_ACTIVE = 5;
+        private const int  DEVICE_THREAD_IVAL_IDLE   = 50;
         
         private const long DISPOSE_TIMEOUT = 60000;
 
@@ -58,11 +66,13 @@ namespace Ratatoskr.Devices
 
 
         public delegate void StatusChangedDelegate();
-        public delegate void SendDataRequstDelegate();
-
         public event StatusChangedDelegate StatusChanged = delegate() { };
+
+        public delegate void SendDataRequstDelegate();
         public event SendDataRequstDelegate SendDataRequest = delegate() { };
 
+        public delegate void DataRateUpdatedHandler(object sender, ulong value);
+        public event DataRateUpdatedHandler DataRateUpdated = delegate(object sender, ulong value) { };
 
         private DeviceManager  devm_ = null;
         private DeviceConfig   devconf_ = null;
@@ -92,6 +102,9 @@ namespace Ratatoskr.Devices
 
         private volatile ConnectSequence connect_seq_ = ConnectSequence.Disconnected;
 
+        private Stopwatch            data_rate_timer_ = new Stopwatch();
+        private ulong                data_rate_value_busy_ = 0;
+
 
         public DeviceInstance(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
         {
@@ -99,6 +112,8 @@ namespace Ratatoskr.Devices
             devconf_ = devconf;
             devd_ = devd;
             devp_ = devp;
+
+            data_rate_timer_.Restart();
         }
 
         public virtual void Dispose()
@@ -135,7 +150,7 @@ namespace Ratatoskr.Devices
             get { return (alias_); }
             set
             {
-                alias_ = (value != null) ? (value) : ("");
+                alias_ = value ?? "";
                 devm_.UpdateRedirectMap();
             }
         }
@@ -145,10 +160,13 @@ namespace Ratatoskr.Devices
             get { return (alias_redirect_); }
             set
             {
-                alias_redirect_ = (value != null) ? (value) : ("");
+                alias_redirect_ = value ?? "";
                 devm_.UpdateRedirectMap();
             }
         }
+
+        public DeviceDataRateTarget DataRateTarget { get; set; } = 0;
+        public ulong                DataRateValue  { get; private set; } = 0;
 
         public bool IsShutdown
         {
@@ -391,10 +409,39 @@ namespace Ratatoskr.Devices
             }
         }
 
+        private void DataRateSampling()
+        {
+            if (data_rate_timer_.ElapsedMilliseconds >= 1000) {
+                data_rate_timer_.Restart();
+
+                DataRateValue = data_rate_value_busy_;
+                data_rate_value_busy_ = 0;
+
+                DataRateUpdated(this, DataRateValue);
+            }
+        }
+
+        private void DataRateValueUpdate(PacketObject packet)
+        {
+            if (DataRateTarget == 0)return;
+
+            /* 通信レート計算 */
+            if (packet.Attribute == PacketAttribute.Data) {
+                if (   ((packet.Direction == PacketDirection.Recv) && (DataRateTarget.HasFlag(DeviceDataRateTarget.RecvData)))
+                    || ((packet.Direction == PacketDirection.Send) && (DataRateTarget.HasFlag(DeviceDataRateTarget.SendData)))
+                ) {
+                    data_rate_value_busy_ += (ulong)packet.GetDataSize();
+                }
+            }
+        }
+
         public void NotifyPacket(PacketObject packet)
         {
             /* パケットを登録 */
             devm_.SetupPacket(packet);
+
+            /* データレートを計算 */
+            DataRateValueUpdate(packet);
         }
 
         public void NotifyMessage(PacketPriority prio, string info, string message)
@@ -471,6 +518,9 @@ namespace Ratatoskr.Devices
             ) {
                 shutdown_state_ = true;
             }
+
+            /* データレート計算 */
+            DataRateSampling();
 
             /* スリープ処理 */
             switch (state) {

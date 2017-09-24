@@ -35,16 +35,16 @@
             // DockPanel_Main
             // 
             this.DockPanel_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DockPanel_Main.Location = new System.Drawing.Point(0, 32);
+            this.DockPanel_Main.Location = new System.Drawing.Point(0, 54);
             this.DockPanel_Main.Name = "DockPanel_Main";
-            this.DockPanel_Main.Size = new System.Drawing.Size(571, 375);
+            this.DockPanel_Main.Size = new System.Drawing.Size(571, 353);
             this.DockPanel_Main.TabIndex = 1;
             // 
             // PacketConverter_Main
             // 
             this.PacketConverter_Main.AutoSize = true;
             this.PacketConverter_Main.Dock = System.Windows.Forms.DockStyle.Top;
-            this.PacketConverter_Main.Location = new System.Drawing.Point(0, 32);
+            this.PacketConverter_Main.Location = new System.Drawing.Point(0, 54);
             this.PacketConverter_Main.Name = "PacketConverter_Main";
             this.PacketConverter_Main.Size = new System.Drawing.Size(571, 0);
             this.PacketConverter_Main.TabIndex = 2;
@@ -55,7 +55,7 @@
             this.GatePanel_Main.Location = new System.Drawing.Point(0, 0);
             this.GatePanel_Main.Margin = new System.Windows.Forms.Padding(0);
             this.GatePanel_Main.Name = "GatePanel_Main";
-            this.GatePanel_Main.Size = new System.Drawing.Size(571, 32);
+            this.GatePanel_Main.Size = new System.Drawing.Size(571, 54);
             this.GatePanel_Main.TabIndex = 0;
             // 
             // MainFrameCenter

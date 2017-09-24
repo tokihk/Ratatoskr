@@ -15,35 +15,41 @@ namespace Ratatoskr.FileFormats.PacketLog_Pcap
         private PacketContainer           packets_ = null;
         private FileFormatOptionImpl      option_ = null;
         private WinPcapPacketParserOption option_parse_ = null;
+        private CaptureFileReaderDevice   device_ = null;
 
 
         public FileFormatReaderImpl() : base()
         {
         }
 
-        protected override bool OnReadPath(object obj, FileFormatOption option, string path)
+        protected override bool OnOpenPath(FileFormatOption option, string path)
         {
-            packets_ = obj as PacketContainer;
-
-            if (packets_ == null)return (false);
-
             option_ = option as FileFormatOptionImpl;
 
             if (option_ == null)return (false);
 
             option_parse_ = new WinPcapPacketParserOption(option_.ViewSourceType, option_.ViewDestinationType, option_.ViewDataType);
 
-            var device = new CaptureFileReaderDevice(path);
+            device_ = new CaptureFileReaderDevice(path);
 
-            device.Open();
+            device_.Open();
 
-            device.Filter = option_.Filter;
+            device_.Filter = option_.Filter;
 
-            device.OnPacketArrival += Device_OnPacketArrival;
+            device_.OnPacketArrival += Device_OnPacketArrival;
 
-            device.Capture();
+            return (true);
+        }
 
-            device.Close();
+        protected override bool OnReadCustom(object obj, FileFormatOption option)
+        {
+            packets_ = obj as PacketContainer;
+
+            if (packets_ == null)return (false);
+
+            device_.Capture();
+
+            device_.Close();
 
             return (true);
         }

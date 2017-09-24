@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.Generic.Packet.Types
 {
+    [Serializable]
     internal sealed class DynamicDataPacketObject : DataPacketObject
     {
         private const int TOTAL_BUFFER_SIZE = 0xFFFFFFF;

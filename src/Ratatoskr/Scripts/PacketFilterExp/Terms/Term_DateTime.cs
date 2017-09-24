@@ -22,7 +22,7 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
 
         public Term_DateTime(string text)
         {
-            value_ = DateTime.Parse(text, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            value_ = DateTime.Parse(text, null, System.Globalization.DateTimeStyles.RoundtripKind).ToUniversalTime();
         }
 
         public DateTime Value

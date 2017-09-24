@@ -204,6 +204,8 @@ namespace Ratatoskr.PacketViews
             hispeed_mode_ = true;
             hispeed_auto_stop_ = auto_stop;
 
+            draw_timer_ival_ = DRAW_IVAL_MAX;
+
             StatusUpdated();
         }
 
@@ -215,6 +217,8 @@ namespace Ratatoskr.PacketViews
             lock (viewc_list_) {
                 viewc_list_.ForEach(viewi => viewi.Show());
             }
+
+            draw_timer_ival_ = DRAW_IVAL_MIN;
 
             hispeed_mode_ = false;
             hispeed_auto_stop_ = false;
@@ -309,7 +313,7 @@ namespace Ratatoskr.PacketViews
                     viewc_list_.ForEach(viewi => viewi.DrawPacket(draw_packets));
 
                     /* 描画処理のタイムアウト */
-                    if (draw_busy_timer.ElapsedMilliseconds > (draw_timer_ival_ / 2)) {
+                    if (draw_busy_timer.ElapsedMilliseconds > (draw_timer_ival_ * 2 / 3)) {
                         break;
                     }
                 }

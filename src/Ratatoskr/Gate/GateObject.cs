@@ -29,6 +29,9 @@ namespace Ratatoskr.Gate
         public delegate void SendBufferEmptyDelegate(object sender, EventArgs e);
         public event SendBufferEmptyDelegate SendBufferEmpty = delegate(object sender, EventArgs e) { };
 
+        public delegate void DataRateUpdatedHandler(object sender, ulong data_rate);
+        public event DataRateUpdatedHandler DataRateUpdated = delegate(object sender, ulong data_rate) { };
+
         private GateProperty   gatep_;
         private DeviceConfig   devconf_;
         private DeviceInstance devi_;
@@ -119,6 +122,7 @@ namespace Ratatoskr.Gate
                 devi_.Alias = gatep_.Alias;
                 devi_.ConnectRequest = gatep_.ConnectRequest;
                 devi_.RedirectAlias = gatep_.RedirectAlias;
+                devi_.DataRateTarget = gatep_.DataRateTarget;
             }
 
             StatusChanged(this, EventArgs.Empty);
@@ -153,6 +157,7 @@ namespace Ratatoskr.Gate
                 /* 登録イベント解除 */
                 devi_.StatusChanged -= OnDeviceStatusChanged;
                 devi_.SendDataRequest -= OnDeviceSendBufferEmpty;
+                devi_.DataRateUpdated -= OnDeviceDataRateUpdated;
 
                 /* デバイス終了 */
                 devi_.DeviceShutdownRequest();
@@ -163,9 +168,11 @@ namespace Ratatoskr.Gate
                 /* イベント登録 */
                 devi.StatusChanged += OnDeviceStatusChanged;
                 devi.SendDataRequest += OnDeviceSendBufferEmpty;
+                devi.DataRateUpdated += OnDeviceDataRateUpdated;
 
-                /* 直前の接続要求を反映 */
+                /* ゲートの設定/状態を反映 */
                 devi.ConnectRequest = gatep_.ConnectRequest;
+                devi.DataRateTarget = gatep_.DataRateTarget;
             }
 
             /* インスタンス入れ替え */
@@ -230,6 +237,11 @@ namespace Ratatoskr.Gate
         private void OnDeviceSendBufferEmpty()
         {
             SendExec();
+        }
+
+        private void OnDeviceDataRateUpdated(object sender, ulong value)
+        {
+            DataRateUpdated(this, value);
         }
     }
 }

@@ -12,24 +12,24 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
 {
     internal sealed class FileFormatWriterImpl : FileFormatWriter
     {
+        private StreamWriter         writer_ = null;
+        private FileFormatOptionImpl option_ = null;
+
+
         public FileFormatWriterImpl() : base()
         {
         }
 
-        protected override bool OnWrite(object obj, FileFormatOption option, Stream stream)
+        protected override bool OnOpenStream(FileFormatOption option, Stream stream)
         {
-            var packets = obj as IEnumerable<PacketObject>;
+            option_ = option as FileFormatOptionImpl;
 
-            if (packets == null)return (false);
-
-            var option_i = option as FileFormatOptionImpl;
-
-            if (option_i == null)return (false);
+            if (option_ == null)return (false);
 
             /* エンコーディング判定 */
             var encoding = Encoding.UTF8;
 
-            switch (option_i.CharCode) {
+            switch (option_.CharCode) {
                 case TextCharCode.UTF8:     encoding = Encoding.UTF8;             break;
                 case TextCharCode.ShiftJIS: encoding = Encoding.GetEncoding(932); break;
                 case TextCharCode.UnicodeB: encoding = Encoding.BigEndianUnicode; break;
@@ -37,16 +37,24 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                 default:                    encoding = Encoding.UTF8;             break;
             }
 
-            /* ファイル書き込み */
-            using (var writer = new StreamWriter(stream, encoding)) {
-                /* ヘッダー出力 */
-                if (stream.Position == 0) {
-                    if (!WriteHeader(option_i, writer))return (false);
-                }
+            writer_ = new StreamWriter(stream, encoding);
 
-                /* 内容出力 */
-                return (WriteContents(packets, option_i, writer));
+            /* ヘッダー出力 */
+            if (stream.Position == 0) {
+                if (!WriteHeader(option_, writer_))return (false);
             }
+
+            return (true);
+        }
+
+        protected override bool OnWriteStream(object obj, FileFormatOption option, Stream stream)
+        {
+            var packets = obj as IEnumerable<PacketObject>;
+
+            if (packets == null)return (false);
+
+            /* 内容出力 */
+            return (WriteContents(packets, option_, writer_));
         }
 
         private bool WriteHeader(FileFormatOptionImpl option, StreamWriter writer)
@@ -66,12 +74,13 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
         private bool WriteContents(IEnumerable<PacketObject> packets, FileFormatOptionImpl option, StreamWriter writer)
         {
             var count = (ulong)0;
+            var count_max = (ulong)packets.Count();
 
             foreach (var packet in packets) {
                 WriteContentsRecord(packet, option, writer);
 
                 /* 進捗更新 */
-                Progress = (double)(++count) / packets.LongCount() * 100;
+                Progress = (double)(++count) / count_max * 100;
             }
 
             return (true);

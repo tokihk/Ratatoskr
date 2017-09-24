@@ -33,7 +33,7 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
                 case Tokens.RELOP_UNEQUAL:      return (term_main.Exec_RELOP_UNEQUAL(cs, term_sub));
                 case Tokens.LOGOP_AND:          return (term_main.Exec_LOGOP_AND(cs, term_sub));
                 case Tokens.LOGOP_OR:           return (term_main.Exec_LOGOP_OR(cs, term_sub));
-                default:                        return (null);
+                default:                        return (new Term_Bool(ToBool(cs)));
             }
         }
 

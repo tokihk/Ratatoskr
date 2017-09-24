@@ -11,36 +11,40 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
 {
     internal sealed class FileFormatWriterImpl : FileFormatWriter
     {
+        private BinaryWriter writer_ = null;
+
+
         public FileFormatWriterImpl() : base()
         {
         }
 
-        protected override bool OnWrite(object obj, FileFormatOption option, Stream stream)
+        protected override bool OnOpenStream(FileFormatOption option, Stream stream)
+        {
+            writer_ = new BinaryWriter(stream);
+
+            return (true);
+        }
+
+        protected override bool OnWriteStream(object obj, FileFormatOption option, Stream stream)
         {
             var packets = obj as IEnumerable<PacketObject>;
 
             if (packets == null)return (false);
 
-            var option_i = option as FileFormatWriterOptionImpl;
-
-            if (option_i == null)return (false);
-
-            /* ファイル書き込み */
-            using (var writer = new BinaryWriter(stream)) {
-                /* 内容出力 */
-                return (WriteContents(packets, option_i, writer));
-            }
+            /* 内容出力 */
+            return (WriteContents(packets, null, writer_));
         }
 
         private bool WriteContents(IEnumerable<PacketObject> packets, FileFormatWriterOptionImpl option, BinaryWriter writer)
         {
             var count = (ulong)0;
+            var count_max = packets.Count();
 
             foreach (var packet in packets) {
                 WriteContentsRecord(packet, option, writer);
 
                 /* 進捗更新 */
-                Progress = (double)(++count) / packets.LongCount() * 100;
+                Progress = (double)(++count) / count_max * 100;
             }
 
             return (true);
@@ -50,6 +54,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
         {
             if (packet.Attribute != PacketAttribute.Data)return (true);
 
+#if false
             switch (option.SaveData) {
                 case SaveDataType.RecvDataOnly:
                     if (packet.Direction != PacketDirection.Recv)return (true);
@@ -58,6 +63,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
                     if (packet.Direction != PacketDirection.Send)return (true);
                     break;
             }
+#endif
 
             var packet_d = packet as DataPacketObject;
 

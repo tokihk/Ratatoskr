@@ -42,10 +42,8 @@
             this.GBox_XonLim = new System.Windows.Forms.GroupBox();
             this.Num_XonLim = new System.Windows.Forms.NumericUpDown();
             this.GBox_XoffChar = new System.Windows.Forms.GroupBox();
-            this.TBox_XoffChar = new System.Windows.Forms.TextBox();
             this.ChkBox_fTXContinueOnXoff = new System.Windows.Forms.CheckBox();
             this.GBox_XonChar = new System.Windows.Forms.GroupBox();
-            this.TBox_XonChar = new System.Windows.Forms.TextBox();
             this.ChkBox_fInX = new System.Windows.Forms.CheckBox();
             this.ChkBox_fOutX = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -59,6 +57,10 @@
             this.ChkBox_fOutxCtsFlow = new System.Windows.Forms.CheckBox();
             this.GBox_PortList = new System.Windows.Forms.GroupBox();
             this.CBox_PortList = new System.Windows.Forms.ComboBox();
+            this.Num_XonChar = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.Num_XoffChar = new System.Windows.Forms.NumericUpDown();
             this.GBox_BaudRate.SuspendLayout();
             this.GBox_Parity.SuspendLayout();
             this.GBox_DataBits.SuspendLayout();
@@ -76,6 +78,8 @@
             this.groupBox1.SuspendLayout();
             this.GBox_fRtsControl.SuspendLayout();
             this.GBox_PortList.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_XonChar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_XoffChar)).BeginInit();
             this.SuspendLayout();
             // 
             // GBox_BaudRate
@@ -199,10 +203,21 @@
             // 
             this.Num_XoffLim.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Num_XoffLim.Location = new System.Drawing.Point(3, 15);
+            this.Num_XoffLim.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
             this.Num_XoffLim.Name = "Num_XoffLim";
             this.Num_XoffLim.Size = new System.Drawing.Size(74, 19);
             this.Num_XoffLim.TabIndex = 0;
             this.Num_XoffLim.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_XoffLim.ThousandsSeparator = true;
+            this.Num_XoffLim.Value = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
             // 
             // GBox_XonLim
             // 
@@ -218,28 +233,27 @@
             // 
             this.Num_XonLim.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Num_XonLim.Location = new System.Drawing.Point(3, 15);
+            this.Num_XonLim.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
             this.Num_XonLim.Name = "Num_XonLim";
             this.Num_XonLim.Size = new System.Drawing.Size(74, 19);
             this.Num_XonLim.TabIndex = 0;
             this.Num_XonLim.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_XonLim.ThousandsSeparator = true;
             // 
             // GBox_XoffChar
             // 
-            this.GBox_XoffChar.Controls.Add(this.TBox_XoffChar);
+            this.GBox_XoffChar.Controls.Add(this.label2);
+            this.GBox_XoffChar.Controls.Add(this.Num_XoffChar);
             this.GBox_XoffChar.Location = new System.Drawing.Point(6, 133);
             this.GBox_XoffChar.Name = "GBox_XoffChar";
             this.GBox_XoffChar.Size = new System.Drawing.Size(80, 42);
             this.GBox_XoffChar.TabIndex = 11;
             this.GBox_XoffChar.TabStop = false;
             this.GBox_XoffChar.Text = "XoffChar";
-            // 
-            // TBox_XoffChar
-            // 
-            this.TBox_XoffChar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TBox_XoffChar.Location = new System.Drawing.Point(3, 15);
-            this.TBox_XoffChar.Name = "TBox_XoffChar";
-            this.TBox_XoffChar.Size = new System.Drawing.Size(74, 19);
-            this.TBox_XoffChar.TabIndex = 0;
             // 
             // ChkBox_fTXContinueOnXoff
             // 
@@ -253,21 +267,14 @@
             // 
             // GBox_XonChar
             // 
-            this.GBox_XonChar.Controls.Add(this.TBox_XonChar);
+            this.GBox_XonChar.Controls.Add(this.label1);
+            this.GBox_XonChar.Controls.Add(this.Num_XonChar);
             this.GBox_XonChar.Location = new System.Drawing.Point(6, 85);
             this.GBox_XonChar.Name = "GBox_XonChar";
             this.GBox_XonChar.Size = new System.Drawing.Size(80, 42);
             this.GBox_XonChar.TabIndex = 9;
             this.GBox_XonChar.TabStop = false;
             this.GBox_XonChar.Text = "XonChar";
-            // 
-            // TBox_XonChar
-            // 
-            this.TBox_XonChar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TBox_XonChar.Location = new System.Drawing.Point(3, 15);
-            this.TBox_XonChar.Name = "TBox_XonChar";
-            this.TBox_XonChar.Size = new System.Drawing.Size(74, 19);
-            this.TBox_XonChar.TabIndex = 0;
             // 
             // ChkBox_fInX
             // 
@@ -402,6 +409,66 @@
             this.CBox_PortList.Size = new System.Drawing.Size(401, 20);
             this.CBox_PortList.TabIndex = 0;
             // 
+            // Num_XonChar
+            // 
+            this.Num_XonChar.Hexadecimal = true;
+            this.Num_XonChar.Location = new System.Drawing.Point(25, 16);
+            this.Num_XonChar.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.Num_XonChar.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.Num_XonChar.Name = "Num_XonChar";
+            this.Num_XonChar.Size = new System.Drawing.Size(49, 19);
+            this.Num_XonChar.TabIndex = 0;
+            this.Num_XonChar.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_XonChar.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(7, 15);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(18, 18);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "0x";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(7, 14);
+            this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(18, 18);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "0x";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Num_XoffChar
+            // 
+            this.Num_XoffChar.Hexadecimal = true;
+            this.Num_XoffChar.Location = new System.Drawing.Point(25, 15);
+            this.Num_XoffChar.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.Num_XoffChar.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.Num_XoffChar.Name = "Num_XoffChar";
+            this.Num_XoffChar.Size = new System.Drawing.Size(49, 19);
+            this.Num_XoffChar.TabIndex = 2;
+            this.Num_XoffChar.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_XoffChar.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            // 
             // DevicePropertyEditorImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -426,9 +493,7 @@
             this.GBox_XonLim.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Num_XonLim)).EndInit();
             this.GBox_XoffChar.ResumeLayout(false);
-            this.GBox_XoffChar.PerformLayout();
             this.GBox_XonChar.ResumeLayout(false);
-            this.GBox_XonChar.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.GBox_fDtrControl.ResumeLayout(false);
@@ -436,6 +501,8 @@
             this.groupBox1.PerformLayout();
             this.GBox_fRtsControl.ResumeLayout(false);
             this.GBox_PortList.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Num_XonChar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_XoffChar)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -459,10 +526,8 @@
         private System.Windows.Forms.GroupBox GBox_XonLim;
         private System.Windows.Forms.NumericUpDown Num_XonLim;
         private System.Windows.Forms.GroupBox GBox_XoffChar;
-        private System.Windows.Forms.TextBox TBox_XoffChar;
         private System.Windows.Forms.CheckBox ChkBox_fTXContinueOnXoff;
         private System.Windows.Forms.GroupBox GBox_XonChar;
-        private System.Windows.Forms.TextBox TBox_XonChar;
         private System.Windows.Forms.CheckBox ChkBox_fInX;
         private System.Windows.Forms.CheckBox ChkBox_fOutX;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -474,5 +539,9 @@
         private System.Windows.Forms.GroupBox GBox_fRtsControl;
         private System.Windows.Forms.ComboBox CBox_fRtsControl;
         private System.Windows.Forms.CheckBox ChkBox_fOutxCtsFlow;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown Num_XonChar;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown Num_XoffChar;
     }
 }

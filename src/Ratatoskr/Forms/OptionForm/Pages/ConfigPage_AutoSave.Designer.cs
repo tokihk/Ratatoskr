@@ -36,15 +36,15 @@
             this.Btn_SaveDir_Ref = new System.Windows.Forms.Button();
             this.TBox_SaveDir = new System.Windows.Forms.TextBox();
             this.GBox_Timing = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.RBtn_Timing_None = new System.Windows.Forms.RadioButton();
             this.Num_PacketCount = new System.Windows.Forms.NumericUpDown();
             this.Num_FileSize = new System.Windows.Forms.NumericUpDown();
             this.Num_Interval = new System.Windows.Forms.NumericUpDown();
             this.RBtn_Timing_PacketCount = new System.Windows.Forms.RadioButton();
             this.RBtn_Timing_FileSize = new System.Windows.Forms.RadioButton();
             this.RBtn_Timing_Interval = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.GBox_SavePrefix.SuspendLayout();
             this.GBox_Basic.SuspendLayout();
             this.GBox_SaveFormat.SuspendLayout();
@@ -142,7 +142,7 @@
             // 
             this.GBox_Timing.Controls.Add(this.label2);
             this.GBox_Timing.Controls.Add(this.label1);
-            this.GBox_Timing.Controls.Add(this.radioButton1);
+            this.GBox_Timing.Controls.Add(this.RBtn_Timing_None);
             this.GBox_Timing.Controls.Add(this.Num_PacketCount);
             this.GBox_Timing.Controls.Add(this.Num_FileSize);
             this.GBox_Timing.Controls.Add(this.Num_Interval);
@@ -155,6 +155,34 @@
             this.GBox_Timing.TabIndex = 5;
             this.GBox_Timing.TabStop = false;
             this.GBox_Timing.Text = "Auto save timming";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(301, 73);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(33, 12);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "bytes";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(301, 48);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(33, 12);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "hours";
+            // 
+            // RBtn_Timing_None
+            // 
+            this.RBtn_Timing_None.Location = new System.Drawing.Point(9, 18);
+            this.RBtn_Timing_None.Name = "RBtn_Timing_None";
+            this.RBtn_Timing_None.Size = new System.Drawing.Size(200, 16);
+            this.RBtn_Timing_None.TabIndex = 11;
+            this.RBtn_Timing_None.TabStop = true;
+            this.RBtn_Timing_None.Text = "No save";
+            this.RBtn_Timing_None.UseVisualStyleBackColor = true;
             // 
             // Num_PacketCount
             // 
@@ -255,34 +283,6 @@
             this.RBtn_Timing_Interval.Text = "Time interval";
             this.RBtn_Timing_Interval.UseVisualStyleBackColor = true;
             // 
-            // radioButton1
-            // 
-            this.radioButton1.Location = new System.Drawing.Point(9, 18);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(200, 16);
-            this.radioButton1.TabIndex = 11;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "No save";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(301, 48);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(33, 12);
-            this.label1.TabIndex = 12;
-            this.label1.Text = "hours";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(301, 73);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(33, 12);
-            this.label2.TabIndex = 13;
-            this.label2.Text = "bytes";
-            // 
             // ConfigPage_AutoSave
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -325,6 +325,6 @@
         private System.Windows.Forms.RadioButton RBtn_Timing_Interval;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton RBtn_Timing_None;
     }
 }

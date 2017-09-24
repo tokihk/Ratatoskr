@@ -50,8 +50,8 @@ namespace Ratatoskr.Devices.SerialPort
 
             Num_XonLim.Value = devp_.XonLim.Value;
             Num_XoffLim.Value = devp_.XoffLim.Value;
-            TBox_XonChar.Text = devp_.XonChar.Value.ToString();
-            TBox_XoffChar.Text = devp_.XoffChar.Value.ToString();
+            Num_XonChar.Value = devp_.XonChar.Value;
+            Num_XoffChar.Value = devp_.XoffChar.Value;
         }
 
         private void InitializePortList()
@@ -181,8 +181,8 @@ namespace Ratatoskr.Devices.SerialPort
 
             devp_.XonLim.Value = Num_XonLim.Value;
             devp_.XoffLim.Value = Num_XoffLim.Value;
-            devp_.XonChar.Value = byte.Parse(TBox_XonChar.Text);
-            devp_.XoffChar.Value = byte.Parse(TBox_XoffChar.Text);
+            devp_.XonChar.Value = Num_XonChar.Value;
+            devp_.XoffChar.Value = Num_XoffChar.Value;
         }
     }
 }

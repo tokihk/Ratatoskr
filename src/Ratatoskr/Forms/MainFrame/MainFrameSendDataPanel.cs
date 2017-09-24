@@ -107,6 +107,11 @@ namespace Ratatoskr.Forms.MainFrame
             }
         }
 
+        public override void OnMainFormDeactivated()
+        {
+            preview_label_.Hide();
+        }
+
         private void UpdateExpListView()
         {
             send_data_exp_ = CBox_ExpList.Text;
@@ -203,11 +208,7 @@ namespace Ratatoskr.Forms.MainFrame
                 var view_str = new StringBuilder();
                 var view_data = (send_data_bin_ != null) ? (HexTextEncoder.ToHexText(send_data_bin_, " ")) : ("");
 
-                view_str.AppendLine("<Information>");
-                view_str.AppendLine(string.Format("  Data size: {0} bytes", (send_data_bin_ != null) ? (send_data_bin_.Length) : (0)));
-                view_str.AppendLine();
-
-                view_str.AppendLine("<Contents>");
+                view_str.AppendLine(string.Format("<Data Preview> size = {0} bytes", (send_data_bin_ != null) ? (send_data_bin_.Length) : (0)));
                 view_str.AppendLine((send_data_bin_ != null) ? (HexTextEncoder.ToHexText(send_data_bin_, " ")) : ("Format error."));
 
                 preview_label_.Label_Text = view_str.ToString();

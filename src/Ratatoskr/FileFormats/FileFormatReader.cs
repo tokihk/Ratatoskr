@@ -22,32 +22,72 @@ namespace Ratatoskr.FileFormats
             set { progress_value_ = value;  }
         }
 
-        public bool Read(object obj, FileFormatOption option, string path)
+        public bool IsOpen { get; private set; } = false;
+
+        protected string           FilePath     { get; private set; } = null;
+        protected FileStream       BaseStream   { get; private set; } = null;
+        protected FileFormatOption FormatOption { get; private set; } = null;
+
+        public bool Open(FileFormatOption option, string path)
         {
-            var success = false;
+            Close();
 
-            progress_value_ = 0;
+            FormatOption = option;
 
-            try {
-                success = OnReadPath(obj, option, path);
-            } catch {
-            }
+            IsOpen = OnOpenPath(option, path);
 
-            if (success) {
-                progress_value_ = 100;
-            }
-
-            return (success);
+            return (IsOpen);
         }
 
-        protected virtual bool OnReadPath(object obj, FileFormatOption option, string path)
+        public void Close()
         {
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                return (OnReadStream(obj, option, stream));
+            IsOpen = false;
+
+            if (BaseStream != null) {
+                BaseStream.Close();
+                BaseStream = null;
             }
+
+            progress_value_ = 0;
+        }
+
+        public bool Read(object obj, FileFormatOption option)
+        {
+            if (!IsOpen)return (false);
+
+            if (BaseStream != null) {
+                return (OnReadStream(obj, FormatOption, BaseStream));
+            } else {
+                return (OnReadCustom(obj, FormatOption));
+            }
+        }
+
+        protected virtual bool OnOpenPath(FileFormatOption option, string path)
+        {
+            try {
+                FilePath = path;
+
+                BaseStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+                if (!OnOpenStream(FormatOption, BaseStream))return (false);
+            
+                return (true);
+            } catch {
+                return (false);
+            }
+        }
+
+        protected virtual bool OnOpenStream(FileFormatOption option, Stream stream)
+        {
+            return (true);
         }
 
         protected virtual bool OnReadStream(object obj, FileFormatOption option, Stream stream)
+        {
+            return (true);
+        }
+
+        protected virtual bool OnReadCustom(object obj, FileFormatOption option)
         {
             return (true);
         }

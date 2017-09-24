@@ -44,6 +44,7 @@ namespace Ratatoskr.PacketViews.Packet
         public BoolConfig ExtViewFirstPacketInfo   { get; } = new BoolConfig(true);
         public BoolConfig ExtViewLastPacketInfo    { get; } = new BoolConfig(true);
         public BoolConfig ExtViewSelectDelta       { get; } = new BoolConfig(true);
+        public BoolConfig ExtViewSelectRate        { get; } = new BoolConfig(true);
 
 
         public ViewPropertyImpl()

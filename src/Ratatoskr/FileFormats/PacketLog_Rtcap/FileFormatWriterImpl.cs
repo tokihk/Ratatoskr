@@ -13,26 +13,33 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
     {
         private const int COMPLESSION_BLOCK_SIZE = 1024 * 128;
 
+        private BinaryWriter writer_ = null;
+
 
         public FileFormatWriterImpl() : base()
         {
         }
 
-        protected override bool OnWrite(object obj, FileFormatOption option, Stream stream)
+        protected override bool OnOpenStream(FileFormatOption option, Stream stream)
+        {
+            writer_ = new BinaryWriter(stream);
+
+            /* パターンコード書込み */
+            if (stream.Position == 0) {
+                WritePatternCode(option, writer_);
+            }
+
+            return (true);
+        }
+
+        protected override bool OnWriteStream(object obj, FileFormatOption option, Stream stream)
         {
             var packets = obj as IEnumerable<PacketObject>;
 
             if (packets == null)return (false);
 
-            using (var writer = new BinaryWriter(stream)) {
-                /* パターンコード書込み */
-                if (stream.Position == 0) {
-                    WritePatternCode(option, writer);
-                }
-
-                /* パケット書き込み */
-                return (WriteContents(packets, writer));
-            }
+            /* パケット書き込み */
+            return (WriteContents(packets, writer_));
         }
 
         private void WritePatternCode(FileFormatOption option, BinaryWriter writer)
@@ -45,6 +52,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
             var stream_b = (MemoryStream)null;
             var packet_b = (byte[])null;
             var count = (ulong)0;
+            var count_max = (ulong)packets.Count();
 
             foreach (var packet in packets) {
                 /* パケットをバイナリに変換 */
@@ -75,7 +83,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
                 stream_b = null;
 
                 /* 進捗更新 */
-                Progress = (double)(++count) / packets.LongCount() * 100;
+                Progress = (double)(++count) / count_max * 100;
             }
 
             /* 残っているデータを書き込み */

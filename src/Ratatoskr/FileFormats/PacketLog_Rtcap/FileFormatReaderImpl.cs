@@ -11,8 +11,21 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 {
     internal sealed class FileFormatReaderImpl : FileFormatReader
     {
+        private BinaryReader reader_ = null;
+
+        
         public FileFormatReaderImpl() : base()
         {
+        }
+
+        protected override bool OnOpenStream(FileFormatOption option, Stream stream)
+        {
+            reader_ = new BinaryReader(stream);
+
+            /* パターンコードチェック */
+            if (!ReadPatternCode(reader_))return (false);
+
+            return (true);
         }
 
         protected override bool OnReadStream(object obj, FileFormatOption option, Stream stream)
@@ -21,13 +34,8 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 
             if (packets == null)return (false);
 
-            using (var reader = new BinaryReader(stream)) {
-                /* パターンコードチェック */
-                if (!ReadPatternCode(reader))return (false);
-
-                /* 内容読み込み */
-                return (ReadContents(packets, reader));
-            }
+            /* 内容読み込み */
+            return (ReadContents(packets, reader_));
         }
 
         private bool ReadPatternCode(BinaryReader reader)

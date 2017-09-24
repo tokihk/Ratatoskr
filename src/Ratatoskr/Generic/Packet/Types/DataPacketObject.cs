@@ -8,6 +8,7 @@ using Ratatoskr.Generic;
 
 namespace Ratatoskr.Generic.Packet.Types
 {
+    [Serializable]
     internal abstract class DataPacketObject : PacketObject
     {
         public DataPacketObject(

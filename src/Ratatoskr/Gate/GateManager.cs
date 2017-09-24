@@ -44,7 +44,7 @@ namespace Ratatoskr.Gate
             devm_.AddClass(new Devices.UdpClient.DeviceClassImpl());
             devm_.AddClass(new Devices.Ethernet.DeviceClassImpl());
             devm_.AddClass(new Devices.UsbMonitor.DeviceClassImpl());
-            devm_.AddClass(new Devices.MicInput.DeviceClassImpl());
+            devm_.AddClass(new Devices.AudioDevice.DeviceClassImpl());
             devm_.AddClass(new Devices.AudioFile.DeviceClassImpl());
         }
 

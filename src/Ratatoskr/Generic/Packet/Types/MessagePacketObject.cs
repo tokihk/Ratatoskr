@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.Generic.Packet.Types
 {
+    [Serializable]
     internal class MessagePacketObject : PacketObject
     {
         private static readonly Encoding ENCODER_MSG = Encoding.UTF8;

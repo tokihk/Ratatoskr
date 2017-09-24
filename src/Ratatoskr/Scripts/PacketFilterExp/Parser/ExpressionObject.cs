@@ -71,8 +71,8 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Parser
                 }
             }
 
-            /* --- 項が余っている場合は構文エラー --- */
-            if (term_stack.Count != 1)return (false);
+            /* --- 項が2個以上余っている場合は構文エラー --- */
+            if (term_stack.Count > 1)return (false);
 
             /* 最終オブジェクトの真偽を結果として返す */
             hitstate = term_stack.First().ToBool(cs);

@@ -129,7 +129,9 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
 
         public override bool ToBool(ExpressionCallStack cs)
         {
-            return (true);
+            var term = GetStatusTerm(cs, value_);
+
+            return ((term != null) ? (term.ToBool(cs)) : (false));
         }
 
         public override Term Exec(ExpressionCallStack cs, Tokens token, Term term_sub)

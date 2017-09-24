@@ -78,6 +78,10 @@ namespace Ratatoskr.Forms.OptionForm.Pages
         private void SelectSaveTimming(AutoSaveTimmingType type)
         {
             switch (type) {
+                case AutoSaveTimmingType.NoSave:
+                    RBtn_Timing_None.Checked = true;
+                    break;
+
                 case AutoSaveTimmingType.Interval:
                     RBtn_Timing_Interval.Checked = true;
                     break;
@@ -91,7 +95,7 @@ namespace Ratatoskr.Forms.OptionForm.Pages
                     break;
 
                 default:
-                    RBtn_Timing_Interval.Checked = true;
+                    RBtn_Timing_None.Checked = true;
                     break;
             }
         }
@@ -130,7 +134,9 @@ namespace Ratatoskr.Forms.OptionForm.Pages
         {
             var type = AutoSaveTimmingType.Interval;
 
-            if (RBtn_Timing_Interval.Checked) {
+            if (RBtn_Timing_None.Checked) {
+                type = AutoSaveTimmingType.NoSave;
+            } else if (RBtn_Timing_Interval.Checked) {
                 type = AutoSaveTimmingType.Interval;
             } else if (RBtn_Timing_FileSize.Checked) {
                 type = AutoSaveTimmingType.FileSize;

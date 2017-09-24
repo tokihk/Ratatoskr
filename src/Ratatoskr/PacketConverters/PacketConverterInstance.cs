@@ -77,8 +77,6 @@ namespace Ratatoskr.PacketConverters
             } else {
                 filter_obj_ = null;
             }
-
-            FormTaskManager.RedrawPacketRequest();
         }
 
         public void InputStatusClear()

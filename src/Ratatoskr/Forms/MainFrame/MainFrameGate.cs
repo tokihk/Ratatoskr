@@ -30,8 +30,16 @@ namespace Ratatoskr.Forms.MainFrame
         private const int DRAW_TEXT_TYPE_TOP  = 16;
         private const int DRAW_TEXT_TYPE_LEFT = 10;
 
-        private Font font_alias_ = new Font("Courier New", 9);
-        private Font font_type_  = new Font("Arial", 7);
+        private readonly Padding DATA_RATE_GRAPH_MARGIN = new Padding(5, 2, 5, 4);
+
+        private readonly Font GATE_ALIAS_FONT  = new Font("Courier New", 9);
+        private readonly Font DEVICE_TYPE_FONT = new Font("Arial", 7);
+
+        private readonly Font  DATA_RATE_FONT = new Font("MS Gothic", 8);
+        private readonly Brush DATA_RATE_FONT_BRUSH = Brushes.Gray;
+        private StringFormat   DATA_RATE_FONT_FORMAT = new StringFormat();
+        private Rectangle      DATA_RATE_GRAPH_REGION = new Rectangle();
+        private Pen            DATA_RATE_GRAPH_PEN = Pens.Gray;
 
         private GateObject gate_ = null;
         private MainFrameDeviceControlPanel devcp_ = new MainFrameDeviceControlPanel();
@@ -40,6 +48,10 @@ namespace Ratatoskr.Forms.MainFrame
         private Timer        mouse_hold_timer_ = new Timer();
 
         private ToolTip ttip_main_ = new ToolTip();
+
+        private ulong[] data_rate_buffer_ = null;
+        private int     data_rate_in_ = 0;
+        private ulong   data_rate_latest_ = 0;
 
 
         public MainFrameGate(GateObject gate)
@@ -50,6 +62,16 @@ namespace Ratatoskr.Forms.MainFrame
 
             mouse_hold_timer_.Interval = MOUSE_HOLD_TIMER;
             mouse_hold_timer_.Tick += OnMouseHoldTimer;
+
+            DATA_RATE_FONT_FORMAT.Alignment = StringAlignment.Center;
+            DATA_RATE_FONT_FORMAT.LineAlignment = StringAlignment.Center;
+            DATA_RATE_GRAPH_REGION.X = DATA_RATE_GRAPH_MARGIN.Left;
+            DATA_RATE_GRAPH_REGION.Y = DATA_RATE_GRAPH_MARGIN.Top;
+            DATA_RATE_GRAPH_REGION.Width = PBox_DataRate.ClientSize.Width - DATA_RATE_GRAPH_MARGIN.Horizontal;
+            DATA_RATE_GRAPH_REGION.Height = PBox_DataRate.ClientSize.Height - DATA_RATE_GRAPH_MARGIN.Vertical;
+
+            /* 幅に合わせてバッファを初期化 */
+            data_rate_buffer_ = new ulong[DATA_RATE_GRAPH_REGION.Width];
 
             UpdateView();
             UpdateDeviceControlPanel();
@@ -66,6 +88,7 @@ namespace Ratatoskr.Forms.MainFrame
                 if (gate_ != null) {
                     /* 登録イベント解除 */
                     gate_.StatusChanged -= OnGateStatusChanged;
+                    gate_.DataRateUpdated -= OnGateDataRateUpdated;
                 }
 
                 gate_ = value;
@@ -76,23 +99,34 @@ namespace Ratatoskr.Forms.MainFrame
 
                     /* イベント登録 */
                     gate_.StatusChanged += OnGateStatusChanged;
+                    gate_.DataRateUpdated += OnGateDataRateUpdated;
                 }
 
                 UpdateView();
             }
         }
 
-        private delegate void UpdateViewDelegate();
+        private delegate void UpdateViewHandler();
         private void UpdateView()
         {
-            /* Invoke */
             if (InvokeRequired) {
-                BeginInvoke(new UpdateViewDelegate(UpdateView));
+                BeginInvoke(new UpdateViewHandler(UpdateView));
                 return;
             }
 
             UpdateToolTip();
             Refresh();
+        }
+
+        private delegate void UpdateDataRateViewHandler();
+        private void UpdateDataRateView()
+        {
+            if (InvokeRequired) {
+                BeginInvoke(new UpdateDataRateViewHandler(UpdateDataRateView));
+                return;
+            }
+
+            PBox_DataRate.Invalidate();
         }
 
         private void UpdateToolTip()
@@ -131,7 +165,6 @@ namespace Ratatoskr.Forms.MainFrame
             /* コントロールパネル作成 */
             devcp_.ContentsControl = devcp;
             devcp_.Visible = (devcp != null);
-            Btn_ControlPanel.Enabled = (devcp != null);
         }
 
         private void GateEdit()
@@ -152,10 +185,31 @@ namespace Ratatoskr.Forms.MainFrame
             gate_.ChangeDevice(edit_form.GateProperty, edit_form.DeviceConfig, edit_form.DeviceClassID, edit_form.DeviceProperty);
         }
 
+        private void DataRateValueInput(ulong value)
+        {
+            /* 入力データを記憶 */
+            data_rate_latest_ = value;
+
+            /* グラフ表示用に入力データを補正して記憶 */
+            data_rate_buffer_[data_rate_in_++] = Math.Min(value, gate_.GateProperty.DataRateGraphLimit)
+                                               * (ulong)DATA_RATE_GRAPH_REGION.Height
+                                               / gate_.GateProperty.DataRateGraphLimit;
+
+            /* 入力ポインタを移動 */
+            data_rate_in_ %= data_rate_buffer_.Length;
+
+            PBox_DataRate.Invalidate();
+        }
+
         private void OnGateStatusChanged(object sender, EventArgs e)
         {
             UpdateView();
             UpdateDeviceControlPanel();
+        }
+
+        private void OnGateDataRateUpdated(object sender, ulong data_rate)
+        {
+            DataRateValueInput(data_rate);
         }
 
         private void OnMouseLeftClick()
@@ -279,10 +333,37 @@ namespace Ratatoskr.Forms.MainFrame
             e.Graphics.DrawImage(image, image_rect);
 
             /* エイリアス表示 */
-            e.Graphics.DrawString(text_alias, font_alias_, text_brush, text_alias_rect);
+            e.Graphics.DrawString(text_alias, GATE_ALIAS_FONT, text_brush, text_alias_rect);
 
             /* デバイスタイプ表示 */
-            e.Graphics.DrawString(text_type, font_type_, text_brush, text_type_rect);
+            e.Graphics.DrawString(text_type, DEVICE_TYPE_FONT, text_brush, text_type_rect);
+        }
+
+        private void PBox_DataRate_Paint(object sender, PaintEventArgs e)
+        {
+            /* === グラフ === */
+            var points = new Point[data_rate_buffer_.Length];
+            var data_offset = data_rate_in_;
+
+            for (var data_count = 0; data_count < data_rate_buffer_.Length; data_count++) {
+                points[data_count].X = DATA_RATE_GRAPH_REGION.Left + data_count;
+                points[data_count].Y = DATA_RATE_GRAPH_REGION.Bottom - (int)data_rate_buffer_[data_offset];
+
+                data_offset++;
+                data_offset %= data_rate_buffer_.Length;
+            }
+            e.Graphics.DrawLines(DATA_RATE_GRAPH_PEN, points);
+
+
+            /* テキスト */
+            e.Graphics.DrawString(
+                String.Format(
+                    "Rate: {0,6}B/s",
+                    TextUtil.DecToText(data_rate_latest_)),
+                    DATA_RATE_FONT,
+                    DATA_RATE_FONT_BRUSH,
+                    e.ClipRectangle,
+                    DATA_RATE_FONT_FORMAT);
         }
 
         private void Btn_ControlPanel_Click(object sender, EventArgs e)

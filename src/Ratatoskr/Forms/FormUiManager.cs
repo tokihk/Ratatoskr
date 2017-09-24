@@ -24,8 +24,6 @@ namespace Ratatoskr.Forms
 
     internal static class FormUiManager
     {
-        private static MainFrame.MainFrame main_frame_;
-
         private static FileFormatManager ffm_open_ = new FileFormatManager();
         private static FileFormatManager ffm_save_packet_ = new FileFormatManager();
 
@@ -69,38 +67,43 @@ namespace Ratatoskr.Forms
 
         public static void LoadConfig()
         {
-            main_frame_.LoadConfig();
+            MainFrame.LoadConfig();
         }
 
         public static void BackupConfig()
         {
-            main_frame_.BackupConfig();
+            MainFrame.BackupConfig();
+        }
+
+        public static MainFrame.MainFrame MainFrame
+        {
+            get; private set;
         }
 
         public static void MainFrameCreate()
         {
             /* メインフォーム作成 */
-            main_frame_ = new Forms.MainFrame.MainFrame();
+            MainFrame = new Forms.MainFrame.MainFrame();
         }
 
         public static void MainFrameVisible(bool visible)
         {
             if (visible) {
-                main_frame_.Show();
-                main_frame_.Update();
+                MainFrame.Show();
+                MainFrame.Update();
             } else {
-                main_frame_.Hide();
+                MainFrame.Hide();
             }
         }
 
         public static void MainFrameMenuBarUpdate()
         {
-            main_frame_.UpdateMenuBar();
+            MainFrame.UpdateMenuBar();
         }
 
         public static void MainFrameStatusBarUpdate()
         {
-            main_frame_.UpdateStatusBar();
+            MainFrame.UpdateStatusBar();
         }
 
         public static void SetStatusText(StatusTextId id, string text)
@@ -163,12 +166,7 @@ namespace Ratatoskr.Forms
             }
 
             /* ステータス値を適用 */
-            main_frame_.SetStatusText(status_busy_.MainStatusBar_Text);
-            main_frame_.SetProgressBar(status_busy_.MainProgressBar_Visible, status_busy_.MainProgressBar_Value, 100);
-            main_frame_.SetPacketCounter(
-                status_busy_.PacketCount_All,
-                status_busy_.PacketCount_DrawAll,
-                status_busy_.PacketCount_DrawBusy);
+            MainFrame.SetFormStatus(status_busy_);
         }
 
         public static void ClearProgressBar()
@@ -209,15 +207,22 @@ namespace Ratatoskr.Forms
             }
         }
 
+        public static void SetCommRate(ulong rate)
+        {
+            lock (status_sync_) {
+                status_new_.PacketBytePSec_All = rate;
+            }
+        }
+
         public static void AddPacket(string protocol, byte[] bitdata, uint bitsize)
         {
-            main_frame_.AddPacket(protocol, bitdata, bitsize);
+            MainFrame.AddPacket(protocol, bitdata, bitsize);
         }
 
         public static bool InvokeRequired()
         {
-            if (main_frame_ != null) {
-                return (main_frame_.InvokeRequired);
+            if (MainFrame != null) {
+                return (MainFrame.InvokeRequired);
             } else {
                 return (false);
             }
@@ -225,12 +230,12 @@ namespace Ratatoskr.Forms
 
         public static object Invoke(Delegate method, params object[] args)
         {
-            return (main_frame_.Invoke(method, args));
+            return (MainFrame.Invoke(method, args));
         }
 
         public static object BeginInvoke(Delegate method, params object[] args)
         {
-            return (main_frame_.BeginInvoke(method, args));
+            return (MainFrame.BeginInvoke(method, args));
         }
 
         public static void FileOpen()

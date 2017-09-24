@@ -27,7 +27,7 @@ namespace Ratatoskr.Gate.PacketAutoSave
 
                 /* 現在のファイルに出力するパケット数を取得 */
                 var copy_count = (int)Math.Min(
-                                        packets.LongCount(),
+                                        packets.Count(),
                                         (long)(Math.Max(
                                                     0, ConfigManager.User.Option.AutoSaveValue_PacketCount.Value - count_)));
 

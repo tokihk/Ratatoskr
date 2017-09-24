@@ -25,6 +25,7 @@ namespace Ratatoskr.Configs.UserConfigs
 
     internal enum AutoSaveTimmingType
     {
+        NoSave,         // 保存無し
         Interval,       // 時間間隔[分単位] (例: 10分毎)
         FileSize,       // ファイルサイズ[kbyte単位]
         PacketCount,    // パケット数
@@ -43,11 +44,10 @@ namespace Ratatoskr.Configs.UserConfigs
         public EnumConfig<AutoTimeStampTriggerType> AutoTimeStampTrigger              { get; } = new EnumConfig<AutoTimeStampTriggerType>(AutoTimeStampTriggerType.LastRecvPeriod);
         public IntegerConfig                        AutoTimeStampValue_LastRecvPeriod { get; } = new IntegerConfig(1000);
 
-        public BoolConfig                      AutoSave                  { get; } = new BoolConfig(false);
         public StringConfig                    AutoSaveDirectory         { get; } = new StringConfig("");
         public StringConfig                    AutoSavePrefix            { get; } = new StringConfig("autosave");
         public EnumConfig<AutoSaveFormatType>  AutoSaveFormat            { get; } = new EnumConfig<AutoSaveFormatType>(AutoSaveFormatType.Ratatoskr);
-        public EnumConfig<AutoSaveTimmingType> AutoSaveTimming           { get; } = new EnumConfig<AutoSaveTimmingType>(AutoSaveTimmingType.Interval);
+        public EnumConfig<AutoSaveTimmingType> AutoSaveTimming           { get; } = new EnumConfig<AutoSaveTimmingType>(AutoSaveTimmingType.NoSave);
         public IntegerConfig                   AutoSaveValue_Interval    { get; } = new IntegerConfig(10);
         public IntegerConfig                   AutoSaveValue_FileSize    { get; } = new IntegerConfig(500);
         public IntegerConfig                   AutoSaveValue_PacketCount { get; } = new IntegerConfig(2000);

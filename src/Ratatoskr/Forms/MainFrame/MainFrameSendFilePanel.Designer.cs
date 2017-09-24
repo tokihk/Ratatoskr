@@ -150,7 +150,7 @@
             this.Num_BlockSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.Num_BlockSize.ThousandsSeparator = true;
             this.Num_BlockSize.Value = new decimal(new int[] {
-            65535,
+            100,
             0,
             0,
             0});

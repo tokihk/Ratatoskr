@@ -60,5 +60,9 @@ namespace Ratatoskr.Forms.MainFrame
         protected virtual void OnSendExecEnd(bool success)
         {
         }
+
+        public virtual void OnMainFormDeactivated()
+        {
+        }
     }
 }

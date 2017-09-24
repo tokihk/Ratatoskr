@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ratatoskr.Devices.MicInput
+namespace Ratatoskr.Devices.AudioDevice
 {
     internal class DeviceClassImpl : DeviceClass
     {
@@ -14,7 +14,7 @@ namespace Ratatoskr.Devices.MicInput
 
         public override string Name
         {
-            get { return ("MIC input"); }
+            get { return ("Audio device"); }
         }
 
         public override string Details

@@ -12,24 +12,24 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
 {
     internal sealed class FileFormatReaderImpl : FileFormatReader
     {
+        private StreamReader         reader_ = null;
+        private FileFormatOptionImpl option_ = null;
+
+        
         public FileFormatReaderImpl() : base()
         {
         }
 
-        protected override bool OnReadStream(object obj, FileFormatOption option, Stream stream)
+        protected override bool OnOpenStream(FileFormatOption option, Stream stream)
         {
-            var packets = obj as PacketContainer;
+            option_ = option as FileFormatOptionImpl;
 
-            if (packets == null)return (false);
-
-            var option_i = option as FileFormatOptionImpl;
-
-            if (option_i == null)return (false);
+            if (option_ == null)return (false);
 
             /* エンコーディング判定 */
             var encoding = Encoding.UTF8;
 
-            switch (option_i.CharCode) {
+            switch (option_.CharCode) {
                 case TextCharCode.UTF8:     encoding = Encoding.UTF8;             break;
                 case TextCharCode.ShiftJIS: encoding = Encoding.GetEncoding(932); break;
                 case TextCharCode.UnicodeB: encoding = Encoding.BigEndianUnicode; break;
@@ -38,21 +38,31 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
             }
 
             /* ファイル読み込み */
+            reader_ = new StreamReader(stream, encoding);
+
+            return (true);
+        }
+
+        protected override bool OnReadStream(object obj, FileFormatOption option, Stream stream)
+        {
+            var packets = obj as PacketContainer;
+
+            if (packets == null)return (false);
+
+            /* ファイル読み込み */
             try {
-                using (var reader = new StreamReader(stream, encoding)) {
-                    var csv_header = TextUtil.ReadCsvLine(reader);
+                var csv_header = TextUtil.ReadCsvLine(reader_);
 
-                    /* 最初の行をCSVヘッダーとして処理 */
-                    if (!ReadHeader(option_i, csv_header)) {
-                        /* 解析が失敗した場合は最初の行をパケットとして処理する */
-                        ReadContents(packets, option_i, csv_header);
-                    }
-
-                    /* 残りの内容を全て読み込み */
-                    ReadAllContents(packets, option_i, reader);
-
-                    return (true);
+                /* 最初の行をCSVヘッダーとして処理 */
+                if (!ReadHeader(option_, csv_header)) {
+                    /* 解析が失敗した場合は最初の行をパケットとして処理する */
+                    ReadContents(packets, option_, csv_header);
                 }
+
+                /* 残りの内容を全て読み込み */
+                ReadAllContents(packets, option_, reader_);
+
+                return (true);
             } catch {
                 return (false);
             }

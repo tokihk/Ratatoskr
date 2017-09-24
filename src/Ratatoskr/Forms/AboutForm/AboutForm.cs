@@ -32,7 +32,7 @@ namespace Ratatoskr.Forms.AboutForm
 
             Text = ConfigManager.Language.MainUI.AboutForm_Title.Value;
             Label_Version.Text = Program.Version.ToString();
-            Label_Copyright.Text = Program.Copyright;
+            Label_Copyright.Text = ConfigManager.Fixed.Copyright.Value;
         }
 
         private void UpdateLicenseList()

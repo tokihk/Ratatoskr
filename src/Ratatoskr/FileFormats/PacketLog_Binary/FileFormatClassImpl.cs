@@ -35,7 +35,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
 
         public override FileFormatOption CreateWriterOption()
         {
-            return (new FileFormatWriterOptionImpl());
+            return (null);
         }
     }
 }

@@ -45,13 +45,6 @@ namespace Ratatoskr.Configs
         private string config_name_ = null;
 
 
-        public delegate void ConfigLoadedDelegate(object sender, ConfigLoadedEventHandler e);
-        public event ConfigLoadedDelegate    ConfigLoaded;
-
-        public delegate void ConfigSaveReadyDelegate(object sender, ConfigSaveReadyEventHandler e);
-        public event ConfigSaveReadyDelegate ConfigSaveReady;
-
-
         public ConfigManagerBase(string name)
         {
             config_name_ = name;

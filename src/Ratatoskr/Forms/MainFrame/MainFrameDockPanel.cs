@@ -80,7 +80,7 @@ namespace Ratatoskr.Forms.MainFrame
             if (config_dock != null) {
                 try {
                     DockPanel_Main.LoadFromXml(config_dock, GetDockContentFromPersistString);
-                } catch (Exception exp) {
+                } catch (Exception) {
                 }
             }
 

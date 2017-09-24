@@ -1,6 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
@@ -9,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Ratatoskr.Properties")]
+[assembly: AssemblyProduct("Ratatoskr")]
 [assembly: AssemblyCopyright("Copyright © 2017 H.Kouno")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -31,3 +33,36 @@ using System.Runtime.InteropServices;
 //
 [assembly: AssemblyVersion("0.1.0.0")]
 [assembly: AssemblyFileVersion("0.1.0.0")]
+
+internal static class AppInfo
+{
+    public static string Name
+    {
+        get {
+            return (((System.Reflection.AssemblyTitleAttribute)Attribute.GetCustomAttribute(
+                        System.Reflection.Assembly.GetExecutingAssembly(), 
+                        typeof(System.Reflection.AssemblyTitleAttribute))
+                    ).Title);
+        }
+    }
+
+    public static string Copyright
+    {
+        get {
+            return (((System.Reflection.AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(
+                        System.Reflection.Assembly.GetExecutingAssembly(), 
+                        typeof(System.Reflection.AssemblyCopyrightAttribute))
+                    ).Copyright);
+        }
+    }
+
+    public static string Version
+    {
+        get {
+            return (((System.Reflection.AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(
+                        System.Reflection.Assembly.GetExecutingAssembly(), 
+                        typeof(System.Reflection.AssemblyFileVersionAttribute))
+                    ).Version);
+        }
+    }
+}
