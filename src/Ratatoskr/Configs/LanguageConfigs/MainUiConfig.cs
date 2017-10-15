@@ -33,8 +33,17 @@ namespace Ratatoskr.Configs.LanguageConfigs
         public StringConfig SCmdPanel_Target  { get; } = new StringConfig("Target");
         public StringConfig SCmdPanel_Command { get; } = new StringConfig("Command");
 
+        public StringConfig MCmdPanel_Title                 { get; } = new StringConfig("Send data list");
         public StringConfig MCmdPanel_Column_Command        { get; } = new StringConfig("Command");
         public StringConfig MCmdPanel_Column_DelayFixed     { get; } = new StringConfig("Fixed Delay[ms]");
         public StringConfig MCmdPanel_Column_DelayRandomMax { get; } = new StringConfig("Random Delay(MAX)[ms]");
+
+        public StringConfig WLPanel_Title                 { get; } = new StringConfig("Watch list");
+        public StringConfig WLPanel_Column_Target         { get; } = new StringConfig("Target");
+        public StringConfig WLPanel_Column_Expression     { get; } = new StringConfig("Expression");
+        public StringConfig WLPanel_Column_NtfPlan        { get; } = new StringConfig("Notify plan");
+        public StringConfig WLPanel_Column_NtfPlan_Event  { get; } = new StringConfig("Event");
+        public StringConfig WLPanel_Column_NtfPlan_Dialog { get; } = new StringConfig("Dialog");
+        public StringConfig WLPanel_Column_NtfPlan_Mail   { get; } = new StringConfig("Mail");
     }
 }

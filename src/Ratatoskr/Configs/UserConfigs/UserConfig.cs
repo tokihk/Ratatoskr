@@ -47,6 +47,8 @@ namespace Ratatoskr.Configs.UserConfigs
         public IntegerConfig      SendDataListLimit  { get; } = new IntegerConfig(200);
         public IntegerConfig      SendDataListRepeat { get; } = new IntegerConfig(1);
 
+        public WatchDataListConfig WatchDataList { get; } = new WatchDataListConfig();
+
         public PacketListConfig PacketList       { get; } = new PacketListConfig();
         public IntegerConfig    PacketListLimit  { get; } = new IntegerConfig(2000);
         public IntegerConfig    PacketListRepeat { get; } = new IntegerConfig(1);

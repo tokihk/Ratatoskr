@@ -5,10 +5,10 @@
 //  See accompanying file GPLEXcopyright.rtf.
 //
 //  GPLEX Version:  1.2.2
-//  Machine:  KPC-2456
-//  DateTime: 2017/09/12 11:32:03
-//  UserName: i32719
-//  GPLEX input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.analyzer.lex - 2017/09/12 9:57:28>
+//  Machine:  HITOSHI-WIN10
+//  DateTime: 2017/10/15 15:13:50
+//  UserName: TokiH
+//  GPLEX input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.analyzer.lex - 2017/09/12 9:57:30>
 //  GPLEX frame file <embedded resource>
 //
 //  Option settings: parser, noFiles, minimize

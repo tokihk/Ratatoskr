@@ -50,7 +50,7 @@ namespace Ratatoskr.Gate.AutoTimeStamp
                 return;
             }
 
-            GatePacketManager.SetTimeStamp();
+            GatePacketManager.SetTimeStamp(ConfigManager.Language.MainMessage.TimeStampAuto.Value);
 
             /* タイムスタンプの挿入でタイマーが開始してしまうので、必ずタイムスタンプ挿入の後に実行 */
             sw_recv_period_.Stop();

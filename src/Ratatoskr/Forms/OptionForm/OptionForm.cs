@@ -13,6 +13,8 @@ namespace Ratatoskr.Forms.OptionForm
 {
     internal partial class OptionForm : Form
     {
+        private const int NOTIFY_MAIL_CONFIG_NUM = 5;
+
         private enum PageId
         {
             None,
@@ -20,6 +22,9 @@ namespace Ratatoskr.Forms.OptionForm
             AutoUpdate,
             AutoTimeStamp,
             AutoSave,
+            Notify_MailList,
+            Notify_Mail_Top,
+            Notify_Mail_Last = Notify_Mail_Top + NOTIFY_MAIL_CONFIG_NUM - 1,
         }
 
         private sealed class PageInfo
@@ -61,6 +66,17 @@ namespace Ratatoskr.Forms.OptionForm
                 new { level = 1, text = "Auto timestamp", page = PageId.AutoTimeStamp },
                 new { level = 0, text = "Log",            page = PageId.None },
                 new { level = 1, text = "Auto save",      page = PageId.AutoSave },
+                new { level = 0, text = "Notify setting", page = PageId.None },
+                new { level = 1, text = "Mail setting",   page = PageId.Notify_Mail_Top },
+
+#if false
+                new { level = 1, text = "Mail",           page = PageId.None },
+                new { level = 2, text = "Setting 1",      page = PageId.Notify_Mail_Top + 0 },
+                new { level = 2, text = "Setting 2",      page = PageId.Notify_Mail_Top + 1 },
+                new { level = 2, text = "Setting 3",      page = PageId.Notify_Mail_Top + 2 },
+                new { level = 2, text = "Setting 4",      page = PageId.Notify_Mail_Top + 3 },
+                new { level = 2, text = "Setting 5",      page = PageId.Notify_Mail_Top + 4 },
+#endif
             };
 
             var node_stack = new Stack<TreeNode>();
@@ -98,12 +114,26 @@ namespace Ratatoskr.Forms.OptionForm
 
         private OptionFormPage GetPage(PageId id)
         {
-            switch (id) {
-                case PageId.Language:      return (new Pages.ConfigPage_Language());
-                case PageId.AutoUpdate:    return (new Pages.ConfigPage_AutoUpdate());
-                case PageId.AutoTimeStamp: return (new Pages.ConfigPage_AutoTimeStamp());
-                case PageId.AutoSave:      return (new Pages.ConfigPage_AutoSave());
-                default:                   return (null);
+            if (   (id >= PageId.Notify_Mail_Top)
+                && (id <= PageId.Notify_Mail_Last)
+            ) {
+                var config_no = id - PageId.Notify_Mail_Top;
+
+                while (config_no >= Config.NotifyMailList.Value.Count) {
+                    Config.NotifyMailList.Value.Add(new NotifyMailConfig());
+                }
+
+                return (new Pages.ConfigPage_NotifyMail(Config.NotifyMailList.Value[config_no]));
+
+            } else {
+                switch (id) {
+                    case PageId.Language:            return (new Pages.ConfigPage_Language());
+                    case PageId.AutoUpdate:          return (new Pages.ConfigPage_AutoUpdate());
+                    case PageId.AutoTimeStamp:       return (new Pages.ConfigPage_AutoTimeStamp());
+                    case PageId.AutoSave:            return (new Pages.ConfigPage_AutoSave());
+                    case PageId.Notify_MailList:     return (new Pages.ConfigPage_NotifyMailList());
+                    default:                         return (null);
+                }
             }
         }
 
@@ -125,6 +155,7 @@ namespace Ratatoskr.Forms.OptionForm
             page_current_.LoadConfig(Config);
 
             /* ページ切り替え */
+            page_current_.Dock = DockStyle.Fill;
             Panel_PageContents.Controls.Clear();
             Panel_PageContents.Controls.Add(page_current_);
 

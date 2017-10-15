@@ -38,6 +38,7 @@ namespace Ratatoskr.Forms.MainFrame
 
 
         private MainFrameSendDataListPanel MFDC_CmdListPanel_Control;
+        private MainFrameWatchListPanel    MFDC_WatchListPanel_Control;
 
 
         public MainFrameDockPanel()
@@ -56,12 +57,21 @@ namespace Ratatoskr.Forms.MainFrame
 
             AddDockContent(
                 "MFDC_CmdListPanel",
-                "Command list",
+                ConfigManager.Language.MainUI.MCmdPanel_Title.Value,
                 Icon.FromHandle(Properties.Resources.memo_32x32.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottomAutoHide,
                 false,
                 MFDC_CmdListPanel_Control = new MainFrameSendDataListPanel());
+
+            AddDockContent(
+                "MFDC_WatchListPanel",
+                ConfigManager.Language.MainUI.WLPanel_Title.Value,
+                Icon.FromHandle(Properties.Resources.watch_32x32.GetHicon()),
+                DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
+                DockState.DockBottomAutoHide,
+                false,
+                MFDC_WatchListPanel_Control = new MainFrameWatchListPanel());
         }
 
         public void LoadConfig()
@@ -111,6 +121,7 @@ namespace Ratatoskr.Forms.MainFrame
         public void BackupConfig()
         {
             MFDC_CmdListPanel_Control.BackupConfig();
+            MFDC_WatchListPanel_Control.BackupConfig();
 
             BackupPacketViewConfig();
             BackupDockConfig();

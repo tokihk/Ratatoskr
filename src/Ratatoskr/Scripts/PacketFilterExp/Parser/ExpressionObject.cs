@@ -12,9 +12,12 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Parser
         private List<object> args_ = new List<object>();
 
 
-        public ExpressionObject()
+        public ExpressionObject(string exp)
         {
+            ExpressionText = exp;
         }
+
+        public string ExpressionText { get; }
 
         public void Add(object item)
         {

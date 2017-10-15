@@ -29,6 +29,11 @@ namespace Ratatoskr.Scripts.PacketFilterExp
             exp_ = exp;
         }
 
+        public string ExpressionText
+        {
+            get { return (exp_.ExpressionText); }
+        }
+
         public ExpressionCallStack CallStack { get; set; } = new ExpressionCallStack();
 
         public bool Input(PacketObject packet)

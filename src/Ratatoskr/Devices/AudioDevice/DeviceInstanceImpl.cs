@@ -39,7 +39,7 @@ namespace Ratatoskr.Devices.AudioDevice
             InputDeviceStart();
 
             OutputPlayerClose();
-            OutputDeviceStart();
+//            OutputDeviceStart();
 
             return (EventResult.Success);
         }

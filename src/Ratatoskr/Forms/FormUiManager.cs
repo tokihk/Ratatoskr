@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.FileFormats;
+using Ratatoskr.Forms.Dialog;
 using Ratatoskr.Gate;
 using Ratatoskr.Generic;
 
@@ -40,6 +41,8 @@ namespace Ratatoskr.Forms
         private static Queue<string> popup_text_ = new Queue<string>();
 
         private static Stopwatch     progress_bar_timer_ = new Stopwatch();
+
+        private static WatchEventNotifyDialog watch_event_dialog_ = new WatchEventNotifyDialog();
 
 
         public static void Startup()
@@ -211,6 +214,15 @@ namespace Ratatoskr.Forms
         {
             lock (status_sync_) {
                 status_new_.PacketBytePSec_All = rate;
+            }
+        }
+
+        public static void SetWatchEventText(string text)
+        {
+            watch_event_dialog_.AddText(text);
+
+            if (!watch_event_dialog_.Visible) {
+                watch_event_dialog_.Show();
             }
         }
 

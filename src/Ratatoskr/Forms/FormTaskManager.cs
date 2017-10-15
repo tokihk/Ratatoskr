@@ -13,10 +13,6 @@ namespace Ratatoskr.Forms
 {
     internal static class FormTaskManager
     {
-        public delegate void EventHandler();
-        public delegate void PacketEventHandler(IEnumerable<PacketObject> packets);
-
-
         private const int PACKET_CONVERTER_LIMIT = 10;
         private const int PACKET_VIEW_LIMIT = 5;
 
@@ -52,6 +48,9 @@ namespace Ratatoskr.Forms
         private static ulong          redraw_step_end_ = 0;
         private static byte           redraw_progress_ = 0;
         
+
+        public delegate void EventHandler();
+        public delegate void PacketEventHandler(IEnumerable<PacketObject> packets);
 
         public static event EventHandler       DrawPacketCleared = delegate() { };
         public static event PacketEventHandler DrawPacketEntried = delegate(IEnumerable<PacketObject> packets) { };

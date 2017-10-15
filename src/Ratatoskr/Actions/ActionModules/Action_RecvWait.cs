@@ -80,8 +80,8 @@ namespace Ratatoskr.Actions.ActionModules
             }
 
             /* イベント登録 */
-            GatePacketManager.EventPacketCleared += OnEventPacketCleared;
-            GatePacketManager.EventPacketEntried += OnEventPacketEntried;
+            GatePacketManager.RawPacketCleared += OnEventPacketCleared;
+            GatePacketManager.RawPacketEntried += OnEventPacketEntried;
         }
 
         protected override void OnExecPoll()
@@ -116,8 +116,8 @@ namespace Ratatoskr.Actions.ActionModules
 
         protected override void OnExecComplete()
         {
-            GatePacketManager.EventPacketCleared -= OnEventPacketCleared;
-            GatePacketManager.EventPacketEntried -= OnEventPacketEntried;
+            GatePacketManager.RawPacketCleared -= OnEventPacketCleared;
+            GatePacketManager.RawPacketEntried -= OnEventPacketEntried;
         }
 
         private void OnEventPacketCleared()

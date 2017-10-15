@@ -52,6 +52,8 @@ namespace Ratatoskr.Configs.UserConfigs
         public IntegerConfig                   AutoSaveValue_FileSize    { get; } = new IntegerConfig(500);
         public IntegerConfig                   AutoSaveValue_PacketCount { get; } = new IntegerConfig(2000);
 
+        public NotifyMailListConfig NotifyMailList { get; } = new NotifyMailListConfig();
+
         private StringListConfig CustomConvertAlgorithm { get; } = new StringListConfig();
 
 //        public StringConfig ExtPath_USBPcapCMD { get; } = new StringConfig("C:\\Program Files\\USBPcap\\USBPcapCMD.exe");

@@ -135,6 +135,7 @@
     <Compile Include="Configs\Types\StringListConfig.cs" />
     <Compile Include="Configs\UserConfigs\GateListConfig.cs" />
     <Compile Include="Configs\UserConfigs\MainWindowConfig.cs" />
+    <Compile Include="Configs\UserConfigs\NotifyMailListConfig.cs" />
     <Compile Include="Configs\UserConfigs\OptionConfig.cs" />
     <Compile Include="Configs\UserConfigs\PacketConverterConfig.cs" />
     <Compile Include="Configs\UserConfigs\PacketListConfig.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="Configs\UserConfigs\SendDataListConfig.cs" />
     <Compile Include="Configs\UserConfigs\ShortcutKeyConfig.cs" />
     <Compile Include="Configs\UserConfigs\UserConfig.cs" />
+    <Compile Include="Configs\UserConfigs\WatchDataListConfig.cs" />
     <Compile Include="Devices\AudioFile\DeviceClassImpl.cs" />
     <Compile Include="Devices\AudioFile\DeviceInstanceImpl.cs" />
     <Compile Include="Devices\AudioFile\DevicePropertyEditorImpl.cs">
@@ -289,6 +291,18 @@
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatClassImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatOptionImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatReaderImpl.cs" />
+    <Compile Include="Forms\Dialog\WatchEventNotifyDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialog\WatchEventNotifyDialog.Designer.cs">
+      <DependentUpon>WatchEventNotifyDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialog\NotifyMailConfigDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialog\NotifyMailConfigDialog.Designer.cs">
+      <DependentUpon>NotifyMailConfigDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MainFrame\MainFrameSendPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -303,6 +317,12 @@
     </Compile>
     <Compile Include="Forms\MainFrame\MainFrameSendFilePanel.Designer.cs">
       <DependentUpon>MainFrameSendFilePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainFrame\MainFrameWatchListPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainFrame\MainFrameWatchListPanel.Designer.cs">
+      <DependentUpon>MainFrameWatchListPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\OptionForm\OptionForm.cs">
       <SubType>Form</SubType>
@@ -442,6 +462,18 @@
     <Compile Include="Forms\MainFrame\MainFrameSendPanelContainer.Designer.cs">
       <DependentUpon>MainFrameSendPanelContainer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_NotifyMail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_NotifyMail.Designer.cs">
+      <DependentUpon>ConfigPage_NotifyMail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_NotifyMailList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\OptionForm\Pages\ConfigPage_NotifyMailList.Designer.cs">
+      <DependentUpon>ConfigPage_NotifyMailList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Gate\AutoTimeStamp\AutoTimeStampManager.cs" />
     <Compile Include="Gate\GateManager.cs" />
     <Compile Include="Gate\GateObject.cs" />
@@ -489,6 +521,7 @@
     <Compile Include="Generic\Controls\TextViewEx.Designer.cs">
       <DependentUpon>TextViewEx.cs</DependentUpon>
     </Compile>
+    <Compile Include="Generic\CryptoUtil.cs" />
     <Compile Include="Generic\HexTextEncoder.cs" />
     <Compile Include="Generic\ImageUtil.cs" />
     <Compile Include="Generic\LicenseFileParser.cs" />
@@ -722,11 +755,20 @@
     <EmbeddedResource Include="FileFormats\PacketLog_Binary\FileFormatWriterOptionEditorImpl.resx">
       <DependentUpon>FileFormatWriterOptionEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialog\WatchEventNotifyDialog.resx">
+      <DependentUpon>WatchEventNotifyDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialog\NotifyMailConfigDialog.resx">
+      <DependentUpon>NotifyMailConfigDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainFrame\MainFrameSendDataPanel.resx">
       <DependentUpon>MainFrameSendDataPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainFrame\MainFrameSendFilePanel.resx">
       <DependentUpon>MainFrameSendFilePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainFrame\MainFrameWatchListPanel.resx">
+      <DependentUpon>MainFrameWatchListPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OptionForm\OptionForm.resx">
       <DependentUpon>OptionForm.cs</DependentUpon>
@@ -790,6 +832,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainFrame\MainFrameSendPanelContainer.resx">
       <DependentUpon>MainFrameSendPanelContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OptionForm\Pages\ConfigPage_NotifyMail.resx">
+      <DependentUpon>ConfigPage_NotifyMail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OptionForm\Pages\ConfigPage_NotifyMailList.resx">
+      <DependentUpon>ConfigPage_NotifyMailList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generic\Controls\BinEditBox.resx">
       <DependentUpon>BinEditBox.cs</DependentUpon>

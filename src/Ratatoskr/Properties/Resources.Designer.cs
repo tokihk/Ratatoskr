@@ -653,6 +653,16 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap watch_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("watch_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap wireshark_32x32 {
             get {
                 object obj = ResourceManager.GetObject("wireshark_32x32", resourceCulture);

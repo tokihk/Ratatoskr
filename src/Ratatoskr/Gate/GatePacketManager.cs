@@ -17,10 +17,6 @@ namespace Ratatoskr.Gate
 {
     internal static class GatePacketManager
     {
-        public delegate void EventHandler();
-        public delegate void PacketEventHandler(IEnumerable<PacketObject> packets);
-
-
         private static bool enable_ = true;
 
         private static PacketContainer packets_ = new PacketContainer();
@@ -33,8 +29,11 @@ namespace Ratatoskr.Gate
         public static PacketManager BasePacketManager { get; } = new PacketManager(true);
 
 
-        public static event EventHandler       EventPacketCleared = delegate() { };
-        public static event PacketEventHandler EventPacketEntried = delegate(IEnumerable<PacketObject> packets) { };
+        public delegate void EventHandler();
+        public delegate void PacketEventHandler(IEnumerable<PacketObject> packets);
+
+        public static event EventHandler       RawPacketCleared = delegate() { };
+        public static event PacketEventHandler RawPacketEntried = delegate(IEnumerable<PacketObject> packets) { };
 
 
         public static void Startup()
@@ -104,7 +103,7 @@ namespace Ratatoskr.Gate
             BasePacketManager.Clear();
 
             /* イベント通知 */
-            EventPacketCleared();
+            RawPacketCleared();
 
             /* UIパケットをクリア */
             FormTaskManager.DrawPacketClear();
@@ -124,35 +123,41 @@ namespace Ratatoskr.Gate
             FormTaskManager.DrawPacketPush(packets);
 
             /* イベント通知 */
-            EventPacketEntried(packets);
+            RawPacketEntried(packets);
         }
 
-        public static void SetTimeStamp()
+        public static void SetSystemEvent(DateTime dt, string title, string text)
         {
             var packet = new MessagePacketObject(
                                 PacketFacility.System,
                                 "",
                                 PacketPriority.Notice,
-                                DateTime.UtcNow,
-                                "TimeStamp",
-                                0x00,
-                                "--------------------------------------------");
-           
-            BasePacketManager.Enqueue(packet);
-        }
-
-        public static void SetComment(string text)
-        {
-            var packet = new MessagePacketObject(
-                                PacketFacility.System,
-                                "",
-                                PacketPriority.Notice,
-                                DateTime.UtcNow,
-                                "Comment",
+                                dt,
+                                title,
                                 0x00,
                                 text);
            
             BasePacketManager.Enqueue(packet);
+        }
+
+        public static void SetComment(DateTime dt, string text)
+        {
+            SetSystemEvent(dt, "Comment", text);
+        }
+
+        public static void SetComment(string text)
+        {
+            SetComment(DateTime.UtcNow, text);
+        }
+
+        public static void SetTimeStamp(string info)
+        {
+            SetSystemEvent(DateTime.UtcNow, info, "--------------------------------------------");
+        }
+
+        public static void SetWatchEvent(DateTime dt, string text)
+        {
+            SetSystemEvent(dt, "WatchEvent", text);
         }
 
         public static bool IsLoadBusy

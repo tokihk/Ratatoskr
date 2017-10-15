@@ -3,10 +3,10 @@
 // (see accompanying GPPGcopyright.rtf)
 
 // GPPG version 1.5.2
-// Machine:  KPC-2456
-// DateTime: 2017/09/12 11:32:04
-// UserName: i32719
-// Input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/09/12 9:57:38>
+// Machine:  HITOSHI-WIN10
+// DateTime: 2017/10/15 15:13:50
+// UserName: TokiH
+// Input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/10/15 15:13:48>
 
 // options: no-lines gplex
 
@@ -53,9 +53,9 @@ internal class ScanObj {
 [GeneratedCodeAttribute( "Gardens Point Parser Generator", "1.5.2")]
 internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
 {
-  // Verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/09/12 9:57:38
-    private ExpressionObject exp_ = new ExpressionObject();
-  // End verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/09/12 9:57:38
+  // Verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/10/15 15:13:48
+    private ExpressionObject exp_obj_ = null;
+  // End verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/10/15 15:13:48
 
 #pragma warning disable 649
   private static Dictionary<int, string> aliases;
@@ -175,127 +175,127 @@ internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
     {
       case 4: // assignment_expression -> logical_expression, ARMOP_SET, logical_expression
 {
-		exp_.Add(Tokens.ARMOP_SET);
+		exp_obj_.Add(Tokens.ARMOP_SET);
 	}
         break;
       case 6: // logical_expression -> equality_expression, LOGOP_OR, equality_expression
 {
-		exp_.Add(Tokens.LOGOP_OR);
+		exp_obj_.Add(Tokens.LOGOP_OR);
 	}
         break;
       case 7: // logical_expression -> equality_expression, LOGOP_AND, equality_expression
 {
-		exp_.Add(Tokens.LOGOP_AND);
+		exp_obj_.Add(Tokens.LOGOP_AND);
 	}
         break;
       case 9: // equality_expression -> relational_expression, RELOP_EQUAL, 
               //                        relational_expression
 {
-		exp_.Add(Tokens.RELOP_EQUAL);
+		exp_obj_.Add(Tokens.RELOP_EQUAL);
 	}
         break;
       case 10: // equality_expression -> relational_expression, RELOP_UNEQUAL, 
                //                        relational_expression
 {
-		exp_.Add(Tokens.RELOP_UNEQUAL);
+		exp_obj_.Add(Tokens.RELOP_UNEQUAL);
 	}
         break;
       case 12: // relational_expression -> additive_expression, RELOP_GREATEREQUAL, 
                //                          additive_expression
 {
-		exp_.Add(Tokens.RELOP_GREATEREQUAL);
+		exp_obj_.Add(Tokens.RELOP_GREATEREQUAL);
 	}
         break;
       case 13: // relational_expression -> relational_expression, RELOP_LESSEQUAL, 
                //                          additive_expression
 {
-		exp_.Add(Tokens.RELOP_LESSEQUAL);
+		exp_obj_.Add(Tokens.RELOP_LESSEQUAL);
 	}
         break;
       case 14: // relational_expression -> relational_expression, RELOP_GREATER, 
                //                          additive_expression
 {
-		exp_.Add(Tokens.RELOP_GREATER);
+		exp_obj_.Add(Tokens.RELOP_GREATER);
 	}
         break;
       case 15: // relational_expression -> relational_expression, RELOP_LESS, additive_expression
 {
-		exp_.Add(Tokens.RELOP_LESS);
+		exp_obj_.Add(Tokens.RELOP_LESS);
 	}
         break;
       case 17: // additive_expression -> multiplicative_expression, ARMOP_ADD, 
                //                        multiplicative_expression
 {
-		exp_.Add(Tokens.ARMOP_ADD);
+		exp_obj_.Add(Tokens.ARMOP_ADD);
 	}
         break;
       case 18: // additive_expression -> multiplicative_expression, ARMOP_SUB, 
                //                        multiplicative_expression
 {
-		exp_.Add(Tokens.ARMOP_SUB);
+		exp_obj_.Add(Tokens.ARMOP_SUB);
 	}
         break;
       case 20: // multiplicative_expression -> negative_expression, ARMOP_MUL, 
                //                              negative_expression
 {
-		exp_.Add(Tokens.ARMOP_MUL);
+		exp_obj_.Add(Tokens.ARMOP_MUL);
 	}
         break;
       case 21: // multiplicative_expression -> negative_expression, ARMOP_DIV, 
                //                              negative_expression
 {
-		exp_.Add(Tokens.ARMOP_DIV);
+		exp_obj_.Add(Tokens.ARMOP_DIV);
 	}
         break;
       case 22: // multiplicative_expression -> negative_expression, ARMOP_REM, 
                //                              negative_expression
 {
-		exp_.Add(Tokens.ARMOP_REM);
+		exp_obj_.Add(Tokens.ARMOP_REM);
 	}
         break;
       case 24: // negative_expression -> ARMOP_NEG, postfix_expression
 {
-		exp_.Add(Tokens.ARMOP_NEG);
+		exp_obj_.Add(Tokens.ARMOP_NEG);
 	}
         break;
       case 26: // primary_expression -> VALUE_BOOL
 {
-		exp_.Add(ValueStack[ValueStack.Depth-1].term);
+		exp_obj_.Add(ValueStack[ValueStack.Depth-1].term);
 	}
         break;
       case 27: // primary_expression -> VALUE_NUMBER
 {
-		exp_.Add(ValueStack[ValueStack.Depth-1].term);
+		exp_obj_.Add(ValueStack[ValueStack.Depth-1].term);
 	}
         break;
       case 28: // primary_expression -> VALUE_TEXT
 {
-		exp_.Add(ValueStack[ValueStack.Depth-1].term);
+		exp_obj_.Add(ValueStack[ValueStack.Depth-1].term);
 	}
         break;
       case 29: // primary_expression -> VALUE_BINARY
 {
-		exp_.Add(ValueStack[ValueStack.Depth-1].term);
+		exp_obj_.Add(ValueStack[ValueStack.Depth-1].term);
 	}
         break;
       case 30: // primary_expression -> VALUE_REGEX
 {
-		exp_.Add(ValueStack[ValueStack.Depth-1].term);
+		exp_obj_.Add(ValueStack[ValueStack.Depth-1].term);
 	}
         break;
       case 31: // primary_expression -> VALUE_DATETIME
 {
-		exp_.Add(ValueStack[ValueStack.Depth-1].term);
+		exp_obj_.Add(ValueStack[ValueStack.Depth-1].term);
 	}
         break;
       case 32: // primary_expression -> VALUE_DATETIMEOFFSET
 {
-		exp_.Add(ValueStack[ValueStack.Depth-1].term);
+		exp_obj_.Add(ValueStack[ValueStack.Depth-1].term);
 	}
         break;
       case 33: // primary_expression -> VALUE_STATUS
 {
-		exp_.Add(ValueStack[ValueStack.Depth-1].term);
+		exp_obj_.Add(ValueStack[ValueStack.Depth-1].term);
 	}
         break;
     }
@@ -312,7 +312,10 @@ internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
         return CharToString((char)terminal);
   }
 
-    private ExpressionParser() : base(null) { }
+    private ExpressionParser(string exp_text) : base(null)
+	{
+		exp_obj_ = new ExpressionObject(exp_text);
+	}
 
     public static ExpressionObject Parse(string exp)
     {
@@ -323,13 +326,13 @@ internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
 
          scanner.SetSource(exp, 0);
          
-         var parser = new ExpressionParser();
+         var parser = new ExpressionParser(exp);
          
          parser.Scanner = scanner;
          
          if (!parser.Parse())return (null);
          
-         return (parser.exp_);
+         return (parser.exp_obj_);
     }
 }
 }

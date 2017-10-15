@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ratatoskr.Configs;
 using Ratatoskr.Gate;
 
 namespace Ratatoskr.Actions.ActionModules
@@ -15,7 +16,7 @@ namespace Ratatoskr.Actions.ActionModules
 
         protected override void OnExecStart()
         {
-            GatePacketManager.SetTimeStamp();
+            GatePacketManager.SetTimeStamp(ConfigManager.Language.MainMessage.TimeStampManual.Value);
 
             SetResult(ActionResultType.Success, null);
         }
