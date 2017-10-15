@@ -216,6 +216,7 @@ namespace Ratatoskr.Forms.MainFrame
 
                         column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                         column.HeaderText = ConfigManager.Language.MainUI.WLPanel_Column_NtfPlan_Mail.Value;
+                        column.Visible = false;
                         column.Width = 60;
                         column.Resizable = DataGridViewTriState.False;
                         column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -330,6 +331,33 @@ namespace Ratatoskr.Forms.MainFrame
             cell.ErrorText = error_text;
         }
 
+        private void SetWatchDataConfig(DataGridViewRow row_obj, WatchDataConfig config)
+        {
+            if (row_obj.Cells.Count > (int)ColumnId.Enable) {
+                row_obj.Cells[(int)ColumnId.Enable].Value = config.Enable;
+            }
+
+            if (row_obj.Cells.Count > (int)ColumnId.Target) {
+                row_obj.Cells[(int)ColumnId.Target].Value = config.WatchTarget;
+            }
+
+            if (row_obj.Cells.Count > (int)ColumnId.Expression) {
+                row_obj.Cells[(int)ColumnId.Expression].Value = config.Expression;
+            }
+
+            if (row_obj.Cells.Count > (int)ColumnId.NtfEvent) {
+                row_obj.Cells[(int)ColumnId.NtfEvent].Value = config.NtfEvent;
+            }
+
+            if (row_obj.Cells.Count > (int)ColumnId.NtfDialog) {
+                row_obj.Cells[(int)ColumnId.NtfDialog].Value = config.NtfDialog;
+            }
+
+            if (row_obj.Cells.Count > (int)ColumnId.NtfMail) {
+                row_obj.Cells[(int)ColumnId.NtfMail].Value = config.NtfMail;
+            }
+        }
+
         private void AddWatchDataConfig(WatchDataConfig config)
         {
             var row_index = DGView_WatchList.Rows.Add();
@@ -338,12 +366,7 @@ namespace Ratatoskr.Forms.MainFrame
 
             var row_obj = DGView_WatchList.Rows[row_index];
 
-            row_obj.Cells[(int)ColumnId.Enable].Value = config.Enable;
-            row_obj.Cells[(int)ColumnId.Target].Value = config.WatchTarget;
-            row_obj.Cells[(int)ColumnId.Expression].Value = config.Expression;
-            row_obj.Cells[(int)ColumnId.NtfEvent].Value = config.NtfEvent;
-            row_obj.Cells[(int)ColumnId.NtfDialog].Value = config.NtfDialog;
-            row_obj.Cells[(int)ColumnId.NtfMail].Value = config.NtfMail;
+            SetWatchDataConfig(row_obj, config);
 
             /* エラー表示を更新 */
             UpdateEditStatus(row_obj);
@@ -456,15 +479,7 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void DGView_WatchList_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
-            var row_obj = e.Row;
-            var config = new WatchDataConfig();
-
-            row_obj.Cells[(int)ColumnId.Enable].Value = config.Enable;
-            row_obj.Cells[(int)ColumnId.Target].Value = config.WatchTarget;
-            row_obj.Cells[(int)ColumnId.Expression].Value = config.Expression;
-            row_obj.Cells[(int)ColumnId.NtfEvent].Value = config.NtfEvent;
-            row_obj.Cells[(int)ColumnId.NtfDialog].Value = config.NtfDialog;
-            row_obj.Cells[(int)ColumnId.NtfMail].Value = config.NtfMail;
+            SetWatchDataConfig(e.Row, new WatchDataConfig());
         }
 
         private void DGView_WatchList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
