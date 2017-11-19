@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.Types;
 
-namespace Ratatoskr.PacketConverters.Convert.RemoveData
+namespace Ratatoskr.PacketConverters.Convert.DataRemove
 {
     [Serializable]
     internal sealed class AlgorithmProperty : ConfigHolder

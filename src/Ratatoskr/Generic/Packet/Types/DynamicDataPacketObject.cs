@@ -14,7 +14,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         private sealed class DataBlock
         {
-            private const int BUFFER_SIZE = 0x1FFFF;
+            private const int BUFFER_SIZE = 1024;
 
             private byte[]      data_buffer_ = new byte[BUFFER_SIZE];
             private int         data_size_ = 0;

@@ -362,8 +362,6 @@ namespace Ratatoskr.Forms.MainFrame
         {
             var row_index = DGView_WatchList.Rows.Add();
 
-            if (row_index < 0)return;
-
             var row_obj = DGView_WatchList.Rows[row_index];
 
             SetWatchDataConfig(row_obj, config);
@@ -374,20 +372,20 @@ namespace Ratatoskr.Forms.MainFrame
 
         private WatchDataConfig LoadWatchDataConfig(DataGridViewRow row_obj)
         {
-            try {
-                return (
-                    new WatchDataConfig(
-                        (bool)row_obj.Cells[(int)ColumnId.Enable].Value,
-                        (WatchTargetType)row_obj.Cells[(int)ColumnId.Target].Value,
-                        row_obj.Cells[(int)ColumnId.Expression].Value as string,
-                        (bool)row_obj.Cells[(int)ColumnId.NtfEvent].Value,
-                        (bool)row_obj.Cells[(int)ColumnId.NtfDialog].Value,
-                        (bool)row_obj.Cells[(int)ColumnId.NtfMail].Value
-                    ));
-
-            } catch {
-                return (new WatchDataConfig());
+            /* 全てのパラメータが設定されていない場合は無視 */
+            foreach (DataGridViewCell cell_obj in row_obj.Cells) {
+                if (cell_obj.Value == null)return (null);
             }
+
+            return (
+                new WatchDataConfig(
+                    (bool)row_obj.Cells[(int)ColumnId.Enable].Value,
+                    (WatchTargetType)row_obj.Cells[(int)ColumnId.Target].Value,
+                    row_obj.Cells[(int)ColumnId.Expression].Value as string,
+                    (bool)row_obj.Cells[(int)ColumnId.NtfEvent].Value,
+                    (bool)row_obj.Cells[(int)ColumnId.NtfDialog].Value,
+                    (bool)row_obj.Cells[(int)ColumnId.NtfMail].Value
+                ));
         }
 
         private WatchObject LoadWatchObject(DataGridViewRow row_obj)
@@ -400,9 +398,13 @@ namespace Ratatoskr.Forms.MainFrame
 
             var config = LoadWatchDataConfig(row_obj);
 
-            if (config == null)return (null);
+            if (   (config == null)
+                || (!config.Enable)
+            ) {
+                return (null);
+            }
 
-            /* 通知設定がない場合は無視 */
+            /* 通知先がない場合は無視 */
             if (   (!config.NtfEvent)
                 && (!config.NtfDialog)
                 && (!config.NtfMail)
@@ -567,6 +569,17 @@ namespace Ratatoskr.Forms.MainFrame
         private void DGView_WatchList_KeyDown(object sender, KeyEventArgs e)
         {
             (sender as DataGridView).BeginEdit(true);
+        }
+
+        private void DGView_WatchList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            var gview = sender as DataGridView;
+
+            if (   (gview.IsCurrentCellDirty)
+                && (gview.CurrentCell is DataGridViewCheckBoxCell)
+            ) {
+                gview.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
         }
     }
 }

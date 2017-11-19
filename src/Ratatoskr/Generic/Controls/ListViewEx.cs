@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Generic.Generic;
+using Ratatoskr.Generic.Container;
 
 namespace Ratatoskr.Generic.Controls
 {
@@ -13,8 +13,8 @@ namespace Ratatoskr.Generic.Controls
     {
         public event EventHandler UpdatedList;          // イベント - リスト更新時
 
-
-        private SkipList<ListViewItem> item_list_ = new SkipList<ListViewItem>();
+//        private SkipList<ListViewItem> item_list_ = new SkipList<ListViewItem>();
+        private SequentialList<ListViewItem> item_list_ = new SequentialList<ListViewItem>(10000);
 
         private long  drop_index_ = -1;
 
@@ -44,7 +44,7 @@ namespace Ratatoskr.Generic.Controls
             if (index < 0)return (null);
             if (index >= item_list_.Count)return (null);
 
-            return (item_list_.ItemAt(index));
+            return (item_list_[index]);
         }
 
         public void ItemClear()
@@ -58,7 +58,9 @@ namespace Ratatoskr.Generic.Controls
 
         private void RemoveItemAtBase(IEnumerable<int> indices)
         {
-            item_list_.RemoveAt(indices);
+            foreach (var index in indices) {
+                item_list_.RemoveAt(index);
+            }
             VirtualListSize = item_list_.Count;
         }
 
@@ -198,7 +200,7 @@ namespace Ratatoskr.Generic.Controls
             var move_items = new Stack<ListViewItem>();
 
             foreach (var value in item_drag.OrderByDescending(item => item)) {
-                move_items.Push(item_list_.ItemAt(value));
+                move_items.Push(item_list_[value]);
                 RemoveItemAtBase(new [] { value });
             }
 
@@ -222,7 +224,7 @@ namespace Ratatoskr.Generic.Controls
 
         protected override void OnRetrieveVirtualItem(RetrieveVirtualItemEventArgs e)
         {
-            e.Item = item_list_.ItemAt(e.ItemIndex);
+            e.Item = item_list_[e.ItemIndex];
 
             base.OnRetrieveVirtualItem(e);
         }

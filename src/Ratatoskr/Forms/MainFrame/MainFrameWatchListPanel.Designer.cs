@@ -46,6 +46,7 @@
             this.DGView_WatchList.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.DGView_WatchList_CellBeginEdit);
             this.DGView_WatchList.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DGView_WatchList_CellEndEdit);
             this.DGView_WatchList.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DGView_WatchList_CellValueChanged);
+            this.DGView_WatchList.CurrentCellDirtyStateChanged += new System.EventHandler(this.DGView_WatchList_CurrentCellDirtyStateChanged);
             this.DGView_WatchList.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.DGView_WatchList_DefaultValuesNeeded);
             this.DGView_WatchList.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.DGView_WatchList_EditingControlShowing);
             this.DGView_WatchList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DGView_WatchList_KeyDown);

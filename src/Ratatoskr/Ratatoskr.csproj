@@ -490,6 +490,7 @@
     <Compile Include="Generic\AppVersionFileParser.cs" />
     <Compile Include="Generic\ByteEncoder.cs" />
     <Compile Include="Generic\ClassUtil.cs" />
+    <Compile Include="Generic\Container\SequentialList.cs" />
     <Compile Include="Generic\Container\SkipList.cs" />
     <Compile Include="Generic\Controls\BinEditBox.cs">
       <SubType>UserControl</SubType>
@@ -539,6 +540,14 @@
     <Compile Include="Generic\TextUtil.cs" />
     <Compile Include="Generic\Wildcard.cs" />
     <Compile Include="Generic\XmlUtil.cs" />
+    <Compile Include="PacketConverters\Convert\DataChange\AlgorithmObjectImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverters\Convert\DataChange\AlgorithmProperty.cs" />
+    <Compile Include="PacketConverters\Convert\DataRemove\AlgorithmObjectImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverters\Convert\DataRemove\AlgorithmProperty.cs" />
     <Compile Include="PacketViews\ViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -572,10 +581,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PacketConverters\Convert\PacketConverterPropertyImpl.cs" />
-    <Compile Include="PacketConverters\Convert\RemoveData\AlgorithmObjectImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Convert\RemoveData\AlgorithmProperty.cs" />
     <Compile Include="PacketConverters\Filter\PacketConverterClassImpl.cs" />
     <Compile Include="PacketConverters\Filter\PacketConverterInstanceImpl.cs">
       <SubType>UserControl</SubType>
@@ -860,11 +865,14 @@
     <EmbeddedResource Include="PacketConverters\Convert\CodeExtentionEncode\AlgorithmObjectImpl.resx">
       <DependentUpon>AlgorithmObjectImpl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PacketConverters\Convert\DataChange\AlgorithmObjectImpl.resx">
+      <DependentUpon>AlgorithmObjectImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PacketConverters\Convert\DataRemove\AlgorithmObjectImpl.resx">
+      <DependentUpon>AlgorithmObjectImpl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PacketConverters\Convert\PacketConverterInstanceImpl.resx">
       <DependentUpon>PacketConverterInstanceImpl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Convert\RemoveData\AlgorithmObjectImpl.resx">
-      <DependentUpon>AlgorithmObjectImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PacketConverters\Filter\PacketConverterInstanceImpl.resx">
       <DependentUpon>PacketConverterInstanceImpl.cs</DependentUpon>
@@ -922,7 +930,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Actions\ActionTerms\" />
-    <Folder Include="PacketConverters\Convert\Custom\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup Label="PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserFiles">

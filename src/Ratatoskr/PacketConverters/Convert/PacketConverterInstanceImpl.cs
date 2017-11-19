@@ -46,8 +46,10 @@ namespace Ratatoskr.PacketConverters.Convert
                         return ("Code encode");
                     case AlgorithmType.CodeExtentionDecode:
                         return ("Code decode");
-                    case AlgorithmType.RemoveData:
+                    case AlgorithmType.DataRemove:
                         return ("Data remove");
+                    case AlgorithmType.DataChange:
+                        return ("Data change");
 //                    case AlgorithmType.Custom:
 //                        return ("(カスタム)");
                     default:
@@ -92,7 +94,7 @@ namespace Ratatoskr.PacketConverters.Convert
             this.CBox_AlgorithmList.FormattingEnabled = true;
             this.CBox_AlgorithmList.Location = new System.Drawing.Point(3, 2);
             this.CBox_AlgorithmList.Name = "CBox_AlgorithmList";
-            this.CBox_AlgorithmList.Size = new System.Drawing.Size(220, 20);
+            this.CBox_AlgorithmList.Size = new System.Drawing.Size(160, 20);
             this.CBox_AlgorithmList.TabIndex = 1;
             this.CBox_AlgorithmList.SelectedIndexChanged += new System.EventHandler(this.CBox_Exp_SelectedIndexChanged);
             // 
@@ -100,10 +102,10 @@ namespace Ratatoskr.PacketConverters.Convert
             // 
             this.Panel_Sub.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Panel_Sub.Location = new System.Drawing.Point(226, 0);
+            this.Panel_Sub.Location = new System.Drawing.Point(166, 0);
             this.Panel_Sub.Margin = new System.Windows.Forms.Padding(0);
             this.Panel_Sub.Name = "Panel_Sub";
-            this.Panel_Sub.Size = new System.Drawing.Size(363, 25);
+            this.Panel_Sub.Size = new System.Drawing.Size(423, 25);
             this.Panel_Sub.TabIndex = 2;
             // 
             // PacketConverterInstanceImpl
@@ -146,8 +148,12 @@ namespace Ratatoskr.PacketConverters.Convert
                     obj = new CodeExtentionDecode.AlgorithmObjectImpl(this, prop_);
                     break;
 
-                case AlgorithmType.RemoveData:
-                    obj = new RemoveData.AlgorithmObjectImpl(this, prop_);
+                case AlgorithmType.DataRemove:
+                    obj = new DataRemove.AlgorithmObjectImpl(this, prop_);
+                    break;
+
+                case AlgorithmType.DataChange:
+                    obj = new DataChange.AlgorithmObjectImpl(this, prop_);
                     break;
 
 //                case AlgorithmType.Custom:
@@ -214,11 +220,13 @@ namespace Ratatoskr.PacketConverters.Convert
                 return;
             }
 
+#if false
             /* 受信パケット以外は無視 */
             if (packet_d.Direction != PacketDirection.Recv) {
                 output.Add(input);
                 return;
             }
+#endif
 
             /* アルゴリズムオブジェクトに変換を任せる */
             algorithm_obj_.OnInputPacket(packet_d, ref output);

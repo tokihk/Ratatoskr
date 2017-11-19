@@ -47,9 +47,10 @@ namespace Ratatoskr.Devices.Ethernet
         public static PacketInfo Parse(RawCapture packet, WinPcapPacketParserOption option)
         {
             var packet_info = new PacketInfo(packet);
+            var packet_net = PacketDotNet.Packet.ParsePacket(packet.LinkLayerType, packet.Data);
 
             /* パケット解析 */
-            Analyze(PacketDotNet.Packet.ParsePacket(packet.LinkLayerType, packet.Data), option, packet_info);
+            Analyze(packet_net, option, packet_info);
 
             return (packet_info);
         }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ratatoskr.Generic.Generic
+namespace Ratatoskr.Generic.Container
 {
     public sealed class SkipList<Type>
         : IEnumerable<Type>

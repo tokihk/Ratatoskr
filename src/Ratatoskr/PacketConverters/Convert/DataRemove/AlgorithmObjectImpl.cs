@@ -10,7 +10,7 @@ using Ratatoskr.Generic;
 using Ratatoskr.Generic.Packet;
 using Ratatoskr.Generic.Packet.Types;
 
-namespace Ratatoskr.PacketConverters.Convert.RemoveData
+namespace Ratatoskr.PacketConverters.Convert.DataRemove
 {
     internal sealed class AlgorithmObjectImpl : AlgorithmObject
     {
@@ -34,8 +34,8 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
         {
             InitializeComponent();
 
-            Num_DataOffset.Value = prop.RemoveDataProperty.DataOffset.Value;
-            Num_DataLength.Value = prop.RemoveDataProperty.DataLength.Value;
+            Num_DataOffset.Value = prop.DataRemoveProperty.DataOffset.Value;
+            Num_DataLength.Value = prop.DataRemoveProperty.DataLength.Value;
 
             Apply();
         }
@@ -186,8 +186,8 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
 
         private void Apply()
         {
-            data_offset_ = (byte)Property.RemoveDataProperty.DataOffset.Value;
-            data_length_ = (byte)Property.RemoveDataProperty.DataLength.Value;
+            data_offset_ = (byte)Property.DataRemoveProperty.DataOffset.Value;
+            data_length_ = (byte)Property.DataRemoveProperty.DataLength.Value;
 
             UpdateView();
             UpdateConvertStatus();
@@ -195,19 +195,19 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
 
         private void UpdateView()
         {
-            Num_DataOffset.ForeColor = (Num_DataOffset.Value == Property.RemoveDataProperty.DataOffset.Value)
+            Num_DataOffset.ForeColor = (Num_DataOffset.Value == Property.DataRemoveProperty.DataOffset.Value)
                                      ? (Color.Black)
                                      : (Color.Gray);
 
-            Num_DataLength.ForeColor = (Num_DataLength.Value == Property.RemoveDataProperty.DataLength.Value)
+            Num_DataLength.ForeColor = (Num_DataLength.Value == Property.DataRemoveProperty.DataLength.Value)
                                      ? (Color.Black)
                                      : (Color.Gray);
         }
 
         public override void OnBackupProperty()
         {
-            Property.RemoveDataProperty.DataOffset.Value = Num_DataOffset.Value;
-            Property.RemoveDataProperty.DataLength.Value = Num_DataLength.Value;
+            Property.DataRemoveProperty.DataOffset.Value = Num_DataOffset.Value;
+            Property.DataRemoveProperty.DataLength.Value = Num_DataLength.Value;
         }
 
         public override void OnInputPacket(DataPacketObject input, ref List<PacketObject> output)
@@ -256,8 +256,8 @@ namespace Ratatoskr.PacketConverters.Convert.RemoveData
         private void Num_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) {
-                if (   (Num_DataOffset.Value != Property.RemoveDataProperty.DataOffset.Value)
-                    || (Num_DataLength.Value != Property.RemoveDataProperty.DataLength.Value)
+                if (   (Num_DataOffset.Value != Property.DataRemoveProperty.DataOffset.Value)
+                    || (Num_DataLength.Value != Property.DataRemoveProperty.DataLength.Value)
                 ) {
                     OnBackupProperty();
                     Apply();

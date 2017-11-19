@@ -190,10 +190,14 @@ namespace Ratatoskr.Forms.MainFrame
             /* 入力データを記憶 */
             data_rate_latest_ = value;
 
+            /* グラフ表示用に入力データを補正 */
+            value = Math.Min(value, gate_.GateProperty.DataRateGraphLimit) * (ulong)DATA_RATE_GRAPH_REGION.Height;
+            if (value > 0) {
+                value = value / gate_.GateProperty.DataRateGraphLimit;
+            }
+
             /* グラフ表示用に入力データを補正して記憶 */
-            data_rate_buffer_[data_rate_in_++] = Math.Min(value, gate_.GateProperty.DataRateGraphLimit)
-                                               * (ulong)DATA_RATE_GRAPH_REGION.Height
-                                               / gate_.GateProperty.DataRateGraphLimit;
+            data_rate_buffer_[data_rate_in_++] = value;
 
             /* 入力ポインタを移動 */
             data_rate_in_ %= data_rate_buffer_.Length;
@@ -358,7 +362,7 @@ namespace Ratatoskr.Forms.MainFrame
             /* テキスト */
             e.Graphics.DrawString(
                 String.Format(
-                    "Rate: {0,6}B/s",
+                    "Rate: {0,7}B/s",
                     TextUtil.DecToText(data_rate_latest_)),
                     DATA_RATE_FONT,
                     DATA_RATE_FONT_BRUSH,

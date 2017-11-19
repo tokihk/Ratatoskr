@@ -15,7 +15,8 @@ namespace Ratatoskr.PacketConverters.Convert
         ChangeAlias,
         CodeExtentionEncode,
         CodeExtentionDecode,
-        RemoveData,
+        DataRemove,
+        DataChange,
 //        Custom,
     }
 
@@ -26,10 +27,8 @@ namespace Ratatoskr.PacketConverters.Convert
         public ChangeAlias.AlgorithmProperty         ChangeAliasProperty         { get; } = new ChangeAlias.AlgorithmProperty();
         public CodeExtentionEncode.AlgorithmProperty CodeExtentionEncodeProperty { get; } = new CodeExtentionEncode.AlgorithmProperty();
         public CodeExtentionDecode.AlgorithmProperty CodeExtentionDecodeProperty { get; } = new CodeExtentionDecode.AlgorithmProperty();
-        public RemoveData.AlgorithmProperty          RemoveDataProperty          { get; } = new RemoveData.AlgorithmProperty();
-
-//        public Custom.AlgorithmProperty              CustomProperty              { get; } = new Custom.AlgorithmProperty();
-
+        public DataRemove.AlgorithmProperty          DataRemoveProperty          { get; } = new DataRemove.AlgorithmProperty();
+        public DataChange.AlgorithmProperty          DataChangeProperty          { get; } = new DataChange.AlgorithmProperty();
 
         public override PacketConverterProperty Clone()
         {

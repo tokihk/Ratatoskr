@@ -27,10 +27,15 @@ namespace Ratatoskr.Devices.Ethernet
 
         private void RecvPacket(RawCapture packet)
         {
-            var packet_info = WinPcapPacketParser.Parse(packet, parser_option_);
+            try {
+                var packet_info = WinPcapPacketParser.Parse(packet, parser_option_);
 
-            /* 通知 */
-            NotifyRecvComplete(packet_info.DateTime, "", packet_info.Source, packet_info.Destination, packet_info.Data);
+                /* 通知 */
+                NotifyRecvComplete(packet_info.DateTime, "", packet_info.Source, packet_info.Destination, packet_info.Data);
+
+            } catch (Exception exp) {
+                NotifyMessage(Generic.Packet.PacketPriority.Standard, "Ethernet", string.Format("Parse error.[{0}]", exp.Message));
+            }
         }
 
         protected override EventResult OnConnectStart()

@@ -66,8 +66,8 @@ namespace Ratatoskr.Forms.OptionForm
                 new { level = 1, text = "Auto timestamp", page = PageId.AutoTimeStamp },
                 new { level = 0, text = "Log",            page = PageId.None },
                 new { level = 1, text = "Auto save",      page = PageId.AutoSave },
-                new { level = 0, text = "Notify setting", page = PageId.None },
-                new { level = 1, text = "Mail setting",   page = PageId.Notify_Mail_Top },
+//                new { level = 0, text = "Notify setting", page = PageId.None },
+//                new { level = 1, text = "Mail setting",   page = PageId.Notify_Mail_Top },
 
 #if false
                 new { level = 1, text = "Mail",           page = PageId.None },

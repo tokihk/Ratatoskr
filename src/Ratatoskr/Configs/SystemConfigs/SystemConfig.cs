@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
-using Ratatoskr.Generic.Generic;
+using Ratatoskr.Generic.Container;
 
 namespace Ratatoskr.Configs.SystemConfigs
 {

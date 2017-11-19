@@ -284,7 +284,7 @@ namespace Ratatoskr.Forms.MainFrame
             SetProgressBar(status.MainProgressBar_Visible, status.MainProgressBar_Value, 100);
 
             /* ステータスバーのカウンターを更新 */
-            DDBtn_DataRate.Text = String.Format("Rate: {0,6}B/s", TextUtil.DecToText(status.PacketBytePSec_All));
+            DDBtn_DataRate.Text = String.Format("Rate: {0,7}B/s", TextUtil.DecToText(status.PacketBytePSec_All));
             Label_PktCount_Raw.Text = String.Format("Raw: {0,9}", status.PacketCount_All);
             Label_PktCount_View.Text = String.Format("View: {0,9}", status.PacketCount_DrawAll);
             Label_PktCount_Busy.Text = String.Format("Busy: {0,9}", status.PacketCount_DrawBusy);

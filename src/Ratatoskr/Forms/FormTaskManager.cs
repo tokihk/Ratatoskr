@@ -123,6 +123,7 @@ namespace Ratatoskr.Forms
             viewm_.AddView(new PacketViews.Packet.ViewClassImpl());
             viewm_.AddView(new PacketViews.Sequential.ViewClassImpl());
             viewm_.AddView(new PacketViews.Graph.ViewClassImpl());
+//            viewm_.AddView(new PacketViews.DeviceEmurator.ViewClassImpl());
         }
 
         public static IEnumerable<ViewClass> GetPacketViewClasses()
