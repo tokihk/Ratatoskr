@@ -44,7 +44,19 @@ namespace Ratatoskr.Devices.UsbMonitor
             public fixed UInt32 addresses[4];
 
             /* Filter all devices */
-            public byte   filterAll;
+            public byte         filterAll;
+
+            public void SetAddress(uint device_no, bool watch)
+            {
+                var offset_byte = (int)device_no / 32;
+                var offset_bit  = (int)device_no % 32;
+                var value = ((watch) ? (1u) : (0u)) << offset_bit;
+
+                fixed (uint *addresses_f = addresses) {
+                    addresses_f[offset_byte] &= (~value);
+                    addresses_f[offset_byte] |= value;
+                }
+            }
         }
 
         public static readonly uint IOCTL_USBPCAP_SETUP_BUFFER_1007 = NativeMethods.CTL_CODE(
@@ -260,6 +272,9 @@ namespace Ratatoskr.Devices.UsbMonitor
             var ioctl_data = new USBPCAP_ADDRESS_FILTER();
 
             ioctl_data.filterAll = 1;
+
+//            ioctl_data.filterAll = 0;
+//            ioctl_data.SetAddress(4, true);
 
             if (!start_ok) {
                 start_ok = NativeMethods.DeviceIoControl(handle, IOCTL_USBPCAP_START_FILTERING_1100, ioctl_data, null, true);

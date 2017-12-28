@@ -19,7 +19,7 @@ namespace Ratatoskr.Gate
     {
         private static bool enable_ = true;
 
-        private static PacketContainer packets_ = new PacketContainer();
+        private static PacketContainer packets_;
         private static object          packets_sync_ = new object();
 
         private static IAsyncResult ar_load_ = null;
@@ -38,6 +38,8 @@ namespace Ratatoskr.Gate
 
         public static void Startup()
         {
+            packets_ = CreatePacketContainer();
+
             BasePacketManager.PacketEntry += OnPacketEntry;
         }
 
@@ -91,13 +93,18 @@ namespace Ratatoskr.Gate
             return (packets_);
         }
 
+        public static PacketContainer CreatePacketContainer()
+        {
+            return (new PacketContainer((ulong)ConfigManager.User.Option.RawPacketCountLimit.Value));
+        }
+
         public static void ClearPacket()
         {
             AutoTimeStampManager.OnClearPacket();
 
             /* コンテナ初期化 */
             lock (packets_sync_) {
-                packets_ = new PacketContainer();
+                packets_ = CreatePacketContainer();
             }
 
             BasePacketManager.Clear();
@@ -114,7 +121,7 @@ namespace Ratatoskr.Gate
             if (packets == null)return;
 
             /* パケット一覧に追加 */
-            packets_.Add(packets);
+            packets_.AddRange(packets);
 
             /* 自動保存モジュールに転送 */
             PacketAutoSaveManager.Output(packets);
@@ -188,16 +195,16 @@ namespace Ratatoskr.Gate
         private delegate void LoadPacketFilesTaskDelegate(IEnumerable<string> paths, FileFormatReader reader, FileFormatOption option);
         private static void LoadPacketFilesTask(IEnumerable<string> paths, FileFormatReader reader, FileFormatOption option)
         {
-            var packets_new = new PacketContainer();
+            var packets_new = CreatePacketContainer();
 
-            foreach (var path in paths.Select((value, index) => new { value, index })) {
+            foreach (var (path_value, path_index) in paths.Select((value, index) => (value, index))) {
                 /* ステータステキストを更新 */
                 FormUiManager.SetStatusText(
                     StatusTextId.SaveLoadEventFile,
                     String.Format(
                         "{0} {1} / {2}",
                         ConfigManager.Language.MainMessage.EventFileLoading.Value,
-                        path.index + 1,
+                        path_index + 1,
                         paths.Count()));
                 
                 /* プログレスバーを初期化 */
@@ -205,7 +212,7 @@ namespace Ratatoskr.Gate
 
                 /* ファイルを1つずつ処理 */
                 var task = (new LoadPacketFileExecTaskDelegate(LoadPacketFileExecTask)).BeginInvoke(
-                                packets_new, path.value, reader, option, null, null);
+                                packets_new, path_value, reader, option, null, null);
 
                 /* 完了待ち */
                 while (!task.IsCompleted) {

@@ -224,10 +224,10 @@ namespace Ratatoskr.PacketConverters.Transfer.File
             var data_new = new byte[data.Length - length];
 
             if (offset > 0) {
-                Array.Copy(data, 0, data_new, 0, offset);
+                Buffer.BlockCopy(data, 0, data_new, 0, offset);
             }
             if ((offset + length) < data.Length) {
-                Array.Copy(data, offset + length, data_new, offset, data.Length - offset - length);
+                Buffer.BlockCopy(data, offset + length, data_new, offset, data.Length - offset - length);
             }
 
             output.Add(new StaticDataPacketObject(input, data_new));

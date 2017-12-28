@@ -33,6 +33,8 @@ namespace Ratatoskr.PacketViews.Packet
         private readonly Regex   format_regex_ = new Regex(@"\$\{(?<value>[^\}]*)\}", RegexOptions.Compiled);
         private DataPacketObject format_packet_ = null;
 
+        private ulong next_item_no_ = 0;
+
         private List<ListViewItem> list_items_temp_;
 
         private ListViewItem ExtViewItem_SelectPacketCount = null;
@@ -552,6 +554,7 @@ namespace Ratatoskr.PacketViews.Packet
             InitializeCharCodeType();
 
             /* --- プロパティをUIに反映 --- */
+            LView_Main.ItemCountMax = (ulong)prop_.ViewPacketCountLimit.Value;
             BuildPacketViewHeader();
             Num_PreviewDataSize.Value = prop_.PreviewDataSize.Value;
             CBox_CharCode.SelectedItem = prop_.CharCode.Value;
@@ -620,7 +623,7 @@ namespace Ratatoskr.PacketViews.Packet
             /* 選択中のパケットにデータパケットが存在するかチェック */
             if (LView_Main.SelectedIndices.Count > 0) {
                 foreach (int index in LView_Main.SelectedIndices) {
-                    packet = LView_Main.ItemAt(index).Tag as DataPacketObject;
+                    packet = LView_Main.ItemElementAt(index).Tag as DataPacketObject;
                     if (packet == null) continue;
 
                     /* 2個以上のデータパケットを検出したらループ終了 */
@@ -700,8 +703,8 @@ namespace Ratatoskr.PacketViews.Packet
             if (indices.Count > 0) {
                 index_first = indices[0];
                 index_last = indices[indices.Count - 1];
-                packet_first = LView_Main.ItemAt(index_first).Tag as PacketObject;
-                packet_last = LView_Main.ItemAt(index_last).Tag as PacketObject;
+                packet_first = LView_Main.ItemElementAt(index_first).Tag as PacketObject;
+                packet_last = LView_Main.ItemElementAt(index_last).Tag as PacketObject;
             }
 
             /* 選択中のパケットサイズを取得 */
@@ -711,7 +714,7 @@ namespace Ratatoskr.PacketViews.Packet
                 var packet_d = (DataPacketObject)null;
 
                 foreach (int index in indices) {
-                    packet_d = LView_Main.ItemAt(index).Tag as DataPacketObject;
+                    packet_d = LView_Main.ItemElementAt(index).Tag as DataPacketObject;
                     if (packet_d == null)continue;
                     select_total_size += (ulong)packet_d.GetDataSize();
                 }
@@ -941,11 +944,14 @@ namespace Ratatoskr.PacketViews.Packet
             var item = new ListViewItem();
 
             /* メインアイテム */
-            item.Text = (LView_Main.ItemCount + list_items_temp_.Count + 1).ToString();
+            item.Text = (next_item_no_).ToString();
             item.Tag = packet;
 
             /* サブサイテム */
             PacketToListViewItem_SubUpdate(item, packet);
+
+            /* 次のインデックス番号を更新 */
+            next_item_no_ = Math.Max(1, next_item_no_ + 1);
 
             return (item);
         }
@@ -1070,7 +1076,7 @@ namespace Ratatoskr.PacketViews.Packet
             /* データ */
             foreach (int index in LView_Main.SelectedIndices) {
                 /* データパケットを取得 */
-                packet = LView_Main.ItemAt(index).Tag as PacketObject;
+                packet = LView_Main.ItemElementAt(index).Tag as PacketObject;
                 if (packet == null)continue;
 
                 /* CSV文字列として追加 */
@@ -1087,7 +1093,7 @@ namespace Ratatoskr.PacketViews.Packet
 
             foreach (int index in LView_Main.SelectedIndices) {
                 /* データパケットを取得 */
-                packet = LView_Main.ItemAt(index).Tag as DataPacketObject;
+                packet = LView_Main.ItemElementAt(index).Tag as DataPacketObject;
                 if (packet == null)continue;
 
                 /* 文字列として追加 */
@@ -1109,7 +1115,7 @@ namespace Ratatoskr.PacketViews.Packet
 
             foreach (int index in LView_Main.SelectedIndices) {
                 /* データパケットを取得 */
-                packet = LView_Main.ItemAt(index).Tag as DataPacketObject;
+                packet = LView_Main.ItemElementAt(index).Tag as DataPacketObject;
                 if (packet == null) continue;
 
                 /* 16進文字列として追加 */
@@ -1131,7 +1137,7 @@ namespace Ratatoskr.PacketViews.Packet
 
             foreach (int index in LView_Main.SelectedIndices) {
                 /* データパケットを取得 */
-                packet = LView_Main.ItemAt(index).Tag as DataPacketObject;
+                packet = LView_Main.ItemElementAt(index).Tag as DataPacketObject;
                 if (packet == null) continue;
 
                 /* カスタム文字列として追加 */
@@ -1170,6 +1176,8 @@ namespace Ratatoskr.PacketViews.Packet
         {
             LView_Main.ItemClear();
             BBox_Main.DataClear();
+
+            next_item_no_ = 1;
         }
 
         protected override void OnDrawPacketBegin(bool auto_scroll)
@@ -1184,7 +1192,7 @@ namespace Ratatoskr.PacketViews.Packet
         protected override void OnDrawPacketEnd(bool auto_scroll)
         {
             /* 一時リストをリストビューに追加 */
-            LView_Main.AddItem(list_items_temp_);
+            LView_Main.ItemAddRange(list_items_temp_);
             list_items_temp_ = null;
 
             /* 自動スクロール */
@@ -1284,7 +1292,7 @@ namespace Ratatoskr.PacketViews.Packet
         private void CMenu_MultiData_CopyToPacketList_Click(object sender, EventArgs e)
         {
             foreach (int index in LView_Main.SelectedIndices) {
-                var list_item = LView_Main.ItemAt(index);
+                var list_item = LView_Main.ItemElementAt(index);
 
                 if (list_item == null)continue;
 

@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace Ratatoskr.Generic.Packet
 {
-    internal enum PacketElementID
+    internal enum PacketElementID : byte
     {
         Facility,
         Alias,
@@ -48,7 +49,7 @@ namespace Ratatoskr.Generic.Packet
         Data,
     }
 
-    internal enum PacketDirection
+    internal enum PacketDirection : byte
     {
         Recv,
         Send,
@@ -57,6 +58,20 @@ namespace Ratatoskr.Generic.Packet
     [Serializable]
     internal abstract class PacketObject
     {
+        private struct StructValues
+        {
+            public DateTime         MakeTime;
+            public PacketFacility   Facility;
+            public PacketPriority   Priority;
+            public PacketAttribute  Attribute;
+            public PacketDirection  Direction;
+            public byte             UserMark;
+        }
+
+
+        private StructValues values_st_ = new StructValues();
+
+
         public PacketObject(
                     PacketFacility facility,
                     string alias,
@@ -100,20 +115,84 @@ namespace Ratatoskr.Generic.Packet
         public PacketObject() { }
 
 
-        public PacketFacility   Facility    { get; }
+        public PacketFacility Facility
+        {
+            get
+            {
+                return (values_st_.Facility);
+            }
+            private set
+            {
+                values_st_.Facility = value;
+            }
+        }
 
-        public string           Alias       { get; set; }
+        public string Alias { get; set; }
 
-        public PacketPriority   Priority    { get; }
-        public PacketAttribute  Attribute   { get; }
-        public DateTime         MakeTime    { get; }
+        public PacketPriority Priority
+        {
+            get
+            {
+                return (values_st_.Priority);
+            }
+            private set
+            {
+                values_st_.Priority = value;
+            }
+        }
 
-        public string           Information { get; set; }
-        public PacketDirection  Direction   { get; }
-        public string           Source      { get; }
-        public string           Destination { get; }
+        public PacketAttribute Attribute
+        {
+            get
+            {
+                return (values_st_.Attribute);
+            }
+            private set
+            {
+                values_st_.Attribute = value;
+            }
+        }
 
-        public byte             UserMark    { get; set; }
+        public DateTime MakeTime
+        {
+            get
+            {
+                return (values_st_.MakeTime);
+            }
+            private set
+            {
+                values_st_.MakeTime = value;
+            }
+        }
+
+        public string Information { get; set; }
+
+        public PacketDirection Direction
+        {
+            get
+            {
+                return (values_st_.Direction);
+            }
+            private set
+            {
+                values_st_.Direction = value;
+            }
+        }
+
+        public string Source      { get; }
+        public string Destination { get; }
+
+        public byte UserMark
+        {
+            get
+            {
+                return (values_st_.UserMark);
+            }
+            set
+            {
+                values_st_.UserMark = value;
+            }
+        }
 
         public abstract byte[] GetData();
         public abstract int    GetDataSize();

@@ -773,6 +773,57 @@ namespace Ratatoskr.Native
                 }
             }
         }
+
+        public enum USB_HUB_NODE : uint
+        {
+            UsbHub,
+            UsbMIParent
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack=1)]
+        public struct USB_HUB_DESCRIPTOR
+        {
+            public byte     bDescriptorLength;
+            public byte     bDescriptorType;
+            public byte     bNumberOfPorts;
+            public short    wHubCharacteristics;
+            public byte     bPowerOnToPowerGood;
+            public byte     bHubControlCurrent;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
+            public byte[]   bRemoveAndPowerMask;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct USB_HUB_INFORMATION
+        {
+            public USB_HUB_DESCRIPTOR   HubDescriptor;
+            public byte                 HubIsBusPowered;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct USB_MI_PARENT_INFORMATION
+        {
+            public uint NumberOfInterfaces;
+        };
+
+        [StructLayout(LayoutKind.Explicit)]
+        public struct UsbNodeUnion
+        {
+            [FieldOffset(0)]
+            public USB_HUB_INFORMATION HubInformation;
+
+            [FieldOffset(0)]
+            public USB_MI_PARENT_INFORMATION MiParentInformation;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct USB_NODE_INFORMATION
+        {
+            public USB_HUB_NODE NodeType;    /* hub, mi parent */
+            public UsbNodeUnion u;
+        }
+
         [DllImport("kernel32.dll", SetLastError = true)]
         public extern static uint GetLastError();
 

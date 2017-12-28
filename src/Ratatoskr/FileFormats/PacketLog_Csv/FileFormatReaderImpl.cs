@@ -128,10 +128,10 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                 var mark    = (byte)0;
                 var data_s  = "";
 
-                foreach (var order in option.ItemOrder.Select((v, i) => new {v, i})) {
-                    item = items[order.i].TrimEnd();
+                foreach (var (order_value, order_index) in option.ItemOrder.Select((v, i) => (v, i))) {
+                    item = items[order_index].TrimEnd();
 
-                    switch (order.v) {
+                    switch (order_value) {
                         case PacketElementID.Facility:
                         {
                             fac = (PacketFacility)Enum.Parse(typeof(PacketFacility), item);

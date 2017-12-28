@@ -34,6 +34,9 @@ namespace Ratatoskr.Configs.UserConfigs
     [Serializable]
     internal sealed class OptionConfig : ConfigHolder
     {
+        public IntegerConfig RawPacketCountLimit    { get; } = new IntegerConfig(999999);
+        public IntegerConfig AutoHighSpeedDrawLimit { get; } = new IntegerConfig(999999);
+
         public ShortcutKeyConfig ShortcutKey { get; } = new ShortcutKeyConfig();
 
         public BoolConfig NewVersionAutoUpdate { get; } = new BoolConfig(false);

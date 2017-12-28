@@ -104,6 +104,9 @@ namespace Ratatoskr.Configs.UserConfigs
             /* redirect-alias */
             newobj.GateProperty.RedirectAlias = XmlUtil.GetAttribute(xml_node, "redirect-alias", "");
 
+            /* connect-command */
+            newobj.GateProperty.ConnectCommand = XmlUtil.GetAttribute(xml_node, "connect-command", "");
+
             /* data-rate-target */
             newobj.GateProperty.DataRateTarget = (DeviceDataRateTarget)Enum.Parse(typeof(DeviceDataRateTarget), XmlUtil.GetAttribute(xml_node, "data-rate-target", "0"));
 
@@ -120,6 +123,19 @@ namespace Ratatoskr.Configs.UserConfigs
 
             /* 設定リストへ追加 */
             Value.Add(newobj);
+        }
+
+        private string[] LoadConfigPart_ConnectCommand(XmlElement xml_node)
+        {
+            if (xml_node == null)return (null);
+
+            var values = new List<string>();
+
+            foreach (XmlElement data in xml_node.GetElementsByTagName("data")) {
+                values.Add(XmlUtil.GetAttribute(data, "value", ""));
+            }
+
+            return (values.ToArray());
         }
 
         private DeviceProperty LoadConfigPart_DeviceProperty(XmlElement xml_node, Guid class_id)
@@ -168,6 +184,9 @@ namespace Ratatoskr.Configs.UserConfigs
 
                 /* redirect-alias */
                 xml_data.SetAttribute("redirect-alias", config.GateProperty.RedirectAlias);
+
+                /* connect-command */
+                xml_data.SetAttribute("connect-command", config.GateProperty.ConnectCommand);
 
                 /* data-rate-target */
                 xml_data.SetAttribute("data-rate-target", config.GateProperty.DataRateTarget.ToString());

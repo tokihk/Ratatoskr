@@ -172,7 +172,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
             var data_copy = new byte[size];
 
-            Array.Copy(data_base, offset, data_copy, 0, data_copy.Length);
+            Buffer.BlockCopy(data_base, offset, data_copy, 0, data_copy.Length);
 
             return (data_copy);
         }

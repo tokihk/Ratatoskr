@@ -4,25 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ratatoskr.Devices.UsbMonitor
+namespace Ratatoskr.Devices.UsbDevice
 {
     internal class DeviceClassImpl : DeviceClass
     {
-        public DeviceClassImpl() : base(Guid.Parse("F04B54F3-0D02-4C79-9B35-019ECC97E9C2"))
+        public DeviceClassImpl() : base(Guid.Parse("7EDEB1DD-D74D-4DCB-8296-1323769FB114"))
         {
         }
 
         public override string Name
         {
-            get { return ("USB Monitor"); }
+            get { return ("USB Device"); }
         }
 
         public override string Details
         {
             get { return (Name); }
         }
-
-        public override bool AdminOnly => true;
 
         public override Type GetPropertyType()
         {

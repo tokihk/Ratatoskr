@@ -13,8 +13,7 @@ namespace Ratatoskr.Generic.Controls
     {
         public event EventHandler UpdatedList;          // イベント - リスト更新時
 
-//        private SkipList<ListViewItem> item_list_ = new SkipList<ListViewItem>();
-        private SequentialList<ListViewItem> item_list_ = new SequentialList<ListViewItem>(10000);
+        private SkipList<ListViewItem> items_ = new SkipList<ListViewItem>();
 
         private long  drop_index_ = -1;
 
@@ -29,87 +28,99 @@ namespace Ratatoskr.Generic.Controls
 
         public IEnumerable<ListViewItem> ItemList
         {
-            get { return (item_list_.ToArray()); }
+            get { return (items_.ToArray()); }
         }
 
         public bool ReadOnly { get; set; } = false;
 
-        public int ItemCount
+        public ulong ItemCountMax
         {
-            get { return (item_list_.Count); }
+            get
+            {
+                return (items_.CountMax);
+            }
+            set
+            {
+                items_ = new SkipList<ListViewItem>(value);
+            }
         }
 
-        public ListViewItem ItemAt(int index)
+        public int ItemCount
         {
-            if (index < 0)return (null);
-            if (index >= item_list_.Count)return (null);
+            get { return ((int)items_.Count); }
+        }
 
-            return (item_list_[index]);
+        public ListViewItem ItemElementAt(int index)
+        {
+            return (items_[(ulong)index]);
         }
 
         public void ItemClear()
         {
-            item_list_.Clear();
-            VirtualListSize = item_list_.Count;
+            items_.Clear();
+
+            /* すぐにメモリに反映させるためにGCを手動リセット */
+            GC.Collect();
+
+            VirtualListSize = (int)items_.Count;
 
             /* === 更新イベント === */
             UpdatedList?.Invoke(this, EventArgs.Empty);
         }
 
-        private void RemoveItemAtBase(IEnumerable<int> indices)
+        private void ItemRemoveAtBase(IEnumerable<int> indices)
         {
             foreach (var index in indices) {
-                item_list_.RemoveAt(index);
+                items_.RemoveAt((ulong)index);
             }
-            VirtualListSize = item_list_.Count;
+
+            /* すぐにメモリに反映させるためにGCを手動リセット */
+            GC.Collect();
+
+            VirtualListSize = (int)items_.Count;
         }
 
-        public void RemoveItemAt(int index)
+        public void ItemRemoveAt(int index)
         {
-            RemoveItemAtBase(new [] { index });
+            ItemRemoveAtBase(new [] { index });
 
             /* === 更新イベント === */
             UpdatedList?.Invoke(this, EventArgs.Empty);
         }
 
-        public void RemoveItemAt(IEnumerable<int> indices)
+        public void ItemRemoveAt(IEnumerable<int> indices)
         {
-            RemoveItemAtBase(indices);
+            ItemRemoveAtBase(indices);
 
             /* === 更新イベント === */
             UpdatedList?.Invoke(this, EventArgs.Empty);
         }
 
-        private void InsertItemBase(int index, IEnumerable<ListViewItem> items)
+        private void ItemAddBase(IEnumerable<ListViewItem> items)
         {
-            item_list_.InsertRange(index, items);
-            VirtualListSize = item_list_.Count;
+            items_.AddRange(items);
+
+            VirtualListSize = (int)items_.Count;
         }
 
-        public void InsertItem(int index, IEnumerable<ListViewItem> items)
+        public void ItemAddRange(IEnumerable<ListViewItem> items)
         {
-            InsertItemBase(index, items);
+            ItemAddBase(items);
 
             /* === 更新イベント === */
             UpdatedList?.Invoke(this, EventArgs.Empty);
         }
 
-        public void InsertItem(int index, ListViewItem item)
+        public void ItemAdd(ListViewItem item)
         {
-            InsertItem(index, new ListViewItem[] { item });
+            ItemAddRange(new [] { item });
         }
 
-        public void AddItem(ListViewItem item)
+        private void ItemInsertBase(int index, IEnumerable<ListViewItem> items)
         {
-            InsertItem(ItemCount, item);
-        }
+            items_.InsertRange(index, items);
 
-        public void AddItem(IEnumerable<ListViewItem> items)
-        {
-            InsertItem(ItemCount, items);
-
-            /* === 更新イベント === */
-            UpdatedList?.Invoke(this, EventArgs.Empty);
+            VirtualListSize = (int)items_.Count;
         }
 
         protected override void OnLeave(EventArgs e)
@@ -120,17 +131,17 @@ namespace Ratatoskr.Generic.Controls
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.KeyData == (Keys.Control | Keys.A)) {
-            /* === CTRL + A (全選択) === */
+                /* === CTRL + A (全選択) === */
                 busy_item_select_ = true;
-                for (var value = 0; value < item_list_.Count; value++) {
+                for (var value = 0; value < (int)items_.Count; value++) {
                     SelectedIndices.Add(value);
                 }
                 busy_item_select_ = false;
                 OnSelectedIndexChanged(EventArgs.Empty);
 
             } else if ((!ReadOnly) && (e.KeyData == (Keys.Delete))) {
-            /* === Delete (削除) === */
-                RemoveItemAt((IEnumerable<int>)SelectedIndices);
+                /* === Delete (削除) === */
+                ItemRemoveAt((IEnumerable<int>)SelectedIndices);
             }
 
             base.OnKeyDown(e);
@@ -200,8 +211,8 @@ namespace Ratatoskr.Generic.Controls
             var move_items = new Stack<ListViewItem>();
 
             foreach (var value in item_drag.OrderByDescending(item => item)) {
-                move_items.Push(item_list_[value]);
-                RemoveItemAtBase(new [] { value });
+                move_items.Push(items_[(ulong)value]);
+                ItemRemoveAtBase(new [] { value });
             }
 
             /* === 挿入位置(アイテム)を取得する === */
@@ -212,11 +223,11 @@ namespace Ratatoskr.Generic.Controls
             if (insert_obj != null) {
                 insert_index = insert_obj.Index;
             } else if (insert_pos.Y > 0) {
-                insert_index = item_list_.Count;
+                insert_index = (int)items_.Count;
             }
 
             /* === 挿入する === */
-            InsertItemBase(insert_index, move_items);
+            ItemInsertBase(insert_index, move_items);
 
             /* === 更新イベント === */
             UpdatedList?.Invoke(this, EventArgs.Empty);
@@ -224,7 +235,7 @@ namespace Ratatoskr.Generic.Controls
 
         protected override void OnRetrieveVirtualItem(RetrieveVirtualItemEventArgs e)
         {
-            e.Item = item_list_[e.ItemIndex];
+            e.Item = items_[(ulong)e.ItemIndex];
 
             base.OnRetrieveVirtualItem(e);
         }

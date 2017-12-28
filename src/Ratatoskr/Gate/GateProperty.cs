@@ -23,5 +23,6 @@ namespace Ratatoskr.Gate
         public string               RedirectAlias      { get; set; } = "";
         public DeviceDataRateTarget DataRateTarget     { get; set; } = DeviceDataRateTarget.RecvData;
         public ulong                DataRateGraphLimit { get; set; } = 0;
+        public string               ConnectCommand     { get; set; } = null;
     }
 }

@@ -128,7 +128,7 @@ namespace Ratatoskr.Forms.MainFrame
             title.Append(ConfigManager.Fixed.ApplicationName.Value);
 
             /* 管理者権限かどうかを確認 */
-            if ((new WindowsPrincipal(WindowsIdentity.GetCurrent())).IsInRole(WindowsBuiltInRole.Administrator)) {
+            if (Program.IsAdministratorMode) {
                 title.Append(string.Format(" ({0})", ConfigManager.Language.MainUI.Title_AdminMode.Value));
             }
 

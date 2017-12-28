@@ -40,6 +40,7 @@ namespace Ratatoskr.Forms.GateEditForm
             CBox_DeviceType.SelectedItem = devc_id;
             Num_SendQueueLimit.Value = devconf.SendDataQueueLimit;
             Num_RedirectQueueLimit.Value = devconf.RedirectDataQueueLimit;
+            TBox_ConnectCommand.Text = gatep.ConnectCommand;
             TBox_RedirectTargetAlias.Text = gatep.RedirectAlias;
             ChkBox_DaraRateTarget_Send.Checked = gatep.DataRateTarget.HasFlag(DeviceDataRateTarget.SendData);
             ChkBox_DaraRateTarget_Recv.Checked = gatep.DataRateTarget.HasFlag(DeviceDataRateTarget.RecvData);
@@ -69,11 +70,23 @@ namespace Ratatoskr.Forms.GateEditForm
             /* デバイスクラス読み込み */
             devc_ = GateManager.FindDeviceClass(devc_id_);
 
+            /* 管理者権限専用の場合は注意文を表示 */
+            if ((devc_ != null) && (devc_.AdminOnly) && (!Program.IsAdministratorMode)) {
+                Label_DeviceNotice.Text = "Only administrator authority can be used.";
+            } else {
+                Label_DeviceNotice.Text = "";
+            }
+
             /* デバイスプロパティ更新 */
             UpdateDeviceProperty();
 
             /* デバイスクラスに応じてチェックボックスの状態を設定 */
             UpdateOperationPermission();
+        }
+
+        private void UpdateDeviceStatus()
+        {
+
         }
 
         private void UpdateDeviceProperty()
@@ -137,6 +150,19 @@ namespace Ratatoskr.Forms.GateEditForm
             }
         }
 
+        private void UpdateConnectCommand()
+        {
+            var exp = TBox_ConnectCommand.Text;
+
+            if (exp.Length > 0) {
+                TBox_ConnectCommand.BackColor = (HexTextEncoder.ToByteArray(exp) != null)
+                                              ? (Color.LightSkyBlue)
+                                              : (Color.LightPink);
+            } else {
+                TBox_ConnectCommand.BackColor = Color.White;
+            }
+        }
+
         private void CBox_DeviceType_SelectedIndexChanged(object sender, EventArgs e)
         {
             var devc = CBox_DeviceType.SelectedItem as DeviceClass;
@@ -159,6 +185,7 @@ namespace Ratatoskr.Forms.GateEditForm
 
             /* 基本設定の設定値をオブジェクトに反映 */
             gatep_.Alias = TBox_Alias.Text;
+            gatep_.ConnectCommand = TBox_ConnectCommand.Text;
             gatep_.RedirectAlias = TBox_RedirectTargetAlias.Text;
             gatep_.DataRateTarget = ((ChkBox_DaraRateTarget_Send.Checked) ? (DeviceDataRateTarget.SendData) : (0))
                                   | ((ChkBox_DaraRateTarget_Recv.Checked) ? (DeviceDataRateTarget.RecvData) : (0));
@@ -201,6 +228,11 @@ namespace Ratatoskr.Forms.GateEditForm
         {
             devconf_.RedirectEnable = !devconf_.RedirectEnable;
             UpdateOperationPermission();
+        }
+
+        private void TBox_ConnectCommand_TextChanged(object sender, EventArgs e)
+        {
+            UpdateConnectCommand();
         }
     }
 }

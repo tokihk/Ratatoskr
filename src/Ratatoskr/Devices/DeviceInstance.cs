@@ -101,6 +101,7 @@ namespace Ratatoskr.Devices
         private object send_data_sync_ = new object();
 
         private volatile ConnectSequence connect_seq_ = ConnectSequence.Disconnected;
+        private volatile ConnectState    connect_state_ = ConnectState.Disconnected;
 
         private Stopwatch            data_rate_timer_ = new Stopwatch();
         private ulong                data_rate_value_busy_ = 0;
@@ -329,7 +330,7 @@ namespace Ratatoskr.Devices
 
                 /* 送信データをバッファにコピー */
                 if (send_size > 0) {
-                    Array.Copy(send_data_busy_, send_data_offset_, buffer, 0, send_size);
+                    Buffer.BlockCopy(send_data_busy_, send_data_offset_, buffer, 0, send_size);
                     send_data_offset_ += send_size;
                 }
 
@@ -364,7 +365,7 @@ namespace Ratatoskr.Devices
 
                     if (send_size > 0) {
                         send_data = new byte[send_size];
-                        Array.Copy(send_data_busy_, send_data_offset_, send_data, 0, send_size);
+                        Buffer.BlockCopy(send_data_busy_, send_data_offset_, send_data, 0, send_size);
                     }
                 }
 
@@ -545,9 +546,15 @@ namespace Ratatoskr.Devices
             }
 
             /* 状態変化チェック */
-            if (connect_seq_prev != connect_seq_) {
-                StatusChanged();
+            if (connect_seq_ != connect_seq_prev) {
                 state = PollState.Active;
+            }
+
+            var connect_state = ConnectStatus;
+
+            if (connect_state_ != connect_state) {
+                connect_state_ = connect_state;
+                StatusChanged();
             }
 
             return (state);

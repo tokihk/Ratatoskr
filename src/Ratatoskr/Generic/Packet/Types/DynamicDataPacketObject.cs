@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace Ratatoskr.Generic.Packet.Types
                 var copy_size = Math.Min(data_buffer_.Length - data_size_, Math.Min(data.Length - offset, size));
 
                 if (copy_size > 0) {
-                    Array.Copy(data, offset, data_buffer_, data_size_, copy_size);
+                    Buffer.BlockCopy(data, offset, data_buffer_, data_size_, copy_size);
                     data_size_ += copy_size;
                 }
 
@@ -47,7 +48,7 @@ namespace Ratatoskr.Generic.Packet.Types
                 var copy_size = Math.Min(dst.Length - offset, data_size_);
 
                 if (copy_size > 0) {
-                    Array.Copy(data_buffer_, 0, dst, offset, copy_size);
+                    Buffer.BlockCopy(data_buffer_, 0, dst, offset, copy_size);
                     offset += copy_size;
                 }
 

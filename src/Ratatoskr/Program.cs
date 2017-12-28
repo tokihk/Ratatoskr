@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
 using Ratatoskr.Actions;
@@ -17,6 +18,9 @@ namespace Ratatoskr
 {
     internal static class Program
     {
+        private const int GC_CONTROL_INTERVAL = 30000;
+
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -47,6 +51,7 @@ namespace Ratatoskr
 
         private static ApplicationContext         app_context_ = new ApplicationContext();
         private static System.Windows.Forms.Timer app_timer_ = new System.Windows.Forms.Timer();
+        private static System.Windows.Forms.Timer gc_control_timer_ = new System.Windows.Forms.Timer();
 
         private static bool shutdown_req_ = false;
 
@@ -89,6 +94,10 @@ namespace Ratatoskr
             app_timer_.Tick += OnAppTimer;
             app_timer_.Interval = (int)ConfigManager.System.ApplicationCore.AppTimerInterval.Value;
 
+            /* ガベージコレクション制御タイマー */
+            gc_control_timer_.Tick += OnGcControlTimer;
+            gc_control_timer_.Interval = GC_CONTROL_INTERVAL;
+
             /* イベント処理開始 */
             PacketAutoSaveManager.Setup();
             GateTransferManager.Startup();
@@ -119,6 +128,9 @@ namespace Ratatoskr
         {
             /* メインタイマー開始 */
             app_timer_.Start();
+
+            /* ガベージコレクション制御タイマー開始 */
+            gc_control_timer_.Start();
 
             /* メインフォーム表示 */
             FormUiManager.MainFrameVisible(true);
@@ -156,6 +168,11 @@ namespace Ratatoskr
             }
         }
 
+        private static void OnGcControlTimer(object sender, EventArgs e)
+        {
+            GC.Collect();
+        }
+
         public static void DebugWindowEnable(bool enable)
         {
             if (enable) {
@@ -171,11 +188,11 @@ namespace Ratatoskr
             }
         }
 
-        public static void DebugMessage(string text)
+        public static void DebugMessage(object obj)
         {
             if (debug_form_ == null)return;
 
-            debug_form_.AddMessage(text);
+            debug_form_.AddMessage(obj.ToString());
         }
 
         public static string GetWorkspaceDirectory(string subdir = null)
@@ -187,6 +204,15 @@ namespace Ratatoskr
             }
 
             return (path_root);
+        }
+
+        public static bool IsAdministratorMode
+        {
+            get
+            {
+                /* 管理者権限かどうかを確認 */
+                return ((new WindowsPrincipal(WindowsIdentity.GetCurrent())).IsInRole(WindowsBuiltInRole.Administrator));
+            }
         }
     }
 }

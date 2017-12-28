@@ -29,15 +29,12 @@
         {
             this.GBox_DeviceList = new System.Windows.Forms.GroupBox();
             this.CBox_DeviceList = new System.Windows.Forms.ComboBox();
-            this.GBox_DeviceTree = new System.Windows.Forms.GroupBox();
-            this.TBox_DeviceTree = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.ChkBox_Filter_InterruptTransfer = new System.Windows.Forms.CheckBox();
             this.ChkBox_Filter_BulkTransfer = new System.Windows.Forms.CheckBox();
             this.ChkBox_Filter_ControlTransfer = new System.Windows.Forms.CheckBox();
             this.ChkBox_Filter_IsochronousTransfer = new System.Windows.Forms.CheckBox();
             this.GBox_DeviceList.SuspendLayout();
-            this.GBox_DeviceTree.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,29 +60,6 @@
             this.CBox_DeviceList.Size = new System.Drawing.Size(401, 20);
             this.CBox_DeviceList.TabIndex = 0;
             // 
-            // GBox_DeviceTree
-            // 
-            this.GBox_DeviceTree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.GBox_DeviceTree.Controls.Add(this.TBox_DeviceTree);
-            this.GBox_DeviceTree.Location = new System.Drawing.Point(159, 52);
-            this.GBox_DeviceTree.Name = "GBox_DeviceTree";
-            this.GBox_DeviceTree.Size = new System.Drawing.Size(252, 111);
-            this.GBox_DeviceTree.TabIndex = 6;
-            this.GBox_DeviceTree.TabStop = false;
-            this.GBox_DeviceTree.Text = "Device tree";
-            // 
-            // TBox_DeviceTree
-            // 
-            this.TBox_DeviceTree.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.TBox_DeviceTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TBox_DeviceTree.Location = new System.Drawing.Point(3, 15);
-            this.TBox_DeviceTree.Multiline = true;
-            this.TBox_DeviceTree.Name = "TBox_DeviceTree";
-            this.TBox_DeviceTree.ReadOnly = true;
-            this.TBox_DeviceTree.Size = new System.Drawing.Size(246, 93);
-            this.TBox_DeviceTree.TabIndex = 0;
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.ChkBox_Filter_InterruptTransfer);
@@ -94,7 +68,7 @@
             this.groupBox1.Controls.Add(this.ChkBox_Filter_IsochronousTransfer);
             this.groupBox1.Location = new System.Drawing.Point(4, 52);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(149, 111);
+            this.groupBox1.Size = new System.Drawing.Size(200, 106);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filter setting";
@@ -144,13 +118,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.GBox_DeviceTree);
             this.Controls.Add(this.GBox_DeviceList);
             this.Name = "DevicePropertyEditorImpl";
-            this.Size = new System.Drawing.Size(418, 177);
+            this.Size = new System.Drawing.Size(418, 169);
             this.GBox_DeviceList.ResumeLayout(false);
-            this.GBox_DeviceTree.ResumeLayout(false);
-            this.GBox_DeviceTree.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -160,8 +131,6 @@
         #endregion
         private System.Windows.Forms.GroupBox GBox_DeviceList;
         private System.Windows.Forms.ComboBox CBox_DeviceList;
-        private System.Windows.Forms.GroupBox GBox_DeviceTree;
-        private System.Windows.Forms.TextBox TBox_DeviceTree;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox ChkBox_Filter_IsochronousTransfer;
         private System.Windows.Forms.CheckBox ChkBox_Filter_ControlTransfer;

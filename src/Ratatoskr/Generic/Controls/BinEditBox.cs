@@ -247,7 +247,7 @@ namespace Ratatoskr.Generic.Controls
             var draw_addr = (long)draw_line_offset_ * 16;
 
             for (var line_no = 0; line_no < draw_line_num_; line_no++) {
-                if (draw_addr >= data_all_.Count + 1)break;
+                if (draw_addr >= (long)(data_all_.Count + 1))break;
 
                 graphics.DrawString(String.Format("{0:X8}", draw_addr), Font, label_brush_, 0, line_no * line_height);
                 draw_addr += 16;
@@ -321,7 +321,7 @@ namespace Ratatoskr.Generic.Controls
                 foreach (var data in draw_data_) {
                     /* === 描画文字列取得 === */
                     draw_str = HexTextEncoder.HexCode[data];
-                    if (address >= data_all_.Count) {
+                    if (address >= (int)data_all_.Count) {
                         draw_str = null;
                     }
 
@@ -886,7 +886,7 @@ namespace Ratatoskr.Generic.Controls
 
         private void OverrideData(int index, IEnumerable<byte> data)
         {
-            data_all_.Replace(index, data);
+            data_all_.SetAt((ulong)index, data);
 
             /* --- 再描画 --- */
             ViewUpdate();
@@ -899,7 +899,7 @@ namespace Ratatoskr.Generic.Controls
             /* --- 挿入が許可されている場合は最後のデータ以降にもフォーカスを移動できるようにする --- */
             if (   (is_edit_)
                 && (is_insert_)
-                && ((offset + size) >= data_all_.Count)
+                && ((offset + size) >= (int)data_all_.Count)
             ) {
                 data.Add(0x00);
             }
@@ -917,7 +917,7 @@ namespace Ratatoskr.Generic.Controls
 
             var addr_max = ((is_edit_) && (is_insert_)) ? (data_all_.Count) : (data_all_.Count - 1);
 
-            return (Math.Min(x + y, addr_max));
+            return (Math.Min(x + y, (int)addr_max));
         }
 
         private void RegionUpdate()
@@ -939,7 +939,7 @@ namespace Ratatoskr.Generic.Controls
 
         private void ViewUpdate()
         {
-            draw_line_max_ = ((data_all_.Count + 1) / 16) + 1;
+            draw_line_max_ = (int)((data_all_.Count + 1) / 16) + 1;
             draw_line_offset_ = Math.Min(draw_line_max_ - 1, draw_line_offset_);
 
             draw_addr_ = draw_line_offset_ * 16;
@@ -1000,8 +1000,8 @@ namespace Ratatoskr.Generic.Controls
 
         private void SetFocusPos(int index, bool reset)
         {
-            var focus_max = ((is_edit_) && (is_insert_)) ? (data_all_.Count) : (data_all_.Count - 1);
-            var select_max = ((is_edit_) && (is_insert_) && (reset)) ? (data_all_.Count) : (data_all_.Count - 1);
+            var focus_max = (int)(((is_edit_) && (is_insert_)) ? (data_all_.Count) : (data_all_.Count - 1));
+            var select_max = (int)(((is_edit_) && (is_insert_) && (reset)) ? (data_all_.Count) : (data_all_.Count - 1));
 
             focus_addr_main_ = Math.Min(index, focus_max);
             focus_addr_main_ = Math.Max(focus_addr_main_, 0);
@@ -1053,7 +1053,7 @@ namespace Ratatoskr.Generic.Controls
             }
 
             /* === データ更新 === */
-            var data_new = data_all_[GetFocusPos()];
+            var data_new = data_all_[(ulong)GetFocusPos()];
 
             if (fulldata) {
                 data_new = data;
@@ -1066,7 +1066,7 @@ namespace Ratatoskr.Generic.Controls
                     data_new = (byte)((data_new & 0x0F) | ((data & 0x0F) << 4));
                 }
             }
-            data_all_[GetFocusPos()] = data_new;
+            data_all_[(ulong)GetFocusPos()] = data_new;
 
             /* === フォーカス移動 === */
             if ((focus_edit_) || (fulldata)) {
@@ -1094,7 +1094,7 @@ namespace Ratatoskr.Generic.Controls
             }
 
             /* === 削除 === */
-            data_all_.RemoveRange(addr_top, addr_end - addr_top + 1);
+            data_all_.RemoveRange((ulong)addr_top, (ulong)(addr_end - addr_top + 1));
 
             /* === フォーカスリセット === */
             SetFocusPos(addr_top, true);

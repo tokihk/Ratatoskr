@@ -15,10 +15,14 @@ namespace Ratatoskr.Configs.Types
         private const string XML_NODE_DATA = "data";
 
 
-        public List<string> Value { get; } = new List<string>();
-
-
         public StringListConfig() { }
+
+        public StringListConfig(IEnumerable<string> values)
+        {
+            Value.AddRange(values);
+        }
+
+        public List<string> Value { get; } = new List<string>();
 
         public bool LoadConfigData(XmlElement xml_own)
         {

@@ -490,7 +490,6 @@
     <Compile Include="Generic\AppVersionFileParser.cs" />
     <Compile Include="Generic\ByteEncoder.cs" />
     <Compile Include="Generic\ClassUtil.cs" />
-    <Compile Include="Generic\Container\SequentialList.cs" />
     <Compile Include="Generic\Container\SkipList.cs" />
     <Compile Include="Generic\Controls\BinEditBox.cs">
       <SubType>UserControl</SubType>

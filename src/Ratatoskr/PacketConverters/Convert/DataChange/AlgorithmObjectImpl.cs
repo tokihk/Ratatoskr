@@ -225,11 +225,11 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
             foreach (var detect_index in detect_list) {
                 /* 前回の終端から検出位置までの元データをコピー */
                 copy_size = detect_index - src_index;
-                Array.Copy(data, src_index, dst_data, dst_index, copy_size);
+                Buffer.BlockCopy(data, src_index, dst_data, dst_index, copy_size);
                 dst_index += copy_size;
 
                 /* 検出位置から変換先データをコピー */
-                Array.Copy(changed_data, 0, dst_data, dst_index, changed_data.Length);
+                Buffer.BlockCopy(changed_data, 0, dst_data, dst_index, changed_data.Length);
                 dst_index += changed_data.Length;
 
                 src_index = detect_index + pattern.Length;
@@ -238,7 +238,7 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
             /* 残り元データをコピー */
             if (src_index < data.Length) {
                 copy_size = Math.Min(data.Length - src_index, dst_data.Length - dst_index);
-                Array.Copy(data, src_index, dst_data, dst_index, copy_size);
+                Buffer.BlockCopy(data, src_index, dst_data, dst_index, copy_size);
             }
 
             return (dst_data);

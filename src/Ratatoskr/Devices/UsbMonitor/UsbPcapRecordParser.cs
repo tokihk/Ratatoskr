@@ -74,7 +74,7 @@ namespace Ratatoskr.Devices.UsbMonitor
             offset = Math.Min(offset, data.Length);
             size = Math.Min(size, data.Length - offset);
 
-            Array.Copy(data, offset, data_buffer_, data_size_, size);
+            Buffer.BlockCopy(data, offset, data_buffer_, data_size_, size);
             data_size_ += size;
 
             /* 解析 */

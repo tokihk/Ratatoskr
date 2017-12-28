@@ -90,6 +90,11 @@ namespace Ratatoskr.Forms
             /* 自動スクロール設定を更新 */
             viewm_.AutoScroll = ConfigManager.User.Option.AutoScroll.Value;
 
+            /* 描画待ちパケットが一定以上になったら強制的に高速描画モードに移行 */
+            if (viewm_.DrawPacketCount >= ConfigManager.User.Option.AutoHighSpeedDrawLimit.Value) {
+                viewm_.HiSpeedDrawStart(true);
+            }
+
             /* パケットビュータスク */
             viewm_.Poll();
         }

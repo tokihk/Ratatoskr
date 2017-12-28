@@ -21,6 +21,7 @@ namespace Ratatoskr.Devices
         public abstract Type GetPropertyType();
         public abstract DeviceProperty CreateProperty();
 
+        public virtual bool AdminOnly   { get { return (false);} }
         public virtual bool CanUse      { get { return (true); } }
         public virtual bool CanSend     { get { return (true); } }
         public virtual bool CanRecv     { get { return (true); } }

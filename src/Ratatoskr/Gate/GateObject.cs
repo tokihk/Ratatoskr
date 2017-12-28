@@ -39,6 +39,8 @@ namespace Ratatoskr.Gate
         private Queue<byte[]> send_queue_ = new Queue<byte[]>();
         private object        send_queue_sync_ = new object();
 
+        private byte[] connect_command_ = null;
+
 
         public GateObject(GateProperty gatep, DeviceConfig devconf, Guid devc_id, DeviceProperty devp)
         {
@@ -99,6 +101,10 @@ namespace Ratatoskr.Gate
             {
                 gatep_.ConnectRequest = !gatep_.ConnectRequest;
                 ApplyGateProperty();
+
+                if (gatep_.ConnectRequest) {
+                    SendRequest(connect_command_);
+                }
             }
         }
 
@@ -148,6 +154,9 @@ namespace Ratatoskr.Gate
             }
 
             ApplyGateProperty();
+
+            /* 接続コマンドを再構築 */
+            connect_command_ = HexTextEncoder.ToByteArray(gatep_.ConnectCommand);
         }
 
         private void SetupDevice(DeviceInstance devi)
