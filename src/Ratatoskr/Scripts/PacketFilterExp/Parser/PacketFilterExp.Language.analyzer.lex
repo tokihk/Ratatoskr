@@ -63,13 +63,13 @@ Tf  ([0-9]{3})
 }
 
 // --- 時刻(ISO8601) --------------------------
-<INITIAL>{TY}-{TM}-{TD}T{Th}:{Tm}:{Ts}(\.{Tf})([\+\-]{Th}:{Tm}|Z) {
+<INITIAL>{TY}-{TM}-{TD}T{Th}:{Tm}:{Ts}\.{Tf}([\+\-]{Th}:{Tm}|Z) {
 	yylval.term = new Terms.Term_DateTime(yytext);
 	return (int)Tokens.VALUE_DATETIME;
 }
 
 // --- 時刻(オフセット) --------------------------
-<INITIAL>{Th}:{Tm}:{Ts}(\.{Tf}) {
+<INITIAL>{Th}:{Tm}:{Ts}\.{Tf} {
 	yylval.term = new Terms.Term_DateTimeOffset(yytext);
 	return (int)Tokens.VALUE_DATETIMEOFFSET;
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ratatoskr.Configs;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
 using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Generic.Packet;
@@ -40,48 +41,7 @@ namespace Ratatoskr.PacketConverters.Filter
 
             InitializeComponent();
 
-            TTip_Filter.SetToolTip(
-                CBox_Exp,
-@"通過させるパケットのルールを記述します。
-  Ex: Data && HexText == /02.*03/
-  Ex: DateTime >= 2017-09-11T16:44:50.000+09:00
-
-[使用可能な算術演算子]
-  + - * / ! ()
-
-[使用可能な論理演算子]
-  && ||
-
-[使用可能な比較演算子]
-  == != >= <= < >
-
-以下のデータを定義できます。
-  0～99999999     :<Number>10進数
-  0x0～0xFFFFFFFF :<Number>16進数
-  ISO8601形式     :<DateTime>時刻情報(ISO8601形式)
-  ""...""         :<Text>文字列
-  /.../           :<Text>正規表現
-
-以下の状態変数を使用できます。
-  PacketCount     :<Number>入力されたパケットの総数
-  LastDelta       :<Number>現在のパケットと直前のパケットの差分時刻(msec)
-  IsMessage       :<Bool>メッセージパケットのときはTrueになります。
-  IsData          :<Bool>データパケットのときはTrueになります。
-  Alias           :<Text>パケットのエイリアス
-  DateTime        :<DateTime>パケットのUTC時刻
-  Information     :<Text>パケットの付加情報
-  IsSend          :<Bool>送信データのときはTrueになります。
-  IsRecv          :<Bool>受信データのときはTrueになります。
-  Source          :<Text>パケットの送信元情報。
-  Destination     :<Text>パケットの送信先情報。
-  DataSize        :<Number>パケットのペイロードデータサイズ。
-  BitText         :<Text>パケットのペイロードデータ(2進数文字列) 01010101...
-  HexText         :<Text>パケットのペイロードデータ(16進数文字列) F0F1F2F3...
-  AsciiText       :<Text>パケットのペイロードデータ(アスキー文字列)
-  Utf8Text        :<Text>パケットのペイロードデータ(UTF-8文字列)
-  UnicodeLText    :<Text>パケットのペイロードデータ(UTF-32 Little Endian)
-  UnicodeBText    :<Text>パケットのペイロードデータ(UTF-32 Bit Endian)
-");
+            TTip_Filter.SetToolTip(CBox_Exp, ConfigManager.Language.MainMessage.Description_FilterExp.Value);
 
             SetExpList(prop_.ExpList.Value);
 
