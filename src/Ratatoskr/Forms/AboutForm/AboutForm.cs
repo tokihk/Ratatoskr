@@ -31,6 +31,7 @@ namespace Ratatoskr.Forms.AboutForm
             UpdateLicenseList();
 
             Text = ConfigManager.Language.MainUI.AboutForm_Title.Value;
+            LLabel_HomePage.Text = ConfigManager.Fixed.HomePage.Value;
             Label_Version.Text = Program.Version.ToString();
             Label_Copyright.Text = ConfigManager.Fixed.Copyright.Value;
         }
@@ -59,6 +60,11 @@ namespace Ratatoskr.Forms.AboutForm
                     RTBox_LicenseList.AppendText(Environment.NewLine);
                 }
             } catch { }
+        }
+
+        private void LLabel_HomePage_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start((sender as LinkLabel).Text);
         }
     }
 }

@@ -35,6 +35,7 @@
             this.PictBox_Icon = new System.Windows.Forms.PictureBox();
             this.TabPage_License = new System.Windows.Forms.TabPage();
             this.RTBox_LicenseList = new System.Windows.Forms.RichTextBox();
+            this.LLabel_HomePage = new System.Windows.Forms.LinkLabel();
             this.tabControl1.SuspendLayout();
             this.TabPage_About.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Logo)).BeginInit();
@@ -57,6 +58,7 @@
             // 
             // TabPage_About
             // 
+            this.TabPage_About.Controls.Add(this.LLabel_HomePage);
             this.TabPage_About.Controls.Add(this.Label_Copyright);
             this.TabPage_About.Controls.Add(this.Label_Version);
             this.TabPage_About.Controls.Add(this.PictBox_Logo);
@@ -91,7 +93,7 @@
             // 
             // PictBox_Logo
             // 
-            this.PictBox_Logo.Location = new System.Drawing.Point(139, 23);
+            this.PictBox_Logo.Location = new System.Drawing.Point(139, 7);
             this.PictBox_Logo.Name = "PictBox_Logo";
             this.PictBox_Logo.Size = new System.Drawing.Size(351, 50);
             this.PictBox_Logo.TabIndex = 1;
@@ -129,6 +131,15 @@
             this.RTBox_LicenseList.TabIndex = 0;
             this.RTBox_LicenseList.Text = "";
             // 
+            // LLabel_HomePage
+            // 
+            this.LLabel_HomePage.AutoSize = true;
+            this.LLabel_HomePage.Location = new System.Drawing.Point(141, 60);
+            this.LLabel_HomePage.Name = "LLabel_HomePage";
+            this.LLabel_HomePage.Size = new System.Drawing.Size(0, 12);
+            this.LLabel_HomePage.TabIndex = 4;
+            this.LLabel_HomePage.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LLabel_HomePage_LinkClicked);
+            // 
             // AboutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -145,6 +156,7 @@
             this.Text = "About";
             this.tabControl1.ResumeLayout(false);
             this.TabPage_About.ResumeLayout(false);
+            this.TabPage_About.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Logo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Icon)).EndInit();
             this.TabPage_License.ResumeLayout(false);
@@ -162,5 +174,6 @@
         private System.Windows.Forms.PictureBox PictBox_Logo;
         private System.Windows.Forms.Label Label_Copyright;
         private System.Windows.Forms.RichTextBox RTBox_LicenseList;
+        private System.Windows.Forms.LinkLabel LLabel_HomePage;
     }
 }

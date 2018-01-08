@@ -2,6 +2,8 @@
 
 # Ratatoskr ユーザーマニュアル
 
+https://github.com/tokihk/Ratatoskr
+
 Ratatoskrは、パソコンに接続できる様々なデバイスと通信を行うことができる開発支援ツールです。
 シリアルポートやTCP/UDP等の様々な通信ポートに対して、汎用的な通信デバッグ環境を提供します。
 
@@ -24,6 +26,7 @@ Ratatoskrには以下の特徴があります。
 ![](../_images/basic.png)
 
 ## 著作権
+
 
 * Toki.H.K ([https://github.com/tokihk](https://github.com/tokihk))
 

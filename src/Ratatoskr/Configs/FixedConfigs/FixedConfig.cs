@@ -22,6 +22,7 @@ namespace Ratatoskr.Configs.FixedConfigs
         public StringConfig  ApplicationName     { get; } = new StringConfig("");
         public StringConfig  Copyright           { get; } = new StringConfig("");
         public StringConfig  Version             { get; } = new StringConfig("");
+        public StringConfig  HomePage            { get; } = new StringConfig("https://github.com/tokihk/Ratatoskr");
 
         public StringConfig  SystemConfigPath    { get; } = new StringConfig("startup.ini");
 
