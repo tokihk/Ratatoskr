@@ -1,0 +1,10 @@
+{
+    // Enable Auto convert on save
+    "markdown-pdf.convertOnSave": true,
+  
+	// A list of local paths to the stylesheets to use from the markdown-pdf. All '\' need to be written as '\\'.
+	"markdown-pdf.styles": [".vscode/../_lib/github/github.css"],
+	
+    // Output format: pdf, html, png, jpeg
+    "markdown-pdf.type": "html",
+}
