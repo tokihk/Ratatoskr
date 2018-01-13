@@ -58,7 +58,4 @@ The configuration file exists in the following location.<br>
 
 GNU GENERAL PUBLIC LICENSE v3
 
-# Document
-
-* [Japanese (Original)](./doc/jpn(original)/index.md)
-* [English](./doc/eng/index.md)
+# [Document](./doc/index)
