@@ -58,4 +58,4 @@ The configuration file exists in the following location.<br>
 
 GNU GENERAL PUBLIC LICENSE v3
 
-# [Document](./doc/index)
+# [Document](./doc/index.html)
