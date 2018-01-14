@@ -56,4 +56,6 @@ The configuration file exists in the following location.<br>
 
 GNU GENERAL PUBLIC LICENSE v3
 
-# [Document](./doc/index.html)
+# Document
+
+[See here.](https://tokihk.github.io/Ratatoskr/)
