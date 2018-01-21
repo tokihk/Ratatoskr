@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Configs;
+using Ratatoskr.Configs.Types;
 using Ratatoskr.Generic.Container;
 
 namespace Ratatoskr.Configs.SystemConfigs
@@ -12,6 +12,8 @@ namespace Ratatoskr.Configs.SystemConfigs
     {
         public ApplicationCoreConfig ApplicationCore { get; } = new ApplicationCoreConfig();
         public ProfileConfig         Profile         { get; } = new ProfileConfig();
+        public StringConfig          LanguageFile    { get; } = new StringConfig("");
+        public MainWindowConfig      MainWindow      { get; } = new MainWindowConfig();
 
 
         public SystemConfig() : base("system") { }

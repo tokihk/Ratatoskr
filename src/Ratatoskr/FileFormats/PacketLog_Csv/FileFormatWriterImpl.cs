@@ -10,7 +10,7 @@ using Ratatoskr.Generic.Packet.Types;
 
 namespace Ratatoskr.FileFormats.PacketLog_Csv
 {
-    internal sealed class FileFormatWriterImpl : FileFormatWriter
+    internal sealed class FileFormatWriterImpl : PacketLogWriter
     {
         private StreamWriter         writer_ = null;
         private FileFormatOptionImpl option_ = null;
@@ -47,14 +47,9 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
             return (true);
         }
 
-        protected override bool OnWriteStream(object obj, FileFormatOption option, Stream stream)
+        protected override void OnWritePacket(PacketObject packet)
         {
-            var packets = obj as IEnumerable<PacketObject>;
-
-            if (packets == null)return (false);
-
-            /* 内容出力 */
-            return (WriteContents(packets, option_, writer_));
+            WriteContentsRecord(packet, option_, writer_);
         }
 
         private bool WriteHeader(FileFormatOptionImpl option, StreamWriter writer)
@@ -67,21 +62,6 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
 
             writer.WriteLine(TextUtil.WriteCsvLine(items));
             writer.Flush();
-
-            return (true);
-        }
-
-        private bool WriteContents(IEnumerable<PacketObject> packets, FileFormatOptionImpl option, StreamWriter writer)
-        {
-            var count = (ulong)0;
-            var count_max = (ulong)packets.Count();
-
-            foreach (var packet in packets) {
-                WriteContentsRecord(packet, option, writer);
-
-                /* 進捗更新 */
-                Progress = (double)(++count) / count_max * 100;
-            }
 
             return (true);
         }

@@ -16,11 +16,11 @@ namespace Ratatoskr.Gate.PacketAutoSave
     {
         public sealed class Writer
         {
-            private FileFormatWriter writer_;
+            private PacketLogWriter  writer_;
             private FileFormatOption option_;
             private string path_;
 
-            public Writer(FileFormatWriter writer, FileFormatOption option, string path)
+            public Writer(PacketLogWriter writer, FileFormatOption option, string path)
             {
                 writer_ = writer;
                 option_ = option;
@@ -42,7 +42,7 @@ namespace Ratatoskr.Gate.PacketAutoSave
                     return;
                 }
 
-                writer_.Write(packets);
+                writer_.WritePacket(packets);
 
                 writer_.Close();
             }
@@ -114,7 +114,7 @@ namespace Ratatoskr.Gate.PacketAutoSave
 
             if (path == null)return (null);
 
-            var writer = format.CreateWriter();
+            var writer = format.CreateWriter() as PacketLogWriter;
 
             if (writer == null)return (null);
 

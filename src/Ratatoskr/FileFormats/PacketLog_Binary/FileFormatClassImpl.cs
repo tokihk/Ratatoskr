@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,24 +10,15 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
 {
     internal sealed class FileFormatClassImpl : FileFormatClass
     {
-        public override bool CanRead  { get { return (false); } }
-        public override bool CanWrite { get { return (true); } }
+        public override string   Name          => "Binary format";
 
+        public override string[] FileExtension => new [] { "bin" };
 
-        public override string Name
-        {
-            get { return ("Binary data"); }
-        }
+        public override Image    Icon          => null;
 
-        public override string Detail
-        {
-            get { return (Name); }
-        }
+        public override bool     CanRead       => false;
+        public override bool     CanWrite      => true;
 
-        public override string[] FileExtension
-        {
-            get { return (new [] { "bin" }); }
-        }
 
         public override FileFormatWriter CreateWriter()
         {

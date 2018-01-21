@@ -1,4 +1,4 @@
-﻿namespace Ratatoskr.Forms
+﻿namespace Ratatoskr.FileFormats
 {
     partial class FileFormatOptionForm
     {

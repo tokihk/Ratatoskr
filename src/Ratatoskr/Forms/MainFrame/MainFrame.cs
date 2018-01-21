@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Windows.Forms;
 using Ratatoskr.Actions;
 using Ratatoskr.Actions.ActionModules;
 using Ratatoskr.Configs;
+using Ratatoskr.FileFormats;
 using Ratatoskr.Gate;
 using Ratatoskr.Generic;
 using Ratatoskr.Generic.Packet;
@@ -34,6 +36,7 @@ namespace Ratatoskr.Forms.MainFrame
 
             UpdateMenuBar();
             UpdateStatusBar();
+            UpdateProfileList();
 
             Visible = false;
         }
@@ -82,6 +85,11 @@ namespace Ratatoskr.Forms.MainFrame
                 return;
             }
 
+            /* プロファイルリスト */
+            if (menu.Name == "MenuBar_ProfileList") {
+                return;
+            }
+
             /* 子持ちメニュー */
             if (menu.HasDropDownItems) {
                 /* 共通イベントを削除 */
@@ -95,9 +103,6 @@ namespace Ratatoskr.Forms.MainFrame
                 return;
             }
 
-            /* 終端メニューの場合は共通イベントを設定 */
-            menu.Click += OnMenuBarClick;
-
             /* メニューのタグをActionShortcutIdに変換 */
             if (menu.Tag is string) {
                 var id = ActionShortcutId.None;
@@ -105,6 +110,9 @@ namespace Ratatoskr.Forms.MainFrame
                 if (Enum.TryParse<ActionShortcutId>(menu.Tag as string, out id)) {
                     menu.Tag = id;
                 }
+
+                /* 終端メニューの場合は共通イベントを設定 */
+                menu.Click += OnMenuBarClick;
             }
 
             /* ショートカットテキストを設定 */
@@ -189,9 +197,9 @@ namespace Ratatoskr.Forms.MainFrame
             WindowState = FormWindowState.Normal;
 
             /* 設定を反映 */
-            Size = ConfigManager.User.MainWindow.Size.Value;
-            Location = ConfigManager.User.MainWindow.Position.Value;
-            WindowState = (ConfigManager.User.MainWindow.Maximize.Value) ? (FormWindowState.Maximized) : (FormWindowState.Normal);
+            Size = ConfigManager.System.MainWindow.Size.Value;
+            Location = ConfigManager.System.MainWindow.Position.Value;
+            WindowState = (ConfigManager.System.MainWindow.Maximize.Value) ? (FormWindowState.Maximized) : (FormWindowState.Normal);
 
             Menu_DataRate_SendData.Checked = ConfigManager.User.DataRateTarget.Value.HasFlag(PacketDataRateTarget.SendData);
             Menu_DataRate_RecvData.Checked = ConfigManager.User.DataRateTarget.Value.HasFlag(PacketDataRateTarget.RecvData);
@@ -213,13 +221,13 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void BackupWindowConfig()
         {
-            ConfigManager.User.MainWindow.Maximize.Value = (WindowState == FormWindowState.Maximized);
+            ConfigManager.System.MainWindow.Maximize.Value = (WindowState == FormWindowState.Maximized);
 
             /* 最小/最大化を解除 */
             WindowState = FormWindowState.Normal;
 
-            ConfigManager.User.MainWindow.Size.Value = Size;
-            ConfigManager.User.MainWindow.Position.Value = Location;
+            ConfigManager.System.MainWindow.Size.Value = Size;
+            ConfigManager.System.MainWindow.Position.Value = Location;
         }
 
         private void ApplyDataRateTarget()
@@ -291,6 +299,17 @@ namespace Ratatoskr.Forms.MainFrame
 
             /* 変換器のカウンターを更新 */
             Panel_Center.UpdatePacketConverterView();
+        }
+
+        private void UpdateProfileList()
+        {
+            MenuBar_ProfileList.BeginUpdate();
+            {
+                MenuBar_ProfileList.Items.Clear();
+                MenuBar_ProfileList.Items.AddRange(ConfigManager.GetProfileList());
+                MenuBar_ProfileList.SelectedItem = ConfigManager.GetSelectProfileName();
+            }
+            MenuBar_ProfileList.EndUpdate();
         }
 
         public void ClearPacketView()
@@ -365,7 +384,7 @@ namespace Ratatoskr.Forms.MainFrame
         {
             base.OnResize(e);
 
-            ConfigManager.User.MainWindow.Maximize.Value = (WindowState == FormWindowState.Maximized);
+            ConfigManager.System.MainWindow.Maximize.Value = (WindowState == FormWindowState.Maximized);
         }
 
         private void OnMenuBarClick(object sender, EventArgs e)
@@ -466,9 +485,47 @@ namespace Ratatoskr.Forms.MainFrame
             ApplyDataRateTarget();
         }
 
-        private void Menu_DataRate_AliasValue_TextChanged(object sender, EventArgs e)
+        private void MenuBar_ProfileList_DropDown(object sender, EventArgs e)
         {
+            UpdateProfileList();
+        }
 
+        private void MenuBar_ProfileList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var profile_next = MenuBar_ProfileList.SelectedItem as string;
+
+            if (profile_next != ConfigManager.GetSelectProfileName()) {
+                Program.RestartRequest(profile_next);
+            }
+        }
+
+        private void MenuBar_Profile_New_Click(object sender, EventArgs e)
+        {
+            if (!FormUiManager.ConfirmMessageBox(ConfigManager.Language.MainMessage.Confirm_CreateNewProfile.Value))return;
+
+            Program.RestartRequest(ConfigManager.GetDefaultProfileName());
+        }
+
+        private void MenuBar_Profile_Export_Click(object sender, EventArgs e)
+        {
+            
+
+            var format = new FileFormats.SystemConfig_Rtcfg.FileFormatClassImpl();
+
+            var writer = format.GetWriter();
+
+            writer.writer.Open()
+        }
+
+        private void MenuBar_Profile_OpenDir_Click(object sender, EventArgs e)
+        {
+            var profile_root = ConfigManager.GetProfileRootPath();
+
+            if (!Directory.Exists(profile_root)) {
+                Directory.CreateDirectory(profile_root);
+            }
+
+            System.Diagnostics.Process.Start(ConfigManager.GetProfileRootPath());
         }
     }
 }

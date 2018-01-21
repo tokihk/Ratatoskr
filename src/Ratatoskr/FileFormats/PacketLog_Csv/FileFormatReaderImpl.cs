@@ -10,10 +10,12 @@ using Ratatoskr.Generic.Packet.Types;
 
 namespace Ratatoskr.FileFormats.PacketLog_Csv
 {
-    internal sealed class FileFormatReaderImpl : FileFormatReader
+    internal sealed class FileFormatReaderImpl : PacketLogReader
     {
         private StreamReader         reader_ = null;
         private FileFormatOptionImpl option_ = null;
+
+        private ulong line_count_ = 0;
 
         
         public FileFormatReaderImpl() : base()
@@ -40,32 +42,34 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
             /* ファイル読み込み */
             reader_ = new StreamReader(stream, encoding);
 
+            /* 状態初期化 */
+            line_count_ = 0;
+
             return (true);
         }
 
-        protected override bool OnReadStream(object obj, FileFormatOption option, Stream stream)
+        protected override PacketObject OnReadPacket()
         {
-            var packets = obj as PacketContainer;
+            var packet = (PacketObject)null;
+            var csv_line = (string[])null;
 
-            if (packets == null)return (false);
-
-            /* ファイル読み込み */
-            try {
-                var csv_header = TextUtil.ReadCsvLine(reader_);
+            do {
+                csv_line = TextUtil.ReadCsvLine(reader_);
+                line_count_++;
 
                 /* 最初の行をCSVヘッダーとして処理 */
-                if (!ReadHeader(option_, csv_header)) {
-                    /* 解析が失敗した場合は最初の行をパケットとして処理する */
-                    ReadContents(packets, option_, csv_header);
+                if (   (line_count_ == 1)
+                    && (ReadHeader(option_, csv_line))
+                ) {
+                    /* ヘッダーとして認識したときは次の行を処理する */
+                    continue;
                 }
 
-                /* 残りの内容を全て読み込み */
-                ReadAllContents(packets, option_, reader_);
+                /* パケット変換 */
+                packet = ReadContentsRecord(option_, csv_line);
+            } while (packet == null);
 
-                return (true);
-            } catch {
-                return (false);
-            }
+            return (packet);
         }
 
         private bool ReadHeader(FileFormatOptionImpl option, string[] items)
@@ -86,28 +90,6 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
             } catch {
                 return (false);
             }    
-        }
-
-        private void ReadAllContents(PacketContainer packets, FileFormatOptionImpl option, StreamReader reader)
-        {
-            while (!reader.EndOfStream) {
-                ReadContents(packets, option, TextUtil.ReadCsvLine(reader));
-
-                /* 進捗更新 */
-                Progress = (double)reader.BaseStream.Position / reader.BaseStream.Length * 100;
-            }
-        }
-
-        private void ReadContents(PacketContainer packets, FileFormatOptionImpl option, string[] csv_line)
-        {
-            if (csv_line == null)return;
-
-            /* パケット変換 */
-            var packet = ReadContentsRecord(option, csv_line);
-
-            if (packet == null)return;
-
-            packets.Add(packet);
         }
 
         private PacketObject ReadContentsRecord(FileFormatOptionImpl option, string[] items)

@@ -7,32 +7,27 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.FileFormats
 {
-    public abstract class FileFormatWriter
+    internal abstract class FileFormatWriter
     {
-        private double progress_value_ = 0;
+        protected string           FilePath   { get; private set; } = "";
+        protected FileFormatOption Option     { get; private set; } = null;
+        protected FileStream       BaseStream { get; private set; } = null;
 
 
         public FileFormatWriter()
         {
         }
 
-        public double Progress
-        {
-            get { return (progress_value_); }
-            set { progress_value_ = value;  }
-        }
+        public virtual ulong ProgressMax { get; protected set; } = 1;
+        public virtual ulong ProgressNow { get; protected set; } = 1;
 
         public bool IsOpen { get; private set; } = false;
-
-        protected FileStream       BaseStream { get; private set; } = null;
-        protected FileFormatOption FormatOption { get; private set; } = null;
-
 
         public bool Open(FileFormatOption option, string path, bool is_append = false)
         {
             Close();
 
-            FormatOption = option;
+            Option = option;
 
             IsOpen = OnOpenPath(option, path, is_append);
 
@@ -41,36 +36,35 @@ namespace Ratatoskr.FileFormats
 
         public virtual void Close()
         {
+            if (IsOpen) {
+                OnClose();
+            }
+
             IsOpen = false;
+            FilePath = "";
 
             if (BaseStream != null) {
                 BaseStream.Close();
                 BaseStream = null;
-            }
-
-            progress_value_ = 0;
-        }
-
-        public bool Write(object obj)
-        {
-            if (!IsOpen)return (false);
-
-            if (BaseStream != null) {
-                return (OnWriteStream(obj, FormatOption, BaseStream));
-            } else {
-                return (OnWriteCustom(obj, FormatOption));
             }
         }
 
         protected virtual bool OnOpenPath(FileFormatOption option, string path, bool is_append)
         {
             try {
-                BaseStream = new FileStream(path, (is_append) ? (FileMode.Append) : (FileMode.Create));
+                BaseStream = new FileStream(FilePath, (is_append) ? (FileMode.Append) : (FileMode.Create));
 
-                if (!OnOpenStream(FormatOption, BaseStream))return (false);
+                if (!OnOpenStream(Option, BaseStream)) {
+                    Close();
+                    return (false);
+                }
             
+                FilePath = path;
+
                 return (true);
+
             } catch {
+                Close();
                 return (false);
             }
         }
@@ -80,14 +74,8 @@ namespace Ratatoskr.FileFormats
             return (true);
         }
 
-        protected virtual bool OnWriteStream(object obj, FileFormatOption option, Stream stream)
+        protected virtual void OnClose()
         {
-            return (true);
-        }
-
-        protected virtual bool OnWriteCustom(object obj, FileFormatOption option)
-        {
-            return (true);
         }
     }
 }

@@ -121,6 +121,7 @@
     <Compile Include="Configs\LanguageConfigs\MainUiConfig.cs" />
     <Compile Include="Configs\LanguageConfigs\PacketViewConfig.cs" />
     <Compile Include="Configs\SystemConfigs\ApplicationCoreConfig.cs" />
+    <Compile Include="Configs\SystemConfigs\MainWindowConfig.cs" />
     <Compile Include="Configs\SystemConfigs\ProfileConfig.cs" />
     <Compile Include="Configs\SystemConfigs\ProfileListConfig.cs" />
     <Compile Include="Configs\SystemConfigs\SystemConfig.cs" />
@@ -264,6 +265,12 @@
     <Compile Include="FileFormats\FileFormatOptionEditor.Designer.cs">
       <DependentUpon>FileFormatOptionEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="FileFormats\FileFormatOptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileFormats\FileFormatOptionForm.Designer.cs">
+      <DependentUpon>FileFormatOptionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="FileFormats\FileFormatReader.cs" />
     <Compile Include="FileFormats\FileFormatSelectDialog.cs">
       <SubType>Form</SubType>
@@ -272,6 +279,13 @@
       <DependentUpon>FileFormatSelectDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FileFormats\FileFormatWriter.cs" />
+    <Compile Include="FileFormats\FileManager.cs" />
+    <Compile Include="FileFormats\IPacketLogReader.cs" />
+    <Compile Include="FileFormats\IPacketLogWriter.cs" />
+    <Compile Include="FileFormats\ISystemConfigReader.cs" />
+    <Compile Include="FileFormats\ISystemConfigWriter.cs" />
+    <Compile Include="FileFormats\PacketLogReader.cs" />
+    <Compile Include="FileFormats\PacketLogWriter.cs" />
     <Compile Include="FileFormats\PacketLog_Binary\FileFormatClassImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Binary\FileFormatWriterImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Binary\FileFormatWriterOptionEditorImpl.cs">
@@ -291,6 +305,12 @@
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatClassImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatOptionImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatReaderImpl.cs" />
+    <Compile Include="FileFormats\SystemConfigReader.cs" />
+    <Compile Include="FileFormats\SystemConfigWriter.cs" />
+    <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatClassImpl.cs" />
+    <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatReaderImpl.cs" />
+    <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatWriterImpl.cs" />
+    <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatWriterOptionImpl.cs" />
     <Compile Include="Forms\Dialog\WatchEventNotifyDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -368,12 +388,6 @@
     </Compile>
     <Compile Include="Forms\Dialog\ConfigParamSelectDialog.Designer.cs">
       <DependentUpon>ConfigParamSelectDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FileFormatOptionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FileFormatOptionForm.Designer.cs">
-      <DependentUpon>FileFormatOptionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormStatus.cs" />
     <Compile Include="Forms\FormTaskManager.cs" />
@@ -714,6 +728,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
@@ -752,6 +767,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Devices\UsbMonitor\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileFormats\FileFormatOptionForm.resx">
+      <DependentUpon>FileFormatOptionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FileFormats\FileFormatSelectDialog.resx">
       <DependentUpon>FileFormatSelectDialog.cs</DependentUpon>
@@ -794,9 +812,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialog\ConfigParamSelectDialog.resx">
       <DependentUpon>ConfigParamSelectDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FileFormatOptionForm.resx">
-      <DependentUpon>FileFormatOptionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GateEditForm\GateEditForm.resx">
       <DependentUpon>GateEditForm.cs</DependentUpon>
@@ -922,6 +937,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Icons\file_config_24x24.png" />
     <Content Include="WiX.Toolset.DummyFile.txt" />
     <EmbeddedResource Include="Forms\AboutForm\LicenseList.xml" />
     <Content Include="app_icon_48x48.ico" />
@@ -929,7 +945,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Actions\ActionTerms\" />
-    <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup Label="PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserFiles">
     <Compile Include="Scripts\PacketFilterExp\Parser\PacketFilterExp.Parser.Generated.cs">

@@ -19,11 +19,15 @@ namespace Ratatoskr
     internal static class Program
     {
         private const int GC_CONTROL_INTERVAL = 30000;
+        private const int MUTEX_TIMEOUT       = 15000;
+        private const int PROCESS_TIMEOUT     = 15000;
 
 
         [STAThread]
         static void Main(string[] args)
         {
+            CommandLineParse(args);
+
             /* タイマー分解能変更 */
             NativeMethods.timeBeginPeriod(1);
 
@@ -35,12 +39,14 @@ namespace Ratatoskr
 #if DEBUG
             DebugWindowEnable(true);
 #endif
-            LoadAppInfo();
+            do {
+                LoadAppInfo();
 
-            if (Startup()) {
-                Exec();
-            }
-            Shutdown();
+                if (Startup()) {
+                    Exec();
+                }
+                Shutdown();
+            } while (restart_req_);
 
             /* タイマー分解能差し戻し */
             NativeMethods.timeBeginPeriod(1);
@@ -54,10 +60,72 @@ namespace Ratatoskr
         private static System.Windows.Forms.Timer gc_control_timer_ = new System.Windows.Forms.Timer();
 
         private static bool shutdown_req_ = false;
+        private static bool restart_req_ = false;
+
+        private static string profile_name_load_ = null;
 
 
         public static AppVersion Version   { get; private set; }
 
+
+        private static void CommandLineParse(string[] cmdlines)
+        {
+            foreach (var cmdline in cmdlines) {
+                CommandLineParse(cmdline);
+            }
+        }
+
+        private static (string name, string value) CommandLineParse(string cmdline)
+        {
+            var sep = cmdline.IndexOf('=');
+
+            if (sep < 0) {
+                sep = cmdline.Length - 1;
+            }
+
+            return (cmdline.Substring(0, sep), (sep < cmdline.Length) ? (cmdline.Substring(sep + 1, cmdline.Length - sep - 1)) : (null));
+        }
+
+        private static void CommandLineSetup(string name, string value)
+        {
+            switch (name) {
+                /* プロファイル指定 */
+                case "-profile":
+                {
+                    profile_name_load_ = value;
+                }
+                    break;
+
+                /* ミューテックス終了待ち */
+                case "-wait-mutex-lock":
+                {
+                    var mutex = new System.Threading.Mutex(false, value);
+
+                    try {
+                        mutex.WaitOne(MUTEX_TIMEOUT);
+                    } finally {
+                        mutex.ReleaseMutex();
+                        mutex.Close();
+                    }
+                }
+                    break;
+
+                /* プロセス終了待ち */
+                case "-wait-pid-exit":
+                {
+                    var process = (System.Diagnostics.Process)null;
+
+                    try {
+                        process = System.Diagnostics.Process.GetProcessById(int.Parse(value));
+                        process.WaitForExit(PROCESS_TIMEOUT);
+                    } finally {
+                        process.Close();
+                        process.Dispose();
+                    }
+                }
+                    break;
+            }
+        }
 
         private static void LoadAppInfo()
         {
@@ -67,6 +135,9 @@ namespace Ratatoskr
 
         private static bool Startup()
         {
+            shutdown_req_ = false;
+            restart_req_ = false;
+
             /* マネージャー初期化 */
             ConfigManager.Startup();
             GateManager.Startup();
@@ -76,7 +147,7 @@ namespace Ratatoskr
             UpdateManager.Startup();
 
             /* 設定ファイル読み込み */
-            ConfigManager.LoadAllConfig();
+            ConfigManager.LoadAllConfig(profile_name_load_);
 
             /* アップデート開始 */
             if (UpdateManager.UpdateExec()) {
@@ -146,6 +217,15 @@ namespace Ratatoskr
             }
         }
 
+        public static void RestartRequest(string profile_name = null)
+        {
+            restart_req_ = true;
+
+            profile_name_load_ = profile_name;
+
+            ShutdownRequest();
+        }
+
         private static void OnAppTimer(object sender, EventArgs e)
         {
             if (shutdown_req_) {
@@ -195,12 +275,12 @@ namespace Ratatoskr
             debug_form_.AddMessage(obj.ToString());
         }
 
-        public static string GetWorkspaceDirectory(string subdir = null)
+        public static string GetWorkspaceDirectory(string subname = null)
         {
             var path_root = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + ConfigManager.Fixed.ApplicationName.Value;
 
-            if (subdir != null) {
-                path_root = path_root + "\\" + subdir;
+            if (subname != null) {
+                path_root = path_root + "\\" + subname;
             }
 
             return (path_root);

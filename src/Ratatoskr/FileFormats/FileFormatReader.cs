@@ -7,32 +7,34 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.FileFormats
 {
-    public abstract class FileFormatReader
+    internal abstract class FileFormatReader
     {
-        private double progress_value_ = 0;
+        protected string           FilePath   { get; private set; } = "";
+        protected FileFormatOption Option     { get; private set; } = null;
+        protected FileStream       BaseStream { get; private set; } = null;
 
 
         public FileFormatReader()
         {
         }
 
-        public double Progress
+        public virtual ulong ProgressMax
         {
-            get { return (progress_value_); }
-            set { progress_value_ = value;  }
+            get { return ((BaseStream != null) ? ((ulong)BaseStream.Length) : (100)); }
+        }
+
+        public virtual ulong ProgressNow
+        {
+            get { return ((BaseStream != null) ? ((ulong)BaseStream.Position) : (0)); }
         }
 
         public bool IsOpen { get; private set; } = false;
-
-        protected string           FilePath     { get; private set; } = null;
-        protected FileStream       BaseStream   { get; private set; } = null;
-        protected FileFormatOption FormatOption { get; private set; } = null;
 
         public bool Open(FileFormatOption option, string path)
         {
             Close();
 
-            FormatOption = option;
+            Option = option;
 
             IsOpen = OnOpenPath(option, path);
 
@@ -41,38 +43,36 @@ namespace Ratatoskr.FileFormats
 
         public void Close()
         {
+            if (IsOpen) {
+                OnClose();
+            }
+
             IsOpen = false;
+            FilePath = "";
 
             if (BaseStream != null) {
                 BaseStream.Close();
                 BaseStream = null;
-            }
-
-            progress_value_ = 0;
-        }
-
-        public bool Read(object obj, FileFormatOption option)
-        {
-            if (!IsOpen)return (false);
-
-            if (BaseStream != null) {
-                return (OnReadStream(obj, FormatOption, BaseStream));
-            } else {
-                return (OnReadCustom(obj, FormatOption));
             }
         }
 
         protected virtual bool OnOpenPath(FileFormatOption option, string path)
         {
             try {
-                FilePath = path;
-
                 BaseStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
-                if (!OnOpenStream(FormatOption, BaseStream))return (false);
+                /* 解析失敗のときはエラー */
+                if (!OnOpenStream(Option, BaseStream)) {
+                    Close();
+                    return (false);
+                }
             
+                FilePath = path;
+
                 return (true);
+
             } catch {
+                Close();
                 return (false);
             }
         }
@@ -82,14 +82,8 @@ namespace Ratatoskr.FileFormats
             return (true);
         }
 
-        protected virtual bool OnReadStream(object obj, FileFormatOption option, Stream stream)
+        protected virtual void OnClose()
         {
-            return (true);
-        }
-
-        protected virtual bool OnReadCustom(object obj, FileFormatOption option)
-        {
-            return (true);
         }
     }
 }

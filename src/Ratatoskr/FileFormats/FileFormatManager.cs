@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Ratatoskr.FileFormats
 {
-    public sealed class FileFormatManager
+    internal sealed class FileFormatManager
     {
         public List<FileFormatClass> Formats { get; } = new List<FileFormatClass>();
 
@@ -17,15 +17,17 @@ namespace Ratatoskr.FileFormats
         {
             var str = new StringBuilder();
 
-            /* フォーマットリストから作成 */
+            /* フォーマットリストからフィルター文字列を作成 */
             foreach (var format in formats) {
                 var ext_filter = GetDialogExtFilter(format);
 
                 str.AppendFormat("{0}({1})|{1}|", format.Name, ext_filter);
             }
+
+            /* 最後の余分な | を削除 */
             str.Remove(str.Length - 1, 1);
 
-            /* 全てのフォーマットを追加 */
+            /* [*.*] を追加 */
             if (any_file) {
                 if (str.Length > 0) {
                     str.Append('|');
@@ -48,49 +50,111 @@ namespace Ratatoskr.FileFormats
             return (str.ToString());
         }
 
-        private FileFormatClass GetFormatFromPath(IEnumerable<FileFormatClass> formats, string path)
+        private IEnumerable<FileFormatClass> GetFormatsFromPath(IEnumerable<FileFormatClass> formats, string path)
         {
+            if ((formats == null) || (path == null)) {
+                return (null);
+            }
+
             try {
                 var path_ext = Path.GetExtension(path);
 
-                if ((path_ext == null) || (path_ext.Length == 0))return (null);
+                if (path_ext == null)return (null);
 
-                return (formats.First(obj => obj.FileExtension.Contains(path_ext.Substring(1))));
+                /* 最初のドットを削除 */
+                if (path_ext.Length > 0) {
+                    path_ext = path_ext.Substring(1);
+                }
+
+                return (from format in formats
+                        where format.FileExtension.Contains(path_ext)
+                        select format);
 
             } catch {
                 return (null);
             }
         }
 
-        public FileFormatClass GetOpenFormatFromPath(string path)
+        private IEnumerable<FileFormatClass> GetReaderFormats(IEnumerable<FileFormatClass> formats, params Type[] type_filters)
         {
-            var formats = Formats.FindAll(obj => obj.CanRead);
-            var format = GetFormatFromPath(formats, path);
+            if (formats == null)return (null);
 
-            if (format == null) {
-                /* フォーマットが見つからなかった場合は手動で選択 */
+            /* 読込可能フォーマットのみ抽出 */
+            formats = from format in Formats
+                      where format.CanRead
+                      select format;
+
+            /* フィルターが設定されている場合はフィルタリング */
+            if (type_filters.Length > 0) {
+                formats = from format in formats
+                          let format_type = format.GetType()
+                          from type in type_filters
+                          where type.IsAssignableFrom(format_type)
+                          select format;
+            }
+
+            return (formats);
+        }
+
+        private IEnumerable<FileFormatClass> GetWriterFormats(IEnumerable<FileFormatClass> formats, params Type[] type_filters)
+        {
+            if (formats == null)return (null);
+
+            /* 読込可能フォーマットのみ抽出 */
+            formats = from format in Formats
+                      where format.CanWrite
+                      select format;
+
+            /* フィルターが設定されている場合はフィルタリング */
+            if (type_filters.Length > 0) {
+                formats = from format in formats
+                          let format_type = format.GetType()
+                          from type in type_filters
+                          where type.IsAssignableFrom(format_type)
+                          select format;
+            }
+
+            return (formats);
+        }
+
+        public FileFormatClass SelectReaderFormatFromPath(string path, params Type[] type_filters)
+        {
+            /* 読込可能フォーマットのみ抽出 */
+            var formats = GetReaderFormats(Formats, type_filters);
+
+            /* 拡張子からフォーマットを選定 */
+            var formats_ext = GetFormatsFromPath(formats, path);
+
+            /* フォーマットが見つからない場合は手動で選択 */
+            if (formats_ext == null) {
                 var dialog = new FileFormatSelectDialog(formats);
 
                 if (dialog.ShowDialog() != DialogResult.OK)return (null);
 
-                format = dialog.Format;
+                formats = new [] { dialog.Format };
             }
 
-            return (format);
+            return ((formats_ext.Count() > 0) ? (formats_ext.First()) : (null));
         }
 
-        public FileFormatClass GetSaveFormatFromPath(string path)
+        public FileFormatClass SelectWriterFormatFromPath(string path, params Type[] type_filters)
         {
-            var formats = Formats.FindAll(format => format.CanWrite);
+            /* 読込可能フォーマットのみ抽出 */
+            var formats = GetWriterFormats(Formats, type_filters);
 
-            return (GetFormatFromPath(formats, path));
+            /* 拡張子からフォーマットを選定 */
+            var formats_ext = GetFormatsFromPath(formats, path);
+
+            return ((formats_ext.Count() > 0) ? (formats_ext.First()) : (null));
         }
 
-        public FileFormatClass OpenDialog(string init_dir, bool multi_select, bool any_file, ref string[] paths)
+        public FileFormatClass SelectReaderFormatFromDialog(string init_dir, bool multi_select, bool any_file, ref string[] paths, params Type[] type_filters)
         {
+            /* 読込可能フォーマットのみ抽出 */
+            var formats = GetReaderFormats(Formats, type_filters);
+
             /* ファイルを選択する */
             var dialog = new OpenFileDialog();
-            var formats = Formats.FindAll(format => format.CanRead);
 
             dialog.RestoreDirectory = true;
             dialog.CheckFileExists = false;
@@ -104,19 +168,22 @@ namespace Ratatoskr.FileFormats
             /* 選択したファイルパスを格納 */
             paths = dialog.FileNames;
 
-            if ((dialog.FilterIndex > 0) && (dialog.FilterIndex <= formats.Count)) {
+            if ((dialog.FilterIndex > 0) && (dialog.FilterIndex <= formats.Count())) {
                 /* === 指定したフォーマットを返す === */
                 return (formats.ElementAt(dialog.FilterIndex - 1));
             } else {
                 /* === ファイル名からフォーマットを選出 === */
-                return (GetOpenFormatFromPath(paths.First()));
+                return (SelectReaderFormatFromPath(paths.First(), type_filters));
             }
         }
 
-        public FileFormatClass SaveDialog(string init_dir, ref string path)
+        public FileFormatClass SelectWriterFormatFromDialog(string init_dir, ref string path, params Type[] type_filters)
         {
+            /* 書込み可能フォーマットのみ抽出 */
+            var formats = GetWriterFormats(Formats, type_filters);
+
+            /* ファイルを選択する */
             var dialog = new SaveFileDialog();
-            var formats = Formats.FindAll(format => format.CanWrite);
 
             dialog.RestoreDirectory = true;
             dialog.CheckFileExists = false;
@@ -129,12 +196,12 @@ namespace Ratatoskr.FileFormats
             /* 選択したファイルパスを格納 */
             path = dialog.FileName;
 
-            if ((dialog.FilterIndex > 0) && (dialog.FilterIndex <= formats.Count)) {
+            if ((dialog.FilterIndex > 0) && (dialog.FilterIndex <= formats.Count())) {
                 /* === 指定したフォーマットを返す === */
                 return (formats.ElementAt(dialog.FilterIndex - 1));
             } else {
                 /* === ファイル名からフォーマットを選出 === */
-                return (GetFormatFromPath(formats, path));
+                return (SelectWriterFormatFromPath(path, type_filters));
             }
         }
     }

@@ -9,11 +9,13 @@ using Ratatoskr.Generic.Packet;
 
 namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 {
-    internal sealed class FileFormatWriterImpl : FileFormatWriter
+    internal sealed class FileFormatWriterImpl : PacketLogWriter
     {
         private const int COMPLESSION_BLOCK_SIZE = 1024 * 128;
 
         private BinaryWriter writer_ = null;
+
+        private MemoryStream block_stream_ = null;
 
 
         public FileFormatWriterImpl() : base()
@@ -32,69 +34,47 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
             return (true);
         }
 
-        protected override bool OnWriteStream(object obj, FileFormatOption option, Stream stream)
+        protected override void OnClose()
         {
-            var packets = obj as IEnumerable<PacketObject>;
+            /* 残っているブロックを書き込み */
+            if (block_stream_ != null) {
+                WriteContentsBlock(writer_, block_stream_.ToArray());
+            }
+        }
 
-            if (packets == null)return (false);
+        protected override void OnWritePacket(PacketObject packet)
+        {
+            /* パケットをバイナリに変換 */
+            var packet_b = PacketConverter.Serialize(packet);
 
-            /* パケット書き込み */
-            return (WriteContents(packets, writer_));
+            if (packet_b == null)return;
+            if (packet_b.Length == 0)return;
+
+            /* ブロックバッファ生成 */
+            if (block_stream_ == null) {
+                block_stream_ = new MemoryStream();
+            }
+
+            /* ブロックバッファに追加 */
+            /* Size(4 byte) + Data(xx byte) */
+            block_stream_.WriteByte((byte)(((uint)packet_b.Length >> 24) & 0xFF));
+            block_stream_.WriteByte((byte)(((uint)packet_b.Length >> 16) & 0xFF));
+            block_stream_.WriteByte((byte)(((uint)packet_b.Length >>  8) & 0xFF));
+            block_stream_.WriteByte((byte)(((uint)packet_b.Length >>  0) & 0xFF));
+            block_stream_.Write(packet_b, 0, packet_b.Length);
+
+            /* ブロックバッファのデータ量が一定以上の場合はブロックをファイルへ出力 */
+            if (block_stream_.Length >= COMPLESSION_BLOCK_SIZE) {
+                WriteContentsBlock(writer_, block_stream_.ToArray());
+            }
+
+            /* バッファ解放 */
+            block_stream_ = null;
         }
 
         private void WritePatternCode(FileFormatOption option, BinaryWriter writer)
         {
             writer.Write(FileFormatClassImpl.FORMATCODE);
-        }
-
-        private bool WriteContents(IEnumerable<PacketObject> packets, BinaryWriter writer)
-        {
-            var stream_b = (MemoryStream)null;
-            var packet_b = (byte[])null;
-            var count = (ulong)0;
-            var count_max = (ulong)packets.Count();
-
-            foreach (var packet in packets) {
-                /* パケットをバイナリに変換 */
-                packet_b = PacketConverter.Serialize(packet);
-
-                if (packet_b == null)continue;
-                if (packet_b.Length == 0)continue;
-
-                /* ブロックバッファ生成 */
-                if (stream_b == null) {
-                    stream_b = new MemoryStream();
-                }
-
-                /* ブロックバッファに追加 */
-                /* Size(4 byte) + Data(xx byte) */
-                stream_b.WriteByte((byte)(((uint)packet_b.Length >> 24) & 0xFF));
-                stream_b.WriteByte((byte)(((uint)packet_b.Length >> 16) & 0xFF));
-                stream_b.WriteByte((byte)(((uint)packet_b.Length >>  8) & 0xFF));
-                stream_b.WriteByte((byte)(((uint)packet_b.Length >>  0) & 0xFF));
-                stream_b.Write(packet_b, 0, packet_b.Length);
-
-                /* データ量が一定以上の場合はブロック出力 */
-                if (stream_b.Length < COMPLESSION_BLOCK_SIZE)continue;
-
-                WriteContentsBlock(writer, stream_b.ToArray());
-
-                /* バッファ解放 */
-                stream_b = null;
-
-                /* 進捗更新 */
-                Progress = (double)(++count) / count_max * 100;
-            }
-
-            /* 残っているデータを書き込み */
-            if (stream_b != null) {
-                WriteContentsBlock(writer, stream_b.ToArray());
-
-                /* バッファ解放 */
-                stream_b = null;
-            }
-
-            return (true);
         }
 
         private void WriteContentsBlock(BinaryWriter writer, byte[] data)

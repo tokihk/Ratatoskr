@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.FileFormats;
 
-namespace Ratatoskr.Forms
+namespace Ratatoskr.FileFormats
 {
     internal partial class FileFormatOptionForm : Form
     {

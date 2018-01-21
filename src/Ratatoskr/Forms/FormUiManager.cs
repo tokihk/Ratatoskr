@@ -25,8 +25,8 @@ namespace Ratatoskr.Forms
 
     internal static class FormUiManager
     {
-        private static FileFormatManager ffm_open_ = new FileFormatManager();
-        private static FileFormatManager ffm_save_packet_ = new FileFormatManager();
+//        private static FileFormatManager ffm_open_ = new FileFormatManager();
+//        private static FileFormatManager ffm_save_packet_ = new FileFormatManager();
 
         private static string          last_save_path_ = null;
         private static FileFormatClass last_save_format_ = null;
@@ -47,18 +47,11 @@ namespace Ratatoskr.Forms
 
         public static void Startup()
         {
-            /* ファイルフォーマット選定 */
-            ffm_open_.Formats.Add(new FileFormats.PacketLog_Rtcap.FileFormatClassImpl());
-            ffm_open_.Formats.Add(new FileFormats.PacketLog_Pcap.FileFormatClassImpl());
-            ffm_open_.Formats.Add(new FileFormats.PacketLog_Csv.FileFormatClassImpl());
-
-            ffm_save_packet_.Formats.Add(new FileFormats.PacketLog_Rtcap.FileFormatClassImpl());
-            ffm_save_packet_.Formats.Add(new FileFormats.PacketLog_Csv.FileFormatClassImpl());
-            ffm_save_packet_.Formats.Add(new FileFormats.PacketLog_Binary.FileFormatClassImpl());
         }
 
         public static void Shutdown()
         {
+            MainFrameVisible(false);
         }
 
         public static void Poll()
@@ -250,11 +243,27 @@ namespace Ratatoskr.Forms
             return (MainFrame.BeginInvoke(method, args));
         }
 
+        private delegate bool ConfirmMessageBoxDelegate(string message, string caption);
+        public static bool ConfirmMessageBox(string message, string caption = null)
+        {
+            if (MainFrame.InvokeRequired) {
+                return ((bool)MainFrame.Invoke(new ConfirmMessageBoxDelegate(ConfirmMessageBox), message, caption));
+            }
+
+            if (caption == null) {
+                caption = ConfigManager.Fixed.ApplicationName.Value;
+            }
+
+            if (MessageBox.Show(message, caption, MessageBoxButtons.OKCancel) != DialogResult.OK)return (false);
+
+            return (true);
+        }
+
         public static void FileOpen()
         {
             /* ダイアログ表示 */
             var paths_input = (string[])null;
-            var format = ffm_open_.OpenDialog(ConfigManager.GetCurrentDirectory(), true, true, ref paths_input);
+            var format = FileManager.AllFormat.SelectReaderFormatFromDialog(ConfigManager.GetCurrentDirectory(), true, true, ref paths_input);
 
             if ((paths_input == null) || (paths_input.Length == 0))return;
             if (format == null)return;
@@ -270,23 +279,15 @@ namespace Ratatoskr.Forms
             if (paths.Count() == 0)return;
 
             if (format == null) {
-                format = ffm_open_.GetOpenFormatFromPath(paths.First());
+                format = FileManager.AllFormat.SelectReaderFormatFromPath(paths.First());
             }
             if (format == null)return;
 
-            /* リーダー取得 */
-            var reader = format.CreateReader();
+            var reader = format.GetReader();
 
-            if (reader == null)return;
-
-            /* オプション取得 */
-            var option = format.CreateReaderOption();
-
-            if (   (format.GetType() == typeof(FileFormats.PacketLog_Rtcap.FileFormatClassImpl))
-                || (format.GetType() == typeof(FileFormats.PacketLog_Pcap.FileFormatClassImpl))
-                || (format.GetType() == typeof(FileFormats.PacketLog_Csv.FileFormatClassImpl))
-            ) {
-                GatePacketManager.LoadPacketFile(paths, reader, option);
+            /* パケットログ */
+            if (reader.reader is IPacketLogReader) {
+                GatePacketManager.LoadPacketFile(paths, reader.reader as PacketLogReader, reader.option);
             }
         }
 
@@ -317,35 +318,19 @@ namespace Ratatoskr.Forms
                 || (last_save_format_ == null)
             ) {
                 /* ダイアログ表示 */
-                last_save_format_ = ffm_save_packet_.SaveDialog(ConfigManager.GetCurrentDirectory(), ref last_save_path_);
+                last_save_format_ = FileManager.AllFormat.SelectWriterFormatFromDialog(ConfigManager.GetCurrentDirectory(), ref last_save_path_, typeof(IPacketLogWriter));
             }
             
             if (last_save_path_ == null)return;
             if (last_save_format_ == null)return;
 
             /* ライター取得 */
-            var writer = last_save_format_.CreateWriter();
-
-            if (writer == null)return;
-
-            /* オプション取得 */
-            var option = last_save_format_.CreateWriterOption();
-
-            if (option != null) {
-                var editor = option.GetEditor();
-
-                /* オプション編集 */
-                if (editor != null) {
-                    var dialog = new FileFormatOptionForm(editor);
-
-                    if (dialog.ShowDialog() != DialogResult.OK)return;
-                }
-            }
+            var writer = last_save_format_.GetWriter();
 
             if (rule) {
-                GatePacketManager.SavePacketFile(last_save_path_, writer, option, FormTaskManager.GetPacketConverterClone());
+                GatePacketManager.SavePacketFile(last_save_path_, writer.writer as PacketLogWriter, writer.option, FormTaskManager.GetPacketConverterClone());
             } else {
-                GatePacketManager.SavePacketFile(last_save_path_, writer, option, null);
+                GatePacketManager.SavePacketFile(last_save_path_, writer.writer as PacketLogWriter, writer.option, null);
             }
 
             /* カレントディレクトリ更新 */

@@ -10,26 +10,15 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
 {
     internal sealed class FileFormatClassImpl : FileFormatClass
     {
-        public override bool CanRead  { get { return (true); } }
-        public override bool CanWrite { get { return (true); } }
+        public override string   Name          => "CSV format";
 
+        public override string[] FileExtension => new [] { "csv" };
 
-        public override string Name
-        {
-            get { return ("CSV format"); }
-        }
+        public override Image    Icon          => Properties.Resources.csv_48x48;
 
-        public override string Detail
-        {
-            get { return ("CSV format"); }
-        }
+        public override bool     CanRead       => true;
+        public override bool     CanWrite      => true;
 
-        public override string[] FileExtension
-        {
-            get { return (new [] { "csv" }); }
-        }
-
-        public override Image Icon => Ratatoskr.Properties.Resources.csv_48x48;
 
         public override FileFormatOption CreateReaderOption()
         {

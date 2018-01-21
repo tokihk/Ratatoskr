@@ -24,6 +24,9 @@ namespace Ratatoskr.Configs.LanguageConfigs
         public StringConfig TimeStampManual        { get; } = new StringConfig("TimeStamp - Manual");
         public StringConfig TimeStampAuto          { get; } = new StringConfig("TimeStamp - Auto");
 
+        public StringConfig Confirm_CreateNewProfile      { get; } = new StringConfig("Would you like to create a new profile?");
+        public StringConfig Confirm_ImportProfileOverride { get; } = new StringConfig("There is a profile with the same name.\nDo you want to overwrite?");
+
         public StringConfig Description_FilterExp { get; } = new StringConfig(
 @"EX: IsData && HexText == /02.*03/
 ●Conditional operator

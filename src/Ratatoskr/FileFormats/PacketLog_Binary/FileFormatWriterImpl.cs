@@ -9,9 +9,10 @@ using Ratatoskr.Generic.Packet.Types;
 
 namespace Ratatoskr.FileFormats.PacketLog_Binary
 {
-    internal sealed class FileFormatWriterImpl : FileFormatWriter
+    internal sealed class FileFormatWriterImpl : PacketLogWriter
     {
-        private BinaryWriter writer_ = null;
+        private BinaryWriter               writer_ = null;
+        private FileFormatWriterOptionImpl option_;
 
 
         public FileFormatWriterImpl() : base()
@@ -21,33 +22,14 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
         protected override bool OnOpenStream(FileFormatOption option, Stream stream)
         {
             writer_ = new BinaryWriter(stream);
+            option_ = option as FileFormatWriterOptionImpl;
 
             return (true);
         }
 
-        protected override bool OnWriteStream(object obj, FileFormatOption option, Stream stream)
+        protected override void OnWritePacket(PacketObject packet)
         {
-            var packets = obj as IEnumerable<PacketObject>;
-
-            if (packets == null)return (false);
-
-            /* 内容出力 */
-            return (WriteContents(packets, null, writer_));
-        }
-
-        private bool WriteContents(IEnumerable<PacketObject> packets, FileFormatWriterOptionImpl option, BinaryWriter writer)
-        {
-            var count = (ulong)0;
-            var count_max = packets.Count();
-
-            foreach (var packet in packets) {
-                WriteContentsRecord(packet, option, writer);
-
-                /* 進捗更新 */
-                Progress = (double)(++count) / count_max * 100;
-            }
-
-            return (true);
+            WriteContentsRecord(packet, option_, writer_);
         }
 
         private bool WriteContentsRecord(PacketObject packet, FileFormatWriterOptionImpl option, BinaryWriter writer)

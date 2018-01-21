@@ -7,12 +7,12 @@ using System.Windows.Forms;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("Ratatoskr")]
+[assembly: AssemblyTitle("GateDebugger")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Ratatoskr")]
-[assembly: AssemblyCopyright("Copyright © 2017-2018 Toki.H.K")]
+[assembly: AssemblyProduct("GateDebugger")]
+[assembly: AssemblyCopyright("Copyright © 2017 H.Kouno")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,8 +31,8 @@ using System.Windows.Forms;
 //      ビルド番号
 //      Revision
 //
-[assembly: AssemblyVersion("0.1.1.0")]
-[assembly: AssemblyFileVersion("0.1.1.0")]
+[assembly: AssemblyVersion("3.2.3.0")]
+[assembly: AssemblyFileVersion("3.2.3.0")]
 
 internal static class AppInfo
 {

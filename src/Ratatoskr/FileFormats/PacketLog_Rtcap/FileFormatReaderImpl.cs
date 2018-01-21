@@ -9,33 +9,57 @@ using Ratatoskr.Generic.Packet;
 
 namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 {
-    internal sealed class FileFormatReaderImpl : FileFormatReader
+    internal sealed class FileFormatReaderImpl : PacketLogReader
     {
-        private BinaryReader reader_ = null;
+        private BinaryReader reader_main_ = null;
 
-        
+        private MemoryStream block_stream_ = null;
+        private BinaryReader block_reader_ = null;
+
+
         public FileFormatReaderImpl() : base()
         {
         }
 
         protected override bool OnOpenStream(FileFormatOption option, Stream stream)
         {
-            reader_ = new BinaryReader(stream);
+            reader_main_ = new BinaryReader(stream);
 
             /* パターンコードチェック */
-            if (!ReadPatternCode(reader_))return (false);
+            if (!ReadPatternCode(reader_main_))return (false);
 
             return (true);
         }
 
-        protected override bool OnReadStream(object obj, FileFormatOption option, Stream stream)
+        protected override PacketObject OnReadPacket()
         {
-            var packets = obj as PacketContainer;
+            var packet = (PacketObject)null;
 
-            if (packets == null)return (false);
+            do {
+                /* ブロック読み込み */
+                while ((block_reader_ == null) || (block_reader_.PeekChar() < 0)) {
+                    /* ブロックが読み込めなかった場合は終了 */
+                    if (!LoadCompressBlock(reader_main_))return (null);
+                }
 
-            /* 内容読み込み */
-            return (ReadContents(packets, reader_));
+                /* 1パケット読込 */
+                try {
+                    var size = (UInt32)0;
+
+                    size |= (uint)((uint)block_reader_.ReadByte() << 24);
+                    size |= (uint)((uint)block_reader_.ReadByte() << 16);
+                    size |= (uint)((uint)block_reader_.ReadByte() <<  8);
+                    size |= (uint)((uint)block_reader_.ReadByte() <<  0);
+
+                    packet = PacketConverter.Deserialize(block_reader_.ReadBytes((int)size));
+
+                } catch {
+                    /* 読込が失敗した場合は繰り返す */
+                }
+
+            } while (packet == null);
+
+            return (packet);
         }
 
         private bool ReadPatternCode(BinaryReader reader)
@@ -49,25 +73,11 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
             return (true);
         }
 
-        private bool ReadContents(PacketContainer packets, BinaryReader reader)
+        private bool LoadCompressBlock(BinaryReader reader)
         {
-            try {
-                while (reader.PeekChar() != -1) {
-                    ReadContentsCompressBlock(packets, reader);
+            /* 終端検知 */
+            if (reader.PeekChar() < 0)return (false);
 
-                    /* 進捗更新 */
-                    Progress = (double)reader.BaseStream.Position / reader.BaseStream.Length * 100;
-                }
-
-                return (true);
-
-            } catch {
-                return (false);
-            }
-        }
-
-        private void ReadContentsCompressBlock(PacketContainer packets, BinaryReader reader)
-        {
             /* Size (4 Byte) */
             var size = (uint)0;
 
@@ -79,32 +89,19 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
             /* Data */
             using (var stream_i = new MemoryStream(reader.ReadBytes((int)size))) {
                 using (var stream_c = new GZipStream(stream_i, CompressionMode.Decompress)) {
-                    using (var stream_o = new MemoryStream()) {
-                        stream_c.CopyTo(stream_o);
-                        ReadContentsBlock(packets, stream_o.ToArray());
-                    }
+                    /* 解凍データを出力用ストリームに書き込み */
+                    block_stream_ = new MemoryStream();
+                    stream_c.CopyTo(block_stream_);
+
+                    /* 書込みでファイルポインタが移動しているので読込位置を初期化 */
+                    block_stream_.Position = 0;
+
+                    /* パケット読込用リーダー生成 */
+                    block_reader_ = new BinaryReader(block_stream_);
                 }
             }
-        }
 
-        private void ReadContentsBlock(PacketContainer packets, byte[] data)
-        {
-            var size = (uint)0;
-
-            using (var stream = new MemoryStream(data)) {
-                using (var reader = new BinaryReader(stream)) {
-                    while (reader.PeekChar() >= 0) {
-                        /* Size (4 Byte) */
-                        size = 0;
-                        size |= (uint)((uint)reader.ReadByte() << 24);
-                        size |= (uint)((uint)reader.ReadByte() << 16);
-                        size |= (uint)((uint)reader.ReadByte() <<  8);
-                        size |= (uint)((uint)reader.ReadByte() <<  0);
-
-                        packets.Add(PacketConverter.Deserialize(reader.ReadBytes((int)size)));
-                    }
-                }
-            }
+            return (true);
         }
     }
 }

@@ -84,10 +84,12 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void LoadDockConfig()
         {
-            var config_dock = ConfigManager.User.GetProfilePath(CONFIG_FILE_NAME, true);
+            var config_dock = Program.GetWorkspaceDirectory(CONFIG_FILE_NAME);
 
             /* 設定ファイルから復元 */
-            if (config_dock != null) {
+            if (   (config_dock != null)
+                && (File.Exists(config_dock))
+            ) {
                 try {
                     DockPanel_Main.LoadFromXml(config_dock, GetDockContentFromPersistString);
                 } catch (Exception) {
@@ -129,7 +131,7 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void BackupDockConfig()
         {
-            var config_dock = ConfigManager.User.GetProfilePath(CONFIG_FILE_NAME);
+            var config_dock = Program.GetWorkspaceDirectory(CONFIG_FILE_NAME);
 
             if (config_dock != null) {
                 Directory.CreateDirectory(Path.GetDirectoryName(config_dock));

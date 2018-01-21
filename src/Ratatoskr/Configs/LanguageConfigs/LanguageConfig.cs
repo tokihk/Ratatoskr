@@ -25,30 +25,12 @@ namespace Ratatoskr.Configs.LanguageConfigs
 
         public bool Load()
         {
-            var path_profile = ConfigManager.User.GetProfilePath();
-
-            if (path_profile == null)return (false);
-
-            var path_language = Path.Combine(path_profile, "default.lng");
-
-            /* プロファイルを読み込み */
-            if (!LoadConfig(path_language))return (false);
+            /* 言語ファイルを読み込み */
+            if (!LoadConfig(ConfigManager.GetSelectProfileFilePath(ConfigManager.System.LanguageFile.Value)))return (false);
 
             Loaded(this, EventArgs.Empty);
 
             return (true);
-        }
-
-        public bool Save()
-        {
-            var path_profile = ConfigManager.User.GetProfilePath();
-
-            if (path_profile == null)return (false);
-
-            var path_language = Path.Combine(path_profile, "default.lng");
-
-            /* プロファイルを読み込み */
-            return (SaveConfig(path_language));
         }
     }
 }

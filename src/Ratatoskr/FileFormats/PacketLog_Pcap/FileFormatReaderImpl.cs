@@ -10,11 +10,11 @@ using SharpPcap.LibPcap;
 
 namespace Ratatoskr.FileFormats.PacketLog_Pcap
 {
-    internal sealed class FileFormatReaderImpl : FileFormatReader
+    internal sealed class FileFormatReaderImpl : PacketLogReader
     {
         private PacketContainer           packets_ = null;
         private FileFormatOptionImpl      option_ = null;
-        private WinPcapPacketParserOption option_parse_ = null;
+        private WinPcapPacketParserOption option_parser_ = null;
         private CaptureFileReaderDevice   device_ = null;
 
 
@@ -28,7 +28,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Pcap
 
             if (option_ == null)return (false);
 
-            option_parse_ = new WinPcapPacketParserOption(option_.ViewSourceType, option_.ViewDestinationType, option_.ViewDataType);
+            option_parser_ = new WinPcapPacketParserOption(option_.ViewSourceType, option_.ViewDestinationType, option_.ViewDataType);
 
             device_ = new CaptureFileReaderDevice(path);
 
@@ -36,27 +36,12 @@ namespace Ratatoskr.FileFormats.PacketLog_Pcap
 
             device_.Filter = option_.Filter;
 
-            device_.OnPacketArrival += Device_OnPacketArrival;
-
             return (true);
         }
 
-        protected override bool OnReadCustom(object obj, FileFormatOption option)
+        protected override PacketObject OnReadPacket()
         {
-            packets_ = obj as PacketContainer;
-
-            if (packets_ == null)return (false);
-
-            device_.Capture();
-
-            device_.Close();
-
-            return (true);
-        }
-
-        private void Device_OnPacketArrival(object sender, SharpPcap.CaptureEventArgs e)
-        {
-            packets_.Add(WinPcapPacketParser.Convert(e.Packet, option_parse_));
+            return (WinPcapPacketParser.Convert(device_.GetNextPacket(), option_parser_));
         }
     }
 }

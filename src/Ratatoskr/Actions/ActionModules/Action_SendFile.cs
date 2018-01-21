@@ -34,7 +34,7 @@ namespace Ratatoskr.Actions.ActionModules
                 send_buffer_ = new byte[send_block_size];
             }
 
-            public void Poll()
+            public void Poll(ref uint progress_min)
             {
                 if (IsComplete)return;
 
@@ -56,12 +56,22 @@ namespace Ratatoskr.Actions.ActionModules
                 if (gate_.SendRequest(send_buffer_.Take(read_size).ToArray()).discard_req) {
                     send_pos_ += read_size;
                 }
+
+                /* 進捗度更新 */
+                Progress = (uint)(send_pos_ / (Math.Max(file_.Length / 100, 1)));
+
+                /* 最小の進捗率を設定 */
+                if (progress_min > Progress) {
+                    progress_min = Progress;
+                }
             }
 
             public bool IsComplete
             {
                 get { return (send_pos_ >= file_.Length); }
             }
+
+            public uint Progress { get; private set; } = 0;
         }
 
 
@@ -123,6 +133,8 @@ namespace Ratatoskr.Actions.ActionModules
             foreach (var gate in gates) {
                 send_objs_.Add(new SendPartObject(file_, gate, param_block_size));
             }
+
+            ProgressMax = 100;
         }
 
         protected override void OnExecComplete()
@@ -134,11 +146,16 @@ namespace Ratatoskr.Actions.ActionModules
 
         protected override void OnExecPoll()
         {
+            var progress = (uint)0;
+
             /* 送信実行 */
-            send_objs_.ForEach(obj => obj.Poll());
+            send_objs_.ForEach(obj => obj.Poll(ref progress));
 
             /* 完了オブジェクトを解放 */
             send_objs_.RemoveAll(obj => obj.IsComplete);
+
+            /* 進捗率更新 */
+            ProgressNow = progress;
 
             if (send_objs_.Count == 0) {
                 SetResult(ActionResultType.Success, null);

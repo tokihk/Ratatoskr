@@ -204,6 +204,8 @@ namespace Ratatoskr.Generic
 
         public static byte[][] ToByteArrayMap(string text)
         {
+            if (text == null)return (null);
+
             const string CODELIST_DIG      = "0123456789ABCDEF";
             const char   CODELIST_SPACE    = ' ';              // 
             const char   CODELIST_SPARATOR = '|';

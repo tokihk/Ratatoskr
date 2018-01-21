@@ -10,26 +10,15 @@ namespace Ratatoskr.FileFormats.PacketLog_Pcap
 {
     internal sealed class FileFormatClassImpl : FileFormatClass
     {
-        public override bool CanRead  { get { return (true);  } }
-        public override bool CanWrite { get { return (false); } }
+        public override string   Name          => "pcap format";
 
+        public override string[] FileExtension => new [] { "pcap" };
 
-        public override string Name
-        {
-            get { return ("pcap format"); }
-        }
+        public override Image    Icon          => Properties.Resources.wireshark_32x32;
 
-        public override string Detail
-        {
-            get { return ("pcap format"); }
-        }
+        public override bool     CanRead       => true;
+        public override bool     CanWrite      => false;
 
-        public override string[] FileExtension
-        {
-            get { return (new [] { "pcap" }); }
-        }
-
-        public override Image Icon => Properties.Resources.wireshark_32x32;
 
         public override FileFormatReader CreateReader()
         {

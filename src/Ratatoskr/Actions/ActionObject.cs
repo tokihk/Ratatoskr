@@ -137,6 +137,9 @@ namespace Ratatoskr.Actions
             get { return (exit_state_); }
         }
 
+        public uint ProgressMax { get; protected set; } = 0;
+        public uint ProgressNow { get; protected set; } = 0;
+
         public bool ArgumentCheck()
         {
             foreach (var param in params_) {
