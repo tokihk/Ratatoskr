@@ -10,14 +10,14 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
 {
     internal sealed class FileFormatClassImpl : FileFormatClass
     {
-        public override string   Name          => "Binary format";
+        public override string   Name          { get; } = "Binary format";
 
-        public override string[] FileExtension => new [] { "bin" };
+        public override string[] FileExtension { get; } = new [] { "bin" };
 
-        public override Image    Icon          => null;
+        public override Image    Icon          { get; } = null;
 
-        public override bool     CanRead       => false;
-        public override bool     CanWrite      => true;
+        public override bool     CanRead       { get; } = false;
+        public override bool     CanWrite      { get; } = true;
 
 
         public override FileFormatWriter CreateWriter()

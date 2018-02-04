@@ -65,20 +65,21 @@
             this.MenuBar_View_PacketViewRedraw = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_View_AutoScroll = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_Profile = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_Profile_New = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.MenuBar_Profile_Export = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.MenuBar_Profile_OpenDir = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_Tool = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_Edit_TimeStamp = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_Tool_Option = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_Help = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_Help_About = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuBar_Profile_Config = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_ProfileList = new System.Windows.Forms.ToolStripComboBox();
+            this.MenuBar_Profile = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Profile_Edit = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.MenuBar_Profile_Export = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.MenuBar_Profile_New = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.MenuBar_Profile_OpenDir = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -258,11 +259,10 @@
             this.MenuBar_File,
             this.MenuBar_Edit,
             this.MenuBar_View,
-            this.MenuBar_Profile,
             this.MenuBar_Tool,
             this.MenuBar_Help,
-            this.MenuBar_Profile_Config,
-            this.MenuBar_ProfileList});
+            this.MenuBar_ProfileList,
+            this.MenuBar_Profile});
             this.MBar_Main.Location = new System.Drawing.Point(0, 0);
             this.MBar_Main.Name = "MBar_Main";
             this.MBar_Main.Size = new System.Drawing.Size(944, 29);
@@ -418,51 +418,6 @@
             this.MenuBar_View_AutoScroll.Tag = "AutoScrollToggle";
             this.MenuBar_View_AutoScroll.Text = "Auto scroll";
             // 
-            // MenuBar_Profile
-            // 
-            this.MenuBar_Profile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuBar_Profile_New,
-            this.toolStripSeparator5,
-            this.MenuBar_Profile_Export,
-            this.toolStripSeparator6,
-            this.MenuBar_Profile_OpenDir});
-            this.MenuBar_Profile.Name = "MenuBar_Profile";
-            this.MenuBar_Profile.Size = new System.Drawing.Size(53, 25);
-            this.MenuBar_Profile.Text = "Profile";
-            // 
-            // MenuBar_Profile_New
-            // 
-            this.MenuBar_Profile_New.Name = "MenuBar_Profile_New";
-            this.MenuBar_Profile_New.Size = new System.Drawing.Size(190, 22);
-            this.MenuBar_Profile_New.Tag = "";
-            this.MenuBar_Profile_New.Text = "New profile...";
-            this.MenuBar_Profile_New.Click += new System.EventHandler(this.MenuBar_Profile_New_Click);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(187, 6);
-            // 
-            // MenuBar_Profile_Export
-            // 
-            this.MenuBar_Profile_Export.Name = "MenuBar_Profile_Export";
-            this.MenuBar_Profile_Export.Size = new System.Drawing.Size(190, 22);
-            this.MenuBar_Profile_Export.Text = "Export profile...";
-            this.MenuBar_Profile_Export.Click += new System.EventHandler(this.MenuBar_Profile_Export_Click);
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(187, 6);
-            // 
-            // MenuBar_Profile_OpenDir
-            // 
-            this.MenuBar_Profile_OpenDir.Image = global::Ratatoskr.Properties.Resources.folder_32x32;
-            this.MenuBar_Profile_OpenDir.Name = "MenuBar_Profile_OpenDir";
-            this.MenuBar_Profile_OpenDir.Size = new System.Drawing.Size(190, 22);
-            this.MenuBar_Profile_OpenDir.Text = "Open profile directory";
-            this.MenuBar_Profile_OpenDir.Click += new System.EventHandler(this.MenuBar_Profile_OpenDir_Click);
-            // 
             // MenuBar_Tool
             // 
             this.MenuBar_Tool.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -507,15 +462,6 @@
             this.MenuBar_Help_About.Tag = "ShowAppInformation";
             this.MenuBar_Help_About.Text = "About Ratatoskr";
             // 
-            // MenuBar_Profile_Config
-            // 
-            this.MenuBar_Profile_Config.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.MenuBar_Profile_Config.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.MenuBar_Profile_Config.Image = global::Ratatoskr.Properties.Resources.file_config_24x24;
-            this.MenuBar_Profile_Config.Name = "MenuBar_Profile_Config";
-            this.MenuBar_Profile_Config.Size = new System.Drawing.Size(28, 25);
-            this.MenuBar_Profile_Config.Text = "toolStripMenuItem1";
-            // 
             // MenuBar_ProfileList
             // 
             this.MenuBar_ProfileList.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -526,6 +472,68 @@
             this.MenuBar_ProfileList.Size = new System.Drawing.Size(180, 25);
             this.MenuBar_ProfileList.DropDown += new System.EventHandler(this.MenuBar_ProfileList_DropDown);
             this.MenuBar_ProfileList.SelectedIndexChanged += new System.EventHandler(this.MenuBar_ProfileList_SelectedIndexChanged);
+            // 
+            // MenuBar_Profile
+            // 
+            this.MenuBar_Profile.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.MenuBar_Profile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.MenuBar_Profile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuBar_Profile_Edit,
+            this.toolStripSeparator8,
+            this.MenuBar_Profile_Export,
+            this.toolStripSeparator5,
+            this.MenuBar_Profile_New,
+            this.toolStripSeparator6,
+            this.MenuBar_Profile_OpenDir});
+            this.MenuBar_Profile.Image = global::Ratatoskr.Properties.Resources.user_24x24;
+            this.MenuBar_Profile.Name = "MenuBar_Profile";
+            this.MenuBar_Profile.Size = new System.Drawing.Size(28, 25);
+            this.MenuBar_Profile.Text = "Profile";
+            // 
+            // MenuBar_Profile_Edit
+            // 
+            this.MenuBar_Profile_Edit.Name = "MenuBar_Profile_Edit";
+            this.MenuBar_Profile_Edit.Size = new System.Drawing.Size(190, 22);
+            this.MenuBar_Profile_Edit.Text = "Edit profile...";
+            this.MenuBar_Profile_Edit.Click += new System.EventHandler(this.MenuBar_Profile_Edit_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(187, 6);
+            // 
+            // MenuBar_Profile_Export
+            // 
+            this.MenuBar_Profile_Export.Name = "MenuBar_Profile_Export";
+            this.MenuBar_Profile_Export.Size = new System.Drawing.Size(190, 22);
+            this.MenuBar_Profile_Export.Text = "Export profile...";
+            this.MenuBar_Profile_Export.Click += new System.EventHandler(this.MenuBar_Profile_Export_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(187, 6);
+            // 
+            // MenuBar_Profile_New
+            // 
+            this.MenuBar_Profile_New.Name = "MenuBar_Profile_New";
+            this.MenuBar_Profile_New.Size = new System.Drawing.Size(190, 22);
+            this.MenuBar_Profile_New.Tag = "";
+            this.MenuBar_Profile_New.Text = "New profile...";
+            this.MenuBar_Profile_New.Click += new System.EventHandler(this.MenuBar_Profile_New_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(187, 6);
+            // 
+            // MenuBar_Profile_OpenDir
+            // 
+            this.MenuBar_Profile_OpenDir.Image = global::Ratatoskr.Properties.Resources.folder_32x32;
+            this.MenuBar_Profile_OpenDir.Name = "MenuBar_Profile_OpenDir";
+            this.MenuBar_Profile_OpenDir.Size = new System.Drawing.Size(190, 22);
+            this.MenuBar_Profile_OpenDir.Text = "Open profile directory";
+            this.MenuBar_Profile_OpenDir.Click += new System.EventHandler(this.MenuBar_Profile_OpenDir_Click);
             // 
             // toolStrip1
             // 
@@ -619,10 +627,11 @@
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_New;
         private System.Windows.Forms.ToolStripComboBox MenuBar_ProfileList;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_Config;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_Export;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_OpenDir;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_Edit;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
     }
 }

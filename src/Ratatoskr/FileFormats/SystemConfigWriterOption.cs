@@ -5,15 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Generic.Packet;
 
-namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
+namespace Ratatoskr.FileFormats
 {
-    internal sealed class FileFormatWriterOptionImpl : FileFormatOption
+    internal sealed class SystemConfigWriterOption : FileFormatOption
     {
-        public string TargetProfileName { get; set; } = "";
-        public string OutputProfileName { get; set; } = "";
+        public string TargetProfileID { get; set; } = "";
 
 
-        public FileFormatWriterOptionImpl()
+        public SystemConfigWriterOption()
         {
         }
 

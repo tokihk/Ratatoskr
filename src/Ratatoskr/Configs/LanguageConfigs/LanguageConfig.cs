@@ -26,7 +26,7 @@ namespace Ratatoskr.Configs.LanguageConfigs
         public bool Load()
         {
             /* 言語ファイルを読み込み */
-            if (!LoadConfig(ConfigManager.GetSelectProfileFilePath(ConfigManager.System.LanguageFile.Value)))return (false);
+            if (!LoadConfig(ConfigManager.GetCurrentProfileFilePath(ConfigManager.System.LanguageFile.Value)))return (false);
 
             Loaded(this, EventArgs.Empty);
 

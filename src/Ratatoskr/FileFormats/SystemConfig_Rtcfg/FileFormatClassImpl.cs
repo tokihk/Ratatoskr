@@ -14,14 +14,14 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
         public static readonly byte[] FORMATCODE = new byte[]{ 0x60, 0xCB, 0x7F, 0xF0, 0x68, 0x9C, 0x44, 0xD9 };
 
         
-        public override string   Name          => ConfigManager.Fixed.ApplicationName.Value + " config file";
+        public override string   Name          { get; } = ConfigManager.Fixed.ApplicationName.Value + " config file";
 
-        public override string[] FileExtension => new [] { "gdcfg" };
+        public override string[] FileExtension { get; } = new [] { "rtcfg" };
 
-        public override Image    Icon          => Properties.Resources.app_icon_32x32;
+        public override Image    Icon          { get; } = Properties.Resources.app_icon_32x32;
 
-        public override bool     CanRead       => true;
-        public override bool     CanWrite      => true;
+        public override bool     CanRead       { get; } = true;
+        public override bool     CanWrite      { get; } = true;
 
 
         public override FileFormatReader CreateReader()
@@ -32,6 +32,11 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
         public override FileFormatWriter CreateWriter()
         {
             return (new FileFormatWriterImpl());
+        }
+
+        public override FileFormatOption CreateWriterOption()
+        {
+            return (new SystemConfigWriterOption());
         }
     }
 }

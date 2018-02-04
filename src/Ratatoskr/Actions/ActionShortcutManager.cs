@@ -22,11 +22,6 @@ namespace Ratatoskr.Actions
         FileOpen,
         ConfigSave,
 
-        CreateProfile,
-        ExportProfile,
-        EditProfile,
-        OpenProfileDirectory,
-
         PacketSaveRuleOff,
         PacketSaveRuleOn,
         PacketSaveAsRuleOff,

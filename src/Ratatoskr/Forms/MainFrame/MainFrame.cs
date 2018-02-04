@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using Ratatoskr.Actions;
 using Ratatoskr.Actions.ActionModules;
 using Ratatoskr.Configs;
+using Ratatoskr.Configs.SystemConfigs;
+using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Gate;
 using Ratatoskr.Generic;
@@ -306,8 +308,8 @@ namespace Ratatoskr.Forms.MainFrame
             MenuBar_ProfileList.BeginUpdate();
             {
                 MenuBar_ProfileList.Items.Clear();
-                MenuBar_ProfileList.Items.AddRange(ConfigManager.GetProfileList());
-                MenuBar_ProfileList.SelectedItem = ConfigManager.GetSelectProfileName();
+                MenuBar_ProfileList.Items.AddRange(ConfigManager.GetProfileList().ToArray());
+                MenuBar_ProfileList.SelectedItem = ConfigManager.GetCurrentProfileID();
             }
             MenuBar_ProfileList.EndUpdate();
         }
@@ -492,29 +494,54 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void MenuBar_ProfileList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var profile_next = MenuBar_ProfileList.SelectedItem as string;
+            var profile_next = MenuBar_ProfileList.SelectedItem as ProfileObjectConfig;
 
-            if (profile_next != ConfigManager.GetSelectProfileName()) {
-                Program.RestartRequest(profile_next);
+            if (profile_next == null)return;
+
+            if (profile_next.ID != ConfigManager.GetCurrentProfileID()) {
+                Program.RestartRequest(profile_next.ID);
             }
+        }
+
+        private void MenuBar_Profile_Edit_Click(object sender, EventArgs e)
+        {
+            var dialog = new Dialog.ProfileConfigDialog(ConfigManager.User);
+
+            if (dialog.ShowDialog() != DialogResult.OK)return;
+
+            ConfigManager.SaveCurrentProfile(false);
+
+            UpdateProfileList();
         }
 
         private void MenuBar_Profile_New_Click(object sender, EventArgs e)
         {
             if (!FormUiManager.ConfirmMessageBox(ConfigManager.Language.MainMessage.Confirm_CreateNewProfile.Value))return;
 
-            Program.RestartRequest(ConfigManager.GetDefaultProfileName());
+            var dialog = new Dialog.ProfileConfigDialog(new UserConfig());
+
+            if (dialog.ShowDialog() != DialogResult.OK)return;
+
+            Program.RestartRequest(ConfigManager.CreateNewProfile(dialog.Config));
         }
 
         private void MenuBar_Profile_Export_Click(object sender, EventArgs e)
         {
-            
+            var writer = FileManager.ProfileExport.SelectWriterFromDialog(null);
+            var writer_w = writer.writer as SystemConfigWriter;
+            var writer_o = writer.option as SystemConfigWriterOption;
 
-            var format = new FileFormats.SystemConfig_Rtcfg.FileFormatClassImpl();
+            if (writer_w == null)return;
+            if (writer_o == null)return;
 
-            var writer = format.GetWriter();
+            /* 出力設定 */
+            writer_o.TargetProfileID = ConfigManager.GetCurrentProfileID();
 
-            writer.writer.Open()
+            if (!writer_w.Open(writer.option, writer.path))return;
+
+            writer_w.Save();
+
+            writer_w.Close();
         }
 
         private void MenuBar_Profile_OpenDir_Click(object sender, EventArgs e)

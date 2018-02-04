@@ -28,12 +28,12 @@ namespace Ratatoskr.Forms.AboutForm
             PictBox_Icon.Image = Properties.Resources.app_icon_128x128;
             PictBox_Logo.Image = Properties.Resources.app_logo_300x60;
 
-            UpdateLicenseList();
-
             Text = ConfigManager.Language.MainUI.AboutForm_Title.Value;
             LLabel_HomePage.Text = ConfigManager.Fixed.HomePage.Value;
             Label_Version.Text = Program.Version.ToString();
             Label_Copyright.Text = ConfigManager.Fixed.Copyright.Value;
+
+            UpdateLicenseList();
         }
 
         private void UpdateLicenseList()

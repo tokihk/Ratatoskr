@@ -38,7 +38,7 @@ namespace Ratatoskr.Actions.ActionModules
             {
                 if (IsComplete)return;
 
-                if (!gate_.ConnectRequest) {
+                if (gate_.ConnectStatus == Devices.ConnectState.Disconnected) {
                     /* 切断時はすぐに終端に移動 */
                     send_pos_ = file_.Length;
                     return;
@@ -57,12 +57,9 @@ namespace Ratatoskr.Actions.ActionModules
                     send_pos_ += read_size;
                 }
 
-                /* 進捗度更新 */
-                Progress = (uint)(send_pos_ / (Math.Max(file_.Length / 100, 1)));
-
                 /* 最小の進捗率を設定 */
-                if (progress_min > Progress) {
-                    progress_min = Progress;
+                if (progress_min > (uint)send_pos_) {
+                    progress_min = (uint)send_pos_;
                 }
             }
 
@@ -134,7 +131,7 @@ namespace Ratatoskr.Actions.ActionModules
                 send_objs_.Add(new SendPartObject(file_, gate, param_block_size));
             }
 
-            ProgressMax = 100;
+            ProgressMax = (uint)file_.Length;
         }
 
         protected override void OnExecComplete()
@@ -146,7 +143,7 @@ namespace Ratatoskr.Actions.ActionModules
 
         protected override void OnExecPoll()
         {
-            var progress = (uint)0;
+            var progress = (uint)file_.Length;
 
             /* 送信実行 */
             send_objs_.ForEach(obj => obj.Poll(ref progress));

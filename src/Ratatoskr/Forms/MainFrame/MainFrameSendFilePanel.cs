@@ -19,6 +19,8 @@ namespace Ratatoskr.Forms.MainFrame
     {
         private ActionObject action_busy_ = null;
 
+        private Timer timer_progress_ = new Timer();
+
 
         public MainFrameSendFilePanel() : base(null)
         {
@@ -28,6 +30,9 @@ namespace Ratatoskr.Forms.MainFrame
         public MainFrameSendFilePanel(MainFrameSendPanelContainer panel) : base(panel)
         {
             InitializeComponent();
+
+            timer_progress_.Interval = 1000;
+            timer_progress_.Tick += OnActionProgress;
 
             UpdateFileListView();
         }
@@ -85,10 +90,26 @@ namespace Ratatoskr.Forms.MainFrame
             var file_size_text = "-";
 
             if (File.Exists(file_path)) {
-                file_size_text = (new FileInfo(file_path)).Length.ToString();
+                file_size_text = (new FileInfo(file_path)).Length.ToString("#,0");
             }
 
             Label_FileSize.Text = file_size_text;
+
+            UpdateProgressView();
+        }
+
+        private void UpdateProgressView()
+        {
+            var transfer_value = 0;
+            var progress_value = 0;
+
+            if ((action_busy_ != null) && (!action_busy_.IsComplete)) {
+                transfer_value = (int)action_busy_.ProgressNow;
+                progress_value = (int)(transfer_value / (action_busy_.ProgressMax / 100));
+            }
+
+            PBar_Progress.Value = progress_value;
+            Label_TransSize.Text = transfer_value.ToString("#,0");
         }
 
         protected override void OnSendExecBegin(Tuple<string, GateObject[]> target)
@@ -111,6 +132,9 @@ namespace Ratatoskr.Forms.MainFrame
             /* 完了イベントを登録 */
             action_busy_.ActionCompleted += OnActionCompleted;
 
+            /* 進捗バー更新開始 */
+            timer_progress_.Start();
+
             /* アクション要求 */
             ActionManager.AddNormalAction(action_busy_);
 
@@ -123,9 +147,18 @@ namespace Ratatoskr.Forms.MainFrame
             SendExecComplete(result == ActionObject.ActionResultType.Success);
         }
 
+        private void OnActionProgress(object sender, EventArgs e)
+        {
+            UpdateProgressView();
+        }
+
         protected override void OnSendExecEnd(bool success)
         {
             AddLog(CBox_FileList.Text);
+
+            /* 進捗バー更新停止 */
+            UpdateProgressView();
+            timer_progress_.Stop();
 
             /* コンテンツを有効化 */
             CBox_FileList.Enabled = true;

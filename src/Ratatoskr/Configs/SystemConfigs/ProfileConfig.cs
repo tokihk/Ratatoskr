@@ -11,7 +11,7 @@ namespace Ratatoskr.Configs.SystemConfigs
 {
     internal sealed class ProfileConfig : ConfigHolder
     {
-        public StringConfig      ProfilePath  { get; } = new StringConfig("./profiles");
-        public StringConfig      ProfileName  { get; } = new StringConfig("default");
+        public StringConfig ProfileDir { get; } = new StringConfig("./profiles");
+        public StringConfig ProfileID  { get; } = new StringConfig(Guid.NewGuid().ToString("B"));
     }
 }

@@ -29,22 +29,30 @@ namespace Ratatoskr.Configs
         {
         }
 
-        public static void LoadAllConfig(string profile_name = null)
+        public static void LoadAllConfig(string profile_id = null)
         {
             System.Load();
 
-            if (profile_name != null) {
-                System.Profile.ProfileName.Value = profile_name;
+            /* 存在するプロファイルを指定している場合は指定したプロファイルに切り替える */
+            if (ProfileIsExist(profile_id)) {
+                System.Profile.ProfileID.Value = profile_id;
             }
 
-            User.Load();
+            LoadCurrentProfile();
+
             Language.Load();
+
+            /* プロファイルの実体が存在しない場合は実体を作るために保存する */
+            if (!ProfileIsExist(System.Profile.ProfileID.Value)) {
+                SaveAllConfig();
+            }
         }
 
         public static void SaveAllConfig()
         {
             System.Save();
-            User.Save();
+
+            SaveCurrentProfile();
         }
 
         public static string GetCurrentDirectory()
@@ -69,34 +77,61 @@ namespace Ratatoskr.Configs
 
         public static string GetProfileRootPath()
         {
-            return (Program.GetWorkspaceDirectory(System.Profile.ProfilePath.Value));
+            return (Program.GetWorkspaceDirectory(System.Profile.ProfileDir.Value));
         }
 
-        public static string GetProfilePath(string profile_name)
+        public static string GetProfilePath(string profile_id)
         {
+            if ((profile_id == null) || (profile_id.Length == 0))return (null);
+
             return (Path.Combine(
-                        Program.GetWorkspaceDirectory(System.Profile.ProfilePath.Value),
-                        profile_name));
+                        Program.GetWorkspaceDirectory(System.Profile.ProfileDir.Value),
+                        profile_id));
         }
 
-        public static bool ProfileIsExist(string profile_name)
+        public static string GetProfileFilePath(string profile_id, string file_name, bool exist_check = false)
         {
-            return (Directory.Exists(GetProfilePath(profile_name)));
-        }
+            /* プロファイルディレクトリパスを取得 */
+            var path_profile = GetProfilePath(profile_id);
 
-        public static string[] GetProfileList()
-        {
-            var profiles = new List<string>();
+            if (path_profile == null)return (null);
 
-            profiles.Add(GetSelectProfileName());
-            if (Directory.Exists(GetProfileRootPath())) {
-                profiles.AddRange(Directory.EnumerateDirectories(GetProfileRootPath()).Select(path => Path.GetFileNameWithoutExtension(path)));
+            /* 設定ファイルパスを取得 */
+            var path_config = Path.Combine(path_profile, file_name);
+
+            /* 存在確認 */
+            if (exist_check) {
+                if ((path_config == null) || (!File.Exists(path_config))) {
+                    return (null);
+                }
             }
 
-            return (profiles.Distinct().ToArray());
+            return (path_config);
         }
 
-        public static string GetDefaultProfileName()
+        public static bool ProfileIsExist(string profile_id)
+        {
+            return (Directory.Exists(GetProfilePath(profile_id)));
+        }
+
+        public static IEnumerable<ProfileObjectConfig> GetProfileList()
+        {
+            var profiles = new List<ProfileObjectConfig>();
+            var config = (UserConfig)null;
+
+            foreach (var dir in Directory.EnumerateDirectories(GetProfileRootPath())) {
+                config = new UserConfig();
+
+                /* 読み込めないプロファイルは無視 */
+                if (!config.Load(dir))continue;
+
+                profiles.Add(new ProfileObjectConfig(Path.GetFileName(dir), config.ToString()));
+            }
+
+            return (profiles);
+        }
+
+        public static string GetDefaultProfileID()
         {
             var name_base = string.Format("{1}_{2}", Environment.MachineName, Environment.UserName, DateTime.Now.ToString("yyyyMMddHHmmss"));
             var name_make = name_base;
@@ -111,34 +146,38 @@ namespace Ratatoskr.Configs
             return (name_make);
         }
 
-        public static string GetSelectProfileName()
+        public static string GetCurrentProfileID()
         {
-            return (System.Profile.ProfileName.Value);
+            return (System.Profile.ProfileID.Value);
         }
 
-        public static string GetSelectProfilePath()
+        public static string GetCurrentProfilePath()
         {
-            return (GetProfilePath(GetSelectProfileName()));
+            return (GetProfilePath(GetCurrentProfileID()));
         }
 
-        public static string GetSelectProfileFilePath(string filename, bool exist_check = false)
+        public static string GetCurrentProfileFilePath(string file_name, bool exist_check = false)
         {
-            /* プロファイルディレクトリパスを取得 */
-            var path_profile = GetSelectProfilePath();
+            return (GetProfileFilePath(GetCurrentProfileID(), file_name, exist_check));
+        }
 
-            if (path_profile == null)return (null);
+        private static bool LoadCurrentProfile()
+        {
+            return (User.Load(GetCurrentProfilePath()));
+        }
 
-            /* 設定ファイルパスを取得 */
-            var path_config = Path.Combine(path_profile, filename);
+        public static bool SaveCurrentProfile(bool read_only_check = true)
+        {
+            return (User.Save(GetCurrentProfilePath(), read_only_check));
+        }
 
-            /* 存在確認 */
-            if (exist_check) {
-                if ((path_config == null) || (!File.Exists(path_config))) {
-                    return (null);
-                }
-            }
+        public static string CreateNewProfile(UserConfig config)
+        {
+            var profile_id = Guid.NewGuid().ToString("B");
 
-            return (path_config);
+            config.Save(GetProfilePath(profile_id), false);
+
+            return (profile_id);
         }
     }
 }

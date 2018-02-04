@@ -11,6 +11,6 @@ namespace Ratatoskr.Configs.LanguageConfigs
 {
     internal sealed class PacketViewConfig : ConfigHolder
     {
-        public PacketViews.Packet.ViewLanguageConfig    Packet { get; } = new PacketViews.Packet.ViewLanguageConfig();
+        public PacketViews.Packet.ViewLanguageConfig Packet { get; } = new PacketViews.Packet.ViewLanguageConfig();
     }
 }

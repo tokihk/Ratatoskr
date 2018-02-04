@@ -52,7 +52,7 @@ namespace Ratatoskr.FileFormats
         protected virtual bool OnOpenPath(FileFormatOption option, string path, bool is_append)
         {
             try {
-                BaseStream = new FileStream(FilePath, (is_append) ? (FileMode.Append) : (FileMode.Create));
+                BaseStream = new FileStream(path, (is_append) ? (FileMode.Append) : (FileMode.Create));
 
                 if (!OnOpenStream(Option, BaseStream)) {
                     Close();

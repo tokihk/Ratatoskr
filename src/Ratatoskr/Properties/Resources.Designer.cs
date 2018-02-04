@@ -393,16 +393,6 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Bitmap file_config_24x24 {
-            get {
-                object obj = ResourceManager.GetObject("file_config_24x24", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
-        /// </summary>
         internal static System.Drawing.Bitmap file_upload_22x22 {
             get {
                 object obj = ResourceManager.GetObject("file_upload_22x22", resourceCulture);
@@ -706,6 +696,16 @@ namespace Ratatoskr.Properties {
         internal static System.Drawing.Bitmap target_ok_22x22 {
             get {
                 object obj = ResourceManager.GetObject("target_ok_22x22", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap user_24x24 {
+            get {
+                object obj = ResourceManager.GetObject("user_24x24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

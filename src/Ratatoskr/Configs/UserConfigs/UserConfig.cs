@@ -23,43 +23,43 @@ namespace Ratatoskr.Configs.UserConfigs
     {
         private const string CONFIG_FILE_NAME = "setting.xml";
 
-        public BoolConfig ReadOnlyLock => new BoolConfig(false);
-        public BoolConfig ReadOnly     => new BoolConfig(false);
+        public StringConfig ProfileName    { get; } = new StringConfig(Environment.UserName + " " + DateTime.Now.ToString("yyyyMMddHHmmss"));
+        public StringConfig ProfileComment { get; } = new StringConfig("");
 
-        public StringConfig  CreaterInfo    => new StringConfig(Environment.UserName);
-        public StringConfig  CreaterComment => new StringConfig("");
+        public BoolConfig ReadOnlyLock { get; } = new BoolConfig(false);
+        public BoolConfig ReadOnly     { get; } = new BoolConfig(false);
 
-        public IntegerConfig VersionMajor  => new IntegerConfig(0);
-        public IntegerConfig VersionMinor  => new IntegerConfig(0);
-        public IntegerConfig VersionBugfix => new IntegerConfig(0);
-        public StringConfig  VersionModel  => new StringConfig("");
+        public IntegerConfig VersionMajor  { get; } = new IntegerConfig(0);
+        public IntegerConfig VersionMinor  { get; } = new IntegerConfig(0);
+        public IntegerConfig VersionBugfix { get; } = new IntegerConfig(0);
+        public StringConfig  VersionModel  { get; } = new StringConfig("");
 
-        public GateListConfig        GateList        => new GateListConfig();
-        public PacketViewConfig      PacketView      => new PacketViewConfig();
-        public PacketConverterConfig PacketConverter => new PacketConverterConfig();
+        public GateListConfig        GateList        { get; } = new GateListConfig();
+        public PacketViewConfig      PacketView      { get; } = new PacketViewConfig();
+        public PacketConverterConfig PacketConverter { get; } = new PacketConverterConfig();
 
-        public StringConfig CurrentDirectory => new StringConfig("");
+        public StringConfig CurrentDirectory { get; } = new StringConfig("");
 
-        public EnumConfig<PacketDataRateTarget>  DataRateTarget => new EnumConfig<PacketDataRateTarget>(PacketDataRateTarget.RecvData);
+        public EnumConfig<PacketDataRateTarget>  DataRateTarget { get; } = new EnumConfig<PacketDataRateTarget>(PacketDataRateTarget.RecvData);
 
-        public IntegerConfig             SendPanelLogLimit   => new IntegerConfig(20);
-        public EnumConfig<SendPanelType> SendPanelType       => new EnumConfig<SendPanelType>(UserConfigs.SendPanelType.Data);
-        public StringListConfig          SendPanelTargetList => new StringListConfig();
-        public StringListConfig          SendPanel_ExpList   => new StringListConfig();
-        public StringListConfig          SendPanel_FileList  => new StringListConfig();
+        public IntegerConfig             SendPanelLogLimit   { get; } = new IntegerConfig(20);
+        public EnumConfig<SendPanelType> SendPanelType       { get; } = new EnumConfig<SendPanelType>(UserConfigs.SendPanelType.Data);
+        public StringListConfig          SendPanelTargetList { get; } = new StringListConfig();
+        public StringListConfig          SendPanel_ExpList   { get; } = new StringListConfig();
+        public StringListConfig          SendPanel_FileList  { get; } = new StringListConfig();
 
-        public BoolConfig                SendPanel_ExpList_Preview => new BoolConfig(true);
+        public BoolConfig                SendPanel_ExpList_Preview { get; } = new BoolConfig(true);
 
-        public SendDataListConfig SendDataList       => new SendDataListConfig();
-        public StringConfig       SendDataListTarget => new StringConfig("*");
-        public IntegerConfig      SendDataListLimit  => new IntegerConfig(200);
-        public IntegerConfig      SendDataListRepeat => new IntegerConfig(1);
+        public SendDataListConfig SendDataList       { get; } = new SendDataListConfig();
+        public StringConfig       SendDataListTarget { get; } = new StringConfig("*");
+        public IntegerConfig      SendDataListLimit  { get; } = new IntegerConfig(200);
+        public IntegerConfig      SendDataListRepeat { get; } = new IntegerConfig(1);
 
-        public WatchDataListConfig WatchDataList => new WatchDataListConfig();
+        public WatchDataListConfig WatchDataList { get; } = new WatchDataListConfig();
 
-        public PacketListConfig PacketList       => new PacketListConfig();
-        public IntegerConfig    PacketListLimit  => new IntegerConfig(2000);
-        public IntegerConfig    PacketListRepeat => new IntegerConfig(1);
+        public PacketListConfig PacketList       { get; } = new PacketListConfig();
+        public IntegerConfig    PacketListLimit  { get; } = new IntegerConfig(2000);
+        public IntegerConfig    PacketListRepeat { get; } = new IntegerConfig(1);
 
 
         private OptionConfig option_ = new OptionConfig();
@@ -91,26 +91,23 @@ namespace Ratatoskr.Configs.UserConfigs
             SendPanelTargetList.Value.Add("GATE_005");
         }
 
-        public bool Load()
+        public override string ToString()
         {
-            /* 設定ファイルパスを取得 */
-            var path_config = ConfigManager.GetSelectProfileFilePath(CONFIG_FILE_NAME);
-
-            if (path_config == null)return (false);
-
-            /* プロファイルを読み込み */
-            return (LoadConfig(path_config));
+            return (ProfileName.Value);
         }
 
-        public bool Save()
+        public bool Load(string path)
         {
+            /* プロファイルを読み込み */
+            return (LoadConfig(Path.Combine(path, CONFIG_FILE_NAME)));
+        }
+
+        public bool Save(string path, bool read_only_check = true)
+        {
+            if (path == null)return (false);
+
             /* 読込専用のときは何もしない */
-            if (ReadOnly.Value)return (true);
-
-            /* 設定ファイルパスを取得 */
-            var path_config = ConfigManager.GetSelectProfileFilePath(CONFIG_FILE_NAME);
-
-            if (path_config == null)return (false);
+            if ((read_only_check) && (ReadOnly.Value))return (false);
 
             /* バージョン情報を更新 */
             VersionMajor.Value = Program.Version.VersionMajor;
@@ -119,7 +116,7 @@ namespace Ratatoskr.Configs.UserConfigs
             VersionModel.Value = Program.Version.VersionModel;
 
             /* プロファイルを保存 */
-            return (SaveConfig(path_config));
+            return (SaveConfig(Path.Combine(path, CONFIG_FILE_NAME)));
         }
 
         private bool IsUpdated_AutoSaveSetting(OptionConfig cfg_new, OptionConfig cfg_old)

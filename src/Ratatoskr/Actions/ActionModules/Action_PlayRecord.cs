@@ -74,6 +74,7 @@ namespace Ratatoskr.Actions.ActionModules
         {
         }
 
+#if false
         private delegate PacketLogReader LoadPacketLogReaderDelegate(string path);
         private PacketLogReader LoadPacketLogReader(string path)
         {
@@ -81,18 +82,19 @@ namespace Ratatoskr.Actions.ActionModules
                 return (FormUiManager.Invoke(new LoadPacketLogReaderDelegate(LoadPacketLogReader), path) as PacketLogReader);
             }
 
-            var format = FileManager.AllFormat.SelectReaderFormatFromPath(path, typeof(IPacketLogReader));
+//            var reader = FileManager.PacketOpen.SelectReaderFromPath(path, typeof(IPacketLogReader));
 
-            if (format == null)return (null);
+//            if (format == null)return (null);
 
-            var reader = format.GetReader();
-            var reader_p = reader.reader as PacketLogReader;
+//            var reader = format.GetReader();
+//            var reader_p = reader.reader as PacketLogReader;
 
-            if (reader_p == null)return (null);
+//            if (reader_p == null)return (null);
 
-            if (!reader_p.Open(reader.option, path))return (null);
+//            if (!reader_p.Open(reader.option, path))return (null);
 
             return (reader_p);
         }
+#endif
     }
 }

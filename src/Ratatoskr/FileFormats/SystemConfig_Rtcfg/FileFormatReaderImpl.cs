@@ -13,21 +13,13 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
 {
     internal sealed class FileFormatReaderImpl : SystemConfigReader
     {
-        private string profile_name_ = null;
+        private string profile_id_ = null;
 
         private BinaryReader reader_ = null;
 
         
         public FileFormatReaderImpl() : base()
         {
-        }
-
-        protected override bool OnOpenPath(FileFormatOption option, string path)
-        {
-            /* ファイル名をプロファイル名として記憶する */
-            profile_name_ = Path.GetFileNameWithoutExtension(path);
-
-            return (base.OnOpenPath(option, path));
         }
 
         protected override bool OnOpenStream(FileFormatOption option, Stream stream)
@@ -45,8 +37,8 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
             /* ヘッダー情報読み込み */
             if (!ReadHeader(reader_))return (false);
 
-            /* 同名のプロファイルが存在する場合は失敗 */
-            if (ConfigManager.ProfileIsExist(profile_name_)) {
+            /* 同IDのプロファイルが存在する場合は失敗 */
+            if (ConfigManager.ProfileIsExist(profile_id_)) {
                 return (false);
             }
 
@@ -73,13 +65,13 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
                 /* Format Version (4 Byte) */
                 var version = reader.ReadBytes(4);
 
-                /* Profile Name (1 + xx Byte) */
-                var profile_name_len = reader.ReadByte();
-                var profile_name = Encoding.UTF8.GetString(reader.ReadBytes(profile_name_len));
+                /* Profile ID (1 + xx Byte) */
+                var profile_id_len = reader.ReadByte();
+                var profile_id = Encoding.UTF8.GetString(reader.ReadBytes(profile_id_len));
+                
+                if (profile_id.Length == 0)return (false);
 
-                if (profile_name.Length > 0) {
-                    profile_name_ = profile_name;
-                }
+                profile_id = profile_id_;
 
                 return (true);
 
@@ -92,7 +84,7 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
         {
             try {
                 /* プロファイルディレクトリ名を取得 */
-                var profile_path = ConfigManager.GetProfilePath(profile_name_);
+                var profile_path = ConfigManager.GetProfilePath(profile_id_);
 
                 /* 出力先ディレクトリを作成 */
                 if (!Directory.Exists(profile_path)) {

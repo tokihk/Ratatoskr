@@ -218,7 +218,7 @@ namespace Ratatoskr.Generic.Container
         public void InsertRange(long index, IEnumerable<Type> values)
         {
             /* 最大データ数よりも大きいときは最後尾を優先としてシュリンク */
-            if (values.Count() > (int)item_count_max_) {
+            if ((ulong)values.Count() > item_count_max_) {
                 values = values.Skip(values.Count() - (int)item_count_max_);
             }
 

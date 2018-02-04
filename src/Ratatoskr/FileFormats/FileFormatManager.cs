@@ -177,6 +177,21 @@ namespace Ratatoskr.FileFormats
             }
         }
 
+        public (FileFormatReader reader, FileFormatOption option, string[] paths) SelectReaderFromDialog(string init_dir, bool multi_select, bool any_file, params Type[] type_filters)
+        {
+            var paths = (string[])null;
+
+            var format = SelectReaderFormatFromDialog(init_dir, multi_select, any_file, ref paths, type_filters);
+
+            if (format == null)return (null, null, null);
+
+            var reader = format.GetReader();
+
+            if (reader.reader == null)return (null, null, null);
+
+            return (reader.reader, reader.option, paths);
+        }
+
         public FileFormatClass SelectWriterFormatFromDialog(string init_dir, ref string path, params Type[] type_filters)
         {
             /* 書込み可能フォーマットのみ抽出 */
@@ -203,6 +218,21 @@ namespace Ratatoskr.FileFormats
                 /* === ファイル名からフォーマットを選出 === */
                 return (SelectWriterFormatFromPath(path, type_filters));
             }
+        }
+
+        public (FileFormatWriter writer, FileFormatOption option, string path) SelectWriterFromDialog(string init_dir, params Type[] type_filters)
+        {
+            var path = (string)null;
+
+            var format = SelectWriterFormatFromDialog(init_dir, ref path, type_filters);
+
+            if (format == null)return (null, null, null);
+
+            var writer = format.GetWriter();
+
+            if (writer.writer == null)return (null, null, null);
+
+            return (writer.writer, writer.option, path);
         }
     }
 }

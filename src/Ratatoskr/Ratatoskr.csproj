@@ -135,7 +135,6 @@
     <Compile Include="Configs\Types\StringConfig.cs" />
     <Compile Include="Configs\Types\StringListConfig.cs" />
     <Compile Include="Configs\UserConfigs\GateListConfig.cs" />
-    <Compile Include="Configs\UserConfigs\MainWindowConfig.cs" />
     <Compile Include="Configs\UserConfigs\NotifyMailListConfig.cs" />
     <Compile Include="Configs\UserConfigs\OptionConfig.cs" />
     <Compile Include="Configs\UserConfigs\PacketConverterConfig.cs" />
@@ -307,10 +306,16 @@
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatReaderImpl.cs" />
     <Compile Include="FileFormats\SystemConfigReader.cs" />
     <Compile Include="FileFormats\SystemConfigWriter.cs" />
+    <Compile Include="FileFormats\SystemConfigWriterOption.cs" />
     <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatClassImpl.cs" />
     <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatReaderImpl.cs" />
     <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatWriterImpl.cs" />
-    <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatWriterOptionImpl.cs" />
+    <Compile Include="Forms\Dialog\ProfileConfigDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialog\ProfileConfigDialog.Designer.cs">
+      <DependentUpon>ProfileConfigDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Dialog\WatchEventNotifyDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -776,6 +781,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FileFormats\PacketLog_Binary\FileFormatWriterOptionEditorImpl.resx">
       <DependentUpon>FileFormatWriterOptionEditorImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialog\ProfileConfigDialog.resx">
+      <DependentUpon>ProfileConfigDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialog\WatchEventNotifyDialog.resx">
       <DependentUpon>WatchEventNotifyDialog.cs</DependentUpon>

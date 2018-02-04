@@ -25,9 +25,6 @@ namespace Ratatoskr.Forms
 
     internal static class FormUiManager
     {
-//        private static FileFormatManager ffm_open_ = new FileFormatManager();
-//        private static FileFormatManager ffm_save_packet_ = new FileFormatManager();
-
         private static string          last_save_path_ = null;
         private static FileFormatClass last_save_format_ = null;
 
@@ -263,7 +260,7 @@ namespace Ratatoskr.Forms
         {
             /* ダイアログ表示 */
             var paths_input = (string[])null;
-            var format = FileManager.AllFormat.SelectReaderFormatFromDialog(ConfigManager.GetCurrentDirectory(), true, true, ref paths_input);
+            var format = FileManager.FileOpen.SelectReaderFormatFromDialog(ConfigManager.GetCurrentDirectory(), true, true, ref paths_input);
 
             if ((paths_input == null) || (paths_input.Length == 0))return;
             if (format == null)return;
@@ -279,7 +276,7 @@ namespace Ratatoskr.Forms
             if (paths.Count() == 0)return;
 
             if (format == null) {
-                format = FileManager.AllFormat.SelectReaderFormatFromPath(paths.First());
+                format = FileManager.FileOpen.SelectReaderFormatFromPath(paths.First());
             }
             if (format == null)return;
 
@@ -287,8 +284,30 @@ namespace Ratatoskr.Forms
 
             /* パケットログ */
             if (reader.reader is IPacketLogReader) {
-                GatePacketManager.LoadPacketFile(paths, reader.reader as PacketLogReader, reader.option);
+                FileOpen_PacketLog(paths, reader.reader as PacketLogReader, reader.option);
+            } else if (reader.reader is ISystemConfigReader) {
+                FileOpen_SystemConfig(paths, reader.reader as SystemConfigReader);
             }
+        }
+
+        private static void FileOpen_PacketLog(IEnumerable<string> paths, PacketLogReader reader, FileFormatOption option)
+        {
+            if (reader == null)return;
+
+            GatePacketManager.LoadPacketFile(paths, reader, option);
+        }
+
+        private static void FileOpen_SystemConfig(IEnumerable<string> paths, SystemConfigReader reader)
+        {
+            if (reader == null)return;
+
+            if (!reader.Open(null, paths.First())) {
+                return;
+            }
+
+            reader.Load();
+
+            reader.Close();
         }
 
         public static string AnyFileOpen(string init_dir = null)
@@ -318,7 +337,7 @@ namespace Ratatoskr.Forms
                 || (last_save_format_ == null)
             ) {
                 /* ダイアログ表示 */
-                last_save_format_ = FileManager.AllFormat.SelectWriterFormatFromDialog(ConfigManager.GetCurrentDirectory(), ref last_save_path_, typeof(IPacketLogWriter));
+                last_save_format_ = FileManager.PacketSave.SelectWriterFormatFromDialog(ConfigManager.GetCurrentDirectory(), ref last_save_path_, typeof(IPacketLogWriter));
             }
             
             if (last_save_path_ == null)return;

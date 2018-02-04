@@ -10,17 +10,33 @@ namespace Ratatoskr.Configs.SystemConfigs
 {
     internal sealed class ProfileObjectConfig
     {
+        public string ID   { get; set; } = "";
         public string Name { get; set; } = "";
-        public string Path { get; set; } = "";
 
 
-        public ProfileObjectConfig(string name, string path)
+        public ProfileObjectConfig(string id, string name)
         {
+            ID = id;
             Name = name;
-            Path = path;
         }
 
         public ProfileObjectConfig() { }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ProfileObjectConfig) {
+                return ((obj as ProfileObjectConfig).ID == ID);
+            } else if (obj is string) {
+                return ((obj as string) == ID);
+            }
+
+            return (base.Equals(obj));
+        }
+
+        public override string ToString()
+        {
+            return (Name);
+        }
     }
 
     internal sealed class ProfileListConfig : IConfigDataReadOnly<List<ProfileObjectConfig>>, IConfigReader, IConfigWriter
@@ -33,7 +49,6 @@ namespace Ratatoskr.Configs.SystemConfigs
 
         public ProfileListConfig()
         {
-            Value.Add(new ProfileObjectConfig("default", "profile"));
         }
 
         public bool LoadConfigData(XmlElement xml_own)
@@ -59,8 +74,8 @@ namespace Ratatoskr.Configs.SystemConfigs
             var newobj = new ProfileObjectConfig();
 
             /* パラメータ読み込み */
+            newobj.ID = xml_node.GetAttribute("id");
             newobj.Name = xml_node.GetAttribute("name");
-            newobj.Path = xml_node.GetAttribute("path");
 
             /* 設定リストへ追加 */
             Value.Add(newobj);
@@ -71,8 +86,8 @@ namespace Ratatoskr.Configs.SystemConfigs
             foreach (var info in Value) {
                 var xml_data = xml_own.OwnerDocument.CreateElement(XML_NODE_DATA);
 
+                xml_data.SetAttribute("id", info.ID);
                 xml_data.SetAttribute("name", info.Name);
-                xml_data.SetAttribute("path", info.Path);
 
                 xml_own.AppendChild(xml_data);
             }
