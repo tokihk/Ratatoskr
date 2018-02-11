@@ -1,4 +1,4 @@
-# Filtering
+# [Packet Converter] - Filtering
 
 Add `[Menu Bar]->[View]->[Add converter]- [Filter]`.
 

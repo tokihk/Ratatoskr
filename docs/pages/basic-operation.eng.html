@@ -656,29 +656,119 @@ pre {
 
 </head>
 <body>
-<h1>[Packet Converter] - パケット結合/分割</h1>
-<p><code>[Menu Bar] -&gt; [View] -&gt; [Add converter] - [Grouping]</code>を追加します。</p>
-<p>ルールに従ってパケットを結合したり分割することができます。</p>
+<h1>Basic usage</h1>
+<h2>1.Add packet view</h2>
+<p>You can add any packet view from <code>[Menu Bar]-&gt;[View]-&gt;[Add packet view]</code>.</p>
+<h2>2.Set the gate</h2>
+<p>You can set the gate from the button of the gate bar.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Icon</th>
+<th style="text-align:center">state</th>
+<th>operation method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="../_images/gate-empty.png" alt=""></td>
+<td style="text-align:center">Not set</td>
+<td>Mouse Left /Right click:Gate edit</td>
+</tr>
+<tr>
+<td style="text-align:center"><img src="../_images/gate-off.png" alt=""></td>
+<td style="text-align:center">Configured</td>
+<td>Left mouse click:Connect /disconnect<br>Mouse right click:Gate edit<br>Mouse right hold:Gate reset</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Icon</th>
+<th style="text-align:center">State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="../_images/connect_on.png" alt=""></td>
+<td style="text-align:center">Connection status</td>
+</tr>
+<tr>
+<td style="text-align:center"><img src="../_images/connect_busy.png" alt=""></td>
+<td style="text-align:center">Preparing for connection</td>
+</tr>
+<tr>
+<td style="text-align:center"><img src="../_images/connect_off.png" alt=""></td>
+<td style="text-align:center">Disconnected state</td>
+</tr>
+</tbody>
+</table>
+<h2>3.Send</h2>
+<p>Data can be sent from the transmission control box at the bottom of the frame.
+<img src="../_images/send_control_box.png" alt=""></p>
+<p>The destination gate is specified with <code>wild card 'in</code>Target alias`.</p>
 <ul>
 <li>
-<p><strong>Data patterns match</strong></p>
-<p>記述したパターンに一致するデータを検出するまでパケットを結合します。<br>
-エディット送信モードと同じ記述形式でパターンを入力します。</p>
-</li>
-<li>
-<p><strong>Data size</strong></p>
-<p>変換機を通過するときに指定サイズのパケットとなって出力されます。</p>
-</li>
-<li>
-<p><strong>Receive timeout</strong></p>
-<p>変換機へのパケット入力間隔が指定時間以上になるまでパケットが結合されます。</p>
-</li>
-<li>
-<p><strong>Interval</strong></p>
-<p>変換機へのパケット入力間隔に関わらず、指定間隔でパケットが出力されます。<br>
-出力されるまでに変換機へ入力されたパケットは結合されます。</p>
+<p><img src="../_images/pen_32x32.png" alt=""> <strong>Edit transmission mode</strong></p>
+<p>Enter in hexadecimal notation and send with Enter key.
+    It recognizes it as a separate data with the 3rd character or space.</p>
+<p>Enclose it with <code>'...'</code>to convert the enclosed character to character code.
+    You can change the character code by enclosing it with <code>&lt;...&gt;</code>.(Default is utf-8)</p>
+<p>If you check <code>Preview</code>, you can check the data actually sent.</p>
 </li>
 </ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Input data</th>
+<th style="text-align:left">Transmission data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>0123456789</code></td>
+<td style="text-align:left"><code>01 23 45 67 89</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>0 1 2 3 4</code></td>
+<td style="text-align:left"><code>00 01 02 03 04</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>02'test '03</code></td>
+<td style="text-align:left"><code>02 74 65 73 74 03</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>02 'あいうえお'03</code></td>
+<td style="text-align:left"><code>02 E 3 81 82 E 3 81 84 E 3 81 86 E 3 81 88 E 3 81 8 A 03</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>02 &lt;shift-jis&gt;'あいうえお'03</code></td>
+<td style="text-align:left"><code>02 82 A 0 82 A 2 82 A 4 82 A 6 82 A 8 03</code></td>
+</tr>
+</tbody>
+</table>
+<br>
+<ul>
+<li>
+<p><img src="../_images/file_32x32.png" alt=""> <strong>File transmission mode</strong></p>
+<p>Drag and drop transmission data or select from the file selection dialog.<br>
+You can not drag and drop when in administrator mode.<br>
+Send with Enter key.</p>
+</li>
+</ul>
+<h2>4.Receive</h2>
+<p>When data is input to the gate from the outside, data is displayed in the packet view.</p>
+<h1>Useful usage (real time conversion)</h1>
+<p>Ratatoskr has a function to process transmitted /received packets in real time.
+Conversion functions can be freely combined, which is very useful for data analysis.</p>
+<p>The converter is added from <code>[Menu Bar]-&gt;[View]-&gt;[Add converter]</code>.
+The added transducer will be added under the gate button bar.</p>
+<p><img src="../_images/converter.png" alt=""></p>
+<p>The conversion order is processed sequentially from the transducers arranged above.
+You can swap the added transducer by dragging the left bar.</p>
+<p>Packets subject to converter can be specified for each converter.
+If no target packet is specified, all packets passing through the converter are targeted.</p>
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-# Packet Join /Split
+# [Packet Converter] - Packet Join /Split
 
 Add `[Menu Bar]->[View]->[Add converter]- [Grouping]`.
 

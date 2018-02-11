@@ -1,4 +1,4 @@
-# パケット結合/分割
+# [Packet Converter] - パケット結合/分割
 
 `[Menu Bar] -> [View] -> [Add converter] - [Grouping]`を追加します。
 

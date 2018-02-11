@@ -1,4 +1,4 @@
-# パケットフィルター
+# [Packet Converter] - パケットフィルター
 
 `[Menu Bar] -> [View] -> [Add converter] - [Filter]`を追加します。
 
