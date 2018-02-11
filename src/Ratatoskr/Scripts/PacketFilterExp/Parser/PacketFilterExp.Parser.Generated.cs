@@ -4,9 +4,9 @@
 
 // GPPG version 1.5.2
 // Machine:  HITOSHI-WIN10
-// DateTime: 2018/01/06 21:43:39
+// DateTime: 2018/02/11 15:36:37
 // UserName: TokiH
-// Input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/10/15 15:13:48>
+// Input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/11 15:36:30>
 
 // options: no-lines gplex
 
@@ -53,9 +53,9 @@ internal class ScanObj {
 [GeneratedCodeAttribute( "Gardens Point Parser Generator", "1.5.2")]
 internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
 {
-  // Verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/10/15 15:13:48
+  // Verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/11 15:36:30
     private ExpressionObject exp_obj_ = null;
-  // End verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2017/10/15 15:13:48
+  // End verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/11 15:36:30
 
 #pragma warning disable 649
   private static Dictionary<int, string> aliases;
@@ -317,22 +317,26 @@ internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
 		exp_obj_ = new ExpressionObject(exp_text);
 	}
 
-    public static ExpressionObject Parse(string exp)
-    {
-         if (exp == null)return (null);
-         if (exp.Length == 0)return (null);
+	public static ExpressionObject Parse(string exp)
+	{
+		try {
+			if (exp == null)return (null);
+			if (exp.Length == 0)return (null);
 
-         var scanner = new Scanner();
+			var scanner = new Scanner();
 
-         scanner.SetSource(exp, 0);
+			scanner.SetSource(exp, 0);
          
-         var parser = new ExpressionParser(exp);
+			var parser = new ExpressionParser(exp);
          
-         parser.Scanner = scanner;
+			parser.Scanner = scanner;
          
-         if (!parser.Parse())return (null);
+			if (!parser.Parse())return (null);
          
-         return (parser.exp_obj_);
-    }
+			return (parser.exp_obj_);
+		} catch {
+			return (null);
+		}
+	}
 }
 }

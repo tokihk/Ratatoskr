@@ -81,6 +81,8 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_Profile_OpenDir = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.MenuBar_File_ExportConfig = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -277,6 +279,8 @@
             this.MenuBar_File_Save,
             this.MenuBar_File_SaveAs,
             this.toolStripSeparator1,
+            this.MenuBar_File_ExportConfig,
+            this.toolStripSeparator9,
             this.MenuBar_File_Exit});
             this.MenuBar_File.Name = "MenuBar_File";
             this.MenuBar_File.Size = new System.Drawing.Size(37, 25);
@@ -285,14 +289,14 @@
             // MenuBar_File_Open
             // 
             this.MenuBar_File_Open.Name = "MenuBar_File_Open";
-            this.MenuBar_File_Open.Size = new System.Drawing.Size(112, 22);
+            this.MenuBar_File_Open.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_File_Open.Tag = "FileOpen";
             this.MenuBar_File_Open.Text = "Open";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(109, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // MenuBar_File_Save
             // 
@@ -300,21 +304,21 @@
             this.MenuBar_File_Save_Original,
             this.MenuBar_File_Save_Shaping});
             this.MenuBar_File_Save.Name = "MenuBar_File_Save";
-            this.MenuBar_File_Save.Size = new System.Drawing.Size(112, 22);
+            this.MenuBar_File_Save.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_File_Save.Text = "Save";
             this.MenuBar_File_Save.Click += new System.EventHandler(this.OnMenuBarClick);
             // 
             // MenuBar_File_Save_Original
             // 
             this.MenuBar_File_Save_Original.Name = "MenuBar_File_Save_Original";
-            this.MenuBar_File_Save_Original.Size = new System.Drawing.Size(139, 22);
+            this.MenuBar_File_Save_Original.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_File_Save_Original.Tag = "PacketSaveRuleOff";
             this.MenuBar_File_Save_Original.Text = "Raw packets";
             // 
             // MenuBar_File_Save_Shaping
             // 
             this.MenuBar_File_Save_Shaping.Name = "MenuBar_File_Save_Shaping";
-            this.MenuBar_File_Save_Shaping.Size = new System.Drawing.Size(139, 22);
+            this.MenuBar_File_Save_Shaping.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_File_Save_Shaping.Tag = "PacketSaveRuleOn";
             this.MenuBar_File_Save_Shaping.Text = "View packet";
             // 
@@ -324,32 +328,32 @@
             this.MenuBar_File_SaveAs_Original,
             this.MenuBar_File_SaveAs_Shaping});
             this.MenuBar_File_SaveAs.Name = "MenuBar_File_SaveAs";
-            this.MenuBar_File_SaveAs.Size = new System.Drawing.Size(112, 22);
+            this.MenuBar_File_SaveAs.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_File_SaveAs.Text = "Save as";
             // 
             // MenuBar_File_SaveAs_Original
             // 
             this.MenuBar_File_SaveAs_Original.Name = "MenuBar_File_SaveAs_Original";
-            this.MenuBar_File_SaveAs_Original.Size = new System.Drawing.Size(151, 22);
+            this.MenuBar_File_SaveAs_Original.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_File_SaveAs_Original.Tag = "PacketSaveAsRuleOff";
             this.MenuBar_File_SaveAs_Original.Text = "Raw packets...";
             // 
             // MenuBar_File_SaveAs_Shaping
             // 
             this.MenuBar_File_SaveAs_Shaping.Name = "MenuBar_File_SaveAs_Shaping";
-            this.MenuBar_File_SaveAs_Shaping.Size = new System.Drawing.Size(151, 22);
+            this.MenuBar_File_SaveAs_Shaping.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_File_SaveAs_Shaping.Tag = "PacketSaveAsRuleOn";
             this.MenuBar_File_SaveAs_Shaping.Text = "View packets...";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(109, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // MenuBar_File_Exit
             // 
             this.MenuBar_File_Exit.Name = "MenuBar_File_Exit";
-            this.MenuBar_File_Exit.Size = new System.Drawing.Size(112, 22);
+            this.MenuBar_File_Exit.Size = new System.Drawing.Size(152, 22);
             this.MenuBar_File_Exit.Tag = "ApplicationExit";
             this.MenuBar_File_Exit.Text = "Exit";
             this.MenuBar_File_Exit.Click += new System.EventHandler(this.MenuBar_File_Exit_Click);
@@ -470,6 +474,7 @@
             this.MenuBar_ProfileList.Font = new System.Drawing.Font("メイリオ", 8F);
             this.MenuBar_ProfileList.Name = "MenuBar_ProfileList";
             this.MenuBar_ProfileList.Size = new System.Drawing.Size(180, 25);
+            this.MenuBar_ProfileList.Visible = false;
             this.MenuBar_ProfileList.DropDown += new System.EventHandler(this.MenuBar_ProfileList_DropDown);
             this.MenuBar_ProfileList.SelectedIndexChanged += new System.EventHandler(this.MenuBar_ProfileList_SelectedIndexChanged);
             // 
@@ -489,6 +494,7 @@
             this.MenuBar_Profile.Name = "MenuBar_Profile";
             this.MenuBar_Profile.Size = new System.Drawing.Size(28, 25);
             this.MenuBar_Profile.Text = "Profile";
+            this.MenuBar_Profile.Visible = false;
             // 
             // MenuBar_Profile_Edit
             // 
@@ -546,6 +552,20 @@
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1, 0);
             this.toolStrip1.TabIndex = 1;
+            // 
+            // MenuBar_File_ExportConfig
+            // 
+            this.MenuBar_File_ExportConfig.Name = "MenuBar_File_ExportConfig";
+            this.MenuBar_File_ExportConfig.Size = new System.Drawing.Size(152, 22);
+            this.MenuBar_File_ExportConfig.Text = "Export config";
+            this.MenuBar_File_ExportConfig.Visible = false;
+            this.MenuBar_File_ExportConfig.Click += new System.EventHandler(this.MenuBar_File_ExportConfig_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator9.Visible = false;
             // 
             // MainFrame
             // 
@@ -633,5 +653,7 @@
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_OpenDir;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_Edit;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_File_ExportConfig;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
     }
 }

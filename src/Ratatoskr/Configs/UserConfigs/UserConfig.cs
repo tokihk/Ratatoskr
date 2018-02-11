@@ -23,8 +23,10 @@ namespace Ratatoskr.Configs.UserConfigs
     {
         private const string CONFIG_FILE_NAME = "setting.xml";
 
-        public StringConfig ProfileName    { get; } = new StringConfig(Environment.UserName + " " + DateTime.Now.ToString("yyyyMMddHHmmss"));
-        public StringConfig ProfileComment { get; } = new StringConfig("");
+        public DateTimeConfig CreateDateTime { get; } = new DateTimeConfig(DateTime.UtcNow);
+
+        public StringConfig   ProfileName    { get; } = new StringConfig(Environment.UserName + " " + DateTime.Now.ToString("yyyyMMddHHmmss"));
+        public StringConfig   ProfileComment { get; } = new StringConfig("");
 
         public BoolConfig ReadOnlyLock { get; } = new BoolConfig(false);
         public BoolConfig ReadOnly     { get; } = new BoolConfig(false);

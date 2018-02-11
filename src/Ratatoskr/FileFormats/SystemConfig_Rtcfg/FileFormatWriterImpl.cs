@@ -13,7 +13,7 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
 {
     internal sealed class FileFormatWriterImpl : SystemConfigWriter
     {
-        private SystemConfigWriterOption option_;
+        private SystemConfigOption option_;
 
         private BinaryWriter writer_ = null;
 
@@ -24,9 +24,9 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
 
         protected override bool OnOpenStream(FileFormatOption option, Stream stream)
         {
-            option_ = option as SystemConfigWriterOption;
+            option_ = option as SystemConfigOption;
             if (option_ == null) {
-                option_ = new SystemConfigWriterOption();
+                option_ = new SystemConfigOption();
             }
 
             /* プロファイルが存在しないときは失敗 */
@@ -63,7 +63,7 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
         private bool WriteHeader(BinaryWriter writer)
         {
             try {
-                /* Format Version (0 Byte) */
+                /* Format Version (4 Byte) */
                 writer.Write((uint)0);
 
                 /* Profile ID (1 + xx Byte) */
@@ -82,14 +82,15 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
         private void WriteProfile(BinaryWriter writer)
         {
             using (var stream = new MemoryStream()) {
-                using (var archive = new ZipArchive(stream, ZipArchiveMode.Create)) {
+                /* ディレクトリ内コンテンツを全て圧縮 */
+                using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, true)) {
                     foreach (var path in Directory.EnumerateFiles(ConfigManager.GetProfilePath(option_.TargetProfileID))) {
                         archive.CreateEntryFromFile(path, Path.GetFileName(path));
                     }
-
-                    stream.Position = 0;
-                    stream.CopyTo(writer.BaseStream);
                 }
+
+                /* 圧縮したデータをファイルへ出力 */
+                stream.WriteTo(writer.BaseStream);
             }
         }
     }

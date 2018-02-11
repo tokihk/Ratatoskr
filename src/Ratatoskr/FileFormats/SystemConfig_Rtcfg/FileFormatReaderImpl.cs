@@ -13,9 +13,11 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
 {
     internal sealed class FileFormatReaderImpl : SystemConfigReader
     {
-        private string profile_id_ = null;
+        private SystemConfigOption option_;
 
         private BinaryReader reader_ = null;
+
+        private string profile_id_ = null;
 
         
         public FileFormatReaderImpl() : base()
@@ -24,6 +26,11 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
 
         protected override bool OnOpenStream(FileFormatOption option, Stream stream)
         {
+            option_ = option as SystemConfigOption;
+            if (option_ == null) {
+                option_ = new SystemConfigOption();
+            }
+
             reader_ = new BinaryReader(stream);
 
             /* パターンコードチェック */
@@ -37,7 +44,7 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
             /* ヘッダー情報読み込み */
             if (!ReadHeader(reader_))return (false);
 
-            /* 同IDのプロファイルが存在する場合は失敗 */
+            /* 同IDのプロファイルが存在する場合は上書き */
             if (ConfigManager.ProfileIsExist(profile_id_)) {
                 return (false);
             }

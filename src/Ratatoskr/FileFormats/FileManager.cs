@@ -25,7 +25,7 @@ namespace Ratatoskr.FileFormats
             FileOpen.Formats.Add(format_plog_rtcap);
             FileOpen.Formats.Add(format_plog_pcap);
             FileOpen.Formats.Add(format_plog_csv);
-            FileOpen.Formats.Add(format_sysconf_rtcfg);
+//            FileOpen.Formats.Add(format_sysconf_rtcfg);
 
             PacketOpen.Formats.Add(format_plog_rtcap);
             PacketOpen.Formats.Add(format_plog_csv);

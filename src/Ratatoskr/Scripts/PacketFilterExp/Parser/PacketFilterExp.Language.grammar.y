@@ -173,20 +173,24 @@ primary_expression
 		exp_obj_ = new ExpressionObject(exp_text);
 	}
 
-    public static ExpressionObject Parse(string exp)
-    {
-         if (exp == null)return (null);
-         if (exp.Length == 0)return (null);
+	public static ExpressionObject Parse(string exp)
+	{
+		try {
+			if (exp == null)return (null);
+			if (exp.Length == 0)return (null);
 
-         var scanner = new Scanner();
+			var scanner = new Scanner();
 
-         scanner.SetSource(exp, 0);
+			scanner.SetSource(exp, 0);
          
-         var parser = new ExpressionParser(exp);
+			var parser = new ExpressionParser(exp);
          
-         parser.Scanner = scanner;
+			parser.Scanner = scanner;
          
-         if (!parser.Parse())return (null);
+			if (!parser.Parse())return (null);
          
-         return (parser.exp_obj_);
-    }
+			return (parser.exp_obj_);
+		} catch {
+			return (null);
+		}
+	}

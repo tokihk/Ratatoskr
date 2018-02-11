@@ -15,6 +15,30 @@ namespace Ratatoskr.Configs
 {
     internal static class ConfigManager
     {
+        public class ProfileInfo
+        {
+            public string     ID     { get; } = "";
+            public UserConfig Config { get; } = null;
+
+
+            private ProfileInfo(string profile_id, UserConfig config)
+            {
+                ID = profile_id;
+                Config = config;
+            }
+
+            public static ProfileInfo Load(string profile_id)
+            {
+                var config = new UserConfig();
+
+                /* 読み込めないプロファイルは無視 */
+                if (!config.Load(GetProfilePath(profile_id)))return (null);
+
+                return (new ProfileInfo(profile_id, config));
+            }
+        }
+
+
         public static FixedConfig    Fixed    { get; } = new FixedConfig();
         public static SystemConfig   System   { get; } = new SystemConfig();
         public static UserConfig     User     { get; } = new UserConfig();
@@ -114,18 +138,17 @@ namespace Ratatoskr.Configs
             return (Directory.Exists(GetProfilePath(profile_id)));
         }
 
-        public static IEnumerable<ProfileObjectConfig> GetProfileList()
+        public static IEnumerable<ProfileInfo> GetProfileList()
         {
-            var profiles = new List<ProfileObjectConfig>();
-            var config = (UserConfig)null;
+            var profiles = new List<ProfileInfo>();
+            var profile = (ProfileInfo)null;
 
             foreach (var dir in Directory.EnumerateDirectories(GetProfileRootPath())) {
-                config = new UserConfig();
+                profile = ProfileInfo.Load(Path.GetFileName(dir));
 
-                /* 読み込めないプロファイルは無視 */
-                if (!config.Load(dir))continue;
+                if (profile == null)continue;
 
-                profiles.Add(new ProfileObjectConfig(Path.GetFileName(dir), config.ToString()));
+                profiles.Add(profile);
             }
 
             return (profiles);

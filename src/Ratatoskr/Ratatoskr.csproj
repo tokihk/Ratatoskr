@@ -306,7 +306,7 @@
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatReaderImpl.cs" />
     <Compile Include="FileFormats\SystemConfigReader.cs" />
     <Compile Include="FileFormats\SystemConfigWriter.cs" />
-    <Compile Include="FileFormats\SystemConfigWriterOption.cs" />
+    <Compile Include="FileFormats\SystemConfigOption.cs" />
     <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatClassImpl.cs" />
     <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatReaderImpl.cs" />
     <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatWriterImpl.cs" />
@@ -315,6 +315,12 @@
     </Compile>
     <Compile Include="Forms\Dialog\ProfileConfigDialog.Designer.cs">
       <DependentUpon>ProfileConfigDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialog\ProfileManagerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialog\ProfileManagerDialog.Designer.cs">
+      <DependentUpon>ProfileManagerDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Dialog\WatchEventNotifyDialog.cs">
       <SubType>Form</SubType>
@@ -784,6 +790,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialog\ProfileConfigDialog.resx">
       <DependentUpon>ProfileConfigDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialog\ProfileManagerDialog.resx">
+      <DependentUpon>ProfileManagerDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialog\WatchEventNotifyDialog.resx">
       <DependentUpon>WatchEventNotifyDialog.cs</DependentUpon>

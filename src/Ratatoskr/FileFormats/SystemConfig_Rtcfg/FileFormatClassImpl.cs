@@ -14,7 +14,7 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
         public static readonly byte[] FORMATCODE = new byte[]{ 0x60, 0xCB, 0x7F, 0xF0, 0x68, 0x9C, 0x44, 0xD9 };
 
         
-        public override string   Name          { get; } = ConfigManager.Fixed.ApplicationName.Value + " config file";
+        public override string   Name          { get; } = ConfigManager.Fixed.ApplicationName.Value + " Config";
 
         public override string[] FileExtension { get; } = new [] { "rtcfg" };
 
@@ -36,7 +36,7 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
 
         public override FileFormatOption CreateWriterOption()
         {
-            return (new SystemConfigWriterOption());
+            return (new SystemConfigOption());
         }
     }
 }

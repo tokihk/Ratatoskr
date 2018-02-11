@@ -487,6 +487,25 @@ namespace Ratatoskr.Forms.MainFrame
             ApplyDataRateTarget();
         }
 
+        private void MenuBar_File_ExportConfig_Click(object sender, EventArgs e)
+        {
+            var writer = FileManager.ProfileExport.SelectWriterFromDialog(null);
+            var writer_w = writer.writer as SystemConfigWriter;
+            var writer_o = writer.option as SystemConfigOption;
+
+            if (writer_w == null)return;
+            if (writer_o == null)return;
+
+            /* 出力設定 */
+            writer_o.TargetProfileID = ConfigManager.GetCurrentProfileID();
+
+            if (!writer_w.Open(writer.option, writer.path))return;
+
+            writer_w.Save();
+
+            writer_w.Close();
+        }
+
         private void MenuBar_ProfileList_DropDown(object sender, EventArgs e)
         {
             UpdateProfileList();
@@ -529,7 +548,7 @@ namespace Ratatoskr.Forms.MainFrame
         {
             var writer = FileManager.ProfileExport.SelectWriterFromDialog(null);
             var writer_w = writer.writer as SystemConfigWriter;
-            var writer_o = writer.option as SystemConfigWriterOption;
+            var writer_o = writer.option as SystemConfigOption;
 
             if (writer_w == null)return;
             if (writer_o == null)return;

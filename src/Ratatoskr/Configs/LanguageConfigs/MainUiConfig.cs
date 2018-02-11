@@ -14,7 +14,7 @@ namespace Ratatoskr.Configs.LanguageConfigs
     {
         public StringConfig Title_AdminMode { get; } = new StringConfig("Administrator Mode");
 
-        public StringConfig AboutForm_Title   { get; } = new StringConfig("About Ratatoskr");
+        public StringConfig AboutForm_Title   { get; } = new StringConfig("About " + ConfigManager.Fixed.ApplicationName.Value);
 
         public StringConfig MenuBar_File                 { get; } = new StringConfig("File");
         public StringConfig MenuBar_File_Open            { get; } = new StringConfig("Open");
@@ -28,7 +28,7 @@ namespace Ratatoskr.Configs.LanguageConfigs
 
         public StringConfig MenuBar_Edit                 { get; } = new StringConfig("Edit");
 
-        public StringConfig MenuBar_Help_About           { get; } = new StringConfig("About Ratatoskr");
+        public StringConfig MenuBar_Help_About           { get; } = new StringConfig("About " + ConfigManager.Fixed.ApplicationName.Value);
 
         public StringConfig SCmdPanel_Target  { get; } = new StringConfig("Target");
         public StringConfig SCmdPanel_Command { get; } = new StringConfig("Command");

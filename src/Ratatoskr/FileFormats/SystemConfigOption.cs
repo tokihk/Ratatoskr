@@ -7,12 +7,12 @@ using Ratatoskr.Generic.Packet;
 
 namespace Ratatoskr.FileFormats
 {
-    internal sealed class SystemConfigWriterOption : FileFormatOption
+    internal sealed class SystemConfigOption : FileFormatOption
     {
         public string TargetProfileID { get; set; } = "";
 
 
-        public SystemConfigWriterOption()
+        public SystemConfigOption()
         {
         }
 
