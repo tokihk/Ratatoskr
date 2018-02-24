@@ -52,6 +52,9 @@ namespace Ratatoskr.FileFormats
         protected virtual bool OnOpenPath(FileFormatOption option, string path, bool is_append)
         {
             try {
+                /* 親フォルダ生成 */
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+
                 BaseStream = new FileStream(path, (is_append) ? (FileMode.Append) : (FileMode.Create));
 
                 if (!OnOpenStream(Option, BaseStream)) {

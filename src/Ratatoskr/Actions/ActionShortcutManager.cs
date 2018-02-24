@@ -31,6 +31,7 @@ namespace Ratatoskr.Actions
         AutoScrollToggle,
 
         ShowConfigDialog,
+        ShowAppDocument,
         ShowAppInformation,
     }
 
@@ -73,6 +74,9 @@ namespace Ratatoskr.Actions
                     break;
                 case ActionShortcutId.AutoTimeStampToggle:
                     action = new Action_AutoTimeStamp(!ConfigManager.User.Option.AutoTimeStamp.Value);
+                    break;
+                case ActionShortcutId.ShowAppDocument:
+                    action = new Action_ShowAppDocument();
                     break;
                 case ActionShortcutId.ShowAppInformation:
                     action = new Action_ShowAppInfo();

@@ -8,7 +8,7 @@ using Ratatoskr.Generic.Packet;
 
 namespace Ratatoskr.FileFormats
 {
-    internal class PacketLogReader : FileFormatReader, IPacketLogReader
+    internal class PacketLogReader : FileFormatReader
     {
         public PacketObject ReadPacket()
         {

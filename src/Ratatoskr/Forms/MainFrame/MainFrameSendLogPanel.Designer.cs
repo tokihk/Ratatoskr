@@ -1,6 +1,6 @@
 ﻿namespace Ratatoskr.Forms.MainFrame
 {
-    partial class MainFrameSendFilePanel
+    partial class MainFrameSendLogPanel
     {
         /// <summary> 
         /// 必要なデザイナー変数です。
@@ -28,11 +28,11 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.CBox_FileList = new System.Windows.Forms.ComboBox();
+            this.CBox_LogList = new System.Windows.Forms.ComboBox();
             this.Btn_Cancel = new System.Windows.Forms.Button();
             this.Btn_FileSelect = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.Num_BlockSize = new System.Windows.Forms.NumericUpDown();
+            this.CBox_PlayDataType = new System.Windows.Forms.ComboBox();
             this.Label_FileSize = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -40,7 +40,6 @@
             this.Label_TransSize = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Num_BlockSize)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,7 +47,7 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.CBox_FileList);
+            this.groupBox1.Controls.Add(this.CBox_LogList);
             this.groupBox1.Controls.Add(this.Btn_Cancel);
             this.groupBox1.Controls.Add(this.Btn_FileSelect);
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
@@ -57,21 +56,21 @@
             this.groupBox1.Size = new System.Drawing.Size(609, 44);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Send file path";
+            this.groupBox1.Text = "Play log path";
             // 
-            // CBox_FileList
+            // CBox_LogList
             // 
-            this.CBox_FileList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.CBox_LogList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.CBox_FileList.FormattingEnabled = true;
-            this.CBox_FileList.Location = new System.Drawing.Point(6, 16);
-            this.CBox_FileList.Name = "CBox_FileList";
-            this.CBox_FileList.Size = new System.Drawing.Size(525, 20);
-            this.CBox_FileList.TabIndex = 3;
-            this.CBox_FileList.TextChanged += new System.EventHandler(this.CBox_FileList_TextChanged);
-            this.CBox_FileList.DragDrop += new System.Windows.Forms.DragEventHandler(this.CBox_FileList_DragDrop);
-            this.CBox_FileList.DragEnter += new System.Windows.Forms.DragEventHandler(this.CBox_FileList_DragEnter);
-            this.CBox_FileList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CBox_FileList_KeyDown);
+            this.CBox_LogList.FormattingEnabled = true;
+            this.CBox_LogList.Location = new System.Drawing.Point(6, 16);
+            this.CBox_LogList.Name = "CBox_LogList";
+            this.CBox_LogList.Size = new System.Drawing.Size(525, 20);
+            this.CBox_LogList.TabIndex = 3;
+            this.CBox_LogList.TextChanged += new System.EventHandler(this.CBox_LogList_TextChanged);
+            this.CBox_LogList.DragDrop += new System.Windows.Forms.DragEventHandler(this.CBox_LogList_DragDrop);
+            this.CBox_LogList.DragEnter += new System.Windows.Forms.DragEventHandler(this.CBox_LogList_DragEnter);
+            this.CBox_LogList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CBox_LogList_KeyDown);
             // 
             // Btn_Cancel
             // 
@@ -103,32 +102,22 @@
             // groupBox2
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.Num_BlockSize);
+            this.groupBox2.Controls.Add(this.CBox_PlayDataType);
             this.groupBox2.Location = new System.Drawing.Point(838, 0);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(120, 46);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Block size (byte)";
+            this.groupBox2.Text = "Play data type";
             // 
-            // Num_BlockSize
+            // CBox_PlayDataType
             // 
-            this.Num_BlockSize.Location = new System.Drawing.Point(3, 18);
-            this.Num_BlockSize.Maximum = new decimal(new int[] {
-            524288,
-            0,
-            0,
-            0});
-            this.Num_BlockSize.Name = "Num_BlockSize";
-            this.Num_BlockSize.Size = new System.Drawing.Size(111, 19);
-            this.Num_BlockSize.TabIndex = 0;
-            this.Num_BlockSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Num_BlockSize.ThousandsSeparator = true;
-            this.Num_BlockSize.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+            this.CBox_PlayDataType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_PlayDataType.FormattingEnabled = true;
+            this.CBox_PlayDataType.Location = new System.Drawing.Point(6, 17);
+            this.CBox_PlayDataType.Name = "CBox_PlayDataType";
+            this.CBox_PlayDataType.Size = new System.Drawing.Size(108, 20);
+            this.CBox_PlayDataType.TabIndex = 0;
             // 
             // Label_FileSize
             // 
@@ -164,7 +153,7 @@
             this.groupBox3.Size = new System.Drawing.Size(217, 46);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Transfer size (byte)";
+            this.groupBox3.Text = "Play record status";
             // 
             // PBar_Progress
             // 
@@ -184,18 +173,17 @@
             this.Label_TransSize.Text = "9,999,999,999";
             this.Label_TransSize.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // MainFrameSendFilePanel
+            // MainFrameSendLogPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Name = "MainFrameSendFilePanel";
+            this.Name = "MainFrameSendLogPanel";
             this.Size = new System.Drawing.Size(961, 49);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Num_BlockSize)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
@@ -207,13 +195,13 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button Btn_FileSelect;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.NumericUpDown Num_BlockSize;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label Label_FileSize;
         private System.Windows.Forms.Button Btn_Cancel;
-        private System.Windows.Forms.ComboBox CBox_FileList;
+        private System.Windows.Forms.ComboBox CBox_LogList;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ProgressBar PBar_Progress;
         private System.Windows.Forms.Label Label_TransSize;
+        private System.Windows.Forms.ComboBox CBox_PlayDataType;
     }
 }

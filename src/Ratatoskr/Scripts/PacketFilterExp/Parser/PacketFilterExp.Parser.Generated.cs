@@ -4,9 +4,9 @@
 
 // GPPG version 1.5.2
 // Machine:  HITOSHI-WIN10
-// DateTime: 2018/02/11 15:36:37
+// DateTime: 2018/02/24 17:36:26
 // UserName: TokiH
-// Input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/11 15:36:30>
+// Input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/20 19:49:12>
 
 // options: no-lines gplex
 
@@ -53,9 +53,9 @@ internal class ScanObj {
 [GeneratedCodeAttribute( "Gardens Point Parser Generator", "1.5.2")]
 internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
 {
-  // Verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/11 15:36:30
+  // Verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/20 19:49:12
     private ExpressionObject exp_obj_ = null;
-  // End verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/11 15:36:30
+  // End verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/20 19:49:12
 
 #pragma warning disable 649
   private static Dictionary<int, string> aliases;
@@ -317,8 +317,8 @@ internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
 		exp_obj_ = new ExpressionObject(exp_text);
 	}
 
-	public static ExpressionObject Parse(string exp)
-	{
+    public static ExpressionObject Parse(string exp)
+    {
 		try {
 			if (exp == null)return (null);
 			if (exp.Length == 0)return (null);
@@ -337,6 +337,6 @@ internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
 		} catch {
 			return (null);
 		}
-	}
+    }
 }
 }

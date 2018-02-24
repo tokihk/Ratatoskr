@@ -31,8 +31,9 @@
             this.GBox_Target = new System.Windows.Forms.GroupBox();
             this.CBox_TargetList = new System.Windows.Forms.ComboBox();
             this.Panel_Contents = new System.Windows.Forms.Panel();
-            this.RBtn_ModeData = new System.Windows.Forms.RadioButton();
+            this.RBtn_ModeLog = new System.Windows.Forms.RadioButton();
             this.RBtn_ModeFile = new System.Windows.Forms.RadioButton();
+            this.RBtn_ModeData = new System.Windows.Forms.RadioButton();
             this.GBox_Target.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,24 +67,23 @@
             this.Panel_Contents.Location = new System.Drawing.Point(160, 0);
             this.Panel_Contents.Margin = new System.Windows.Forms.Padding(0);
             this.Panel_Contents.Name = "Panel_Contents";
-            this.Panel_Contents.Size = new System.Drawing.Size(544, 44);
+            this.Panel_Contents.Size = new System.Drawing.Size(487, 44);
             this.Panel_Contents.TabIndex = 2;
             // 
-            // RBtn_ModeData
+            // RBtn_ModeLog
             // 
-            this.RBtn_ModeData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.RBtn_ModeData.Appearance = System.Windows.Forms.Appearance.Button;
-            this.RBtn_ModeData.AutoSize = true;
-            this.RBtn_ModeData.Checked = true;
-            this.RBtn_ModeData.Image = global::Ratatoskr.Properties.Resources.pen_32x32;
-            this.RBtn_ModeData.Location = new System.Drawing.Point(705, 3);
-            this.RBtn_ModeData.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
-            this.RBtn_ModeData.Name = "RBtn_ModeData";
-            this.RBtn_ModeData.Size = new System.Drawing.Size(38, 38);
-            this.RBtn_ModeData.TabIndex = 3;
-            this.RBtn_ModeData.TabStop = true;
-            this.RBtn_ModeData.UseVisualStyleBackColor = true;
-            this.RBtn_ModeData.CheckedChanged += new System.EventHandler(this.Mode_CheckedChanged);
+            this.RBtn_ModeLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.RBtn_ModeLog.Appearance = System.Windows.Forms.Appearance.Button;
+            this.RBtn_ModeLog.AutoSize = true;
+            this.RBtn_ModeLog.FlatAppearance.BorderSize = 0;
+            this.RBtn_ModeLog.Image = global::Ratatoskr.Properties.Resources.play2_32x32;
+            this.RBtn_ModeLog.Location = new System.Drawing.Point(728, 3);
+            this.RBtn_ModeLog.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
+            this.RBtn_ModeLog.Name = "RBtn_ModeLog";
+            this.RBtn_ModeLog.Size = new System.Drawing.Size(38, 38);
+            this.RBtn_ModeLog.TabIndex = 5;
+            this.RBtn_ModeLog.UseVisualStyleBackColor = true;
+            this.RBtn_ModeLog.CheckedChanged += new System.EventHandler(this.Mode_CheckedChanged);
             // 
             // RBtn_ModeFile
             // 
@@ -92,7 +92,7 @@
             this.RBtn_ModeFile.AutoSize = true;
             this.RBtn_ModeFile.FlatAppearance.BorderSize = 0;
             this.RBtn_ModeFile.Image = global::Ratatoskr.Properties.Resources.file_32x32;
-            this.RBtn_ModeFile.Location = new System.Drawing.Point(745, 3);
+            this.RBtn_ModeFile.Location = new System.Drawing.Point(688, 3);
             this.RBtn_ModeFile.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
             this.RBtn_ModeFile.Name = "RBtn_ModeFile";
             this.RBtn_ModeFile.Size = new System.Drawing.Size(38, 38);
@@ -100,10 +100,27 @@
             this.RBtn_ModeFile.UseVisualStyleBackColor = true;
             this.RBtn_ModeFile.CheckedChanged += new System.EventHandler(this.Mode_CheckedChanged);
             // 
+            // RBtn_ModeData
+            // 
+            this.RBtn_ModeData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.RBtn_ModeData.Appearance = System.Windows.Forms.Appearance.Button;
+            this.RBtn_ModeData.AutoSize = true;
+            this.RBtn_ModeData.Checked = true;
+            this.RBtn_ModeData.Image = global::Ratatoskr.Properties.Resources.pen_32x32;
+            this.RBtn_ModeData.Location = new System.Drawing.Point(648, 3);
+            this.RBtn_ModeData.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
+            this.RBtn_ModeData.Name = "RBtn_ModeData";
+            this.RBtn_ModeData.Size = new System.Drawing.Size(38, 38);
+            this.RBtn_ModeData.TabIndex = 3;
+            this.RBtn_ModeData.TabStop = true;
+            this.RBtn_ModeData.UseVisualStyleBackColor = true;
+            this.RBtn_ModeData.CheckedChanged += new System.EventHandler(this.Mode_CheckedChanged);
+            // 
             // MainFrameSendPanelContainer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.RBtn_ModeLog);
             this.Controls.Add(this.RBtn_ModeFile);
             this.Controls.Add(this.RBtn_ModeData);
             this.Controls.Add(this.Panel_Contents);
@@ -111,7 +128,7 @@
             this.MaximumSize = new System.Drawing.Size(4096, 44);
             this.MinimumSize = new System.Drawing.Size(0, 44);
             this.Name = "MainFrameSendPanelContainer";
-            this.Size = new System.Drawing.Size(783, 44);
+            this.Size = new System.Drawing.Size(773, 44);
             this.GBox_Target.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -124,5 +141,6 @@
         private System.Windows.Forms.Panel Panel_Contents;
         private System.Windows.Forms.RadioButton RBtn_ModeData;
         private System.Windows.Forms.RadioButton RBtn_ModeFile;
+        private System.Windows.Forms.RadioButton RBtn_ModeLog;
     }
 }

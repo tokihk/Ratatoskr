@@ -201,7 +201,7 @@ namespace Ratatoskr.Generic.Packet
                 dt_min    = (int)reader.ReadByte();
                 dt_sec    = (int)reader.ReadByte();
                 dt_msec  |= (int)reader.ReadByte() << 8;
-                dt_msec   = (int)reader.ReadByte() << 0;
+                dt_msec  |= (int)reader.ReadByte() << 0;
 
                 var dt = new DateTime(dt_year, dt_month, dt_day, dt_hour, dt_min, dt_sec, dt_msec, DateTimeKind.Utc);
 

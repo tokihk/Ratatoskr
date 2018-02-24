@@ -16,15 +16,15 @@ namespace Ratatoskr.Forms.MainFrame
         private Control control_ = null;
 
 
-        public MainFrameDockContent(string name)
+        public MainFrameDockContent()
         {
             InitializeComponent();
-
-            ContentName = name;
         }
 
-        public MainFrameDockContent(string name, MainFrameDockPanel panel) : this(name)
+        public MainFrameDockContent(string name, MainFrameDockPanel panel) : this()
         {
+            ContentName = name;
+
             FormClosed += panel.OnChildFormClosed;
         }
 

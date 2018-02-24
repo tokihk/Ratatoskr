@@ -14,7 +14,7 @@ namespace Ratatoskr.Forms.MainFrame
         {
         }
 
-        public MainFrameSendPanel(MainFrameSendPanelContainer panel)
+        public MainFrameSendPanel(MainFrameSendPanelContainer panel) : this()
         {
             ControlPanel = panel;
         }
@@ -30,10 +30,10 @@ namespace Ratatoskr.Forms.MainFrame
             var target = ControlPanel.SendExecBegin();
 
             /* 送信処理が失敗した場合は即座に終了 */
-            if (target == null)return;
+            if (target.target_gates == null)return;
 
             /* コンテンツの送信処理開始 */
-            OnSendExecBegin(target);
+            OnSendExecBegin(target.target_alias);
         }
 
         private delegate void SendExecCompleteHandler(bool success);
@@ -44,14 +44,14 @@ namespace Ratatoskr.Forms.MainFrame
                 return;
             }
 
-            /* コンテンツの送信処理を終了 */
-            OnSendExecEnd(success);
-
             /* パネルの送信処理を終了 */
             ControlPanel.SendExecEnd(success);
+
+            /* コンテンツの送信処理を終了 */
+            OnSendExecEnd(success);
         }
 
-        protected virtual void OnSendExecBegin(Tuple<string, GateObject[]> target)
+        protected virtual void OnSendExecBegin(string target)
         {
             /* 何も定義していないときは即座に終了 */
             SendExecComplete(true);

@@ -33,9 +33,8 @@ namespace Ratatoskr.Forms.MainFrame
         private const string CONFIG_FILE_NAME = "setting-dock.xml";
 
 
-        private DockPanel DockPanel_Main;
-        private Dictionary<string, DockContentInfo> DockContents = new Dictionary<string, DockContentInfo>();
-
+        private DockPanel                           DockPanel_Main;
+        private Dictionary<string, DockContentInfo> DockContents;
 
         private MainFrameSendDataListPanel MFDC_CmdListPanel_Control;
         private MainFrameWatchListPanel    MFDC_WatchListPanel_Control;
@@ -54,6 +53,11 @@ namespace Ratatoskr.Forms.MainFrame
             DockPanel_Main.Dock = DockStyle.Fill;
             DockPanel_Main.DocumentStyle = DocumentStyle.DockingWindow;
             Controls.Add(DockPanel_Main);
+        }
+
+        public void LoadConfig()
+        {
+            ClearDockContents();
 
             AddDockContent(
                 "MFDC_CmdListPanel",
@@ -72,14 +76,23 @@ namespace Ratatoskr.Forms.MainFrame
                 DockState.DockBottomAutoHide,
                 false,
                 MFDC_WatchListPanel_Control = new MainFrameWatchListPanel());
-        }
 
-        public void LoadConfig()
-        {
             MFDC_CmdListPanel_Control.LoadConfig();
+            MFDC_WatchListPanel_Control.LoadConfig();
 
             LoadPacketViewConfig();
             LoadDockConfig();
+        }
+
+        private void LoadPacketViewConfig()
+        {
+            /* 全ビュー解放 */
+            ClearPacketView();
+
+            /* コンフィグからパケットビューを復元 */
+            ConfigManager.User.PacketView.Value.ForEach(
+                config => AddPacketView(
+                    config.ViewClassID, config.ViewObjectID, config.ViewProperty, false));
         }
 
         private void LoadDockConfig()
@@ -107,17 +120,6 @@ namespace Ratatoskr.Forms.MainFrame
 //            MFDC_CmdListPanel.Show(DockPanel_Main, DockState.DockBottomAutoHide);
 //            MFDC_RedirectListPanel.Show(DockPanel_Main, DockState.DockBottomAutoHide);
 //            MFDC_DataListPanel.Show(DockPanel_Main, DockState.DockBottomAutoHide);
-        }
-
-        private void LoadPacketViewConfig()
-        {
-            /* 全ビュー解放 */
-            ClearPacketView();
-
-            /* コンフィグからパケットビューを復元 */
-            ConfigManager.User.PacketView.Value.ForEach(
-                config => AddPacketView(
-                    config.ViewClassID, config.ViewObjectID, config.ViewProperty, false));
         }
 
         public void BackupConfig()
@@ -159,6 +161,11 @@ namespace Ratatoskr.Forms.MainFrame
             if (!DockContents.TryGetValue(persistString, out content))return (null);
 
             return (content.Content);
+        }
+
+        private void ClearDockContents()
+        {
+            DockContents = new Dictionary<string, DockContentInfo>();
         }
 
         private DockContentInfo AddDockContent(string name, string title, Icon icon, DockAreas areas, DockState state, bool can_close, Control control)

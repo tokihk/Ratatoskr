@@ -9,11 +9,11 @@ using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Generic.Packet;
 
-namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
+namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
 {
-    internal sealed class FileFormatWriterImpl : SystemConfigWriter
+    internal sealed class FileFormatWriterImpl : UserConfigWriter
     {
-        private SystemConfigOption option_;
+        private UserConfigWriterOption option_;
 
         private BinaryWriter writer_ = null;
 
@@ -24,9 +24,9 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
 
         protected override bool OnOpenStream(FileFormatOption option, Stream stream)
         {
-            option_ = option as SystemConfigOption;
+            option_ = option as UserConfigWriterOption;
             if (option_ == null) {
-                option_ = new SystemConfigOption();
+                option_ = new UserConfigWriterOption();
             }
 
             /* プロファイルが存在しないときは失敗 */
@@ -64,12 +64,14 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
         {
             try {
                 /* Format Version (4 Byte) */
-                writer.Write((uint)0);
+                writer.Write(FileFormatClassImpl.FORMATVERSION);
 
                 /* Profile ID (1 + xx Byte) */
-                writer.Write((byte)option_.TargetProfileID.Length);
-                if (option_.TargetProfileID.Length > 0) {
-                    writer.Write(Encoding.UTF8.GetBytes(option_.TargetProfileID));
+                var profile_id = option_.TargetProfileID.ToString("D");
+
+                writer.Write((byte)profile_id.Length);
+                if (profile_id.Length > 0) {
+                    writer.Write(Encoding.UTF8.GetBytes(profile_id));
                 }
 
                 return (true);
@@ -89,7 +91,13 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
                     }
                 }
 
-                /* 圧縮したデータをファイルへ出力 */
+                /* Archive Data Size (4 bytes) */
+                writer.Write((byte)(((UInt32)stream.Length >> 24) & 0xFF));
+                writer.Write((byte)(((UInt32)stream.Length >> 16) & 0xFF));
+                writer.Write((byte)(((UInt32)stream.Length >>  8) & 0xFF));
+                writer.Write((byte)(((UInt32)stream.Length >>  0) & 0xFF));
+
+                /* Archive Data (x bytes) */
                 stream.WriteTo(writer.BaseStream);
             }
         }

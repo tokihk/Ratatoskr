@@ -18,13 +18,9 @@ namespace Ratatoskr.Gate.PacketAutoSave
         {
         }
 
-        public override void Output(IEnumerable<PacketObject> packets)
+        protected override void OnOutput(IEnumerable<PacketObject> packets)
         {
-            while (packets.Count() > 0) {
-                var writer = GetWriter();
-
-                if (writer == null)return;
-
+            while ((packets != null) && (packets.Count() > 0)) {
                 /* 現在のファイルに出力するパケット数を取得 */
                 var copy_count = (int)Math.Min(
                                         packets.Count(),
@@ -36,7 +32,7 @@ namespace Ratatoskr.Gate.PacketAutoSave
                 /* 分割出力 */
                 if (copy_count < packets.Count()) {
                     /* パケット出力 */
-                    writer.Write(packets.Take(copy_count));
+                    WritePacket(packets.Take(copy_count));
 
                     /* パケットリスト更新 */
                     packets = packets.Skip(copy_count);
@@ -47,7 +43,8 @@ namespace Ratatoskr.Gate.PacketAutoSave
 
                 /* 全出力 */
                 } else {
-                    writer.Write(packets);
+                    WritePacket(packets);
+                    packets = null;
                 }
             }
         }

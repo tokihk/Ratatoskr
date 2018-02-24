@@ -173,8 +173,8 @@ primary_expression
 		exp_obj_ = new ExpressionObject(exp_text);
 	}
 
-	public static ExpressionObject Parse(string exp)
-	{
+    public static ExpressionObject Parse(string exp)
+    {
 		try {
 			if (exp == null)return (null);
 			if (exp.Length == 0)return (null);
@@ -193,4 +193,4 @@ primary_expression
 		} catch {
 			return (null);
 		}
-	}
+    }

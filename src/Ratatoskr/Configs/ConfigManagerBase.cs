@@ -57,17 +57,41 @@ namespace Ratatoskr.Configs
             if (!File.Exists(path))return (false);
 
             /* 設定値を読み込む */
-            if (!LoadXmlConfig(path))return (false);
+            if (!LoadXml(path))return (false);
 
             return (true);
         }
 
-        private bool LoadXmlConfig(string path)
+        public bool LoadXml(Stream stream)
         {
-            var xml_doc = new XmlDocument();
+            try {
+                var xml_doc = new XmlDocument();
 
-            /* XMLファイル読み込み */
-            xml_doc.Load(path);
+                xml_doc.Load(stream);
+
+                return (LoadXml(xml_doc));
+            } catch {
+                return (false);
+            }
+        }
+
+        private bool LoadXml(string path)
+        {
+            try {
+                var xml_doc = new XmlDocument();
+
+                /* XMLファイル読み込み */
+                xml_doc.Load(path);
+
+                return (LoadXml(xml_doc));
+            } catch {
+                return (false);
+            }
+        }
+
+        private bool LoadXml(XmlDocument xml_doc)
+        {
+            if (xml_doc == null)return (false);
 
             var xml_root = xml_doc.DocumentElement;
 

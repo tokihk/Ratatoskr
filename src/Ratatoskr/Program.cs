@@ -62,7 +62,7 @@ namespace Ratatoskr
         private static bool shutdown_req_ = false;
         private static bool restart_req_ = false;
 
-        private static string profile_name_load_ = null;
+        private static Guid profile_id_load_ = Guid.Empty;
 
 
         public static AppVersion Version   { get; private set; }
@@ -71,7 +71,11 @@ namespace Ratatoskr
         private static void CommandLineParse(string[] cmdlines)
         {
             foreach (var cmdline in cmdlines) {
-                CommandLineParse(cmdline);
+                var param_info = CommandLineParse(cmdline);
+
+                if (param_info.name == null)continue;
+
+                CommandLineSetup(param_info.name, param_info.value);
             }
         }
 
@@ -92,7 +96,10 @@ namespace Ratatoskr
                 /* プロファイル指定 */
                 case "-profile":
                 {
-                    profile_name_load_ = value;
+                    try {
+                        profile_id_load_ = Guid.Parse(value);
+                    } catch {
+                    }
                 }
                     break;
 
@@ -138,8 +145,11 @@ namespace Ratatoskr
             shutdown_req_ = false;
             restart_req_ = false;
 
-            /* マネージャー初期化 */
+            /* 下層マネージャー初期化 */
             ConfigManager.Startup();
+            GatePacketManager.Startup();
+
+            /* マネージャー初期化 */
             GateManager.Startup();
             FormUiManager.Startup();
             FormTaskManager.Startup();
@@ -147,7 +157,7 @@ namespace Ratatoskr
             UpdateManager.Startup();
 
             /* 設定ファイル読み込み */
-            ConfigManager.LoadAllConfig(profile_name_load_);
+            ConfigManager.LoadConfig(profile_id_load_);
 
             /* アップデート開始 */
             if (UpdateManager.UpdateExec()) {
@@ -172,7 +182,6 @@ namespace Ratatoskr
             /* イベント処理開始 */
             PacketAutoSaveManager.Setup();
             GateTransferManager.Startup();
-            GatePacketManager.Startup();
 
             return (true);
         }
@@ -217,24 +226,26 @@ namespace Ratatoskr
             }
         }
 
-        public static void RestartRequest(string profile_name = null)
+        public static void RestartRequest()
         {
             restart_req_ = true;
 
-            profile_name_load_ = profile_name;
-
             ShutdownRequest();
+        }
+
+        public static void ChangeProfile(Guid profile_id)
+        {
+            profile_id_load_ = profile_id;
+
+            RestartRequest();
         }
 
         private static void OnAppTimer(object sender, EventArgs e)
         {
             if (shutdown_req_) {
                 /* === シャットダウン処理 === */
-                /* 設定バックアップ */
-                FormUiManager.BackupConfig();
-
                 /* 設定ファイル保存 */
-                ConfigManager.SaveAllConfig();
+                ConfigManager.SaveConfig();
 
                 /* 終了処理 */
                 app_context_.ExitThread();

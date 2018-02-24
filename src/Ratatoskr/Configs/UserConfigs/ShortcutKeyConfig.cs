@@ -78,12 +78,14 @@ namespace Ratatoskr.Configs.UserConfigs
         {
             /* ここにショートカットキーの初期設定を追加 */
             var default_map = new [] {
-                new { id = ActionShortcutId.ApplicationExit,    control = false, shift = false, alt = true,  key = Keys.F4  },
-                new { id = ActionShortcutId.FileOpen,           control = true,  shift = false, alt = false, key = Keys.O   },
-                new { id = ActionShortcutId.PacketSaveRuleOff,  control = true,  shift = false, alt = false, key = Keys.S   },
-                new { id = ActionShortcutId.TimeStampRun,       control = false, shift = false, alt = false, key = Keys.F6  },
-                new { id = ActionShortcutId.EventPacketClear,   control = false, shift = false, alt = false, key = Keys.F4  },
-                new { id = ActionShortcutId.EventPacketRedraw,  control = false, shift = false, alt = false, key = Keys.F5  },
+                new { id = ActionShortcutId.ApplicationExit,      control = false, shift = false, alt = true,  key = Keys.F4  },
+                new { id = ActionShortcutId.FileOpen,             control = true,  shift = false, alt = false, key = Keys.O   },
+                new { id = ActionShortcutId.PacketSaveRuleOff,    control = true,  shift = false, alt = false, key = Keys.S   },
+                new { id = ActionShortcutId.PacketSaveAsRuleOff,  control = true,  shift = true,  alt = false, key = Keys.S   },
+                new { id = ActionShortcutId.TimeStampRun,         control = false, shift = false, alt = false, key = Keys.F6  },
+                new { id = ActionShortcutId.EventPacketClear,     control = false, shift = false, alt = false, key = Keys.F4  },
+                new { id = ActionShortcutId.EventPacketRedraw,    control = false, shift = false, alt = false, key = Keys.F5  },
+                new { id = ActionShortcutId.ShowAppDocument,      control = false, shift = false, alt = false, key = Keys.F1  },
             };
 
             /* デフォルトキーマップを適用 */

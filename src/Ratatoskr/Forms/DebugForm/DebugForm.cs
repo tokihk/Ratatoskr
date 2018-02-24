@@ -55,7 +55,7 @@ namespace Ratatoskr.Forms.DebugForm
                 TBox_Message.AppendText(
                     String.Format(
                         "{0} {1} {2}",
-                        msg.DateTime.ToString("yyyy-MM-dd hh:mm:ss.fff"),
+                        msg.DateTime.ToLocalTime().ToString("yyyy-MM-dd hh:mm:ss.fff"),
                         msg.Message,
                         Environment.NewLine));
 

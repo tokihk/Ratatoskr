@@ -7,16 +7,24 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
 
-namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
+namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
 {
     internal sealed class FileFormatClassImpl : FileFormatClass
     {
-        public static readonly byte[] FORMATCODE = new byte[]{ 0x60, 0xCB, 0x7F, 0xF0, 0x68, 0x9C, 0x44, 0xD9 };
+        public enum FormatVersion
+        {
+            Version_Unknown,
+            Version_000,
+        }
+
+
+        public static readonly byte[] FORMATCODE    = new byte[]{ 0x60, 0xCB, 0x7F, 0xF0, 0x68, 0x9C, 0x44, 0xD9 };
+        public static readonly UInt32 FORMATVERSION = (UInt32)FormatVersion.Version_000;
 
         
         public override string   Name          { get; } = ConfigManager.Fixed.ApplicationName.Value + " Config";
 
-        public override string[] FileExtension { get; } = new [] { "rtcfg" };
+        public override string[] FileExtension { get; } = new [] { ConfigManager.Fixed.ApplicationID.Value + "cfg" };
 
         public override Image    Icon          { get; } = Properties.Resources.app_icon_32x32;
 
@@ -36,7 +44,7 @@ namespace Ratatoskr.FileFormats.SystemConfig_Rtcfg
 
         public override FileFormatOption CreateWriterOption()
         {
-            return (new SystemConfigOption());
+            return (new UserConfigWriterOption());
         }
     }
 }

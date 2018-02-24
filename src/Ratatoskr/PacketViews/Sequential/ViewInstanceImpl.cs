@@ -13,14 +13,6 @@ namespace Ratatoskr.PacketViews.Sequential
 {
     internal sealed class ViewInstanceImpl : ViewInstance
     {
-        private enum DrawDataType
-        {
-            Control,
-            Message,
-            Data,
-        }
-
-
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RichTextBox RTBox_Main;
         private System.Windows.Forms.GroupBox GBox_ShiftBit;
@@ -281,13 +273,16 @@ namespace Ratatoskr.PacketViews.Sequential
         private void DrawBufferReset()
         {
             draw_buffer_ = new StringBuilder(2048);
-            draw_data_type_ = 0;
         }
 
         private void DrawBufferPushBegin(PacketAttribute type)
         {
             /* データタイプが変化した場合は現在溜まっているバッファを出力 */
             if (draw_data_type_ != type) {
+                if (RTBox_Main.TextLength > 0) {
+                    DrawBufferPushEndLine();
+                }
+
                 DrawBufferFlush();
             }
 

@@ -28,14 +28,14 @@ namespace Ratatoskr.Forms
         private static string          last_save_path_ = null;
         private static FileFormatClass last_save_format_ = null;
 
-        private static FormStatus status_busy_ = new FormStatus();
-        private static FormStatus status_new_ = new FormStatus();
+        private static FormStatus status_busy_;
+        private static FormStatus status_new_;
         private static object     status_sync_ = new object();
 
-        private static string[]      status_text_ = new string[Enum.GetValues(typeof(StatusTextId)).Length];
+        private static string[]   status_text_;
 
         private static Stopwatch     popup_timer_ = new Stopwatch();
-        private static Queue<string> popup_text_ = new Queue<string>();
+        private static Queue<string> popup_text_;
 
         private static Stopwatch     progress_bar_timer_ = new Stopwatch();
 
@@ -44,6 +44,10 @@ namespace Ratatoskr.Forms
 
         public static void Startup()
         {
+            status_busy_ = new FormStatus();
+            status_new_ = new FormStatus();
+            status_text_ = new string[Enum.GetValues(typeof(StatusTextId)).Length];
+            popup_text_ = new Queue<string>();
         }
 
         public static void Shutdown()
@@ -82,6 +86,7 @@ namespace Ratatoskr.Forms
         public static void MainFrameVisible(bool visible)
         {
             if (visible) {
+                MainFrame.Activate();
                 MainFrame.Show();
                 MainFrame.Update();
             } else {
@@ -221,12 +226,15 @@ namespace Ratatoskr.Forms
             MainFrame.AddPacket(protocol, bitdata, bitsize);
         }
 
-        public static bool InvokeRequired()
+        public static bool InvokeRequired
         {
-            if (MainFrame != null) {
-                return (MainFrame.InvokeRequired);
-            } else {
-                return (false);
+            get
+            {
+                if (MainFrame != null) {
+                    return (MainFrame.InvokeRequired);
+                } else {
+                    return (false);
+                }
             }
         }
 
@@ -235,15 +243,10 @@ namespace Ratatoskr.Forms
             return (MainFrame.Invoke(method, args));
         }
 
-        public static object BeginInvoke(Delegate method, params object[] args)
-        {
-            return (MainFrame.BeginInvoke(method, args));
-        }
-
         private delegate bool ConfirmMessageBoxDelegate(string message, string caption);
         public static bool ConfirmMessageBox(string message, string caption = null)
         {
-            if (MainFrame.InvokeRequired) {
+            if (InvokeRequired) {
                 return ((bool)MainFrame.Invoke(new ConfirmMessageBoxDelegate(ConfirmMessageBox), message, caption));
             }
 
@@ -256,23 +259,75 @@ namespace Ratatoskr.Forms
             return (true);
         }
 
-        public static void FileOpen()
+        public static void ShowOptionDialog()
         {
-            /* ダイアログ表示 */
-            var paths_input = (string[])null;
-            var format = FileManager.FileOpen.SelectReaderFormatFromDialog(ConfigManager.GetCurrentDirectory(), true, true, ref paths_input);
+            if (InvokeRequired) {
+                Invoke((MethodInvoker)ShowOptionDialog);
+                return;
+            }
 
-            if ((paths_input == null) || (paths_input.Length == 0))return;
-            if (format == null)return;
+            var config = ClassUtil.Clone(ConfigManager.User.Option);
 
-            FileOpen(paths_input, format);
+            if (config == null)return;
 
-            /* カレントディレクトリ更新 */
-            ConfigManager.SetCurrentDirectory(Path.GetDirectoryName(paths_input.First()));
+            var dialog = new Forms.OptionForm.OptionForm(config);
+
+            if (dialog.ShowDialog() != DialogResult.OK)return;
+
+            ConfigManager.User.Option = config;
         }
 
+        public static void ShowAppDocument()
+        {
+            if (InvokeRequired) {
+                Invoke((MethodInvoker)ShowAppDocument);
+                return;
+            }
+
+            try {
+                var uri_base = Application.StartupPath;
+
+                Process.Start(uri_base + "\\docs\\index.html");
+            } catch {
+            }
+        }
+
+        public static void ShowAppInfo()
+        {
+            if (InvokeRequired) {
+                Invoke((MethodInvoker)ShowAppInfo);
+                return;
+            }
+
+            (new Forms.AboutForm.AboutForm()).ShowDialog();
+        }
+
+        public static void FileOpen()
+        {
+            if (InvokeRequired) {
+                Invoke((MethodInvoker)FileOpen);
+                return;
+            }
+
+            /* ダイアログ表示 */
+            var format_info = FileManager.FileOpen.SelectReaderFormatFromDialog(ConfigManager.GetCurrentDirectory(), true, true);
+
+            if (format_info.format == null)return;
+
+            FileOpen(format_info.paths, format_info.format);
+
+            /* カレントディレクトリ更新 */
+            ConfigManager.SetCurrentDirectory(Path.GetDirectoryName(format_info.paths.First()));
+        }
+
+        private delegate void FileOpenDelegate(IEnumerable<string> paths, FileFormatClass format);
         public static void FileOpen(IEnumerable<string> paths, FileFormatClass format)
         {
+            if (InvokeRequired) {
+                Invoke((FileOpenDelegate)FileOpen, paths, format);
+                return;
+            }
+
             if (paths.Count() == 0)return;
 
             if (format == null) {
@@ -283,10 +338,10 @@ namespace Ratatoskr.Forms
             var reader = format.GetReader();
 
             /* パケットログ */
-            if (reader.reader is IPacketLogReader) {
+            if (reader.reader is PacketLogReader) {
                 FileOpen_PacketLog(paths, reader.reader as PacketLogReader, reader.option);
-            } else if (reader.reader is ISystemConfigReader) {
-                FileOpen_SystemConfig(paths, reader.reader as SystemConfigReader);
+            } else if (reader.reader is UserConfigReader) {
+                FileOpen_UserConfig(paths, reader.reader as UserConfigReader);
             }
         }
 
@@ -297,21 +352,29 @@ namespace Ratatoskr.Forms
             GatePacketManager.LoadPacketFile(paths, reader, option);
         }
 
-        private static void FileOpen_SystemConfig(IEnumerable<string> paths, SystemConfigReader reader)
+        private static void FileOpen_UserConfig(IEnumerable<string> paths, UserConfigReader reader)
         {
             if (reader == null)return;
 
-            if (!reader.Open(null, paths.First())) {
-                return;
+            if (reader.Open(null, paths.First())) {
+                var config = reader.Load();
+
+                if (config.config != null) {
+                    /* 現在のUserConfigに上書きする */
+                    ConfigManager.OverrideConfig(config.config);
+                }
+
+                reader.Close();
             }
-
-            reader.Load();
-
-            reader.Close();
         }
 
+        private delegate string AnyFileOpenDelegate(string init_dir);
         public static string AnyFileOpen(string init_dir = null)
         {
+            if (InvokeRequired) {
+                return (Invoke((AnyFileOpenDelegate)AnyFileOpen, init_dir) as string);
+            }
+
             var dialog = new OpenFileDialog();
 
             if (   (init_dir != null)
@@ -329,31 +392,123 @@ namespace Ratatoskr.Forms
             return (dialog.FileName);
         }
 
+        private delegate void PacketSaveDelegate(bool overwrite, bool rule);
         public static void PacketSave(bool overwrite, bool rule)
         {
+            if (InvokeRequired) {
+                Invoke((PacketSaveDelegate)PacketSave, overwrite, rule);
+                return;
+            }
+
+            var format = last_save_format_;
+            var path = last_save_path_;
+
             /* 保存先とフォーマットを取得 */
             if (   (!overwrite)
-                || (last_save_path_ == null)
-                || (last_save_format_ == null)
+                || (format == null)
+                || (path == null)
             ) {
                 /* ダイアログ表示 */
-                last_save_format_ = FileManager.PacketSave.SelectWriterFormatFromDialog(ConfigManager.GetCurrentDirectory(), ref last_save_path_, typeof(IPacketLogWriter));
+                (format, path) = FileManager.PacketLogSave.SelectWriterFormatFromDialog(ConfigManager.GetCurrentDirectory());
             }
             
-            if (last_save_path_ == null)return;
-            if (last_save_format_ == null)return;
+            if (format == null)return;
+            if (path == null)return;
 
             /* ライター取得 */
-            var writer = last_save_format_.GetWriter();
+            var writer_info = format.GetWriter();
+            var writer = writer_info.writer as PacketLogWriter;
+
+            if (writer == null)return;
 
             if (rule) {
-                GatePacketManager.SavePacketFile(last_save_path_, writer.writer as PacketLogWriter, writer.option, FormTaskManager.GetPacketConverterClone());
+                GatePacketManager.SavePacketFile(path, writer, writer_info.option, FormTaskManager.GetPacketConverterClone());
             } else {
-                GatePacketManager.SavePacketFile(last_save_path_, writer.writer as PacketLogWriter, writer.option, null);
+                GatePacketManager.SavePacketFile(path, writer, writer_info.option, null);
             }
 
             /* カレントディレクトリ更新 */
             ConfigManager.SetCurrentDirectory(Path.GetDirectoryName(last_save_path_));
+
+            last_save_format_ = format;
+            last_save_path_ = path;
+        }
+
+        private delegate (UserConfigWriter writer, UserConfigWriterOption option, string path) CreateUserConfigWriterDelegate();
+        public static (UserConfigWriter writer, UserConfigWriterOption option, string path) CreateUserConfigWriter()
+        {
+            if (MainFrame.InvokeRequired) {
+                return (((UserConfigWriter writer, UserConfigWriterOption option, string path))MainFrame.Invoke(new CreateUserConfigWriterDelegate(CreateUserConfigWriter)));
+            }
+
+            var format = (FileFormatClass)null;
+            var path = (string)null;
+
+            /* ダイアログでフォーマットを判別 */
+            (format, path) = FileManager.UserConfigSave.SelectWriterFormatFromDialog(ConfigManager.GetCurrentDirectory());
+
+            if (format == null)return (null, null, null);
+
+            var writer_info = format.GetWriter();
+            var writer = writer_info.writer as UserConfigWriter;
+            var option = writer_info.option as UserConfigWriterOption;
+
+            if (   (writer == null)
+                || (option == null)
+            ) {
+                return (null, null, null);
+            }
+
+            return (writer, option, path);
+        }
+
+        private delegate (PacketLogReader reader, FileFormatOption option, string[] paths) CreatePacketLogReaderDelegate(string file_path);
+        public static (PacketLogReader reader, FileFormatOption option, string[] paths) CreatePacketLogReader(string file_path = null)
+        {
+            if (MainFrame.InvokeRequired) {
+                return (((PacketLogReader, FileFormatOption, string[]))MainFrame.Invoke(new CreatePacketLogReaderDelegate(CreatePacketLogReader), file_path));
+            }
+
+            /* パス名からフォーマットを判別 */
+            var format = FileManager.PacketLogOpen.SelectReaderFormatFromPath(file_path);
+            var paths = new string[] { file_path };
+
+            /* パス名で見つからない場合はダイアログで選択 */
+            if (format == null) {
+                (format, paths) = FileManager.PacketLogOpen.SelectReaderFormatFromDialog(ConfigManager.GetCurrentDirectory(), true, true);
+            }
+
+            if (format == null)return (null, null, null);
+
+            var reader_info = format.GetReader();
+            var reader = reader_info.reader as PacketLogReader;
+
+            if (reader == null)return (null, null, null);
+
+            return (reader, reader_info.option, paths);
+        }
+
+        private delegate (PacketLogWriter writer, FileFormatOption option, string path) CreatePacketLogWriterDelegate();
+        public static (PacketLogWriter writer, FileFormatOption option, string path) CreatePacketLogWriter()
+        {
+            if (MainFrame.InvokeRequired) {
+                return (((PacketLogWriter, FileFormatOption, string))MainFrame.Invoke(new CreatePacketLogWriterDelegate(CreatePacketLogWriter)));
+            }
+
+            var format = (FileFormatClass)null;
+            var path = (string)null;
+
+            /* ダイアログでフォーマットを判別 */
+            (format, path) = FileManager.PacketLogSave.SelectWriterFormatFromDialog(ConfigManager.GetCurrentDirectory());
+
+            if (format == null)return (null, null, null);
+
+            var writer_info = format.GetWriter();
+            var writer = writer_info.writer as PacketLogWriter;
+
+            if (writer == null)return (null, null, null);
+
+            return (writer, writer_info.option, path);
         }
     }
 }

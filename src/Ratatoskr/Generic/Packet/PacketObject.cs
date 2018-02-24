@@ -249,7 +249,7 @@ namespace Ratatoskr.Generic.Packet
 
                 case PacketElementID.DateTime:
                 {
-                    return (MakeTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                    return (MakeTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 }
 
                 case PacketElementID.Information:

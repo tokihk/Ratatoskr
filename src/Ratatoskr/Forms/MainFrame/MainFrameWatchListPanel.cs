@@ -125,17 +125,23 @@ namespace Ratatoskr.Forms.MainFrame
         public MainFrameWatchListPanel()
         {
             InitializeComponent();
-            InitializeWatchList();
 
             GatePacketManager.RawPacketEntried += OnRawPacketEntried;
             FormTaskManager.DrawPacketEntried += OnDrawPacketEntried;
 
-            LoadConfig();
+            DGView_WatchList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
-        private void InitializeWatchList()
+        public void LoadConfig()
         {
-            DGView_WatchList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            /* 監視式リスト */
+            LoadWatchListHeaderConfig();
+            LoadWatchListDataConfig();
+        }
+
+        private void LoadWatchListHeaderConfig()
+        {
+            DGView_WatchList.Columns.Clear();
 
             foreach (ColumnId id in Enum.GetValues(typeof(ColumnId))) {
                 switch (id) {
@@ -236,13 +242,7 @@ namespace Ratatoskr.Forms.MainFrame
             }
         }
 
-        public void LoadConfig()
-        {
-            /* コマンドリスト */
-            LoadConfig_WatchList();
-        }
-
-        private void LoadConfig_WatchList()
+        private void LoadWatchListDataConfig()
         {
             DGView_WatchList.Rows.Clear();
             foreach (var config in ConfigManager.User.WatchDataList.Value) {

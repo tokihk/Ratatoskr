@@ -15,19 +15,19 @@ using Ratatoskr.Gate;
 
 namespace Ratatoskr.Forms.MainFrame
 {
-    internal partial class MainFrameSendFilePanel : MainFrameSendPanel
+    internal partial class MainFrameSendLogPanel : MainFrameSendPanel
     {
         private ActionObject action_busy_ = null;
 
         private Timer timer_progress_ = new Timer();
 
 
-        public MainFrameSendFilePanel()
+        public MainFrameSendLogPanel()
         {
             InitializeComponent();
         }
 
-        public MainFrameSendFilePanel(MainFrameSendPanelContainer panel) : base(panel)
+        public MainFrameSendLogPanel(MainFrameSendPanelContainer panel) : base(panel)
         {
             InitializeComponent();
 
@@ -37,56 +37,69 @@ namespace Ratatoskr.Forms.MainFrame
 
         public override void LoadConfig()
         {
-            LoadFileListConfig();
+            LoadDataTypeListConfig();
+            LoadLogListConfig();
 
-            Num_BlockSize.Value = ConfigManager.User.SendPanel_File_BlockSize.Value;
+            CBox_PlayDataType.SelectedItem = ConfigManager.User.SendPanel_Log_PlayDataType.Value;
 
-            UpdateFileListView();
+            UpdateLogListView();
         }
 
-        private void LoadFileListConfig()
+        private void LoadDataTypeListConfig()
         {
-            CBox_FileList.BeginUpdate();
+            CBox_PlayDataType.BeginUpdate();
             {
-                CBox_FileList.Items.Clear();
-                foreach (var exp in ConfigManager.User.SendPanel_File_List.Value) {
-                    CBox_FileList.Items.Add(exp);
+                CBox_PlayDataType.Items.Clear();
+                foreach (Action_PlayRecord.ArgumentDataType type in Enum.GetValues(typeof(Action_PlayRecord.ArgumentDataType))) {
+                    CBox_PlayDataType.Items.Add(type);
+                }
+            }
+            CBox_PlayDataType.EndUpdate();
+        }
+
+        private void LoadLogListConfig()
+        {
+            CBox_LogList.BeginUpdate();
+            {
+                CBox_LogList.Items.Clear();
+                foreach (var exp in ConfigManager.User.SendPanel_Log_List.Value) {
+                    CBox_LogList.Items.Add(exp);
                 }
 
                 /* 先頭のアイテムを選択 */
-                if (CBox_FileList.Items.Count > 0) {
-                    CBox_FileList.SelectedIndex = 0;
+                if (CBox_LogList.Items.Count > 0) {
+                    CBox_LogList.SelectedIndex = 0;
                 }
             }
-            CBox_FileList.EndUpdate();
+            CBox_LogList.EndUpdate();
         }
 
         public override void BackupConfig()
         {
-            BackupFileListConfig();
+            BackupLogListConfig();
 
-            ConfigManager.User.SendPanel_File_BlockSize.Value = Num_BlockSize.Value;
+            ConfigManager.User.SendPanel_Log_PlayDataType.Value = (Action_PlayRecord.ArgumentDataType)CBox_PlayDataType.SelectedItem;
         }
 
-        private void BackupFileListConfig()
+        private void BackupLogListConfig()
         {
-            ConfigManager.User.SendPanel_File_List.Value.Clear();
+            ConfigManager.User.SendPanel_Log_List.Value.Clear();
 
-            foreach (string exp in CBox_FileList.Items) {
-                ConfigManager.User.SendPanel_File_List.Value.Add(exp);
+            foreach (string exp in CBox_LogList.Items) {
+                ConfigManager.User.SendPanel_Log_List.Value.Add(exp);
             }
         }
 
-        private void UpdateFileListView()
+        private void UpdateLogListView()
         {
-            var file_path = CBox_FileList.Text;
+            var file_path = CBox_LogList.Text;
 
             if (file_path.Length > 0) {
-                CBox_FileList.BackColor = (File.Exists(file_path))
+                CBox_LogList.BackColor = (File.Exists(file_path))
                                         ? (Color.LightSkyBlue)
                                         : (Color.LightPink);
             } else {
-                CBox_FileList.BackColor = Color.White;
+                CBox_LogList.BackColor = Color.White;
             }
 
             var file_size_text = "-";
@@ -117,10 +130,11 @@ namespace Ratatoskr.Forms.MainFrame
         protected override void OnSendExecBegin(string target)
         {
             /* コンテンツを無効化 */
-            CBox_FileList.Enabled = false;
+            CBox_LogList.Enabled = false;
             Btn_FileSelect.Enabled = false;
+            CBox_PlayDataType.Enabled = false;
 
-            var path_file = CBox_FileList.Text;
+            var path_file = CBox_LogList.Text;
 
             /* ファイルが存在しない場合は失敗 */
             if (!File.Exists(path_file)) {
@@ -129,7 +143,7 @@ namespace Ratatoskr.Forms.MainFrame
             }
 
             /* アクションオブジェクトを生成 */
-            action_busy_ = new Action_SendFile(target, path_file, (int)Num_BlockSize.Value);
+            action_busy_ = new Action_PlayRecord(target, path_file, (Action_PlayRecord.ArgumentDataType)CBox_PlayDataType.SelectedItem);
 
             /* 完了イベントを登録 */
             action_busy_.ActionCompleted += OnActionCompleted;
@@ -141,6 +155,7 @@ namespace Ratatoskr.Forms.MainFrame
             ActionManager.AddNormalAction(action_busy_);
 
             /* キャンセルボタン表示 */
+            Btn_Cancel.Enabled = true;
             Btn_Cancel.Show();
         }
 
@@ -156,15 +171,16 @@ namespace Ratatoskr.Forms.MainFrame
 
         protected override void OnSendExecEnd(bool success)
         {
-            AddLog(CBox_FileList.Text);
+            AddLog(CBox_LogList.Text);
 
             /* 進捗バー更新停止 */
             UpdateProgressView();
             timer_progress_.Stop();
 
             /* コンテンツを有効化 */
-            CBox_FileList.Enabled = true;
+            CBox_LogList.Enabled = true;
             Btn_FileSelect.Enabled = true;
+            CBox_PlayDataType.Enabled = true;
 
             /* キャンセルボタン非表示 */
             Btn_Cancel.Hide();
@@ -172,47 +188,47 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void AddLog(string text)
         {
-            CBox_FileList.BeginUpdate();
+            CBox_LogList.BeginUpdate();
             {
-                var text_now = CBox_FileList.Text;
+                var text_now = CBox_LogList.Text;
 
                 /* 重複するコマンドを削除 */
-                CBox_FileList.Items.Remove(text);
+                CBox_LogList.Items.Remove(text);
 
                 /* ログの最大値に合わせて古いログを削除 */
-                if (CBox_FileList.Items.Count >= (ConfigManager.User.SendPanelLogLimit.Value - 1)) {
-                    CBox_FileList.Items.RemoveAt(CBox_FileList.Items.Count - 1);
+                if (CBox_LogList.Items.Count >= (ConfigManager.User.SendPanelLogLimit.Value - 1)) {
+                    CBox_LogList.Items.RemoveAt(CBox_LogList.Items.Count - 1);
                 }
 
                 /* 先頭に追加 */
-                CBox_FileList.Items.Insert(0, text);
+                CBox_LogList.Items.Insert(0, text);
 
                 /* コマンドを復元 */
-                CBox_FileList.Text = text_now;
+                CBox_LogList.Text = text_now;
             }
-            CBox_FileList.EndUpdate();
+            CBox_LogList.EndUpdate();
         }
 
-        private void CBox_FileList_TextChanged(object sender, EventArgs e)
+        private void CBox_LogList_TextChanged(object sender, EventArgs e)
         {
-            UpdateFileListView();
+            UpdateLogListView();
         }
 
-        private void CBox_FileList_KeyDown(object sender, KeyEventArgs e)
+        private void CBox_LogList_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) {
                 SendExecRequest();
             }
         }
 
-        private void CBox_FileList_DragEnter(object sender, DragEventArgs e)
+        private void CBox_LogList_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
                 e.Effect = DragDropEffects.Copy;
             }
         }
 
-        private void CBox_FileList_DragDrop(object sender, DragEventArgs e)
+        private void CBox_LogList_DragDrop(object sender, DragEventArgs e)
         {
             var files = e.Data.GetData(DataFormats.FileDrop) as string[];
 
@@ -220,12 +236,12 @@ namespace Ratatoskr.Forms.MainFrame
             if (files.Length == 0)return;
 
             /* ファイル転送コマンドに置き換え */
-            CBox_FileList.Text = files.First();
+            CBox_LogList.Text = files.First();
         }
 
         private void Btn_FileSelect_Click(object sender, EventArgs e)
         {
-            var init_path = CBox_FileList.Text;
+            var init_path = CBox_LogList.Text;
 
             if (File.Exists(init_path)) {
                 init_path = Path.GetDirectoryName(init_path);
@@ -235,9 +251,9 @@ namespace Ratatoskr.Forms.MainFrame
 
             if (file_path == null)return;
 
-            CBox_FileList.Text = file_path;
+            CBox_LogList.Text = file_path;
 
-            UpdateFileListView();
+            UpdateLogListView();
         }
 
         private void Btn_Cancel_Click(object sender, EventArgs e)

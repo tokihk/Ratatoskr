@@ -92,6 +92,7 @@
     <Compile Include="Actions\ActionModules\Action_FileOpen.cs" />
     <Compile Include="Actions\ActionModules\Action_PacketSave.cs" />
     <Compile Include="Actions\ActionModules\Action_PlayRecord.cs" />
+    <Compile Include="Actions\ActionModules\Action_ShowAppDocument.cs" />
     <Compile Include="Actions\ActionModules\Action_TextOut.cs" />
     <Compile Include="Actions\ActionModules\Action_RandomHexText.cs" />
     <Compile Include="Actions\ActionModules\Action_RandomInt.cs" />
@@ -123,12 +124,12 @@
     <Compile Include="Configs\SystemConfigs\ApplicationCoreConfig.cs" />
     <Compile Include="Configs\SystemConfigs\MainWindowConfig.cs" />
     <Compile Include="Configs\SystemConfigs\ProfileConfig.cs" />
-    <Compile Include="Configs\SystemConfigs\ProfileListConfig.cs" />
     <Compile Include="Configs\SystemConfigs\SystemConfig.cs" />
     <Compile Include="Configs\Types\BoolConfig.cs" />
     <Compile Include="Configs\Types\DateTimeConfig.cs" />
     <Compile Include="Configs\Types\EnumConfig.cs" />
     <Compile Include="Configs\Types\EnumListConfig.cs" />
+    <Compile Include="Configs\Types\GuidConfig.cs" />
     <Compile Include="Configs\Types\IntegerConfig.cs" />
     <Compile Include="Configs\Types\PointConfig.cs" />
     <Compile Include="Configs\Types\SizeConfig.cs" />
@@ -192,6 +193,9 @@
     </Compile>
     <Compile Include="Devices\AudioDevice\DevicePropertyImpl.cs" />
     <Compile Include="Devices\AudioDevice\MicDeviceInfo.cs" />
+    <Compile Include="Devices\Null\DeviceClassImpl.cs" />
+    <Compile Include="Devices\Null\DeviceInstanceImpl.cs" />
+    <Compile Include="Devices\Null\DevicePropertyImpl.cs" />
     <Compile Include="Devices\SerialPort\ComPortParam.cs" />
     <Compile Include="Devices\SerialPort\DeviceClassImpl.cs" />
     <Compile Include="Devices\SerialPort\DeviceControlPanelImpl.cs">
@@ -279,10 +283,6 @@
     </Compile>
     <Compile Include="FileFormats\FileFormatWriter.cs" />
     <Compile Include="FileFormats\FileManager.cs" />
-    <Compile Include="FileFormats\IPacketLogReader.cs" />
-    <Compile Include="FileFormats\IPacketLogWriter.cs" />
-    <Compile Include="FileFormats\ISystemConfigReader.cs" />
-    <Compile Include="FileFormats\ISystemConfigWriter.cs" />
     <Compile Include="FileFormats\PacketLogReader.cs" />
     <Compile Include="FileFormats\PacketLogWriter.cs" />
     <Compile Include="FileFormats\PacketLog_Binary\FileFormatClassImpl.cs" />
@@ -304,12 +304,12 @@
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatClassImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatOptionImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatReaderImpl.cs" />
-    <Compile Include="FileFormats\SystemConfigReader.cs" />
-    <Compile Include="FileFormats\SystemConfigWriter.cs" />
-    <Compile Include="FileFormats\SystemConfigOption.cs" />
-    <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatClassImpl.cs" />
-    <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatReaderImpl.cs" />
-    <Compile Include="FileFormats\SystemConfig_Rtcfg\FileFormatWriterImpl.cs" />
+    <Compile Include="FileFormats\UserConfigReader.cs" />
+    <Compile Include="FileFormats\UserConfigWriter.cs" />
+    <Compile Include="FileFormats\UserConfigWriterOption.cs" />
+    <Compile Include="FileFormats\UserConfig_Rtcfg\FileFormatClassImpl.cs" />
+    <Compile Include="FileFormats\UserConfig_Rtcfg\FileFormatReaderImpl.cs" />
+    <Compile Include="FileFormats\UserConfig_Rtcfg\FileFormatWriterImpl.cs" />
     <Compile Include="Forms\Dialog\ProfileConfigDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -333,6 +333,12 @@
     </Compile>
     <Compile Include="Forms\Dialog\NotifyMailConfigDialog.Designer.cs">
       <DependentUpon>NotifyMailConfigDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainFrame\MainFrameSendLogPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainFrame\MainFrameSendLogPanel.Designer.cs">
+      <DependentUpon>MainFrameSendLogPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MainFrame\MainFrameSendPanel.cs">
       <SubType>UserControl</SubType>
@@ -727,8 +733,8 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="NAudio, Version=1.8.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.8.3\lib\net35\NAudio.dll</HintPath>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="PacketDotNet, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PacketDotNet.0.16.0\lib\PacketDotNet.dll</HintPath>
@@ -745,9 +751,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.4.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DockPanelSuite.3.0.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <HintPath>..\packages\DockPanelSuite.3.0.4\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -805,6 +811,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainFrame\MainFrameSendFilePanel.resx">
       <DependentUpon>MainFrameSendFilePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainFrame\MainFrameSendLogPanel.resx">
+      <DependentUpon>MainFrameSendLogPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainFrame\MainFrameWatchListPanel.resx">
       <DependentUpon>MainFrameWatchListPanel.cs</DependentUpon>

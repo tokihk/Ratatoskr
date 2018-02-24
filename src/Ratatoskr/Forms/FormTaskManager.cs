@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Gate;
 using Ratatoskr.PacketConverters;
@@ -37,7 +38,7 @@ namespace Ratatoskr.Forms
         private static ulong  packet_count_all_ = 0;
         private static ulong  packet_count_draw_ = 0;
 
-        private static Queue<IEnumerable<PacketObject>> draw_packets_ = new Queue<IEnumerable<PacketObject>>();
+        private static Queue<IEnumerable<PacketObject>> draw_packets_ = null;
         private static object                           draw_packets_sync_ = new object();
         private static IAsyncResult                     draw_packet_ar_ = null;
 
@@ -73,6 +74,9 @@ namespace Ratatoskr.Forms
 
             /* 基本コンバーターインストール */
             InstallPacketConverter();
+
+            /* パケット初期化 */
+            draw_packets_ = new Queue<IEnumerable<PacketObject>>();
         }
 
         public static void Shutdown()
@@ -368,6 +372,11 @@ namespace Ratatoskr.Forms
 
         public static void DrawPacketClear()
         {
+            if (FormUiManager.InvokeRequired) {
+                FormUiManager.Invoke((MethodInvoker)DrawPacketClear);
+                return;
+            }
+
             /* 表示処理中パケットをクリア */
             lock (draw_packets_sync_) {
                 draw_packets_ = new Queue<IEnumerable<PacketObject>>();

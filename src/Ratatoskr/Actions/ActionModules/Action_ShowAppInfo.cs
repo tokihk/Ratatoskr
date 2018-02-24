@@ -19,22 +19,9 @@ namespace Ratatoskr.Actions.ActionModules
 
         protected override void OnExecStart()
         {
-            ShowDialog();
+            FormUiManager.ShowAppInfo();
 
             SetResult(ActionResultType.Success, null);
-        }
-
-        private delegate void ShowDialogDelegate();
-        private void ShowDialog()
-        {
-            if (FormUiManager.InvokeRequired()) {
-                FormUiManager.Invoke(new ShowDialogDelegate(ShowDialog));
-                return;
-            }
-
-            var dialog = new Forms.AboutForm.AboutForm();
-
-            dialog.ShowDialog();
         }
     }
 }

@@ -20,10 +20,8 @@ namespace Ratatoskr.Forms.MainFrame
 {
     internal partial class MainFrameSendPanelContainer : UserControl
     {
-        private MainFrameSendDataPanel SDPanel_Data;
-        private MainFrameSendFilePanel SDPanel_File;
-
-        private MainFrameSendPanel SDPanel_Busy;
+        private MainFrameSendPanel[] SDPanel_List = new MainFrameSendPanel[Enum.GetValues(typeof(SendPanelType)).Length];
+        private MainFrameSendPanel   SDPanel_Busy;
 
         private ToolTip ttip_target_ = new ToolTip();
 
@@ -32,30 +30,32 @@ namespace Ratatoskr.Forms.MainFrame
         {
             InitializeComponent();
 
-            SDPanel_Data = new MainFrameSendDataPanel(this);
-            SDPanel_File = new MainFrameSendFilePanel(this);
-
-            InitializeTooltip();
+            SDPanel_List[(int)SendPanelType.Data] = new MainFrameSendDataPanel(this);
+            SDPanel_List[(int)SendPanelType.File] = new MainFrameSendFilePanel(this);
+            SDPanel_List[(int)SendPanelType.Log] = new MainFrameSendLogPanel(this);
         }
 
-        private void InitializeTooltip()
+        public void LoadConfig()
+        {
+            LoadToolTipExplanation();
+            LoadTargetListConfig();
+            LoadSendPanelTypeConfig();
+
+            /* コンテンツ設定を読込 */
+            foreach (var panel in SDPanel_List) {
+                panel.LoadConfig();
+            }
+
+            UpdateSendPanelContents();
+        }
+
+        private void LoadToolTipExplanation()
         {
             ttip_target_.SetToolTip(
                 CBox_TargetList,
 @"Specify the command target with a wildcard.
   Ex) GATE_001
   Ex) GATE_00*");
-        }
-
-        public void LoadConfig()
-        {
-            LoadTargetListConfig();
-            LoadSendPanelTypeConfig();
-
-            SDPanel_Data.LoadConfig();
-            SDPanel_File.LoadConfig();
-
-            UpdateSendPanelContents();
         }
 
         private void LoadTargetListConfig()
@@ -80,6 +80,7 @@ namespace Ratatoskr.Forms.MainFrame
             switch (ConfigManager.User.SendPanelType.Value) {
                 case SendPanelType.Data:    RBtn_ModeData.Checked = true;   break;
                 case SendPanelType.File:    RBtn_ModeFile.Checked = true;   break;
+                case SendPanelType.Log:     RBtn_ModeLog.Checked = true;    break;
                 default:                                                    break;
             }
         }
@@ -90,8 +91,9 @@ namespace Ratatoskr.Forms.MainFrame
             BackupSendPanelTypeConfig();
 
             /* コンテンツ設定をバックアップ */
-            SDPanel_Data.BackupConfig();
-            SDPanel_File.BackupConfig();
+            foreach (var panel in SDPanel_List) {
+                panel.BackupConfig();
+            }
         }
 
         private void BackupTargetListConfig()
@@ -109,6 +111,8 @@ namespace Ratatoskr.Forms.MainFrame
                 ConfigManager.User.SendPanelType.Value = SendPanelType.Data;
             } else if (RBtn_ModeFile.Checked) {
                 ConfigManager.User.SendPanelType.Value = SendPanelType.File;
+            } else if (RBtn_ModeLog.Checked) {
+                ConfigManager.User.SendPanelType.Value = SendPanelType.Log;
             } else {
                 ConfigManager.User.SendPanelType.Value = SendPanelType.Data;
             }
@@ -127,14 +131,7 @@ namespace Ratatoskr.Forms.MainFrame
         private void UpdateSendPanelContents()
         {
             /* モード毎の制御パネルを取得 */
-            switch (ConfigManager.User.SendPanelType.Value) {
-                case SendPanelType.Data:
-                    SDPanel_Busy = SDPanel_Data;
-                    break;
-                case SendPanelType.File:
-                    SDPanel_Busy = SDPanel_File;
-                    break;
-            }
+            SDPanel_Busy = SDPanel_List[(int)ConfigManager.User.SendPanelType.Value];
 
             /* パネルコンテンツを入れ替え */
             Panel_Contents.Controls.Clear();
@@ -151,18 +148,17 @@ namespace Ratatoskr.Forms.MainFrame
             SDPanel_Busy?.SendExecRequest();
         }
 
-        public Tuple<string, GateObject[]> SendExecBegin()
+        public (string target_alias, GateObject[] target_gates) SendExecBegin()
         {
             /* モード選択ボタンを無効化 */
             RBtn_ModeData.Enabled = false;
             RBtn_ModeFile.Enabled = false;
+            RBtn_ModeLog.Enabled = false;
 
             /* ターゲット編集ボックスを無効化 */
             CBox_TargetList.Enabled = false;
 
-            return (new Tuple<string, GateObject[]>(
-                            CBox_TargetList.Text,
-                            GateManager.FindGateObjectFromWildcardAlias(CBox_TargetList.Text)));
+            return (CBox_TargetList.Text, GateManager.FindGateObjectFromWildcardAlias(CBox_TargetList.Text));
         }
 
         public void SendExecEnd(bool success)
@@ -175,6 +171,7 @@ namespace Ratatoskr.Forms.MainFrame
             /* モード選択ボタンを有効化 */
             RBtn_ModeData.Enabled = true;
             RBtn_ModeFile.Enabled = true;
+            RBtn_ModeLog.Enabled = true;
 
             /* ターゲット編集ボックスを有効化 */
             CBox_TargetList.Enabled = true;
@@ -205,8 +202,9 @@ namespace Ratatoskr.Forms.MainFrame
 
         public void OnMainFormDeactivated()
         {
-            SDPanel_Data.OnMainFormDeactivated();
-            SDPanel_File.OnMainFormDeactivated();
+            foreach (var panel in SDPanel_List) {
+                panel.OnMainFormDeactivated();
+            }
         }
 
         private void CBox_TargetList_KeyDown(object sender, KeyEventArgs e)

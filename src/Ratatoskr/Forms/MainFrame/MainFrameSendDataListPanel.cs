@@ -76,19 +76,31 @@ namespace Ratatoskr.Forms.MainFrame
         public MainFrameSendDataListPanel()
         {
             InitializeComponent();
-            InitializeCommandList();
+
+            GView_CmdList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
             play_timer_.Tick += OnPlayTimer;
+        }
 
-            LoadConfig();
+        public void LoadConfig()
+        {
+            /* ターゲット */
+            TBox_CommonTarget.Text = ConfigManager.User.SendDataListTarget.Value;
+
+            /* コマンドリスト */
+            LoadCommandListHeaderConfig();
+            LoadCommandListDataConfig();
+
+            /* 繰り返し回数 */
+            Num_RepeatCount.Value = ConfigManager.User.SendDataListRepeat.Value;
 
             UpdateOperationUI();
             UpdateStatusUI();
         }
 
-        private void InitializeCommandList()
+        private void LoadCommandListHeaderConfig()
         {
-            GView_CmdList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            GView_CmdList.Columns.Clear();
 
             foreach (ColumnId id in Enum.GetValues(typeof(ColumnId))) {
                 switch (id) {
@@ -188,19 +200,7 @@ namespace Ratatoskr.Forms.MainFrame
             }
         }
 
-        public void LoadConfig()
-        {
-            /* ターゲット */
-            TBox_CommonTarget.Text = ConfigManager.User.SendDataListTarget.Value;
-
-            /* コマンドリスト */
-            LoadConfig_SendDataList();
-
-            /* 繰り返し回数 */
-            Num_RepeatCount.Value = ConfigManager.User.SendDataListRepeat.Value;
-        }
-
-        private void LoadConfig_SendDataList()
+        private void LoadCommandListDataConfig()
         {
             GView_CmdList.Rows.Clear();
             foreach (var config in ConfigManager.User.SendDataList.Value) {

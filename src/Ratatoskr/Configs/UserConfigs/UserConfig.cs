@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.Types;
+using Ratatoskr.Actions.ActionModules;
 using Ratatoskr.Gate.PacketAutoSave;
 using Ratatoskr.Generic.Packet;
 
@@ -16,12 +17,13 @@ namespace Ratatoskr.Configs.UserConfigs
     {
         Data,
         File,
+        Log,
     }
 
     [Serializable]
     internal sealed class UserConfig : ConfigManagerBase<UserConfig>
     {
-        private const string CONFIG_FILE_NAME = "setting.xml";
+        public const string CONFIG_FILE_NAME = "UserConfig.xml";
 
         public DateTimeConfig CreateDateTime { get; } = new DateTimeConfig(DateTime.UtcNow);
 
@@ -40,17 +42,20 @@ namespace Ratatoskr.Configs.UserConfigs
         public PacketViewConfig      PacketView      { get; } = new PacketViewConfig();
         public PacketConverterConfig PacketConverter { get; } = new PacketConverterConfig();
 
-        public StringConfig CurrentDirectory { get; } = new StringConfig("");
-
         public EnumConfig<PacketDataRateTarget>  DataRateTarget { get; } = new EnumConfig<PacketDataRateTarget>(PacketDataRateTarget.RecvData);
 
         public IntegerConfig             SendPanelLogLimit   { get; } = new IntegerConfig(20);
         public EnumConfig<SendPanelType> SendPanelType       { get; } = new EnumConfig<SendPanelType>(UserConfigs.SendPanelType.Data);
         public StringListConfig          SendPanelTargetList { get; } = new StringListConfig();
-        public StringListConfig          SendPanel_ExpList   { get; } = new StringListConfig();
-        public StringListConfig          SendPanel_FileList  { get; } = new StringListConfig();
 
-        public BoolConfig                SendPanel_ExpList_Preview { get; } = new BoolConfig(true);
+        public StringListConfig SendPanel_Data_List    { get; } = new StringListConfig();
+        public BoolConfig       SendPanel_Data_Preview { get; } = new BoolConfig(true);
+
+        public StringListConfig SendPanel_File_List      { get; } = new StringListConfig();
+        public IntegerConfig    SendPanel_File_BlockSize { get; } = new IntegerConfig(100);
+
+        public StringListConfig                               SendPanel_Log_List         { get; } = new StringListConfig();
+        public EnumConfig<Action_PlayRecord.ArgumentDataType> SendPanel_Log_PlayDataType { get; } = new EnumConfig<Action_PlayRecord.ArgumentDataType>(Action_PlayRecord.ArgumentDataType.RecvDataOnly);
 
         public SendDataListConfig SendDataList       { get; } = new SendDataListConfig();
         public StringConfig       SendDataListTarget { get; } = new StringConfig("*");

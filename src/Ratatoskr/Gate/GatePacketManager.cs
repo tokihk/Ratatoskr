@@ -26,7 +26,7 @@ namespace Ratatoskr.Gate
         private static IAsyncResult ar_save_ = null;
 
 
-        public static PacketManager BasePacketManager { get; } = new PacketManager(true);
+        public static PacketManager BasePacketManager { get; private set; }
 
 
         public delegate void EventHandler();
@@ -40,6 +40,8 @@ namespace Ratatoskr.Gate
         {
             packets_ = CreatePacketContainer();
 
+            /* パケットマネージャー初期化 */
+            BasePacketManager = new PacketManager(true);
             BasePacketManager.PacketEntry += OnPacketEntry;
         }
 
@@ -100,7 +102,7 @@ namespace Ratatoskr.Gate
 
         public static void ClearPacket()
         {
-            AutoTimeStampManager.OnClearPacket();
+            AutoTimeStampManager.ClearPacket();
 
             /* コンテナ初期化 */
             lock (packets_sync_) {
@@ -324,7 +326,7 @@ namespace Ratatoskr.Gate
                 /* 完了待ち */
                 while (!task_result.IsCompleted) {
                     System.Threading.Thread.Sleep(100);
-                    FormUiManager.SetProgressBar((byte)(writer.ProgressNow / (writer.ProgressMax / 100)), false);
+                    FormUiManager.SetProgressBar((byte)(writer.ProgressNow / (Math.Max(writer.ProgressMax / 100, 1))), false);
                 }
             }
 

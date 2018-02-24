@@ -33,24 +33,13 @@ namespace Ratatoskr.Actions.ActionModules
         {
             var value_path = GetArgumentValue(Argument.Path.ToString()) as string;
 
-            FileOpen(value_path);
-
-            SetResult(ActionResultType.Success, null);
-        }
-
-        private delegate void FileOpenDelegate(string path);
-        private void FileOpen(string path)
-        {
-            if (FormUiManager.InvokeRequired()) {
-                FormUiManager.Invoke(new FileOpenDelegate(FileOpen), path);
-                return;
-            }
-
-            if (File.Exists(path)) {
-                FormUiManager.FileOpen(new [] { path }, null);
+            if (File.Exists(value_path)) {
+                FormUiManager.FileOpen(new [] { value_path }, null);
             } else {
                 FormUiManager.FileOpen();
             }
+
+            SetResult(ActionResultType.Success, null);
         }
     }
 }

@@ -14,13 +14,16 @@ namespace Ratatoskr.Gate
     {
         private static DeviceManager devm_;
 
-        private static List<GateObject> gates_ = new List<GateObject>();
+        private static List<GateObject> gates_;
 
         
         public static void Startup()
         {
             /* デバイスマネージャー初期化 */
             devm_ = new DeviceManager(GatePacketManager.BasePacketManager);
+
+            /* ゲートリスト初期化 */
+            gates_ = new List<GateObject>();
 
             /* 基本デバイスインストール */
             InstallDevice();
@@ -38,6 +41,7 @@ namespace Ratatoskr.Gate
 
         private static void InstallDevice()
         {
+            devm_.AddClass(new Devices.Null.DeviceClassImpl());
             devm_.AddClass(new Devices.SerialPort.DeviceClassImpl());
             devm_.AddClass(new Devices.TcpServer.DeviceClassImpl());
             devm_.AddClass(new Devices.TcpClient.DeviceClassImpl());

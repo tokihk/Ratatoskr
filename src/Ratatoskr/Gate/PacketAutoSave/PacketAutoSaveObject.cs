@@ -14,120 +14,102 @@ namespace Ratatoskr.Gate.PacketAutoSave
 {
     internal abstract class PacketAutoSaveObject
     {
-        public sealed class Writer
-        {
-            private PacketLogWriter  writer_;
-            private FileFormatOption option_;
-            private string path_;
-
-            public Writer(PacketLogWriter writer, FileFormatOption option, string path)
-            {
-                writer_ = writer;
-                option_ = option;
-                path_ = path;
-            }
-
-            public ulong FileSize
-            {
-                get {
-                    var info = new FileInfo(path_);
-
-                    return ((ulong)((info.Exists) ? (info.Length) : (0)));
-                }
-            }
-
-            public void Write(IEnumerable<PacketObject> packets)
-            {
-                if (!writer_.Open(option_, path_, true)) {
-                    return;
-                }
-
-                writer_.WritePacket(packets);
-
-                writer_.Close();
-            }
-        }
-
-
-        private string output_path_ = null;
+        private FileFormatClass  output_format_ = null;
+        private FileFormatOption output_option_ = null;
+        private PacketLogWriter  output_writer_ = null;
+        private string           output_path_ = null;
 
 
         public PacketAutoSaveObject()
         {
         }
 
-        private FileFormatClass LoadFormatClass(ref FileFormatOption option)
+        private PacketLogWriter LoadOutputWriter()
         {
-            var ffmtc = (FileFormatClass)null;
+            if ((output_format_ == null) || (output_writer_ == null)) {
+                switch (ConfigManager.User.Option.AutoSaveFormat.Value) {
+                    case AutoSaveFormatType.Ratatoskr:
+                        output_format_ = new FileFormats.PacketLog_Rtcap.FileFormatClassImpl();
+                        break;
+                    case AutoSaveFormatType.CSV:
+                        output_format_ = new FileFormats.PacketLog_Csv.FileFormatClassImpl();
+                        break;
+                    case AutoSaveFormatType.Binary:
+                        output_format_ = new FileFormats.PacketLog_Binary.FileFormatClassImpl();
+                        break;
+                }
 
-            switch (ConfigManager.User.Option.AutoSaveFormat.Value) {
-                case AutoSaveFormatType.Ratatoskr:
-                    ffmtc = new FileFormats.PacketLog_Rtcap.FileFormatClassImpl();
-                    break;
-                case AutoSaveFormatType.CSV:
-                    ffmtc = new FileFormats.PacketLog_Csv.FileFormatClassImpl();
-                    break;
-                case AutoSaveFormatType.Binary:
-                    ffmtc = new FileFormats.PacketLog_Binary.FileFormatClassImpl();
-                    break;
+                if (output_format_ != null) {
+                    output_writer_ = output_format_.CreateWriter() as PacketLogWriter;
+                    output_option_ = output_format_.CreateWriterOption();
+                }
             }
 
-            /* デフォルトの書き込み設定 */
-            option = ffmtc.CreateWriterOption();
-
-            return (ffmtc);
+            return (output_writer_);
         }
 
-        private string LoadOutputPath(FileFormatClass format)
+        private string LoadOutputPath()
         {
             /* 出力先が存在しない場合は新規作成 */
-            if (output_path_ == null) {
-                var path_base = new Uri(Program.GetWorkspaceDirectory("autolog"));
-                var path_rel = new StringBuilder();
-            
-                path_rel.AppendFormat(
-                    "{0}/{1}_{2}.{3}",
-                    ConfigManager.User.Option.AutoSaveDirectory.Value,
-                    ConfigManager.User.Option.AutoSavePrefix.Value,
-                    DateTime.Now.ToString("yyyyMMddHHmmss"),
-                    format.FileExtension[0]);
-            
-                output_path_ = ((new Uri(path_base, path_rel.ToString())).LocalPath);
+            if ((output_path_ == null) && (output_format_ != null)) {
+                /* ディレクトリパス設定 */
+                if (   (ConfigManager.User.Option.AutoSaveDirectory.Value != "")
+                    && (Path.IsPathRooted(ConfigManager.User.Option.AutoSaveDirectory.Value))
+                ) {
+                    /* === 絶対パス === */
+                    output_path_ = ConfigManager.User.Option.AutoSaveDirectory.Value;
+                } else {
+                    /* === 相対パス === */
+                    output_path_ = string.Format("{0}/{1}", Program.GetWorkspaceDirectory("autolog"), ConfigManager.User.Option.AutoSaveDirectory.Value);
+                }
+
+                /* ファイル名設定 */
+                output_path_ = (new Uri(
+                    new Uri(output_path_),
+                    string.Format(
+                        "{0}_{1}.{2}",
+                        ConfigManager.User.Option.AutoSavePrefix.Value,
+                        DateTime.Now.ToString("yyyyMMddHHmmss"),
+                        output_format_.FileExtension[0]))).LocalPath;
             }
 
             return (output_path_);
         }
 
-        public void ChangeNewFile()
+        protected void WritePacket(IEnumerable<PacketObject> packets)
+        {
+            var writer = LoadOutputWriter();
+
+            if (writer == null)return;
+
+            var path = LoadOutputPath();
+
+            if (path == null)return;
+
+            if (writer.Open(output_option_, path, true)) {
+                writer.WritePacket(packets);
+                writer.Close();
+            }
+        }
+
+        protected long GetOutputFileSize()
+        {
+            return ((new FileInfo(output_path_)).Length);
+        }
+
+        protected void ChangeNewFile()
         {
             output_path_ = null;
         }
 
-        protected Writer GetWriter()
+        public void Output(IEnumerable<PacketObject> packets)
         {
-            var option = (FileFormatOption)null;
-            var format = LoadFormatClass(ref option);
-
-            if (format == null)return (null);
-
-            var path = LoadOutputPath(format);
-
-            if (path == null)return (null);
-
-            var writer = format.CreateWriter() as PacketLogWriter;
-
-            if (writer == null)return (null);
-
-            return (new Writer(writer, option, path));
+            OnOutput(packets);
         }
 
-        public virtual void Output(IEnumerable<PacketObject> packets)
+        protected virtual void OnOutput(IEnumerable<PacketObject> packets)
         {
-            var writer = GetWriter();
-
-            if (writer == null)return;
-
-            writer.Write(packets);
+            WritePacket(packets);
         }
     }
 }

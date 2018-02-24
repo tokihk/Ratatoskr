@@ -19,7 +19,7 @@ namespace Ratatoskr.Gate.PacketAutoSave
         {
         }
 
-        public override void Output(IEnumerable<PacketObject> packets)
+        protected override void OnOutput(IEnumerable<PacketObject> packets)
         {
             /* 監視タイマーが動作していないときは受信時に開始 */
             if (!sw_change_.IsRunning) {
@@ -32,7 +32,7 @@ namespace Ratatoskr.Gate.PacketAutoSave
             }
 
             /* 出力 */
-            base.Output(packets);
+            WritePacket(packets);
         }
     }
 }

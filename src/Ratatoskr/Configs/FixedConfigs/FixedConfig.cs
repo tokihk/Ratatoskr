@@ -20,6 +20,8 @@ namespace Ratatoskr.Configs.FixedConfigs
         }
 
         public StringConfig  ApplicationName     { get; } = new StringConfig("");
+        public StringConfig  ApplicationID       { get; } = new StringConfig("rt");
+
         public StringConfig  Copyright           { get; } = new StringConfig("");
         public StringConfig  Version             { get; } = new StringConfig("");
         public StringConfig  HomePage            { get; } = new StringConfig("https://github.com/tokihk/Ratatoskr");

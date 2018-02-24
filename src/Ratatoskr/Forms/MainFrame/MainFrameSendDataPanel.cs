@@ -38,21 +38,7 @@ namespace Ratatoskr.Forms.MainFrame
         public MainFrameSendDataPanel(MainFrameSendPanelContainer panel) : base(panel)
         {
             InitializeComponent();
-            InitializeTooltip();
             InitializePreviewWindow();
-        }
-
-        private void InitializeTooltip()
-        {
-            ttip_command_.SetToolTip(
-                CBox_ExpList,
-@"Enter the transmission data in hexadecimal.
-  Enclose the string in single quotation marks.
-  Enclose it with <> to specify the character code of the character string.
-  Ex) 001122334455
-  Ex) 02'test'03 => 027465737403
-  Ex) 02<utf-8>'あいうえお'03 => 02E38182E38184E38186E38188E3818A03
-");
         }
 
         private void InitializePreviewWindow()
@@ -68,8 +54,9 @@ namespace Ratatoskr.Forms.MainFrame
         {
             LoadExpListConfig();
 
-            ChkBox_Preview.Checked = ConfigManager.User.SendPanel_ExpList_Preview.Value;
+            ChkBox_Preview.Checked = ConfigManager.User.SendPanel_Data_Preview.Value;
 
+            UpdateTooltipExplanation();
             UpdateExpListView();
             UpdatePreviewWindow();
         }
@@ -79,7 +66,7 @@ namespace Ratatoskr.Forms.MainFrame
             CBox_ExpList.BeginUpdate();
             {
                 CBox_ExpList.Items.Clear();
-                foreach (var exp in ConfigManager.User.SendPanel_ExpList.Value) {
+                foreach (var exp in ConfigManager.User.SendPanel_Data_List.Value) {
                     CBox_ExpList.Items.Add(exp);
                 }
 
@@ -95,21 +82,34 @@ namespace Ratatoskr.Forms.MainFrame
         {
             BackupExpListConfig();
 
-            ConfigManager.User.SendPanel_ExpList_Preview.Value = ChkBox_Preview.Checked;
+            ConfigManager.User.SendPanel_Data_Preview.Value = ChkBox_Preview.Checked;
         }
 
         private void BackupExpListConfig()
         {
-            ConfigManager.User.SendPanel_ExpList.Value.Clear();
+            ConfigManager.User.SendPanel_Data_List.Value.Clear();
 
             foreach (string exp in CBox_ExpList.Items) {
-                ConfigManager.User.SendPanel_ExpList.Value.Add(exp);
+                ConfigManager.User.SendPanel_Data_List.Value.Add(exp);
             }
         }
 
         public override void OnMainFormDeactivated()
         {
             preview_label_.Hide();
+        }
+
+        private void UpdateTooltipExplanation()
+        {
+            ttip_command_.SetToolTip(
+                CBox_ExpList,
+@"Enter the transmission data in hexadecimal.
+  Enclose the string in single quotation marks.
+  Enclose it with <> to specify the character code of the character string.
+  Ex) 001122334455
+  Ex) 02'test'03 => 027465737403
+  Ex) 02<utf-8>'あいうえお'03 => 02E38182E38184E38186E38188E3818A03
+");
         }
 
         private void UpdateExpListView()
@@ -129,7 +129,7 @@ namespace Ratatoskr.Forms.MainFrame
             }
         }
 
-        protected override void OnSendExecBegin(Tuple<string, GateObject[]> target)
+        protected override void OnSendExecBegin(string target)
         {
             /* コンテンツを無効化 */
             CBox_ExpList.Enabled = false;
@@ -141,7 +141,7 @@ namespace Ratatoskr.Forms.MainFrame
             }
 
             /* アクションオブジェクトを生成 */
-            var action = new Action_Send(target.Item1, send_data_exp_);
+            var action = new Action_Send(target, send_data_exp_);
 
             /* 完了イベントを登録 */
             action.ActionCompleted += OnActionCompleted;

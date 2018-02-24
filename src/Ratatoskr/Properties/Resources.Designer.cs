@@ -613,6 +613,16 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap play2_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("play2_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap reload_16x16 {
             get {
                 object obj = ResourceManager.GetObject("reload_16x16", resourceCulture);

@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.FileFormats
 {
-    internal class SystemConfigReader : FileFormatReader, ISystemConfigReader
+    internal class UserConfigWriter : FileFormatWriter
     {
-        public bool Load()
+        public bool Save()
         {
             if (!IsOpen)return (false);
 
-            return (OnLoad());
+            return (OnSave());
         }
 
-        protected virtual bool OnLoad()
+        protected virtual bool OnSave()
         {
             return (true);
         }

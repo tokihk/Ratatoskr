@@ -8,11 +8,10 @@ namespace Ratatoskr.FileFormats
 {
     internal static class FileManager
     {
-        public static FileFormatManager FileOpen      { get; } = new FileFormatManager();
-        public static FileFormatManager PacketOpen    { get; } = new FileFormatManager();
-        public static FileFormatManager PacketSave    { get; } = new FileFormatManager();
-        public static FileFormatManager ProfileExport { get; } = new FileFormatManager();
-
+        public static FileFormatManager FileOpen       { get; } = new FileFormatManager();
+        public static FileFormatManager PacketLogOpen  { get; } = new FileFormatManager();
+        public static FileFormatManager PacketLogSave  { get; } = new FileFormatManager();
+        public static FileFormatManager UserConfigSave { get; } = new FileFormatManager();
 
         static FileManager()
         {
@@ -20,21 +19,21 @@ namespace Ratatoskr.FileFormats
             var format_plog_pcap = new PacketLog_Pcap.FileFormatClassImpl();
             var format_plog_csv = new PacketLog_Csv.FileFormatClassImpl();
             var format_plog_bin = new PacketLog_Binary.FileFormatClassImpl();
-            var format_sysconf_rtcfg = new SystemConfig_Rtcfg.FileFormatClassImpl();
+            var format_uconf_rtcfg = new UserConfig_Rtcfg.FileFormatClassImpl();
 
             FileOpen.Formats.Add(format_plog_rtcap);
             FileOpen.Formats.Add(format_plog_pcap);
             FileOpen.Formats.Add(format_plog_csv);
-//            FileOpen.Formats.Add(format_sysconf_rtcfg);
+            FileOpen.Formats.Add(format_uconf_rtcfg);
 
-            PacketOpen.Formats.Add(format_plog_rtcap);
-            PacketOpen.Formats.Add(format_plog_csv);
+            PacketLogOpen.Formats.Add(format_plog_rtcap);
+            PacketLogOpen.Formats.Add(format_plog_csv);
 
-            PacketSave.Formats.Add(format_plog_rtcap);
-            PacketSave.Formats.Add(format_plog_csv);
-            PacketSave.Formats.Add(format_plog_bin);
+            PacketLogSave.Formats.Add(format_plog_rtcap);
+            PacketLogSave.Formats.Add(format_plog_csv);
+            PacketLogSave.Formats.Add(format_plog_bin);
 
-            ProfileExport.Formats.Add(format_sysconf_rtcfg);
+            UserConfigSave.Formats.Add(format_uconf_rtcfg);
         }
     }
 }

@@ -31,8 +31,8 @@ using System.Windows.Forms;
 //      ビルド番号
 //      Revision
 //
-[assembly: AssemblyVersion("0.1.3.0")]
-[assembly: AssemblyFileVersion("0.1.3.0")]
+[assembly: AssemblyVersion("0.2.0.0")]
+[assembly: AssemblyFileVersion("0.2.0.0")]
 
 internal static class AppInfo
 {

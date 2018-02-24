@@ -41,20 +41,9 @@ namespace Ratatoskr.Actions.ActionModules
             var over_write = (bool)GetArgumentValue(Argument.OverWrite.ToString());
             var convert_enable = (bool)GetArgumentValue(Argument.ConvertEnable.ToString());
 
-            PacketSave(over_write, convert_enable);
+            FormUiManager.PacketSave(over_write, convert_enable);
 
             SetResult(ActionResultType.Success, null);
-        }
-
-        private delegate void PacketSaveDelegate(bool over, bool rule);
-        private void PacketSave(bool over, bool rule)
-        {
-            if (FormUiManager.InvokeRequired()) {
-                FormUiManager.Invoke(new PacketSaveDelegate(PacketSave), over, rule);
-                return;
-            }
-
-            FormUiManager.PacketSave(over, rule);
         }
     }
 }

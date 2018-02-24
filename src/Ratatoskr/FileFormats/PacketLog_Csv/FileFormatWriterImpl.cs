@@ -95,7 +95,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                             break;
                         case PacketElementID.DateTime:
                         {
-                            items.Add(packet.MakeTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                            items.Add(packet.MakeTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         }
                             break;
                         case PacketElementID.Information:

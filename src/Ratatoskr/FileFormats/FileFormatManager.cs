@@ -148,7 +148,7 @@ namespace Ratatoskr.FileFormats
             return ((formats_ext.Count() > 0) ? (formats_ext.First()) : (null));
         }
 
-        public FileFormatClass SelectReaderFormatFromDialog(string init_dir, bool multi_select, bool any_file, ref string[] paths, params Type[] type_filters)
+        public (FileFormatClass format, string[] paths) SelectReaderFormatFromDialog(string init_dir, bool multi_select, bool any_file, params Type[] type_filters)
         {
             /* 読込可能フォーマットのみ抽出 */
             var formats = GetReaderFormats(Formats, type_filters);
@@ -163,36 +163,25 @@ namespace Ratatoskr.FileFormats
             dialog.Multiselect = multi_select;
             dialog.Filter = GetDialogFilter(formats, any_file);
 
-            if (dialog.ShowDialog() != DialogResult.OK)return (null);
+            if (dialog.ShowDialog() != DialogResult.OK)return (null, null);
 
-            /* 選択したファイルパスを格納 */
-            paths = dialog.FileNames;
+            /* フォーマット判定 */
+            var format = (FileFormatClass)null;
 
             if ((dialog.FilterIndex > 0) && (dialog.FilterIndex <= formats.Count())) {
                 /* === 指定したフォーマットを返す === */
-                return (formats.ElementAt(dialog.FilterIndex - 1));
+                format = formats.ElementAt(dialog.FilterIndex - 1);
             } else {
                 /* === ファイル名からフォーマットを選出 === */
-                return (SelectReaderFormatFromPath(paths.First(), type_filters));
+                format = SelectReaderFormatFromPath(dialog.FileNames.First(), type_filters);
             }
+
+            if (format == null)return (null, null);
+
+            return (format, dialog.FileNames);
         }
 
-        public (FileFormatReader reader, FileFormatOption option, string[] paths) SelectReaderFromDialog(string init_dir, bool multi_select, bool any_file, params Type[] type_filters)
-        {
-            var paths = (string[])null;
-
-            var format = SelectReaderFormatFromDialog(init_dir, multi_select, any_file, ref paths, type_filters);
-
-            if (format == null)return (null, null, null);
-
-            var reader = format.GetReader();
-
-            if (reader.reader == null)return (null, null, null);
-
-            return (reader.reader, reader.option, paths);
-        }
-
-        public FileFormatClass SelectWriterFormatFromDialog(string init_dir, ref string path, params Type[] type_filters)
+        public (FileFormatClass format, string path) SelectWriterFormatFromDialog(string init_dir, params Type[] type_filters)
         {
             /* 書込み可能フォーマットのみ抽出 */
             var formats = GetWriterFormats(Formats, type_filters);
@@ -206,33 +195,22 @@ namespace Ratatoskr.FileFormats
             dialog.InitialDirectory = init_dir;
             dialog.Filter = GetDialogFilter(formats, false);
 
-            if (dialog.ShowDialog() != DialogResult.OK)return (null);
+            if (dialog.ShowDialog() != DialogResult.OK)return (null, null);
 
-            /* 選択したファイルパスを格納 */
-            path = dialog.FileName;
+            /* フォーマット判定 */
+            var format = (FileFormatClass)null;
 
             if ((dialog.FilterIndex > 0) && (dialog.FilterIndex <= formats.Count())) {
                 /* === 指定したフォーマットを返す === */
-                return (formats.ElementAt(dialog.FilterIndex - 1));
+                format = formats.ElementAt(dialog.FilterIndex - 1);
             } else {
                 /* === ファイル名からフォーマットを選出 === */
-                return (SelectWriterFormatFromPath(path, type_filters));
+                format = SelectWriterFormatFromPath(dialog.FileName, type_filters);
             }
-        }
 
-        public (FileFormatWriter writer, FileFormatOption option, string path) SelectWriterFromDialog(string init_dir, params Type[] type_filters)
-        {
-            var path = (string)null;
+            if (format == null)return (null, null);
 
-            var format = SelectWriterFormatFromDialog(init_dir, ref path, type_filters);
-
-            if (format == null)return (null, null, null);
-
-            var writer = format.GetWriter();
-
-            if (writer.writer == null)return (null, null, null);
-
-            return (writer.writer, writer.option, path);
+            return (format, dialog.FileName);
         }
     }
 }

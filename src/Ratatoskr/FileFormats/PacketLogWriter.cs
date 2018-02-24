@@ -7,7 +7,7 @@ using Ratatoskr.Generic.Packet;
 
 namespace Ratatoskr.FileFormats
 {
-    internal class PacketLogWriter : FileFormatWriter, IPacketLogWriter
+    internal class PacketLogWriter : FileFormatWriter
     {
         public void WritePacket(PacketObject packet)
         {

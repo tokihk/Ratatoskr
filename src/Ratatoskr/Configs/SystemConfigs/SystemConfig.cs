@@ -10,11 +10,11 @@ namespace Ratatoskr.Configs.SystemConfigs
 {
     internal sealed class SystemConfig : ConfigManagerBase<SystemConfig>
     {
-        public ApplicationCoreConfig ApplicationCore { get; } = new ApplicationCoreConfig();
-        public ProfileListConfig     ProfileList     { get; } = new ProfileListConfig();
-        public ProfileConfig         Profile         { get; } = new ProfileConfig();
-        public StringConfig          LanguageFile    { get; } = new StringConfig("");
-        public MainWindowConfig      MainWindow      { get; } = new MainWindowConfig();
+        public StringConfig          CurrentDirectory { get; } = new StringConfig("");
+        public ApplicationCoreConfig ApplicationCore  { get; } = new ApplicationCoreConfig();
+        public ProfileConfig         Profile          { get; } = new ProfileConfig();
+        public StringConfig          LanguageFile     { get; } = new StringConfig("");
+        public MainWindowConfig      MainWindow       { get; } = new MainWindowConfig();
 
 
         public SystemConfig() : base("system") { }

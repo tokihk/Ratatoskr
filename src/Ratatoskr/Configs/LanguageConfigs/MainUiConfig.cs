@@ -28,6 +28,12 @@ namespace Ratatoskr.Configs.LanguageConfigs
 
         public StringConfig MenuBar_Edit                 { get; } = new StringConfig("Edit");
 
+        public StringConfig MenuBar_View                 { get; } = new StringConfig("View");
+
+        public StringConfig MenuBar_Tool                 { get; } = new StringConfig("Tool");
+
+        public StringConfig MenuBar_Help                 { get; } = new StringConfig("Help");
+        public StringConfig MenuBar_Help_Document        { get; } = new StringConfig(ConfigManager.Fixed.ApplicationName.Value + " Document");
         public StringConfig MenuBar_Help_About           { get; } = new StringConfig("About " + ConfigManager.Fixed.ApplicationName.Value);
 
         public StringConfig SCmdPanel_Target  { get; } = new StringConfig("Target");

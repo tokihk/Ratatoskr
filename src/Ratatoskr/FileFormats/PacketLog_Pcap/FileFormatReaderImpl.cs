@@ -12,7 +12,6 @@ namespace Ratatoskr.FileFormats.PacketLog_Pcap
 {
     internal sealed class FileFormatReaderImpl : PacketLogReader
     {
-        private PacketContainer           packets_ = null;
         private FileFormatOptionImpl      option_ = null;
         private WinPcapPacketParserOption option_parser_ = null;
         private CaptureFileReaderDevice   device_ = null;

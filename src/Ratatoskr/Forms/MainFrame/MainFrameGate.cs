@@ -54,7 +54,7 @@ namespace Ratatoskr.Forms.MainFrame
         private ulong   data_rate_latest_ = 0;
 
 
-        public MainFrameGate(GateObject gate)
+        public MainFrameGate()
         {
             InitializeComponent();
 
@@ -72,10 +72,10 @@ namespace Ratatoskr.Forms.MainFrame
 
             /* 幅に合わせてバッファを初期化 */
             data_rate_buffer_ = new ulong[DATA_RATE_GRAPH_REGION.Width];
+        }
 
-            UpdateView();
-            UpdateDeviceControlPanel();
-
+        public MainFrameGate(GateObject gate) : this()
+        {
             Gate = gate;
         }
 
@@ -83,26 +83,27 @@ namespace Ratatoskr.Forms.MainFrame
         {
             get { return (gate_); }
             set {
-                if (gate_ == value)return;
+                if (gate_ != value) {
+                    if (gate_ != null) {
+                        /* 登録イベント解除 */
+                        gate_.StatusChanged -= OnGateStatusChanged;
+                        gate_.DataRateUpdated -= OnGateDataRateUpdated;
+                    }
 
-                if (gate_ != null) {
-                    /* 登録イベント解除 */
-                    gate_.StatusChanged -= OnGateStatusChanged;
-                    gate_.DataRateUpdated -= OnGateDataRateUpdated;
-                }
+                    gate_ = value;
 
-                gate_ = value;
+                    if (gate_ != null) {
+                        /* 背景色更新 */
+                        Btn_Main.BackColor = gate_.GateProperty.Color;
 
-                if (gate_ != null) {
-                    /* 背景色更新 */
-                    Btn_Main.BackColor = gate_.GateProperty.Color;
-
-                    /* イベント登録 */
-                    gate_.StatusChanged += OnGateStatusChanged;
-                    gate_.DataRateUpdated += OnGateDataRateUpdated;
+                        /* イベント登録 */
+                        gate_.StatusChanged += OnGateStatusChanged;
+                        gate_.DataRateUpdated += OnGateDataRateUpdated;
+                    }
                 }
 
                 UpdateView();
+                UpdateDeviceControlPanel();
             }
         }
 

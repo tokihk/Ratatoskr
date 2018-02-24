@@ -15,15 +15,11 @@ namespace Ratatoskr.Gate.PacketAutoSave
         {
         }
 
-        public override void Output(IEnumerable<PacketObject> packets)
+        protected override void OnOutput(IEnumerable<PacketObject> packets)
         {
-            var writer = GetWriter();
+            WritePacket(packets);
 
-            if (writer == null)return;
-
-            writer.Write(packets);
-
-            if (writer.FileSize >= ConfigManager.User.Option.AutoSaveValue_FileSize.Value) {
+            if (GetOutputFileSize() >= ConfigManager.User.Option.AutoSaveValue_FileSize.Value) {
                 ChangeNewFile();
             }
         }

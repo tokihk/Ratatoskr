@@ -197,7 +197,9 @@ namespace Ratatoskr.Forms.GateEditForm
             devconf_.RedirectDataQueueLimit = (uint)Num_RedirectQueueLimit.Value;
 
             /* プロパティエディタの設定値をオブジェクトに反映 */
-            devpe_.Flush();
+            if (devpe_ != null) {
+                devpe_.Flush();
+            }
 
             GateProperty = gatep_;
             DeviceConfig = devconf_;

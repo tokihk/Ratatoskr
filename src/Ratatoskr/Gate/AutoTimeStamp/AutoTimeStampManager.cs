@@ -56,7 +56,7 @@ namespace Ratatoskr.Gate.AutoTimeStamp
             sw_recv_period_.Stop();
         }
 
-        public static void OnClearPacket()
+        public static void ClearPacket()
         {
             sw_recv_period_.Stop();
         }

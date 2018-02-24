@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Gate;
-using Ratatoskr.Generic;
-using Ratatoskr.Scripts.PacketFilterExp.Terms;
 
 namespace Ratatoskr.Actions.ActionModules
 {

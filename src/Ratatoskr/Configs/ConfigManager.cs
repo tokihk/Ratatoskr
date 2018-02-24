@@ -10,6 +10,7 @@ using Ratatoskr.Configs.FixedConfigs;
 using Ratatoskr.Configs.LanguageConfigs;
 using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.Forms;
 
 namespace Ratatoskr.Configs
 {
@@ -17,17 +18,17 @@ namespace Ratatoskr.Configs
     {
         public class ProfileInfo
         {
-            public string     ID     { get; } = "";
+            public Guid       ID     { get; } = Guid.Empty;
             public UserConfig Config { get; } = null;
 
 
-            private ProfileInfo(string profile_id, UserConfig config)
+            private ProfileInfo(Guid profile_id, UserConfig config)
             {
                 ID = profile_id;
                 Config = config;
             }
 
-            public static ProfileInfo Load(string profile_id)
+            public static ProfileInfo Load(Guid profile_id)
             {
                 var config = new UserConfig();
 
@@ -36,29 +37,53 @@ namespace Ratatoskr.Configs
 
                 return (new ProfileInfo(profile_id, config));
             }
+
+            public override string ToString()
+            {
+                return (Config.ProfileName.Value);
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is Guid) {
+                    return (((Guid)obj) == ID);
+                }
+
+                return (base.Equals(obj));
+            }
         }
 
 
-        public static FixedConfig    Fixed    { get; } = new FixedConfig();
-        public static SystemConfig   System   { get; } = new SystemConfig();
-        public static UserConfig     User     { get; } = new UserConfig();
-        public static LanguageConfig Language { get; } = new LanguageConfig();
+        public static FixedConfig    Fixed    { get; private set; }
+        public static SystemConfig   System   { get; private set; }
+        public static UserConfig     User     { get; private set; }
+        public static LanguageConfig Language { get; private set; }
+
+        private static ConfigHolder[] override_configs_ = null;
 
 
         public static void Startup()
         {
+            Fixed = new FixedConfig();
+            System = new SystemConfig();
+            User = new UserConfig();
+            Language = new LanguageConfig();
         }
 
         public static void Shutdown()
         {
         }
 
-        public static void LoadAllConfig(string profile_id = null)
+        public static void LoadConfig(Guid profile_id)
         {
             System.Load();
 
-            /* 存在するプロファイルを指定している場合は指定したプロファイルに切り替える */
-            if (ProfileIsExist(profile_id)) {
+            if (profile_id != Guid.Empty) {
                 System.Profile.ProfileID.Value = profile_id;
             }
 
@@ -66,14 +91,32 @@ namespace Ratatoskr.Configs
 
             Language.Load();
 
-            /* プロファイルの実体が存在しない場合は実体を作るために保存する */
-            if (!ProfileIsExist(System.Profile.ProfileID.Value)) {
-                SaveAllConfig();
-            }
+            /* --- 設定上書き --- */
+            LoadOverrideConfig();
         }
 
-        public static void SaveAllConfig()
+        private static void LoadOverrideConfig()
         {
+            if (override_configs_ == null)return;
+
+            foreach (var config in override_configs_) {
+                if (config is SystemConfig) {
+                    System = config as SystemConfig;
+                } else if (config is UserConfig) {
+                    User = config as UserConfig;
+                } else if (config is LanguageConfig) {
+                    Language = config as LanguageConfig;
+                }
+            }
+
+            override_configs_ = null;
+        }
+
+        public static void SaveConfig()
+        {
+            /* 現在の状態を設定データに反映 */
+            FormUiManager.BackupConfig();
+
             System.Save();
 
             SaveCurrentProfile();
@@ -82,21 +125,21 @@ namespace Ratatoskr.Configs
         public static string GetCurrentDirectory()
         {
             /* ディレクトリが存在しない場合はマイドキュメント */
-            if (!Directory.Exists(User.CurrentDirectory.Value)) {
-                User.CurrentDirectory.Value = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            if (!Directory.Exists(System.CurrentDirectory.Value)) {
+                System.CurrentDirectory.Value = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             }
 
             /* ディレクトリが存在しない場合はデスクトップ */
-            if (!Directory.Exists(User.CurrentDirectory.Value)) {
-                User.CurrentDirectory.Value = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            if (!Directory.Exists(System.CurrentDirectory.Value)) {
+                System.CurrentDirectory.Value = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             }
 
-            return (User.CurrentDirectory.Value);
+            return (System.CurrentDirectory.Value);
         }
 
         public static void SetCurrentDirectory(string path)
         {
-            User.CurrentDirectory.Value = path;
+            System.CurrentDirectory.Value = path;
         }
 
         public static string GetProfileRootPath()
@@ -104,16 +147,16 @@ namespace Ratatoskr.Configs
             return (Program.GetWorkspaceDirectory(System.Profile.ProfileDir.Value));
         }
 
-        public static string GetProfilePath(string profile_id)
+        public static string GetProfilePath(Guid profile_id)
         {
-            if ((profile_id == null) || (profile_id.Length == 0))return (null);
+            if (profile_id == Guid.Empty)return (null);
 
             return (Path.Combine(
                         Program.GetWorkspaceDirectory(System.Profile.ProfileDir.Value),
-                        profile_id));
+                        profile_id.ToString("D")));
         }
 
-        public static string GetProfileFilePath(string profile_id, string file_name, bool exist_check = false)
+        public static string GetProfileFilePath(Guid profile_id, string file_name, bool exist_check = false)
         {
             /* プロファイルディレクトリパスを取得 */
             var path_profile = GetProfilePath(profile_id);
@@ -133,7 +176,7 @@ namespace Ratatoskr.Configs
             return (path_config);
         }
 
-        public static bool ProfileIsExist(string profile_id)
+        public static bool ProfileIsExist(Guid profile_id)
         {
             return (Directory.Exists(GetProfilePath(profile_id)));
         }
@@ -142,34 +185,30 @@ namespace Ratatoskr.Configs
         {
             var profiles = new List<ProfileInfo>();
             var profile = (ProfileInfo)null;
+            var search_dir = GetProfileRootPath();
 
-            foreach (var dir in Directory.EnumerateDirectories(GetProfileRootPath())) {
-                profile = ProfileInfo.Load(Path.GetFileName(dir));
+            if (Directory.Exists(search_dir)) {
+                foreach (var dir in Directory.EnumerateDirectories(GetProfileRootPath())) {
+                    try {
+                        profile = ProfileInfo.Load(Guid.Parse(Path.GetFileName(dir)));
 
-                if (profile == null)continue;
+                        if (profile == null)continue;
 
-                profiles.Add(profile);
+                        profiles.Add(profile);
+                    } catch {
+                    }
+                }
             }
 
             return (profiles);
         }
 
-        public static string GetDefaultProfileID()
+        public static string GetDefaultProfileName()
         {
-            var name_base = string.Format("{1}_{2}", Environment.MachineName, Environment.UserName, DateTime.Now.ToString("yyyyMMddHHmmss"));
-            var name_make = name_base;
-            var count = 1;
-
-            /* 同名のディレクトリが存在する場合は末尾にカウントを付けて再確認 */
-            while (Directory.Exists(GetProfilePath(name_make))) {
-                name_make = string.Format("{0}({1})", name_base, count);
-                count++;
-            }
-
-            return (name_make);
+            return (string.Format("{1}_{2}", Environment.MachineName, Environment.UserName, DateTime.Now.ToString("yyyyMMddHHmmss")));
         }
 
-        public static string GetCurrentProfileID()
+        public static Guid GetCurrentProfileID()
         {
             return (System.Profile.ProfileID.Value);
         }
@@ -194,13 +233,20 @@ namespace Ratatoskr.Configs
             return (User.Save(GetCurrentProfilePath(), read_only_check));
         }
 
-        public static string CreateNewProfile(UserConfig config)
+        public static Guid CreateNewProfile(UserConfig config)
         {
-            var profile_id = Guid.NewGuid().ToString("B");
+            var profile_id = Guid.NewGuid();
 
             config.Save(GetProfilePath(profile_id), false);
 
             return (profile_id);
+        }
+
+        public static void OverrideConfig(params UserConfig[] configs)
+        {
+            override_configs_ = configs;
+
+            Program.RestartRequest();
         }
     }
 }

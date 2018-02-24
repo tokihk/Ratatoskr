@@ -981,7 +981,7 @@ namespace Ratatoskr.PacketViews.Packet
                         break;
 
                     case ColumnType.Datetime_UTC:
-                        item.SubItems.Add(packet.MakeTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                        item.SubItems.Add(packet.MakeTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         break;
 
                     case ColumnType.Datetime_Local:
@@ -1019,7 +1019,7 @@ namespace Ratatoskr.PacketViews.Packet
                         break;
 
                     case ColumnType.Datetime_UTC:
-                        item.SubItems.Add(packet.MakeTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                        item.SubItems.Add(packet.MakeTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         break;
 
                     case ColumnType.Datetime_Local:

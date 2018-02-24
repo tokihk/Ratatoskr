@@ -28,121 +28,71 @@ namespace Ratatoskr.Forms.MainFrame
         public MainFrame()
         {
             InitializeComponent();
-            InitializeText();
             InitializeMenuBar();
-
-            ConfigManager.Language.Loaded += Language_Loaded;
 
             SetStatusText("");
             SetProgressBar(false, 0, 0);
 
-            UpdateMenuBar();
-            UpdateStatusBar();
-            UpdateProfileList();
-
             Visible = false;
-        }
-
-        private void InitializeText()
-        {
-            Text = GetTitleText();
-
-            MenuBar_File.Text = ConfigManager.Language.MainUI.MenuBar_File.Value;
-            MenuBar_File_Open.Text = ConfigManager.Language.MainUI.MenuBar_File_Open.Value;
-            MenuBar_File_Save.Text = ConfigManager.Language.MainUI.MenuBar_File_Save.Value;
-            MenuBar_File_Save_Original.Text = ConfigManager.Language.MainUI.MenuBar_File_Save_Original.Value;
-            MenuBar_File_Save_Shaping.Text = ConfigManager.Language.MainUI.MenuBar_File_Save_Shaping.Value;
-            MenuBar_File_SaveAs.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs.Value;
-            MenuBar_File_SaveAs_Original.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs_Original.Value;
-            MenuBar_File_SaveAs_Shaping.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs_Shaping.Value;
-            MenuBar_File_Exit.Text = ConfigManager.Language.MainUI.MenuBar_File_Exit.Value;
-            MenuBar_Help_About.Text = ConfigManager.Language.MainUI.MenuBar_Help_About.Value;
         }
 
         private void InitializeMenuBar()
         {
+            void InitializeMenuBarItem(ToolStripMenuItem menu)
+            {
+                if (menu == null)return;
+
+                /* 規定動作ありのメニュー */
+                if (menu.Name == "MenuBar_File_Exit") {
+                    return;
+                }
+
+                /* パケット変換器リスト */
+                if (menu.Name == "MenuBar_View_PacketConverterAdd") {
+                    BuildPacketConverterMenu(menu);
+                    return;
+                }
+
+                /* パケットビューリスト */
+                if (menu.Name == "MenuBar_View_PacketViewAdd") {
+                    BuildPacketViewMenu(menu);
+                    return;
+                }
+
+                /* プロファイルリスト */
+                if (menu.Name == "MenuBar_ProfileList") {
+                    return;
+                }
+
+                /* 子持ちメニュー */
+                if (menu.HasDropDownItems) {
+                    /* 共通イベントを削除 */
+                    menu.Click -= OnMenuBarClick;
+
+                    /* サブメニューに対して同等の処理 */
+                    foreach (ToolStripItem item in menu.DropDownItems) {
+                        InitializeMenuBarItem(item as ToolStripMenuItem);
+                    }
+
+                    return;
+                }
+
+                /* メニューのタグをActionShortcutIdに変換 */
+                if (menu.Tag is string) {
+                    var id = ActionShortcutId.None;
+
+                    if (Enum.TryParse<ActionShortcutId>(menu.Tag as string, out id)) {
+                        menu.Tag = id;
+                    }
+
+                    /* 終端メニューの場合は共通イベントを設定 */
+                    menu.Click += OnMenuBarClick;
+                }
+            }
+
             foreach (ToolStripItem item in MBar_Main.Items) {
                 InitializeMenuBarItem(item as ToolStripMenuItem);
             }
-        }
-
-        private void InitializeMenuBarItem(ToolStripMenuItem menu)
-        {
-            if (menu == null)return;
-
-            /* 規定動作ありのメニュー */
-            if (menu.Name == "MenuBar_File_Exit") {
-                return;
-            }
-
-            /* パケット変換器リスト */
-            if (menu.Name == "MenuBar_View_PacketConverterAdd") {
-                BuildPacketConverterMenu(menu);
-                return;
-            }
-
-            /* パケットビューリスト */
-            if (menu.Name == "MenuBar_View_PacketViewAdd") {
-                BuildPacketViewMenu(menu);
-                return;
-            }
-
-            /* プロファイルリスト */
-            if (menu.Name == "MenuBar_ProfileList") {
-                return;
-            }
-
-            /* 子持ちメニュー */
-            if (menu.HasDropDownItems) {
-                /* 共通イベントを削除 */
-                menu.Click -= OnMenuBarClick;
-
-                /* サブメニューに対して同等の処理 */
-                foreach (ToolStripItem item in menu.DropDownItems) {
-                    InitializeMenuBarItem(item as ToolStripMenuItem);
-                }
-
-                return;
-            }
-
-            /* メニューのタグをActionShortcutIdに変換 */
-            if (menu.Tag is string) {
-                var id = ActionShortcutId.None;
-
-                if (Enum.TryParse<ActionShortcutId>(menu.Tag as string, out id)) {
-                    menu.Tag = id;
-                }
-
-                /* 終端メニューの場合は共通イベントを設定 */
-                menu.Click += OnMenuBarClick;
-            }
-
-            /* ショートカットテキストを設定 */
-            if (menu.Tag is ActionShortcutId) {
-                menu.ShortcutKeyDisplayString = ActionShortcutManager.ShortcutText((ActionShortcutId)menu.Tag);
-            }
-        }
-
-        private void InitializePatternBox()
-        {
-        }
-
-        private void InitializeFilterBox()
-        {
-        }
-
-        private string GetTitleText()
-        {
-            var title = new StringBuilder();
-
-            title.Append(ConfigManager.Fixed.ApplicationName.Value);
-
-            /* 管理者権限かどうかを確認 */
-            if (Program.IsAdministratorMode) {
-                title.Append(string.Format(" ({0})", ConfigManager.Language.MainUI.Title_AdminMode.Value));
-            }
-
-            return (title.ToString());
         }
 
         private void BuildPacketConverterMenu(ToolStripMenuItem menu)
@@ -187,10 +137,74 @@ namespace Ratatoskr.Forms.MainFrame
 
         public void LoadConfig()
         {
+            LoadTitleText();
+
+            LoadMenuBarConfig();
+            LoadMenuBarShortcutConfig();
+
             Panel_Center.LoadConfig();
             SingleCmdPanel_Main.LoadConfig();
 
             LoadWindowConfig();
+
+            UpdateMenuBar();
+            UpdateStatusBar();
+            UpdateProfileList();
+        }
+
+        private void LoadTitleText()
+        {
+            var title = new StringBuilder();
+
+            title.Append(ConfigManager.Fixed.ApplicationName.Value);
+
+            /* 管理者権限かどうかを確認 */
+            if (Program.IsAdministratorMode) {
+                title.Append(string.Format(" ({0})", ConfigManager.Language.MainUI.Title_AdminMode.Value));
+            }
+
+            Text = title.ToString();
+        }
+
+        private void LoadMenuBarConfig()
+        {
+            MenuBar_File.Text = ConfigManager.Language.MainUI.MenuBar_File.Value;
+            MenuBar_File_Open.Text = ConfigManager.Language.MainUI.MenuBar_File_Open.Value;
+            MenuBar_File_Save.Text = ConfigManager.Language.MainUI.MenuBar_File_Save.Value;
+            MenuBar_File_Save_Original.Text = ConfigManager.Language.MainUI.MenuBar_File_Save_Original.Value;
+            MenuBar_File_Save_Shaping.Text = ConfigManager.Language.MainUI.MenuBar_File_Save_Shaping.Value;
+            MenuBar_File_SaveAs.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs.Value;
+            MenuBar_File_SaveAs_Original.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs_Original.Value;
+            MenuBar_File_SaveAs_Shaping.Text = ConfigManager.Language.MainUI.MenuBar_File_SaveAs_Shaping.Value;
+            MenuBar_File_Exit.Text = ConfigManager.Language.MainUI.MenuBar_File_Exit.Value;
+            MenuBar_View.Text = ConfigManager.Language.MainUI.MenuBar_View.Value;
+            MenuBar_Tool.Text = ConfigManager.Language.MainUI.MenuBar_Tool.Value;
+            MenuBar_Help.Text = ConfigManager.Language.MainUI.MenuBar_Help.Value;
+            MenuBar_Help_Document.Text = ConfigManager.Language.MainUI.MenuBar_Help_Document.Value;
+            MenuBar_Help_About.Text = ConfigManager.Language.MainUI.MenuBar_Help_About.Value;
+        }
+
+        private void LoadMenuBarShortcutConfig()
+        {
+            void LoadMenuBarShortcutConfig(ToolStripMenuItem menu)
+            {
+                if (menu == null)return;
+
+                if (menu.HasDropDownItems) {
+                    /* 子持ちメニュー */
+                    foreach (ToolStripItem sub_menu in menu.DropDownItems) {
+                        LoadMenuBarShortcutConfig(sub_menu as ToolStripMenuItem);
+                    }
+
+                } else if (menu.Tag is ActionShortcutId) {
+                    /* 機能が割り当てられたメニュー */
+                    menu.ShortcutKeyDisplayString = ActionShortcutManager.ShortcutText((ActionShortcutId)menu.Tag);
+                }
+            }
+
+            foreach (ToolStripItem item in MBar_Main.Items) {
+                LoadMenuBarShortcutConfig(item as ToolStripMenuItem);
+            }
         }
 
         private void LoadWindowConfig()
@@ -247,11 +261,6 @@ namespace Ratatoskr.Forms.MainFrame
             GatePacketManager.BasePacketManager.DataRateTarget = target;
         }
 
-        private void Language_Loaded(object sender, EventArgs e)
-        {
-            InitializeText();
-        }
-
         private delegate void UpdateMenuBarDelegate();
         public void UpdateMenuBar()
         {
@@ -262,6 +271,7 @@ namespace Ratatoskr.Forms.MainFrame
 
             MenuBar_View_PacketConverterAdd.Enabled = FormTaskManager.CanAddPacketConverter;
             MenuBar_View_PacketViewAdd.Enabled = FormTaskManager.CanAddPacketView;
+            MenuBar_Tool_AutoTimeStamp.Checked = ConfigManager.User.Option.AutoTimeStamp.Value;
             MenuBar_View_AutoScroll.Checked = ConfigManager.User.Option.AutoScroll.Value;
         }
 
@@ -487,25 +497,6 @@ namespace Ratatoskr.Forms.MainFrame
             ApplyDataRateTarget();
         }
 
-        private void MenuBar_File_ExportConfig_Click(object sender, EventArgs e)
-        {
-            var writer = FileManager.ProfileExport.SelectWriterFromDialog(null);
-            var writer_w = writer.writer as SystemConfigWriter;
-            var writer_o = writer.option as SystemConfigOption;
-
-            if (writer_w == null)return;
-            if (writer_o == null)return;
-
-            /* 出力設定 */
-            writer_o.TargetProfileID = ConfigManager.GetCurrentProfileID();
-
-            if (!writer_w.Open(writer.option, writer.path))return;
-
-            writer_w.Save();
-
-            writer_w.Close();
-        }
-
         private void MenuBar_ProfileList_DropDown(object sender, EventArgs e)
         {
             UpdateProfileList();
@@ -513,12 +504,12 @@ namespace Ratatoskr.Forms.MainFrame
 
         private void MenuBar_ProfileList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var profile_next = MenuBar_ProfileList.SelectedItem as ProfileObjectConfig;
+            var profile_next = MenuBar_ProfileList.SelectedItem as ConfigManager.ProfileInfo;
 
             if (profile_next == null)return;
 
             if (profile_next.ID != ConfigManager.GetCurrentProfileID()) {
-                Program.RestartRequest(profile_next.ID);
+                Program.ChangeProfile(profile_next.ID);
             }
         }
 
@@ -541,26 +532,26 @@ namespace Ratatoskr.Forms.MainFrame
 
             if (dialog.ShowDialog() != DialogResult.OK)return;
 
-            Program.RestartRequest(ConfigManager.CreateNewProfile(dialog.Config));
+            Program.ChangeProfile(ConfigManager.CreateNewProfile(dialog.Config));
         }
 
         private void MenuBar_Profile_Export_Click(object sender, EventArgs e)
         {
-            var writer = FileManager.ProfileExport.SelectWriterFromDialog(null);
-            var writer_w = writer.writer as SystemConfigWriter;
-            var writer_o = writer.option as SystemConfigOption;
+            /* 現在の状態を保存する */
+            ConfigManager.SaveConfig();
 
-            if (writer_w == null)return;
-            if (writer_o == null)return;
+            var writer_info = FormUiManager.CreateUserConfigWriter();
+
+            if (writer_info.writer == null)return;
 
             /* 出力設定 */
-            writer_o.TargetProfileID = ConfigManager.GetCurrentProfileID();
+            writer_info.option.TargetProfileID = ConfigManager.GetCurrentProfileID();
 
-            if (!writer_w.Open(writer.option, writer.path))return;
+            if (!writer_info.writer.Open(writer_info.option, writer_info.path))return;
 
-            writer_w.Save();
+            writer_info.writer.Save();
 
-            writer_w.Close();
+            writer_info.writer.Close();
         }
 
         private void MenuBar_Profile_OpenDir_Click(object sender, EventArgs e)
@@ -572,6 +563,11 @@ namespace Ratatoskr.Forms.MainFrame
             }
 
             System.Diagnostics.Process.Start(ConfigManager.GetProfileRootPath());
+        }
+
+        private void MenuBar_Export_UserSetting_Click(object sender, EventArgs e)
+        {
+            MenuBar_Profile_Export_Click(sender, e);
         }
     }
 }
