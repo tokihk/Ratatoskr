@@ -4,9 +4,9 @@
 
 // GPPG version 1.5.2
 // Machine:  HITOSHI-WIN10
-// DateTime: 2018/02/24 17:36:26
+// DateTime: 2018/04/13 20:37:27
 // UserName: TokiH
-// Input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/20 19:49:12>
+// Input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/04/03 10:07:24>
 
 // options: no-lines gplex
 
@@ -17,7 +17,7 @@ using System.Globalization;
 using System.Text;
 using QUT.Gppg;
 using System.Diagnostics;
-using Ratatoskr.Generic;
+using Ratatoskr.Utility;
 
 namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 {
@@ -53,9 +53,9 @@ internal class ScanObj {
 [GeneratedCodeAttribute( "Gardens Point Parser Generator", "1.5.2")]
 internal class ExpressionParser: ShiftReduceParser<ValueType, LexLocation>
 {
-  // Verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/20 19:49:12
+  // Verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/04/03 10:07:24
     private ExpressionObject exp_obj_ = null;
-  // End verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/02/20 19:49:12
+  // End verbatim content from Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.grammar.y - 2018/04/03 10:07:24
 
 #pragma warning disable 649
   private static Dictionary<int, string> aliases;

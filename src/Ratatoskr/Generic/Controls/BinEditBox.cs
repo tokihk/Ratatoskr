@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Generic.Container;
+using Ratatoskr.Utility;
 
 namespace Ratatoskr.Generic.Controls
 {
@@ -946,7 +947,7 @@ namespace Ratatoskr.Generic.Controls
             draw_data_ = DataPickUp(draw_addr_, draw_line_num_ * 16);
 
             VScrl_Data.Maximum = draw_line_max_ + draw_line_num_;
-            VScrl_Data.Value = draw_line_offset_;
+            VScrl_Data.Value = Math.Min(draw_line_offset_, VScrl_Data.Maximum);
             VScrl_Data.Enabled = (draw_line_max_ > draw_line_num_);
 
             Panel_Address.Invalidate();

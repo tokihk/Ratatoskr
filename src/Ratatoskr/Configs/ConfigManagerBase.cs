@@ -10,7 +10,7 @@ using System.Xml;
 namespace Ratatoskr.Configs
 {
     [Serializable]
-    public abstract class ConfigManagerBase<Type> : ConfigHolder
+    internal abstract class ConfigManagerBase<Type> : ConfigHolder
         where Type : class, new()
     {
         public class ConfigLoadedEventHandler : EventArgs
@@ -65,7 +65,7 @@ namespace Ratatoskr.Configs
         public bool LoadXml(Stream stream)
         {
             try {
-                var xml_doc = new XmlDocument();
+                var xml_doc = CreateXmlDocument(true);
 
                 xml_doc.Load(stream);
 
@@ -78,7 +78,7 @@ namespace Ratatoskr.Configs
         private bool LoadXml(string path)
         {
             try {
-                var xml_doc = new XmlDocument();
+                var xml_doc = CreateXmlDocument(true);
 
                 /* XMLファイル読み込み */
                 xml_doc.Load(path);
@@ -114,7 +114,7 @@ namespace Ratatoskr.Configs
 
         private bool SaveXmlConfig(string path)
         {
-            var xml_doc = new XmlDocument();
+            var xml_doc = CreateXmlDocument(false);
             var xml_dec = xml_doc.CreateXmlDeclaration("1.0", "UTF-8", null);
             var xml_root = xml_doc.CreateElement(config_name_);
 
@@ -131,6 +131,15 @@ namespace Ratatoskr.Configs
             xml_doc.Save(path);
 
             return (true);
+        }
+
+        private XmlDocument CreateXmlDocument(bool is_read)
+        {
+            var xml_doc = new XmlDocument();
+
+            xml_doc.PreserveWhitespace = (is_read) ? (true) : (false);
+
+            return (xml_doc);
         }
     }
 }

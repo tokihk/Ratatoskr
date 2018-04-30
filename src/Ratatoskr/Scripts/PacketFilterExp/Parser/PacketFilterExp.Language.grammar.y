@@ -2,7 +2,7 @@
 // http://www.quut.com/c/ANSI-C-grammar-l-2011.html
 
 %using System.Diagnostics;
-%using Ratatoskr.Generic;
+%using Ratatoskr.Utility;
 
 %namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 

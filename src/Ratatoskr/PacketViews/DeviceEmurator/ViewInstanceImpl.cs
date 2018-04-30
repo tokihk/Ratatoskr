@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Native;
-using Ratatoskr.Generic;
 using Ratatoskr.Generic.Packet;
 using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Utility;
 
 namespace Ratatoskr.PacketViews.DeviceEmurator
 {

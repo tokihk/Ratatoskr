@@ -28,7 +28,7 @@ namespace Ratatoskr.Configs.UserConfigs
     }
 
     [Serializable]
-    internal sealed class PacketViewConfig : IConfigDataReadOnly<List<PacketViewObjectConfig>>, IConfigReader, IConfigWriter
+    internal sealed class PacketViewConfig : ConfigObject, IConfigDataReadOnly<List<PacketViewObjectConfig>>, IConfigReader, IConfigWriter
     {
         private const string XML_NODE_DATA = "data";
 

@@ -9,7 +9,7 @@ using System.Xml;
 namespace Ratatoskr.Configs.Types
 {
     [Serializable]
-    public sealed class PointConfig : IConfigData<Point>, IConfigReader, IConfigWriter
+    internal sealed class PointConfig : ConfigObject, IConfigData<Point>, IConfigReader, IConfigWriter
     {
         public Point Value { get; set; } = Point.Empty;
 

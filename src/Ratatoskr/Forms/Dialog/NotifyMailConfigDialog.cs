@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.Configs.Types;
 using Ratatoskr.Generic;
 
 namespace Ratatoskr.Forms.Dialog
 {
     internal partial class NotifyMailConfigDialog : Form
     {
-        public NotifyMailConfig Config { get; private set; }
+        public MailConfig Config { get; private set; }
 
 
         public NotifyMailConfigDialog()
@@ -23,7 +23,7 @@ namespace Ratatoskr.Forms.Dialog
             InitializeConnectMode();
         }
 
-        public NotifyMailConfigDialog(NotifyMailConfig config) : this()
+        public NotifyMailConfigDialog(MailConfig config) : this()
         {
             Config = ClassUtil.Clone(config);
 

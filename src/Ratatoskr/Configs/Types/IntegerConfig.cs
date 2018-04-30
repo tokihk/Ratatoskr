@@ -8,7 +8,7 @@ using System.Xml;
 namespace Ratatoskr.Configs.Types
 {
     [Serializable]
-    public sealed class IntegerConfig : IConfigData<decimal>, IConfigReader, IConfigWriter
+    internal sealed class IntegerConfig : ConfigObject, IConfigData<decimal>, IConfigReader, IConfigWriter
     {
         public decimal Value { get; set; } = 0;
 

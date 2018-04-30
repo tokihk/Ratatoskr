@@ -6,24 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Generic;
 using Ratatoskr.Configs.Types;
+using Ratatoskr.Drivers.SerialPort;
 
 namespace Ratatoskr.Devices.SerialPort
 {
-    internal enum fDtrControlType
-    {
-        DTR_CONTROL_DISABLE,
-        DTR_CONTROL_ENABLE,
-        DTR_CONTROL_HANDSHAKE,
-    }
-
-    internal enum fRtsControlType
-    {
-        RTS_CONTROL_DISABLE,
-        RTS_CONTROL_ENABLE,
-        RTS_CONTROL_HANDSHAKE,
-        RTS_CONTROL_TOGGLE,
-    }
-
     [Serializable]
     internal sealed class DevicePropertyImpl : DeviceProperty
     {
@@ -31,10 +17,10 @@ namespace Ratatoskr.Devices.SerialPort
 
         public BoolConfig           AsyncMode { get; } = new BoolConfig(false);
 
-        public IntegerConfig        BaudRate { get; } = new IntegerConfig(9600);
-        public EnumConfig<Parity>   Parity   { get; } = new EnumConfig<System.IO.Ports.Parity>(System.IO.Ports.Parity.None);
-        public IntegerConfig        DataBits { get; } = new IntegerConfig(8);
-        public EnumConfig<StopBits> StopBits { get; } = new EnumConfig<System.IO.Ports.StopBits>(System.IO.Ports.StopBits.None);
+        public IntegerConfig                  BaudRate { get; } = new IntegerConfig(9600);
+        public EnumConfig<SerialPortParity>   Parity   { get; } = new EnumConfig<SerialPortParity>(SerialPortParity.None);
+        public IntegerConfig                  DataBits { get; } = new IntegerConfig(8);
+        public EnumConfig<SerialPortStopBits> StopBits { get; } = new EnumConfig<SerialPortStopBits>(SerialPortStopBits.None);
 
         public BoolConfig           fOutxCtsFlow      { get; } = new BoolConfig(false);
         public BoolConfig           fOutxDsrFlow      { get; } = new BoolConfig(false);

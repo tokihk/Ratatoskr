@@ -29,7 +29,7 @@ namespace Ratatoskr.Configs.UserConfigs
     }
 
     [Serializable]
-    internal sealed class PacketConverterConfig : IConfigDataReadOnly<List<PacketConverterObjectConfig>>, IConfigReader, IConfigWriter
+    internal sealed class PacketConverterConfig : ConfigObject, IConfigDataReadOnly<List<PacketConverterObjectConfig>>, IConfigReader, IConfigWriter
     {
         private const string XML_NODE_DATA = "data";
 

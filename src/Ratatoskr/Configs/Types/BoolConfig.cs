@@ -8,7 +8,7 @@ using System.Xml;
 namespace Ratatoskr.Configs.Types
 {
     [Serializable]
-    public sealed class BoolConfig : IConfigData<bool>, IConfigReader, IConfigWriter
+    internal sealed class BoolConfig : ConfigObject, IConfigData<bool>, IConfigReader, IConfigWriter
     {
         public bool Value { get; set; } = false;
 

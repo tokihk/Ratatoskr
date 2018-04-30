@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ratatoskr.Drivers.SerialPort;
 
 namespace Ratatoskr.Devices.SerialPort
 {
@@ -56,7 +57,7 @@ namespace Ratatoskr.Devices.SerialPort
 
         private void InitializePortList()
         {
-            var ports = ComPortInfo.GetSerialPortList();
+            var ports = SerialPortManager.GetSerialPortList();
            
             CBox_PortList.BeginUpdate();
             {
@@ -163,11 +164,11 @@ namespace Ratatoskr.Devices.SerialPort
 
         public override void Flush()
         {
-            devp_.PortName.Value = (CBox_PortList.SelectedItem as ComPortInfo).DeviceName;
+            devp_.PortName.Value = (CBox_PortList.SelectedItem as SerialPortInfo).DeviceName;
             devp_.BaudRate.Value = uint.Parse(CBox_BaudRate.Text);
-            devp_.Parity.Value = (Parity)CBox_Parity.SelectedItem;
+            devp_.Parity.Value = (SerialPortParity)CBox_Parity.SelectedItem;
             devp_.DataBits.Value = (byte)CBox_DataBits.SelectedItem;
-            devp_.StopBits.Value = (StopBits)CBox_StopBits.SelectedItem;
+            devp_.StopBits.Value = (SerialPortStopBits)CBox_StopBits.SelectedItem;
 
             devp_.fOutxCtsFlow.Value = ChkBox_fOutxCtsFlow.Checked;
             devp_.fOutxDsrFlow.Value = ChkBox_fOutxDsrFlow.Checked;

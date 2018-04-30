@@ -6,8 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.Types;
-using Ratatoskr.Actions.ActionModules;
-using Ratatoskr.Gate.PacketAutoSave;
+using Ratatoskr.Gate.AutoPacketSave;
 using Ratatoskr.Generic.Packet;
 
 
@@ -18,6 +17,13 @@ namespace Ratatoskr.Configs.UserConfigs
         Data,
         File,
         Log,
+    }
+
+    internal enum SendLogDataType
+    {
+        RecvOnly,
+        SendOnly,
+        RecvAndSend,
     }
 
     [Serializable]
@@ -54,8 +60,8 @@ namespace Ratatoskr.Configs.UserConfigs
         public StringListConfig SendPanel_File_List      { get; } = new StringListConfig();
         public IntegerConfig    SendPanel_File_BlockSize { get; } = new IntegerConfig(100);
 
-        public StringListConfig                               SendPanel_Log_List         { get; } = new StringListConfig();
-        public EnumConfig<Action_PlayRecord.ArgumentDataType> SendPanel_Log_PlayDataType { get; } = new EnumConfig<Action_PlayRecord.ArgumentDataType>(Action_PlayRecord.ArgumentDataType.RecvDataOnly);
+        public StringListConfig            SendPanel_Log_List         { get; } = new StringListConfig();
+        public EnumConfig<SendLogDataType> SendPanel_Log_PlayDataType { get; } = new EnumConfig<SendLogDataType>(SendLogDataType.RecvOnly);
 
         public SendDataListConfig SendDataList       { get; } = new SendDataListConfig();
         public StringConfig       SendDataListTarget { get; } = new StringConfig("*");
@@ -68,24 +74,7 @@ namespace Ratatoskr.Configs.UserConfigs
         public IntegerConfig    PacketListLimit  { get; } = new IntegerConfig(2000);
         public IntegerConfig    PacketListRepeat { get; } = new IntegerConfig(1);
 
-
-        private OptionConfig option_ = new OptionConfig();
-        public  OptionConfig Option
-        {
-            get { return (option_); }
-            set {
-                var value_old = option_;
-
-                option_ = value;
-
-                /* === ここに設定更新時の反映処理を入れる === */
-                if (IsUpdated_AutoSaveSetting(value, value_old)) {
-                    PacketAutoSaveManager.Setup();
-                }
-
-                /* ========================================== */
-            }
-        }
+        public StringListConfig Script_OpenFileList { get; } = new StringListConfig();
 
 
         public UserConfig() : base("user")
@@ -109,12 +98,9 @@ namespace Ratatoskr.Configs.UserConfigs
             return (LoadConfig(Path.Combine(path, CONFIG_FILE_NAME)));
         }
 
-        public bool Save(string path, bool read_only_check = true)
+        public bool Save(string path)
         {
             if (path == null)return (false);
-
-            /* 読込専用のときは何もしない */
-            if ((read_only_check) && (ReadOnly.Value))return (false);
 
             /* バージョン情報を更新 */
             VersionMajor.Value = Program.Version.VersionMajor;
@@ -124,18 +110,6 @@ namespace Ratatoskr.Configs.UserConfigs
 
             /* プロファイルを保存 */
             return (SaveConfig(Path.Combine(path, CONFIG_FILE_NAME)));
-        }
-
-        private bool IsUpdated_AutoSaveSetting(OptionConfig cfg_new, OptionConfig cfg_old)
-        {
-            return (   (cfg_new.AutoSaveDirectory.Value != cfg_old.AutoSaveDirectory.Value)
-                    || (cfg_new.AutoSaveFormat.Value != cfg_old.AutoSaveFormat.Value)
-                    || (cfg_new.AutoSavePrefix.Value != cfg_old.AutoSavePrefix.Value)
-                    || (cfg_new.AutoSaveTimming.Value != cfg_old.AutoSaveTimming.Value)
-                    || (cfg_new.AutoSaveValue_FileSize.Value != cfg_old.AutoSaveValue_FileSize.Value)
-                    || (cfg_new.AutoSaveValue_Interval.Value != cfg_old.AutoSaveValue_Interval.Value)
-                    || (cfg_new.AutoSaveValue_PacketCount.Value != cfg_old.AutoSaveValue_PacketCount.Value)
-                );
         }
     }
 }

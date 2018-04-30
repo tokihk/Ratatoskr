@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ratatoskr.Native;
 using Ratatoskr.Generic;
+using Ratatoskr.Drivers.SerialPort;
 
 namespace Ratatoskr.Devices.SerialPort
 {
@@ -18,9 +19,7 @@ namespace Ratatoskr.Devices.SerialPort
         private const uint LOOP_CONTINUOUS_LIMIT = 10;
         private const uint RECV_BUFFER_SIZE = 8192;
 
-        private const uint COMM_MASK = NativeMethods.EV_RXCHAR | NativeMethods.EV_TXEMPTY;
-
-        private IntPtr handle_;
+        private SerialPortController port_ = new SerialPortController();
 
         private object  send_sync_ = new object();
         private byte[]  send_buffer_;
@@ -70,41 +69,48 @@ namespace Ratatoskr.Devices.SerialPort
 
         protected override EventResult OnConnectStart()
         {
+            var prop = Property as DevicePropertyImpl;
+
+            port_.PortName = prop.PortName.Value;
+            port_.BaudRate = (uint)prop.BaudRate.Value;
+            port_.Parity = prop.Parity.Value;
+            port_.DataBits = (byte)prop.DataBits.Value;
+            port_.StopBits = prop.StopBits.Value;
+
+            port_.fOutxCtsFlow = prop.fOutxCtsFlow.Value;
+            port_.fOutxDsrFlow = prop.fOutxDsrFlow.Value;
+            port_.fDsrSensitivity = prop.fDsrSensitivity.Value;
+            port_.fTXContinueOnXoff = prop.fTXContinueOnXoff.Value;
+            port_.fOutX = prop.fOutX.Value;
+            port_.fInX = prop.fInX.Value;
+
+            port_.fDtrControl = prop.fDtrControl.Value;
+            port_.fRtsControl = prop.fRtsControl.Value;
+
+            port_.XonLim = (ushort)prop.XonLim.Value;
+            port_.XoffLim = (ushort)prop.XoffLim.Value;
+            port_.XonChar = (sbyte)prop.XonChar.Value;
+            port_.XoffChar = (sbyte)prop.XoffChar.Value;
+
             return (EventResult.Success);
         }
 
         protected override EventResult OnConnectBusy()
         {
-            var prop = Property as DevicePropertyImpl;
+            if (!port_.Open()) {
+                return (EventResult.Busy);
+            }
 
-#if ASYNC_MODE
-            handle_ = NativeMethods.CreateFile(
-                "\\\\.\\" + prop.PortName.Value,
-                NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE,
-                0,
-                NativeMethods.Null,
-                NativeMethods.OPEN_EXISTING,
-                NativeMethods.FILE_FLAG_OVERLAPPED,
-                NativeMethods.Null);
-#else
-            handle_ = NativeMethods.CreateFile(
-                "\\\\.\\" + prop.PortName.Value,
-                NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE,
-                0,
-                NativeMethods.Null,
-                NativeMethods.OPEN_EXISTING,
-                0,
-                NativeMethods.Null);
-#endif
-            
-            var error = NativeMethods.GetLastError();
+            if (!port_.Setup()) {
+                return (EventResult.Busy);
+            }
 
-            return ((handle_ != NativeMethods.INVALID_HANDLE_VALUE) ? (EventResult.Success) : (EventResult.Busy));
+            return (EventResult.Success);
         }
 
         protected override void OnConnected()
         {
-            SerialPortSetup(handle_, Property as DevicePropertyImpl);
+            port_.Setup();
 
             /* === バッファ初期化 === */
             send_buffer_ = null;
@@ -140,6 +146,7 @@ namespace Ratatoskr.Devices.SerialPort
 
         protected override void OnDisconnectStart()
         {
+            Debugger.DebugManager.MessageOut("Serial Port - Disconnect Start");
 #if ASYNC_MODE
             /* タスク停止イベント */
             NativeMethods.ResetEvent(exit_event_);
@@ -168,16 +175,7 @@ namespace Ratatoskr.Devices.SerialPort
 #else
             exit_req_ = true;
 
-            /* 処理中の操作を全てキャンセル */
-            NativeMethods.PurgeComm(
-                handle_,
-                  NativeMethods.PURGE_RXABORT
-                | NativeMethods.PURGE_RXCLEAR
-                | NativeMethods.PURGE_TXABORT
-                | NativeMethods.PURGE_TXCLEAR);
-
-            NativeMethods.EscapeCommFunction(handle_, NativeMethods.CLRDTR);
-            NativeMethods.SetCommMask(handle_, 0);
+            port_.Purge();
 
             /* 受信タスク停止 */
             while (   ((device_task_send_ar_ != null) && (!device_task_send_ar_.IsCompleted))
@@ -188,10 +186,9 @@ namespace Ratatoskr.Devices.SerialPort
 #endif
 
             /* ポートクローズ */
-            if (handle_ != NativeMethods.INVALID_HANDLE_VALUE) {
-                NativeMethods.CloseHandle(handle_);
-                handle_ = NativeMethods.INVALID_HANDLE_VALUE;
-            }
+            port_.Close();
+
+            Debugger.DebugManager.MessageOut("Serial Port - Disconnect Start - End");
         }
 
         protected override PollState OnPoll()
@@ -415,16 +412,8 @@ namespace Ratatoskr.Devices.SerialPort
 
             lock (send_sync_)
             {
-                /* === 送信キュー状態を取得 === */
-                var comm_error = (uint)0;
-                var comm_stat = new NativeMethods.COMSTAT();
-
                 /* 送信中であればスキップ */
-                if (   (!NativeMethods.ClearCommError(handle_, out comm_error, out comm_stat))
-                    || (comm_stat.cbOutQue > 0)
-                ) {
-                    return;
-                }
+                if (port_.IsWriteBusy)return;
 
                 /* 送信データ読込 */
                 if (send_buffer_ == null) {
@@ -436,10 +425,8 @@ namespace Ratatoskr.Devices.SerialPort
                     return;
                 }
 
-                /* === 送信開始 === */
-                uint send_size = 0;
-
-                if (!NativeMethods.WriteFile(handle_, send_buffer_, (uint)send_buffer_.Length, out send_size, NativeMethods.Null))return;
+                /* 送信開始 */
+                var send_size = port_.Write(send_buffer_);
 
                 if (send_size == 0)return;
 
@@ -453,126 +440,23 @@ namespace Ratatoskr.Devices.SerialPort
         {
             busy = false;
 
-            /* === 受信サイズを取得 === */
-            var comm_error = (uint)0;
-            var comm_stat = new NativeMethods.COMSTAT();
-
             /* 受信していなければスキップ */
-            if (   (!NativeMethods.ClearCommError(handle_, out comm_error, out comm_stat))
-                || (comm_stat.cbInQue == 0)
-            ) {
-                return;
-            }
+            var recv_size = port_.RecvDataSize;
 
-            var recv_data = new byte[comm_stat.cbInQue];
-            var read_size = (uint)0;
+            if (recv_size == 0)return;
 
-            fixed (byte *buff = recv_data)
-            {
-                if (!NativeMethods.ReadFile(handle_, buff, (uint)recv_data.Length, out read_size, NativeMethods.Null))return;
-            }
+            var recv_data = new byte[recv_size];
 
-            if (read_size == 0)return;
+            /* 受信 */
+            recv_size = port_.Recv(recv_data);
 
-            RecvComplete(recv_data, read_size);
+            if (recv_size == 0)return;
+
+            RecvComplete(recv_data, recv_size);
 
             busy = true;
         }
 #endif
-
-        private void SerialPortSetup(IntPtr handle, DevicePropertyImpl prop)
-        {
-            /* === COMポート設定読み込み === */
-            var dcb = new NativeMethods.DCB();
-
-            NativeMethods.GetCommState(handle, out dcb);
-
-            /* Baudrate */
-            dcb.BaudRate = (uint)prop.BaudRate.Value;
-
-            /* Parity */
-            switch (prop.Parity.Value) {
-                case Parity.None:   dcb.Parity = NativeMethods.NOPARITY;       break;
-                case Parity.Odd:    dcb.Parity = NativeMethods.ODDPARITY;      break;
-                case Parity.Even:   dcb.Parity = NativeMethods.EVENPARITY;     break;
-                case Parity.Mark:   dcb.Parity = NativeMethods.MASKPARITY;     break;
-                case Parity.Space:  dcb.Parity = NativeMethods.SPACEPARITY;    break;
-                default:            dcb.Parity = NativeMethods.NOPARITY;       break;
-            }
-
-            /* BitSize */
-            dcb.ByteSize = (byte)prop.DataBits.Value;
-
-            /* StopBits */
-            switch (prop.StopBits.Value) {
-                case StopBits.One:          dcb.StopBits = NativeMethods.ONESTOPBIT;   break;
-                case StopBits.OnePointFive: dcb.StopBits = NativeMethods.ONE5STOPBITS; break;
-                case StopBits.Two:          dcb.StopBits = NativeMethods.TWOSTOPBIT;   break;
-                default:                    dcb.StopBits = NativeMethods.ONESTOPBIT;   break;
-            }
-
-            /* バイナリモード */
-            dcb.fBinary = 1;
-
-            dcb.fOutxDsrFlow = (prop.fOutxCtsFlow.Value) ? (1U) : (0U);
-            dcb.fOutxDsrFlow = (prop.fOutxDsrFlow.Value) ? (1U) : (0U);
-            dcb.fDsrSensitivity = (prop.fDsrSensitivity.Value) ? (1U) : (0U);
-            dcb.fTXContinueOnXoff = (prop.fTXContinueOnXoff.Value) ? (1U) : (0U);
-            dcb.fOutX = (prop.fOutX.Value) ? (1U) : (0U);
-            dcb.fInX = (prop.fInX.Value) ? (1U) : (0U);
-
-            switch (prop.fDtrControl.Value) {
-                case fDtrControlType.DTR_CONTROL_DISABLE:   dcb.fDtrControl = NativeMethods.DTR_CONTROL_DISABLE;   break;
-                case fDtrControlType.DTR_CONTROL_ENABLE:    dcb.fDtrControl = NativeMethods.DTR_CONTROL_ENABLE;    break;
-                case fDtrControlType.DTR_CONTROL_HANDSHAKE: dcb.fDtrControl = NativeMethods.DTR_CONTROL_HANDSHAKE; break;
-            }
-
-            switch (prop.fRtsControl.Value) {
-                case fRtsControlType.RTS_CONTROL_DISABLE:   dcb.fRtsControl = NativeMethods.RTS_CONTROL_DISABLE;   break;
-                case fRtsControlType.RTS_CONTROL_ENABLE:    dcb.fRtsControl = NativeMethods.RTS_CONTROL_ENABLE;    break;
-                case fRtsControlType.RTS_CONTROL_HANDSHAKE: dcb.fRtsControl = NativeMethods.RTS_CONTROL_HANDSHAKE; break;
-                case fRtsControlType.RTS_CONTROL_TOGGLE:    dcb.fRtsControl = NativeMethods.RTS_CONTROL_TOGGLE;    break;
-            }
-
-            dcb.XonLim = (ushort)prop.XonLim.Value;
-            dcb.XoffLim = (ushort)prop.XoffLim.Value;
-            dcb.XonChar = (sbyte)prop.XonChar.Value;
-            dcb.XoffChar = (sbyte)prop.XoffChar.Value;
-
-            /* === COMポート設定更新 === */
-            if (!NativeMethods.SetCommState(handle, ref dcb)) {
-                /* API失敗時は再接続 */
-                ConnectReboot();
-                return;
-            }
-
-            /* === タイムアウト設定 === */
-            var timeout = new NativeMethods.COMMTIMEOUTS();
-
-            timeout.ReadIntervalTimeout = 0;
-            timeout.ReadTotalTimeoutMultiplier = 0;
-            timeout.ReadTotalTimeoutConstant = 10;
-            timeout.WriteTotalTimeoutConstant = 100;
-
-            NativeMethods.SetCommTimeouts(handle, ref timeout);
-
-            /* === イベント設定 === */
-            if (!NativeMethods.SetCommMask(
-                handle,
-//                  NativeMethods.EV_BREAK
-//                | NativeMethods.EV_CTS
-//                | NativeMethods.EV_DSR
-//                | NativeMethods.EV_ERR
-//                | NativeMethods.EV_RING
-//                | NativeMethods.EV_RLSD
-                  NativeMethods.EV_RXCHAR
-//                | NativeMethods.EV_RXFLAG
-//                | NativeMethods.EV_TXEMPTY
-                )
-            ) {
-                return;
-            }
-        }
 
         private void CommEventComplete(uint event_flag)
         {

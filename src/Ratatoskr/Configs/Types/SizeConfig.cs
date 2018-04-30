@@ -9,7 +9,7 @@ using System.Xml;
 namespace Ratatoskr.Configs.Types
 {
     [Serializable]
-    public sealed class SizeConfig : IConfigData<Size>, IConfigReader, IConfigWriter
+    internal sealed class SizeConfig : ConfigObject, IConfigData<Size>, IConfigReader, IConfigWriter
     {
         public Size Value { get; set; } = Size.Empty;
 

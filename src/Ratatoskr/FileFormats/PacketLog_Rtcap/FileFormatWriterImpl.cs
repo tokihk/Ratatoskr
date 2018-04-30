@@ -39,6 +39,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
             /* 残っているブロックを書き込み */
             if (block_stream_ != null) {
                 WriteContentsBlock(writer_, block_stream_.ToArray());
+                block_stream_ = null;
             }
         }
 
@@ -66,10 +67,10 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
             /* ブロックバッファのデータ量が一定以上の場合はブロックをファイルへ出力 */
             if (block_stream_.Length >= COMPLESSION_BLOCK_SIZE) {
                 WriteContentsBlock(writer_, block_stream_.ToArray());
+                
+                /* バッファ解放 */
+                block_stream_ = null;
             }
-
-            /* バッファ解放 */
-            block_stream_ = null;
         }
 
         private void WritePatternCode(FileFormatOption option, BinaryWriter writer)

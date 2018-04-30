@@ -1299,8 +1299,6 @@ namespace Ratatoskr.PacketViews.Packet
                 var packet = list_item.Tag as DataPacketObject;
 
                 if (packet == null)continue;
-
-                FormUiManager.AddPacket("", packet.GetData(), (uint)packet.GetDataSize() * 8);
             }
         }
 

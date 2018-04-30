@@ -8,27 +8,23 @@ using Ratatoskr.Configs.Types;
 
 namespace Ratatoskr.PacketViews.Sequential
 {
-    internal enum DataViewType
-    {
-        Char,
-        HexText,
-        BinCode,
-    }
-
-    internal enum CharCodeType
+    internal enum DrawDataType
     {
         ASCII,
         ShiftJIS,
         UTF8,
+        HEX,
+        BIN,
     }
 
     internal class ViewPropertyImpl : ViewProperty
     {
-        public EnumConfig<DataViewType> DataView       { get; } = new EnumConfig<DataViewType>(DataViewType.Char);
-        public EnumConfig<CharCodeType> CharCode       { get; } = new EnumConfig<CharCodeType>(CharCodeType.ASCII);
-        public StringConfig             EndLinePattern { get; } = new StringConfig("");
         public IntegerConfig            ShiftBit       { get; } = new IntegerConfig(0);
+        public StringConfig             EndLinePattern { get; } = new StringConfig("");
         public BoolConfig               EchoBack       { get; } = new BoolConfig(false);
+
+        public EnumConfig<DrawDataType> DrawType       { get; } = new EnumConfig<DrawDataType>(DrawDataType.UTF8);
+        public StringConfig             BoundaryText   { get; } = new StringConfig(" ");
 
 
         public override ViewProperty Clone()

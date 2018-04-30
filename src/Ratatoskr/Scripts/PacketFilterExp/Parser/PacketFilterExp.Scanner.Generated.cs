@@ -6,9 +6,9 @@
 //
 //  GPLEX Version:  1.2.2
 //  Machine:  HITOSHI-WIN10
-//  DateTime: 2018/02/24 17:36:25
+//  DateTime: 2018/04/13 20:37:26
 //  UserName: TokiH
-//  GPLEX input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.analyzer.lex - 2017/09/12 9:05:30>
+//  GPLEX input file <Scripts\PacketFilterExp\Parser\PacketFilterExp.Language.analyzer.lex - 2018/04/03 10:10:36>
 //  GPLEX frame file <embedded resource>
 //
 //  Option settings: parser, noFiles, minimize
@@ -34,7 +34,7 @@ using System.Runtime.Serialization;
 using System.Diagnostics.CodeAnalysis;
 
 using System.Diagnostics;
-using Ratatoskr.Generic;
+using Ratatoskr.Utility;
 
 namespace Ratatoskr.Scripts.PacketFilterExp.Parser
 {   

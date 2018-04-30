@@ -8,14 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
+using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Forms.Dialog;
 using Ratatoskr.Gate;
 using Ratatoskr.Generic;
+using Ratatoskr.Plugin;
 
 namespace Ratatoskr.Forms
 {
-    internal enum StatusTextId
+    internal enum StatusTextID
     {
         SaveLoadEventFile,
         ReloadScreen,
@@ -25,6 +27,11 @@ namespace Ratatoskr.Forms
 
     internal static class FormUiManager
     {
+        private const int STARTUP_PROGRESS_VISIBLE_DELAY = 500;
+
+        private static Stopwatch startup_busy_timer_;
+        private static bool      startup_complete_ = false;
+
         private static string          last_save_path_ = null;
         private static FileFormatClass last_save_format_ = null;
 
@@ -46,17 +53,31 @@ namespace Ratatoskr.Forms
         {
             status_busy_ = new FormStatus();
             status_new_ = new FormStatus();
-            status_text_ = new string[Enum.GetValues(typeof(StatusTextId)).Length];
+            status_text_ = new string[Enum.GetValues(typeof(StatusTextID)).Length];
             popup_text_ = new Queue<string>();
+
+            /* 起動処理開始 */
+            startup_complete_ = false;
+            startup_busy_timer_ = new Stopwatch();
+            startup_busy_timer_.Restart();
         }
 
         public static void Shutdown()
         {
-            MainFrameVisible(false);
+            if (MainFrame != null) {
+                MainFrame.Dispose();
+                MainFrame = null;
+            }
+
+            if (ScriptManager != null) {
+                ScriptManager.Dispose();
+                ScriptManager = null;
+            }
         }
 
         public static void Poll()
         {
+            StartupTaskPoll();
             StatusTextPoll();
             ProgressBarPoll();
             StatusPoll();
@@ -64,38 +85,108 @@ namespace Ratatoskr.Forms
 
         public static void LoadConfig()
         {
-            MainFrame.LoadConfig();
+            MainFrame?.LoadConfig();
         }
 
         public static void BackupConfig()
         {
-            MainFrame.BackupConfig();
+            MainFrame?.BackupConfig();
+            ScriptManager?.BackupConfig();
         }
 
-        public static MainFrame.MainFrame MainFrame
+        private static Controls.SplashScreen       SplashScreen { get; set; }
+        private static MainFrame.MainForm         MainFrame    { get; set; }
+        private static ScriptManagerForm.ScriptManagerForm ScriptManager    { get; set; }
+
+        public static bool InvokeRequired
         {
-            get; private set;
+            get
+            {
+                if (MainFrame != null) {
+                    return (MainFrame.InvokeRequired);
+                } else {
+                    return (false);
+                }
+            }
         }
 
-        public static void MainFrameCreate()
+        public static object Invoke(Delegate method, params object[] args)
         {
-            /* メインフォーム作成 */
-            MainFrame = new Forms.MainFrame.MainFrame();
+            return (MainFrame.Invoke(method, args));
         }
 
-        public static void MainFrameVisible(bool visible)
+        public static void MainFormVisible(bool show)
         {
-            if (visible) {
+            /* フォーム作成 */
+            if (MainFrame == null) {
+                MainFrame = new Forms.MainFrame.MainForm();
+                MainFrame.LoadConfig();
+            }
+
+            if (!MainFrame.Visible) {
+                /* 非表示→表示 */
                 MainFrame.Activate();
                 MainFrame.Show();
                 MainFrame.Update();
+
             } else {
+                /* 表示→非表示 */
                 MainFrame.Hide();
+            }
+        }
+
+        public static bool MainFormVisible()
+        {
+            return ((MainFrame != null) ? (MainFrame.Visible) : (false));
+        }
+
+        public static void ScriptIDEVisible(bool show)
+        {
+            /* フォーム作成 */
+            if (ScriptManager == null) {
+                ScriptManager = new ScriptManagerForm.ScriptManagerForm();
+                ScriptManager.LoadConfig();
+            }
+
+            if (!ScriptManager.Visible) {
+                /* 非表示→表示 */
+                ScriptManager.Activate();
+                ScriptManager.Show();
+                ScriptManager.Update();
+
+            } else {
+                /* 表示→非表示 */
+                ScriptManager.Hide();
+            }
+        }
+
+        public static bool ScriptIDEVisible()
+        {
+            return ((ScriptManager != null) ? (ScriptManager.Visible) : (false));
+        }
+
+        public static void SplashScreen_SetValue(string text, byte value)
+        {
+            if (SplashScreen == null) {
+                SplashScreen = new Controls.SplashScreen();
+                SplashScreen.Visible = true;
+            }
+
+            SplashScreen.SetProgress(text, value);
+        }
+
+        private static void SplashScreen_Close()
+        {
+            if (SplashScreen != null) {
+                SplashScreen.Visible = false;
+                SplashScreen.Dispose();
+                SplashScreen = null;
             }
         }
 
         public static void MainFrameMenuBarUpdate()
         {
+            MainFrame.UpdateTitle();
             MainFrame.UpdateMenuBar();
         }
 
@@ -104,35 +195,47 @@ namespace Ratatoskr.Forms
             MainFrame.UpdateStatusBar();
         }
 
-        public static void SetStatusText(StatusTextId id, string text)
+        private static void StartupTaskPoll()
         {
-            lock (popup_text_) {
-                status_text_[(int)id] = text;
+            if (startup_complete_)return;
+
+            var task_id = 0;
+            var task_id_max = Enum.GetValues(typeof(Program.StartupTaskID)).Length;
+
+            /* 優先度の高いタスクから検索し、進捗度が100%になっていないものを取得 */
+            while (   (task_id < task_id_max)
+                   && (Program.GetStartupProgress((Program.StartupTaskID)task_id) == 100)
+            ) {
+                task_id++;
+            }
+
+            /* === 進捗率表示 === */
+            if (startup_busy_timer_.ElapsedMilliseconds > STARTUP_PROGRESS_VISIBLE_DELAY) {
+                SplashScreen_SetValue(
+                    GetStartupText((Program.StartupTaskID)task_id),
+                    Math.Min((byte)100, Program.GetStartupProgressAverage()));
+            }
+
+            if (task_id >= task_id_max) {
+                /* === 全タスクが完了 === */
+                startup_complete_ = true;
+                startup_busy_timer_ = null;
+
+                Program.SystemStart();
+
+                SplashScreen_Close();
             }
         }
 
-        public static void SetPopupText(string text)
+        private static string GetStartupText(Program.StartupTaskID id)
         {
-            lock (popup_text_) {
-                popup_text_.Enqueue(text);
-            }
-        }
-
-        private static string GetNextStatusText()
-        {
-            lock (popup_text_) {
-                if (popup_text_.Count > 0) {
-                    return (popup_text_.Dequeue());
-                } else {
-                    foreach (var text in status_text_) {
-                        if (text == null)continue;
-                        if (text.Length == 0)continue;
-
-                        return (text);
-                    }
-
-                    return ("");
+            if (Enum.IsDefined(typeof(Program.StartupTaskID), id)) {
+                switch (id) {
+                    case Program.StartupTaskID.LoadPlugin: return ("Load plugin...");
+                    default:                               return (((Program.StartupTaskID)id).ToString());
                 }
+            } else {
+                return ("Complete");
             }
         }
 
@@ -167,6 +270,48 @@ namespace Ratatoskr.Forms
             MainFrame.SetFormStatus(status_busy_);
         }
 
+        public static void SetPopupText(string text)
+        {
+            lock (popup_text_) {
+                popup_text_.Enqueue(text);
+            }
+        }
+
+        private static string GetNextStatusText()
+        {
+            lock (popup_text_) {
+                if (popup_text_.Count > 0) {
+                    return (popup_text_.Dequeue());
+                } else {
+                    foreach (var text in status_text_) {
+                        if (text == null)continue;
+                        if (text.Length == 0)continue;
+
+                        return (text);
+                    }
+
+                    return ("");
+                }
+            }
+        }
+
+        public static void SetStatusText(StatusTextID id, string text)
+        {
+            lock (popup_text_) {
+                status_text_[(int)id] = text;
+            }
+        }
+
+        private static void ProgressBarPoll()
+        {
+            if (   (progress_bar_timer_.IsRunning)
+                && (progress_bar_timer_.ElapsedMilliseconds > ConfigManager.Fixed.PopupStatusTextTime.Value)
+            ) {
+                progress_bar_timer_.Stop();
+                ClearProgressBar();
+            }
+        }
+
         public static void ClearProgressBar()
         {
             lock (status_sync_) {
@@ -183,16 +328,6 @@ namespace Ratatoskr.Forms
 
             if (auto_clear) {
                 progress_bar_timer_.Restart();
-            }
-        }
-
-        private static void ProgressBarPoll()
-        {
-            if (   (progress_bar_timer_.IsRunning)
-                && (progress_bar_timer_.ElapsedMilliseconds > ConfigManager.Fixed.PopupStatusTextTime.Value)
-            ) {
-                progress_bar_timer_.Stop();
-                ClearProgressBar();
             }
         }
 
@@ -221,28 +356,6 @@ namespace Ratatoskr.Forms
             }
         }
 
-        public static void AddPacket(string protocol, byte[] bitdata, uint bitsize)
-        {
-            MainFrame.AddPacket(protocol, bitdata, bitsize);
-        }
-
-        public static bool InvokeRequired
-        {
-            get
-            {
-                if (MainFrame != null) {
-                    return (MainFrame.InvokeRequired);
-                } else {
-                    return (false);
-                }
-            }
-        }
-
-        public static object Invoke(Delegate method, params object[] args)
-        {
-            return (MainFrame.Invoke(method, args));
-        }
-
         private delegate bool ConfirmMessageBoxDelegate(string message, string caption);
         public static bool ConfirmMessageBox(string message, string caption = null)
         {
@@ -259,6 +372,20 @@ namespace Ratatoskr.Forms
             return (true);
         }
 
+        private delegate bool ShowProfileEditDialogHandler(string title, UserConfig config, params string[] ignore_names);
+        public static bool ShowProfileEditDialog(string title, UserConfig config, params string[] ignore_names)
+        {
+            if (InvokeRequired) {
+                return ((bool)Invoke((ShowProfileEditDialogHandler)ShowProfileEditDialog, title, config, ignore_names));
+            }
+
+            var dialog = new ProfileEditDialog(config, ignore_names);
+
+            dialog.Text = title;
+
+            return (dialog.ShowDialog() == DialogResult.OK);
+        }
+
         public static void ShowOptionDialog()
         {
             if (InvokeRequired) {
@@ -266,15 +393,15 @@ namespace Ratatoskr.Forms
                 return;
             }
 
-            var config = ClassUtil.Clone(ConfigManager.User.Option);
+            var clone_data = new OptionEditForm.OptionDataMap(ConfigManager.System, ConfigManager.User, ConfigManager.Language);
 
-            if (config == null)return;
+            if (clone_data == null)return;
 
-            var dialog = new Forms.OptionForm.OptionForm(config);
+            var dialog = new OptionEditForm.OptionEditForm(clone_data);
 
             if (dialog.ShowDialog() != DialogResult.OK)return;
 
-            ConfigManager.User.Option = config;
+            clone_data.Backup(ConfigManager.System, ConfigManager.User, ConfigManager.Language);
         }
 
         public static void ShowAppDocument()
@@ -349,6 +476,9 @@ namespace Ratatoskr.Forms
         {
             if (reader == null)return;
 
+            /* ファイルの読み込み順を昇順にソート */
+            paths = paths.OrderBy(path => path);
+
             GatePacketManager.LoadPacketFile(paths, reader, option);
         }
 
@@ -360,8 +490,8 @@ namespace Ratatoskr.Forms
                 var config = reader.Load();
 
                 if (config.config != null) {
-                    /* 現在のUserConfigに上書きする */
-                    ConfigManager.OverrideConfig(config.config);
+                    /* 新しいプロファイルとして読み込む */
+                    ConfigManager.ImportProfile(config.config);
                 }
 
                 reader.Close();

@@ -57,6 +57,13 @@ namespace Ratatoskr.Gate
             return (devm_.GetClasses().ToArray());
         }
 
+        public static GateObject[] GetGateList()
+        {
+            lock (gates_) {
+                return (gates_.ToArray());
+            }
+        }
+
         public static DeviceClass FindDeviceClass(Guid class_id)
         {
             return (devm_.FindClass(class_id));

@@ -56,6 +56,11 @@ namespace Ratatoskr.PacketViews
             viewm_.RedrawPacket();
         }
 
+        internal void Poll()
+        {
+            OnPoll();
+        }
+
         internal void BeginDrawPacket(bool auto_scroll)
         {
             OnDrawPacketBegin(auto_scroll);
@@ -73,6 +78,7 @@ namespace Ratatoskr.PacketViews
 
         protected virtual void OnBackupProperty() { }
         protected virtual void OnClearPacket() { }
+        protected virtual void OnPoll() { }
         protected virtual void OnDrawPacketBegin(bool auto_scroll) { }
         protected virtual void OnDrawPacketEnd(bool auto_scroll) { }
         protected virtual void OnDrawPacket(PacketObject packet) { }

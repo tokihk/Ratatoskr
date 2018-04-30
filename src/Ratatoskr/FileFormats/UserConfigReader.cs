@@ -9,16 +9,16 @@ namespace Ratatoskr.FileFormats
 {
     internal class UserConfigReader : FileFormatReader
     {
-        public (UserConfig config, string profile_id) Load()
+        public (UserConfig config, Guid profile_id) Load()
         {
-            if (!IsOpen)return (null, null);
+            if (!IsOpen)return (null, Guid.Empty);
 
             return (OnLoad());
         }
 
-        protected virtual (UserConfig config, string profile_id) OnLoad()
+        protected virtual (UserConfig config, Guid profile_id) OnLoad()
         {
-            return (null, null);
+            return (null, Guid.Empty);
         }
     }
 }

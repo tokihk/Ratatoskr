@@ -10,7 +10,7 @@ using Ratatoskr.Configs;
 namespace Ratatoskr.Configs.Types
 {
     [Serializable]
-    public sealed class StringListConfig : IConfigDataReadOnly<List<string>>, IConfigReader, IConfigWriter
+    internal sealed class StringListConfig : ConfigObject, IConfigDataReadOnly<List<string>>, IConfigReader, IConfigWriter
     {
         private const string XML_NODE_DATA = "data";
 
@@ -45,7 +45,7 @@ namespace Ratatoskr.Configs.Types
             if (xml_node == null)return;
 
             /* === 設定リストへ追加 === */
-            Value.Add(XmlUtil.GetAttribute(xml_node, "value", ""));
+            Value.Add(GetAttribute(xml_node, "value", ""));
         }
 
         public bool SaveConfigData(XmlElement xml_own)

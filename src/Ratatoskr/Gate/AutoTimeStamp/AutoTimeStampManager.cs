@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
-using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.Generic.Packet;
 
 namespace Ratatoskr.Gate.AutoTimeStamp
@@ -30,8 +30,8 @@ namespace Ratatoskr.Gate.AutoTimeStamp
         {
             var enable = false;
 
-            enable =  (ConfigManager.User.Option.AutoTimeStamp.Value)
-                   && (ConfigManager.User.Option.AutoTimeStampTrigger.Value.HasFlag(
+            enable =  (ConfigManager.System.AutoTimeStamp.Enable.Value)
+                   && (ConfigManager.System.AutoTimeStamp.Trigger.Value.HasFlag(
                             AutoTimeStampTriggerType.LastRecvPeriod));
 
             if (enable_recv_period_ != enable) {
@@ -45,7 +45,7 @@ namespace Ratatoskr.Gate.AutoTimeStamp
         private static void AutoTimeStampPoll()
         {
             if (   (!sw_recv_period_.IsRunning)
-                || (sw_recv_period_.ElapsedMilliseconds < ConfigManager.User.Option.AutoTimeStampValue_LastRecvPeriod.Value)
+                || (sw_recv_period_.ElapsedMilliseconds < ConfigManager.System.AutoTimeStamp.Value_LastRecvPeriod.Value)
             ) {
                 return;
             }

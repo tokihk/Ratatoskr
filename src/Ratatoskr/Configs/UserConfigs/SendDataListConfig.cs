@@ -39,7 +39,7 @@ namespace Ratatoskr.Configs.UserConfigs
     }
 
     [Serializable]
-    internal sealed class SendDataListConfig : IConfigDataReadOnly<List<SendDataConfig>>, IConfigReader, IConfigWriter
+    internal sealed class SendDataListConfig : ConfigObject, IConfigDataReadOnly<List<SendDataConfig>>, IConfigReader, IConfigWriter
     {
         private const string XML_NODE_DATA = "data";
 
@@ -77,22 +77,22 @@ namespace Ratatoskr.Configs.UserConfigs
 
             /* === パラメータ読み込み === */
             /* enable */
-            newobj.Enable = bool.Parse(XmlUtil.GetAttribute(xml_node, "enable", "false"));
+            newobj.Enable = bool.Parse(GetAttribute(xml_node, "enable", "false"));
 
             /* target_type */
-            newobj.TargetType = (SendDataTargetType)Enum.Parse(typeof(SendDataTargetType), XmlUtil.GetAttribute(xml_node, "target_type", SendDataTargetType.Common.ToString()));
+            newobj.TargetType = (SendDataTargetType)Enum.Parse(typeof(SendDataTargetType), GetAttribute(xml_node, "target_type", SendDataTargetType.Common.ToString()));
 
             /* custom_target */
-            newobj.CustomTarget = XmlUtil.GetAttribute(xml_node, "custom_target", "*");
+            newobj.CustomTarget = GetAttribute(xml_node, "custom_target", "*");
 
             /* command */
-            newobj.Command = XmlUtil.GetAttribute(xml_node, "command", "");
+            newobj.Command = GetAttribute(xml_node, "command", "");
 
             /* delay_fixed */
-            newobj.DelayFixed = uint.Parse(XmlUtil.GetAttribute(xml_node, "delay_fixed", "0"));
+            newobj.DelayFixed = uint.Parse(GetAttribute(xml_node, "delay_fixed", "0"));
 
             /* delay_random */
-            newobj.DelayRandom = uint.Parse(XmlUtil.GetAttribute(xml_node, "delay_random", "0"));
+            newobj.DelayRandom = uint.Parse(GetAttribute(xml_node, "delay_random", "0"));
 
             /* === 設定リストへ追加 === */
             Value.Add(newobj);

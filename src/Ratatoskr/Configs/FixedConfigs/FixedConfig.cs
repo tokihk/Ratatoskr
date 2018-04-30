@@ -8,7 +8,7 @@ using Ratatoskr.Configs.Types;
 
 namespace Ratatoskr.Configs.FixedConfigs
 {
-    public sealed class FixedConfig : ConfigManagerBase<FixedConfig>
+    internal sealed class FixedConfig : ConfigManagerBase<FixedConfig>
     {
         public FixedConfig() : base("fixed")
         {

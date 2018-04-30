@@ -42,7 +42,7 @@ namespace Ratatoskr.PacketViews
             Panel_Contents.Controls.Add(Instance);
 
             ChkBox_Filter.Checked = Instance.Property.TargetFilterEnable.Value;
-            TBox_Filter.Text = Instance.Property.TargetFilterValue.Value;
+            TBox_Filter.Text = Instance.Property.TargetFilterValue.Value.Trim();
 
             UpdateView();
         }
@@ -50,7 +50,7 @@ namespace Ratatoskr.PacketViews
         public void BackupProperty()
         {
             Instance.Property.TargetFilterEnable.Value = ChkBox_Filter.Checked;
-            Instance.Property.TargetFilterValue.Value = TBox_Filter.Text;
+            Instance.Property.TargetFilterValue.Value = TBox_Filter.Text.Trim();
 
             Instance.BackupProperty();
         }

@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
-using Ratatoskr.Actions;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms;
-using Ratatoskr.Forms.DebugForm;
 using Ratatoskr.Gate;
-using Ratatoskr.Gate.PacketAutoSave;
+using Ratatoskr.Gate.AutoPacketSave;
 using Ratatoskr.Generic;
 using Ratatoskr.Native;
+using Ratatoskr.Plugin;
+using Ratatoskr.Scripts;
 using Ratatoskr.Update;
 
 namespace Ratatoskr
 {
     internal static class Program
     {
+        private const int APP_TIMER_DEFAULT   = 10;
         private const int GC_CONTROL_INTERVAL = 30000;
         private const int MUTEX_TIMEOUT       = 15000;
         private const int PROCESS_TIMEOUT     = 15000;
@@ -26,8 +28,6 @@ namespace Ratatoskr
         [STAThread]
         static void Main(string[] args)
         {
-            CommandLineParse(args);
-
             /* タイマー分解能変更 */
             NativeMethods.timeBeginPeriod(1);
 
@@ -35,47 +35,98 @@ namespace Ratatoskr
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(true);
 
-            /* デバッグウィンドウ表示 */
-#if DEBUG
-            DebugWindowEnable(true);
-#endif
-            do {
-                LoadAppInfo();
+            /* デバッグウィンドウ起動 */
+            Debugger.DebugManager.Startup();
 
-                if (Startup()) {
-                    Exec();
-                }
-                Shutdown();
-            } while (restart_req_);
+#if !DEBUG
+            try {
+#endif
+                Debugger.DebugManager.MessageOut("Command Line Parse - Start");
+
+                CommandLineParse(args);
+
+                Debugger.DebugManager.MessageOut("Command Line Parse - End");
+
+                Exec();
+
+#if !DEBUG
+            } catch (Exception exp) {
+                ExceptionInfoOutput(exp);
+                throw exp;
+            }
+#endif
+
+            /* for Debug */
+            System.Diagnostics.Debug.WriteLine("ExitThread2");
 
             /* タイマー分解能差し戻し */
             NativeMethods.timeBeginPeriod(1);
         }
 
+        private static void ExceptionInfoOutput(Exception exp)
+        {
+            try {
+                var output_path = Application.StartupPath + "\\abort.log";
 
-        private static DebugForm debug_form_ = null;
+                /* ログファイルが膨れ上がった場合は削除する */
+                if (File.Exists(output_path)) {
+                    if ((new FileInfo(output_path)).Length > 2048000) {
+                        File.Delete(output_path);
+                    }
+                }
+
+                using (var writer = new StreamWriter(output_path, true)) {
+                    writer.WriteLine("--------------------------------------------------------------------------");
+
+                    /* 日時情報 */
+                    writer.WriteLine(string.Format("Datetime(Local):     {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")));
+
+                    /* アプリケーション情報 */
+                    writer.WriteLine(string.Format("Application Name:    {0}", Application.ExecutablePath));
+                    writer.WriteLine(string.Format("Application Version: {0}", AppInfo.Version));
+
+                    /* 例外情報 */
+                    writer.WriteLine();
+                    writer.WriteLine(exp.ToString());
+                    writer.WriteLine();
+                    writer.WriteLine();
+                }
+            } catch {
+            }
+        }
+
+
+        internal enum StartupTaskID
+        {
+            LoadPlugin,
+        }
+
 
         private static ApplicationContext         app_context_ = new ApplicationContext();
         private static System.Windows.Forms.Timer app_timer_ = new System.Windows.Forms.Timer();
         private static System.Windows.Forms.Timer gc_control_timer_ = new System.Windows.Forms.Timer();
 
+        private static byte[] startup_task_progress_;
+
+        private static bool startup_state_ = false;
         private static bool shutdown_req_ = false;
         private static bool restart_req_ = false;
 
         private static Guid profile_id_load_ = Guid.Empty;
 
 
-        public static AppVersion Version   { get; private set; }
+        public static AppVersion Version    { get; private set; }
+        public static bool       IsSafeMode { get; private set; } = false;
 
 
         private static void CommandLineParse(string[] cmdlines)
         {
             foreach (var cmdline in cmdlines) {
-                var param_info = CommandLineParse(cmdline);
+                var (name, value) = CommandLineParse(cmdline);
 
-                if (param_info.name == null)continue;
+                if (name == null)continue;
 
-                CommandLineSetup(param_info.name, param_info.value);
+                CommandLineSetup(name, value);
             }
         }
 
@@ -131,6 +182,13 @@ namespace Ratatoskr
                     }
                 }
                     break;
+
+                /* セーフモード */
+                case "-safe-mode":
+                {
+                    IsSafeMode = true;
+                }
+                    break;
             }
         }
 
@@ -140,11 +198,66 @@ namespace Ratatoskr
             Version = new AppVersion(AppInfo.Version);
         }
 
+        public static byte GetStartupProgressAverage()
+        {
+            return ((byte)startup_task_progress_.Average(value => (double)value));
+        }
+
+        public static byte GetStartupProgress(StartupTaskID id)
+        {
+            return (startup_task_progress_[(int)id]);
+        }
+
+        public static void SetStartupProgress(StartupTaskID id, byte value)
+        {
+            if (   (startup_task_progress_ != null)
+                && ((int)id < startup_task_progress_.Length)
+            ) {
+                startup_task_progress_[(int)id] = value;
+            }
+        }
+
+        public static void SystemStart()
+        {
+            /* メインフレーム作成 */
+            FormUiManager.MainFormVisible(true);
+
+            /* イベント処理開始 */
+            AutoPacketSaveManager.Poll();
+            GateTransferManager.Startup();
+        }
+
+        public static void Exec()
+        {
+            startup_task_progress_ = new byte[Enum.GetValues(typeof(StartupTaskID)).Length];
+
+            LoadAppInfo();
+
+            /* メインタイマー設定 */
+            app_timer_.Tick += OnAppTimer;
+            app_timer_.Interval = APP_TIMER_DEFAULT;
+            app_timer_.Start();
+
+            /* ガベージコレクション制御タイマー */
+            gc_control_timer_.Tick += OnGcControlTimer;
+            gc_control_timer_.Interval = GC_CONTROL_INTERVAL;
+            gc_control_timer_.Start();
+
+            /* プラグイン読み込み開始 */
+            PluginManager.Startup();
+
+            /* スクリプトマネージャ初期化 */
+            ScriptManager.Startup();
+
+            /* アプリケーションループ実行 */
+            Application.Run(app_context_);
+
+            /* 実行中スクリプトを停止 */
+            ScriptManager.Shutdown();
+        }
+
         private static bool Startup()
         {
-            shutdown_req_ = false;
-            restart_req_ = false;
-
             /* 下層マネージャー初期化 */
             ConfigManager.Startup();
             GatePacketManager.Startup();
@@ -153,77 +266,50 @@ namespace Ratatoskr
             GateManager.Startup();
             FormUiManager.Startup();
             FormTaskManager.Startup();
-            ActionManager.Startup();
-            UpdateManager.Startup();
+//            UpdateManager.Startup();
 
             /* 設定ファイル読み込み */
             ConfigManager.LoadConfig(profile_id_load_);
 
-            /* アップデート開始 */
-            if (UpdateManager.UpdateExec()) {
-                return (false);
-            }
-
-            /* メインフレーム作成 */
-            FormUiManager.MainFrameCreate();
-
-            /* 設定適用 */
-            FormUiManager.LoadConfig();
-            FormUiManager.MainFrameVisible(true);
-
-            /* メインタイマー設定 */
-            app_timer_.Tick += OnAppTimer;
+            /* アプリケーションタイマー再起動 */
+            app_timer_.Stop();
             app_timer_.Interval = (int)ConfigManager.System.ApplicationCore.AppTimerInterval.Value;
+            app_timer_.Start();
 
-            /* ガベージコレクション制御タイマー */
-            gc_control_timer_.Tick += OnGcControlTimer;
-            gc_control_timer_.Interval = GC_CONTROL_INTERVAL;
+            /* アップデート開始 */
+//            if (UpdateManager.UpdateExec()) {
+//                return (false);
+//            }
 
-            /* イベント処理開始 */
-            PacketAutoSaveManager.Setup();
-            GateTransferManager.Startup();
+            startup_state_ = true;
+            restart_req_ = false;
 
             return (true);
         }
 
         private static void Shutdown()
         {
+            /* 設定ファイル保存 */
+            ConfigManager.SaveConfig();
+
             /* イベント処理停止 */
             GatePacketManager.Shutdown();
             GateTransferManager.Shutdown();
 
-            /* メインタイマー破棄 */
-            app_timer_.Tick -= OnAppTimer;
-
             /* マネージャー停止 */
-            UpdateManager.Shutdown();
-            ActionManager.Shutdown();
+//            UpdateManager.Shutdown();
             FormUiManager.Shutdown();
             FormTaskManager.Shutdown();
             GateManager.Shutdown();
             ConfigManager.Shutdown();
-        }
 
-        public static void Exec()
-        {
-            /* メインタイマー開始 */
-            app_timer_.Start();
-
-            /* ガベージコレクション制御タイマー開始 */
-            gc_control_timer_.Start();
-
-            /* メインフォーム表示 */
-            FormUiManager.MainFrameVisible(true);
-
-            /* アプリケーションループ実行 */
-            Application.Run(app_context_);
+            startup_state_ = false;
+            shutdown_req_ = false;
         }
 
         public static void ShutdownRequest()
         {
-            if (!shutdown_req_) {
-                shutdown_req_ = true;
-            }
+            shutdown_req_ = true;
         }
 
         public static void RestartRequest()
@@ -242,48 +328,42 @@ namespace Ratatoskr
 
         private static void OnAppTimer(object sender, EventArgs e)
         {
-            if (shutdown_req_) {
-                /* === シャットダウン処理 === */
-                /* 設定ファイル保存 */
-                ConfigManager.SaveConfig();
+            /* 初期化処理 */
+            if (!startup_state_) {
+                Startup();
+            }
 
-                /* 終了処理 */
-                app_context_.ExitThread();
+            /* シャットダウン処理 */
+            if (   (startup_state_)
+                && (shutdown_req_)
+            ) {
+                Shutdown();
+            }
 
-            } else {
+            /* タスク処理 */
+            if (startup_state_) {
                 GateManager.Poll();
                 GatePacketManager.Poll();
                 FormUiManager.Poll();
                 FormTaskManager.Poll();
                 UpdateManager.Poll();
+                ScriptManager.Poll();
+            }
+
+            /* 終了処理 */
+            if (   (!restart_req_)
+                && (!startup_state_)
+            ) {
+                /* for Debug */
+                System.Diagnostics.Debug.WriteLine("ExitThread");
+
+                app_context_.ExitThread();
             }
         }
 
         private static void OnGcControlTimer(object sender, EventArgs e)
         {
             GC.Collect();
-        }
-
-        public static void DebugWindowEnable(bool enable)
-        {
-            if (enable) {
-                if (debug_form_ == null) {
-                    debug_form_ = new DebugForm();
-                }
-            } else {
-                if (debug_form_ != null) {
-                    debug_form_.Hide();
-                    debug_form_.Dispose();
-                    debug_form_ = null;
-                }
-            }
-        }
-
-        public static void DebugMessage(object obj)
-        {
-            if (debug_form_ == null)return;
-
-            debug_form_.AddMessage(obj.ToString());
         }
 
         public static string GetWorkspaceDirectory(string subname = null)

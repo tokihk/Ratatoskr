@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Devices;
 using Ratatoskr.Gate;
-using Ratatoskr.Generic;
+using Ratatoskr.Utility;
 
 namespace Ratatoskr.Forms.GateEditForm
 {
@@ -115,7 +115,11 @@ namespace Ratatoskr.Forms.GateEditForm
             if (devpe_ == null)return;
 
             devpe_.Dock = DockStyle.Fill;
+
             GBox_DeviceProperty.Controls.Add(devpe_);
+
+            devpe_.ResumeLayout(false);
+            devpe_.PerformLayout();
         }
 
         private void UpdateOperationPermission()
@@ -171,7 +175,11 @@ namespace Ratatoskr.Forms.GateEditForm
 
             devc_id_ = devc.ID;
 
+            Debugger.DebugManager.MessageOut("Gate Device Change Start");
+
             UpdateDevice();
+
+            Debugger.DebugManager.MessageOut("Gate Device Change End");
         }
 
         private void OnClick_Ok(object sender, EventArgs e)

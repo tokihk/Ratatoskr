@@ -1,0 +1,7 @@
+﻿
+// 全ゲートにカウントデータを出力
+#if false
+for (var count = 0; count < 10; count++) {
+	API_Send("*", count.ToString());
+}
+#endif

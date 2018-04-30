@@ -8,7 +8,8 @@ using Ratatoskr.Configs.Types;
 
 namespace Ratatoskr.PacketViews
 {
-    public abstract class ViewProperty : ConfigHolder
+    [Serializable]
+    internal abstract class ViewProperty : ConfigHolder
     {
         public abstract ViewProperty Clone();
 

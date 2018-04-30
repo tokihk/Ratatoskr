@@ -41,7 +41,7 @@ namespace Ratatoskr.Configs.UserConfigs
     }
 
     [Serializable]
-    internal sealed class WatchDataListConfig : IConfigDataReadOnly<List<WatchDataConfig>>, IConfigReader, IConfigWriter
+    internal sealed class WatchDataListConfig : ConfigObject, IConfigDataReadOnly<List<WatchDataConfig>>, IConfigReader, IConfigWriter
     {
         private const string XML_NODE_DATA = "data";
 
@@ -78,22 +78,22 @@ namespace Ratatoskr.Configs.UserConfigs
 
             /* === パラメータ読み込み === */
             /* enable */
-            newobj.Enable = bool.Parse(XmlUtil.GetAttribute(xml_node, "enable", "false"));
+            newobj.Enable = bool.Parse(GetAttribute(xml_node, "enable", "false"));
 
             /* watch-target */
-            newobj.WatchTarget = (WatchTargetType)Enum.Parse(typeof(WatchTargetType), XmlUtil.GetAttribute(xml_node, "watch-target", "0"));
+            newobj.WatchTarget = (WatchTargetType)Enum.Parse(typeof(WatchTargetType), GetAttribute(xml_node, "watch-target", "0"));
 
             /* expression */
-            newobj.Expression = XmlUtil.GetAttribute(xml_node, "expression", "");
+            newobj.Expression = GetAttribute(xml_node, "expression", "");
 
             /* ntf_event */
-            newobj.NtfEvent = bool.Parse(XmlUtil.GetAttribute(xml_node, "ntf_event", "false"));
+            newobj.NtfEvent = bool.Parse(GetAttribute(xml_node, "ntf_event", "false"));
 
             /* ntf_dialog */
-            newobj.NtfDialog = bool.Parse(XmlUtil.GetAttribute(xml_node, "ntf_dialog", "false"));
+            newobj.NtfDialog = bool.Parse(GetAttribute(xml_node, "ntf_dialog", "false"));
 
             /* ntf_mail */
-            newobj.NtfMail = bool.Parse(XmlUtil.GetAttribute(xml_node, "ntf_mail", "false"));
+            newobj.NtfMail = bool.Parse(GetAttribute(xml_node, "ntf_mail", "false"));
 
             /* === 設定リストへ追加 === */
             Value.Add(newobj);

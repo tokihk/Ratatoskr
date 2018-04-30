@@ -10,7 +10,7 @@ using Ratatoskr.Configs;
 namespace Ratatoskr.Configs.Types
 {
     [Serializable]
-    public sealed class EnumListConfig<T> : IConfigDataReadOnly<List<T>>, IConfigReader, IConfigWriter
+    internal sealed class EnumListConfig<T> : ConfigObject, IConfigDataReadOnly<List<T>>, IConfigReader, IConfigWriter
         where T : struct
     {
         private const string XML_NODE_DATA = "data";
@@ -44,7 +44,7 @@ namespace Ratatoskr.Configs.Types
             /* === 設定リストへ追加 === */
             T value;
 
-            if (Enum.TryParse<T>(XmlUtil.GetAttribute(xml_node, "value", ""), out value)) {
+            if (Enum.TryParse<T>(GetAttribute(xml_node, "value", ""), out value)) {
                 Value.Add(value);
             }
         }

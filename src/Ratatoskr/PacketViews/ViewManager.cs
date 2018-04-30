@@ -13,7 +13,7 @@ namespace Ratatoskr.PacketViews
     {
         private const int DRAW_IVAL_MIN  = 10;
         private const int DRAW_IVAL_MAX  = 600;
-        private const int DRAW_IVAL_STEP = 20;
+        private const int DRAW_IVAL_STEP = 50;
 
         private const int DRAW_BUSY_LIMIT = 50;
 

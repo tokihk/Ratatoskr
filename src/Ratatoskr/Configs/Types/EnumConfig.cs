@@ -8,7 +8,7 @@ using System.Xml;
 namespace Ratatoskr.Configs.Types
 {
     [Serializable]
-    public sealed class EnumConfig<T> : IConfigData<T>, IConfigReader, IConfigWriter
+    internal sealed class EnumConfig<T> : ConfigObject, IConfigData<T>, IConfigReader, IConfigWriter
         where T : struct
     {
         public T Value { get; set; }

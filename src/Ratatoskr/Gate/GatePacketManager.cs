@@ -8,7 +8,7 @@ using Ratatoskr.Configs;
 using Ratatoskr.Forms;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Gate.AutoTimeStamp;
-using Ratatoskr.Gate.PacketAutoSave;
+using Ratatoskr.Gate.AutoPacketSave;
 using Ratatoskr.PacketConverters;
 using Ratatoskr.Generic.Packet;
 using Ratatoskr.Generic.Packet.Types;
@@ -53,7 +53,7 @@ namespace Ratatoskr.Gate
         {
             AutoTimeStampManager.Poll();
 
-            PacketAutoSaveManager.Poll();
+            AutoPacketSaveManager.Poll();
 
             /* パケット処理 */
             PacketPoll();
@@ -97,7 +97,7 @@ namespace Ratatoskr.Gate
 
         public static PacketContainer CreatePacketContainer()
         {
-            return (new PacketContainer((ulong)ConfigManager.User.Option.RawPacketCountLimit.Value));
+            return (new PacketContainer((ulong)ConfigManager.System.ApplicationCore.RawPacketCountLimit.Value));
         }
 
         public static void ClearPacket()
@@ -126,7 +126,7 @@ namespace Ratatoskr.Gate
             packets_.AddRange(packets);
 
             /* 自動保存モジュールに転送 */
-            PacketAutoSaveManager.Output(packets);
+            AutoPacketSaveManager.Output(packets);
 
             /* 描画実行 */
             FormTaskManager.DrawPacketPush(packets);
@@ -202,7 +202,7 @@ namespace Ratatoskr.Gate
             foreach (var (path_value, path_index) in paths.Select((value, index) => (value, index))) {
                 /* ステータステキストを更新 */
                 FormUiManager.SetStatusText(
-                    StatusTextId.SaveLoadEventFile,
+                    StatusTextID.SaveLoadEventFile,
                     String.Format(
                         "{0} {1} / {2}",
                         ConfigManager.Language.MainMessage.EventFileLoading.Value,
@@ -219,7 +219,7 @@ namespace Ratatoskr.Gate
                 /* 完了待ち */
                 while (!task.IsCompleted) {
                     System.Threading.Thread.Sleep(100);
-                    FormUiManager.SetProgressBar((byte)(reader.ProgressNow / (reader.ProgressMax / 100)), false);
+                    FormUiManager.SetProgressBar((byte)(reader.ProgressNow / (Math.Max(reader.ProgressMax / 100, 1))), false);
                 }
             }
 
@@ -227,7 +227,7 @@ namespace Ratatoskr.Gate
             packets_ = packets_new;
 
             /* ステータスバーを終了 */
-            FormUiManager.SetStatusText(StatusTextId.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileLoadComplete.Value);
+            FormUiManager.SetStatusText(StatusTextID.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileLoadComplete.Value);
             FormUiManager.SetProgressBar(100, true);
 
             /* 再描画 */
@@ -271,7 +271,7 @@ namespace Ratatoskr.Gate
             var progress_max = Math.Max(packets_.Count, 1);
 
             /* ステータスバーを初期化 */
-            FormUiManager.SetStatusText(StatusTextId.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileSaving.Value);
+            FormUiManager.SetStatusText(StatusTextID.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileSaving.Value);
             FormUiManager.SetProgressBar(0, true);
 
             var task_method = new SavePacketFileExecTaskDelegate(SavePacketFileExecTask);
@@ -331,7 +331,7 @@ namespace Ratatoskr.Gate
             }
 
             /* ステータスバーを終了 */
-            FormUiManager.SetStatusText(StatusTextId.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileSaveComplete.Value);
+            FormUiManager.SetStatusText(StatusTextID.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileSaveComplete.Value);
             FormUiManager.SetProgressBar(100, true);
 
             /* ファイルクローズ */

@@ -8,7 +8,7 @@ using System.Xml;
 namespace Ratatoskr.Configs.Types
 {
     [Serializable]
-    public sealed class GuidConfig : IConfigData<Guid>, IConfigReader, IConfigWriter
+    internal sealed class GuidConfig : ConfigObject, IConfigData<Guid>, IConfigReader, IConfigWriter
     {
         public Guid Value { get; set; } = Guid.Empty;
 

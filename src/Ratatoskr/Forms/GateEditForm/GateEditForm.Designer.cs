@@ -31,6 +31,8 @@
             this.Btn_Ok = new System.Windows.Forms.Button();
             this.TabCtrl_Main = new System.Windows.Forms.TabControl();
             this.TabPage_Device = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.Label_DeviceNotice = new System.Windows.Forms.Label();
             this.GBox_DeviceProperty = new System.Windows.Forms.GroupBox();
             this.GBox_DeviceType = new System.Windows.Forms.GroupBox();
@@ -61,6 +63,7 @@
             this.TBox_Alias = new System.Windows.Forms.TextBox();
             this.TabCtrl_Main.SuspendLayout();
             this.TabPage_Device.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.GBox_DeviceType.SuspendLayout();
             this.TabPage_General.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -114,6 +117,7 @@
             // 
             // TabPage_Device
             // 
+            this.TabPage_Device.Controls.Add(this.groupBox6);
             this.TabPage_Device.Controls.Add(this.Label_DeviceNotice);
             this.TabPage_Device.Controls.Add(this.GBox_DeviceProperty);
             this.TabPage_Device.Controls.Add(this.GBox_DeviceType);
@@ -124,6 +128,27 @@
             this.TabPage_Device.TabIndex = 0;
             this.TabPage_Device.Text = "Device";
             this.TabPage_Device.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.comboBox1);
+            this.groupBox6.Location = new System.Drawing.Point(258, 6);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(240, 42);
+            this.groupBox6.TabIndex = 7;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Transfer protocol type";
+            this.groupBox6.Visible = false;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(3, 15);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(234, 20);
+            this.comboBox1.TabIndex = 0;
             // 
             // Label_DeviceNotice
             // 
@@ -468,6 +493,7 @@
             this.TabCtrl_Main.ResumeLayout(false);
             this.TabPage_Device.ResumeLayout(false);
             this.TabPage_Device.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
             this.GBox_DeviceType.ResumeLayout(false);
             this.TabPage_General.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
@@ -525,5 +551,7 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TextBox TBox_ConnectCommand;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }

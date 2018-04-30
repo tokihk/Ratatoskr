@@ -117,6 +117,8 @@ namespace Ratatoskr.Devices.AudioFile
                 repeat_count_ = 0;
             }
 
+            play_complete_ = false;
+
             sampling_timer_.Start();
         }
 

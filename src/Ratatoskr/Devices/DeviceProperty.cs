@@ -10,7 +10,7 @@ using Ratatoskr.Gate;
 namespace Ratatoskr.Devices
 {
     [Serializable]
-    public abstract class DeviceProperty : ConfigHolder
+    internal abstract class DeviceProperty : ConfigHolder
     {
         public abstract DeviceProperty Clone();
 

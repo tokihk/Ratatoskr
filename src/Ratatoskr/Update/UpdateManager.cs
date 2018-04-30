@@ -87,7 +87,7 @@ namespace Ratatoskr.Update
         private static void Sequence_AppListDownloadStart()
         {
             /* 自動更新が有効ではないときは無視 */
-            if (!ConfigManager.User.Option.NewVersionAutoUpdate.Value)return;
+            if (!ConfigManager.System.ApplicationCore.NewVersionAutoUpdate.Value)return;
 
             /* バージョンリストのダウンロード開始 */
             downloader_ = new WebDownloader();
@@ -170,7 +170,7 @@ namespace Ratatoskr.Update
         public static bool UpdateExec()
         {
             /* 自動更新が有効ではないときは無視 */
-            if (!ConfigManager.User.Option.NewVersionAutoUpdate.Value)return (false);
+            if (!ConfigManager.System.ApplicationCore.NewVersionAutoUpdate.Value)return (false);
 
             /* アップデート対象ディレクトリが存在しないときは無視 */
             if (!Directory.Exists(ExtractPath))return (false);

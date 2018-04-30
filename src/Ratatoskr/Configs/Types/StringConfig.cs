@@ -8,7 +8,7 @@ using System.Xml;
 namespace Ratatoskr.Configs.Types
 {
     [Serializable]
-    public sealed class StringConfig : IConfigData<string>, IConfigReader, IConfigWriter
+    internal sealed class StringConfig : ConfigObject, IConfigData<string>, IConfigReader, IConfigWriter
     {
         public string Value { get; set; } = "";
 
@@ -20,14 +20,14 @@ namespace Ratatoskr.Configs.Types
 
         public bool LoadConfigData(XmlElement xml_own)
         {
-            Value = xml_own.InnerText;
+            Value = xml_own.InnerText.TrimEnd('\r', '\n');
 
             return (true);
         }
 
         public bool SaveConfigData(XmlElement xml_own)
         {
-            xml_own.InnerText = Value;
+            xml_own.InnerText = Value.TrimEnd('\r', '\n');
 
             return (true);
         }

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Ratatoskr.Actions;
-using Ratatoskr.Scripts.PacketFilterExp.Terms;
 using Ratatoskr.Generic.Packet;
 
 namespace Ratatoskr.Scripts.PacketFilterExp.Parser

@@ -9,7 +9,7 @@ using System.Xml;
 namespace Ratatoskr.Configs
 {
     [Serializable]
-    public abstract class ConfigHolder : IConfigReader, IConfigWriter
+    internal abstract class ConfigHolder : ConfigObject, IConfigReader, IConfigWriter
     {
         public bool LoadConfigData(XmlElement xml_own)
         {

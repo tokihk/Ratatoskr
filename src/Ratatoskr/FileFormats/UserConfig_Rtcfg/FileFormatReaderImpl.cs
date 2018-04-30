@@ -13,8 +13,6 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
 {
     internal sealed class FileFormatReaderImpl : UserConfigReader
     {
-        private string profile_id_ = null;
-
         private BinaryReader reader_ = null;
 
         
@@ -32,17 +30,17 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
             return (true);
         }
 
-        protected override (UserConfig config, string profile_id) OnLoad()
+        protected override (UserConfig config, Guid profile_id) OnLoad()
         {
             /* ヘッダー情報読み込み */
             var info = ReadHeader(reader_);
 
-            if (info.version == FileFormatClassImpl.FormatVersion.Version_Unknown)return (null, null);
+            if (info.version == FileFormatClassImpl.FormatVersion.Version_Unknown)return (null, Guid.Empty);
 
             /* 内容読み込み */
             var config = ReadArchiveData(reader_);
 
-            if (config == null)return (null, null);
+            if (config == null)return (null, Guid.Empty);
 
             return (config, info.profile_id);
         }
@@ -58,7 +56,7 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
             return (true);
         }
 
-        private (FileFormatClassImpl.FormatVersion version, string profile_id) ReadHeader(BinaryReader reader)
+        private (FileFormatClassImpl.FormatVersion version, Guid profile_id) ReadHeader(BinaryReader reader)
         {
             try {
                 /* Format Version (4 Byte) */
@@ -71,16 +69,14 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
 
                 /* Profile ID (1 + xx Byte) */
                 var profile_id_len = reader.ReadByte();
-                var profile_id = Encoding.UTF8.GetString(reader.ReadBytes(profile_id_len));
+                var profile_id_str = Encoding.UTF8.GetString(reader.ReadBytes(profile_id_len));
                 
-                if (profile_id.Length == 0)return (0, null);
+                if (profile_id_str.Length == 0)return (0, Guid.Empty);
 
-                profile_id = profile_id_;
-
-                return ((FileFormatClassImpl.FormatVersion)version, profile_id);
+                return ((FileFormatClassImpl.FormatVersion)version, Guid.Parse(profile_id_str));
 
             } catch {
-                return (0, null);
+                return (0, Guid.Empty);
             }
         }
 

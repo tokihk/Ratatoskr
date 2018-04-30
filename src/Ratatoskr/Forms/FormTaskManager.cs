@@ -92,10 +92,10 @@ namespace Ratatoskr.Forms
             UpdatePacketCount();
 
             /* 自動スクロール設定を更新 */
-            viewm_.AutoScroll = ConfigManager.User.Option.AutoScroll.Value;
+            viewm_.AutoScroll = ConfigManager.System.AutoScroll.Value;
 
             /* 描画待ちパケットが一定以上になったら強制的に高速描画モードに移行 */
-            if (viewm_.DrawPacketCount >= ConfigManager.User.Option.AutoHighSpeedDrawLimit.Value) {
+            if (viewm_.DrawPacketCount >= ConfigManager.System.ApplicationCore.AutoHighSpeedDrawLimit.Value) {
                 viewm_.HiSpeedDrawStart(true);
             }
 
@@ -132,6 +132,7 @@ namespace Ratatoskr.Forms
             viewm_.AddView(new PacketViews.Packet.ViewClassImpl());
             viewm_.AddView(new PacketViews.Sequential.ViewClassImpl());
             viewm_.AddView(new PacketViews.Graph.ViewClassImpl());
+            viewm_.AddView(new PacketViews.Protocol.ViewClassImpl());
 //            viewm_.AddView(new PacketViews.DeviceEmurator.ViewClassImpl());
         }
 
@@ -297,7 +298,7 @@ namespace Ratatoskr.Forms
                     redraw_seq_++;
 
                     /* プログレスバーを初期化 */
-                    FormUiManager.SetStatusText(StatusTextId.ReloadScreen, ConfigManager.Language.MainMessage.PacketNowPreprocessing.Value);
+                    FormUiManager.SetStatusText(StatusTextID.ReloadScreen, ConfigManager.Language.MainMessage.PacketNowPreprocessing.Value);
                     FormUiManager.SetProgressBar(redraw_progress_, false);
                 }
                     break;
@@ -326,7 +327,7 @@ namespace Ratatoskr.Forms
                     redraw_seq_++;
 
                     /* プログレスバーを初期化 */
-                    FormUiManager.SetStatusText(StatusTextId.ReloadScreen, ConfigManager.Language.MainMessage.PacketNowDrawing.Value);
+                    FormUiManager.SetStatusText(StatusTextID.ReloadScreen, ConfigManager.Language.MainMessage.PacketNowDrawing.Value);
                     FormUiManager.SetProgressBar(0, false);
                 }
                     break;
@@ -355,7 +356,7 @@ namespace Ratatoskr.Forms
                     viewm_.HiSpeedDrawStop();
 
                     /* プログレスバーを最終値に設定 */
-                    FormUiManager.SetStatusText(StatusTextId.ReloadScreen, "");
+                    FormUiManager.SetStatusText(StatusTextID.ReloadScreen, "");
                     FormUiManager.SetProgressBar(100, true);
 
                     redraw_state_ = false;
@@ -393,6 +394,8 @@ namespace Ratatoskr.Forms
             packet_count_draw_ = 0;
 
             UpdatePacketCount();
+
+            DrawPacketCleared();
         }
 
         public static void DrawPacketPush(IEnumerable<PacketObject> packets)

@@ -37,7 +37,7 @@ namespace Ratatoskr.Configs.UserConfigs
     }
 
     [Serializable]
-    internal sealed class GateListConfig : IConfigDataReadOnly<List<GateObjectConfig>>, IConfigReader, IConfigWriter
+    internal sealed class GateListConfig : ConfigObject, IConfigDataReadOnly<List<GateObjectConfig>>, IConfigReader, IConfigWriter
     {
         private const string XML_NODE_DATA = "data";
 
@@ -78,43 +78,43 @@ namespace Ratatoskr.Configs.UserConfigs
 
             /* === パラメータ読み込み === */
             /* alias */
-            newobj.GateProperty.Alias = XmlUtil.GetAttribute(xml_node, "alias", "");
+            newobj.GateProperty.Alias = GetAttribute(xml_node, "alias", "");
 
             /* back-color */
-            newobj.GateProperty.Color = ColorTranslator.FromHtml(XmlUtil.GetAttribute(xml_node, "back-color", "#FFFFFF"));
+            newobj.GateProperty.Color = ColorTranslator.FromHtml(GetAttribute(xml_node, "back-color", "#FFFFFF"));
 
             /* connect */
-            newobj.GateProperty.ConnectRequest = bool.Parse(XmlUtil.GetAttribute(xml_node, "connect", "false"));
+            newobj.GateProperty.ConnectRequest = bool.Parse(GetAttribute(xml_node, "connect", "false"));
 
             /* send-enable */
-            newobj.DeviceConfig.SendEnable = bool.Parse(XmlUtil.GetAttribute(xml_node, "send-enable", "true"));
+            newobj.DeviceConfig.SendEnable = bool.Parse(GetAttribute(xml_node, "send-enable", "true"));
 
             /* recv-enable */
-            newobj.DeviceConfig.RecvEnable = bool.Parse(XmlUtil.GetAttribute(xml_node, "recv-enable", "true"));
+            newobj.DeviceConfig.RecvEnable = bool.Parse(GetAttribute(xml_node, "recv-enable", "true"));
 
             /* redirect-enable */
-            newobj.DeviceConfig.RedirectEnable = bool.Parse(XmlUtil.GetAttribute(xml_node, "redirect-enable", "true"));
+            newobj.DeviceConfig.RedirectEnable = bool.Parse(GetAttribute(xml_node, "redirect-enable", "true"));
 
             /* send-data-queue-limit */
-            newobj.DeviceConfig.SendDataQueueLimit = uint.Parse(XmlUtil.GetAttribute(xml_node, "send-data-queue-limit", "0"));
+            newobj.DeviceConfig.SendDataQueueLimit = uint.Parse(GetAttribute(xml_node, "send-data-queue-limit", "0"));
 
             /* redirect-data-queue-limit */
-            newobj.DeviceConfig.RedirectDataQueueLimit = uint.Parse(XmlUtil.GetAttribute(xml_node, "redirect-data-queue-limit", "0"));
+            newobj.DeviceConfig.RedirectDataQueueLimit = uint.Parse(GetAttribute(xml_node, "redirect-data-queue-limit", "0"));
 
             /* redirect-alias */
-            newobj.GateProperty.RedirectAlias = XmlUtil.GetAttribute(xml_node, "redirect-alias", "");
+            newobj.GateProperty.RedirectAlias = GetAttribute(xml_node, "redirect-alias", "");
 
             /* connect-command */
-            newobj.GateProperty.ConnectCommand = XmlUtil.GetAttribute(xml_node, "connect-command", "");
+            newobj.GateProperty.ConnectCommand = GetAttribute(xml_node, "connect-command", "");
 
             /* data-rate-target */
-            newobj.GateProperty.DataRateTarget = (DeviceDataRateTarget)Enum.Parse(typeof(DeviceDataRateTarget), XmlUtil.GetAttribute(xml_node, "data-rate-target", "0"));
+            newobj.GateProperty.DataRateTarget = (DeviceDataRateTarget)Enum.Parse(typeof(DeviceDataRateTarget), GetAttribute(xml_node, "data-rate-target", "0"));
 
             /* data-rate-graph-limit */
-            newobj.GateProperty.DataRateGraphLimit = ulong.Parse(XmlUtil.GetAttribute(xml_node, "data-rate-graph-limit", "1000000"));
+            newobj.GateProperty.DataRateGraphLimit = ulong.Parse(GetAttribute(xml_node, "data-rate-graph-limit", "1000000"));
 
             /* device-class-id */
-            newobj.DeviceClassID = Guid.Parse(XmlUtil.GetAttribute(xml_node, "device-class-id", Guid.Empty.ToString()));
+            newobj.DeviceClassID = Guid.Parse(GetAttribute(xml_node, "device-class-id", Guid.Empty.ToString()));
 
             /* device-property */
             foreach (XmlNode node in xml_node.GetElementsByTagName("device-property")) {
@@ -132,7 +132,7 @@ namespace Ratatoskr.Configs.UserConfigs
             var values = new List<string>();
 
             foreach (XmlElement data in xml_node.GetElementsByTagName("data")) {
-                values.Add(XmlUtil.GetAttribute(data, "value", ""));
+                values.Add(GetAttribute(data, "value", ""));
             }
 
             return (values.ToArray());

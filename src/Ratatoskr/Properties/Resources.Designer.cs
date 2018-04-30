@@ -383,9 +383,39 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap file_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("file_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap file_32x32 {
             get {
                 object obj = ResourceManager.GetObject("file_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap file_explorer_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("file_explorer_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap file_explorer_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("file_explorer_32x32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -623,10 +653,66 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap program_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("program_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   (アイコン) に類似した型 System.Drawing.Icon のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Icon program_24x24_icon {
+            get {
+                object obj = ResourceManager.GetObject("program_24x24_icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap program_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("program_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap reload_16x16 {
             get {
                 object obj = ResourceManager.GetObject("reload_16x16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap reload_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("reload_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   
+        ///// 全ゲートにカウントデータを出力
+        ///#if false
+        ///for (var count = 0; count &lt; 10; count++) {
+        ///	API_Send(&quot;*&quot;, count.ToString());
+        ///}
+        ///#endif
+        /// に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Sample {
+            get {
+                return ResourceManager.GetString("Sample", resourceCulture);
             }
         }
         

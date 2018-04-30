@@ -9,7 +9,7 @@ using System.Xml;
 namespace Ratatoskr.Configs.Types
 {
     [Serializable]
-    public sealed class DateTimeConfig : IConfigData<DateTime>, IConfigReader, IConfigWriter
+    internal sealed class DateTimeConfig : ConfigObject, IConfigData<DateTime>, IConfigReader, IConfigWriter
     {
         public DateTime Value { get; set; } = DateTime.MinValue;
 

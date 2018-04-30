@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Ratatoskr.Generic;
 using Ratatoskr.Configs;
+using Ratatoskr.Utility;
 
 namespace Ratatoskr.Configs.UserConfigs
 {
@@ -27,7 +27,7 @@ namespace Ratatoskr.Configs.UserConfigs
     }
 
     [Serializable]
-    internal sealed class PacketListConfig : IConfigDataReadOnly<List<PacketObjectConfig>>, IConfigReader, IConfigWriter
+    internal sealed class PacketListConfig : ConfigObject, IConfigDataReadOnly<List<PacketObjectConfig>>, IConfigReader, IConfigWriter
     {
         private const string XML_NODE_DATA = "data";
 
@@ -63,13 +63,13 @@ namespace Ratatoskr.Configs.UserConfigs
 
             /* === パラメータ読み込み === */
             /* protocol-name */
-            newobj.ProtocolName = XmlUtil.GetAttribute(xml_node, "protocol-name", "");
+            newobj.ProtocolName = GetAttribute(xml_node, "protocol-name", "");
 
             /* bit-data */
-            newobj.BitData = HexTextEncoder.ToByteArray(XmlUtil.GetAttribute(xml_node, "bit-data", ""));
+            newobj.BitData = HexTextEncoder.ToByteArray(GetAttribute(xml_node, "bit-data", ""));
 
             /* bit-size */
-            newobj.BitSize = uint.Parse(XmlUtil.GetAttribute(xml_node, "bit-size", ""));
+            newobj.BitSize = uint.Parse(GetAttribute(xml_node, "bit-size", ""));
 
             /* === 設定リストへ追加 === */
             Value.Add(newobj);
