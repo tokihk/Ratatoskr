@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Ratatoskr.Forms;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
 using Ratatoskr.Scripts.PacketFilterExp;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters
 {

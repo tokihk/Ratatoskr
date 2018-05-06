@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Devices.Ethernet;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 using SharpPcap.LibPcap;
 
 namespace Ratatoskr.FileFormats.PacketLog_Pcap

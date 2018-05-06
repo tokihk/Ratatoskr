@@ -5,8 +5,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
 
 namespace Ratatoskr.Scripts.PacketFilterExp
 {

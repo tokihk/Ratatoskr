@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
 {
     internal sealed class RuleObjectImpl : RuleObject
     {
-        private DynamicDataPacketObject packet_busy_ = null;
+        private DynamicPacketObject packet_busy_ = null;
         private PacketObject            packet_last_ = null;
 
         private DateTime dt_base_ = DateTime.MaxValue;
@@ -118,7 +117,7 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
             dt_base_ = DateTime.MaxValue;
         }
 
-        public override void OnInputPacket(DataPacketObject input, ref List<PacketObject> output)
+        public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
             /* パターンが正しくない場合はスルー */
             if (match_interval_ < 0) {
@@ -127,7 +126,7 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
 
             /* 収集開始 */
             if (packet_busy_ == null) {
-                packet_busy_ = new DynamicDataPacketObject(input);
+                packet_busy_ = new DynamicPacketObject(input);
 
                 /* 受信開始時刻を記憶 */
                 dt_base_ = input.MakeTime;
@@ -137,7 +136,7 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
             packet_last_ = input;
 
             /* データ収集 */
-            packet_busy_.AddData(input.GetData());
+            packet_busy_.AddData(input.Data);
 
             /* 入力パケット時刻が基準時刻を超えていない場合は無視 */
             if (input.MakeTime < dt_base_) {
@@ -163,7 +162,7 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
         {
             if (packet_busy_ == null)return;
 
-            if (packet_busy_.GetDataSize() > 0) {
+            if (packet_busy_.DataLength > 0) {
                 var packet_new = packet_busy_.Compile(packet_last_);
 
                 if (packet_new != null) {
@@ -183,7 +182,7 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
             if (dt_now < dt_base_)return;
             if ((dt_now - dt_base_).TotalMilliseconds < match_interval_)return;
 
-            if (packet_busy_.GetDataSize() > 0) {
+            if (packet_busy_.DataLength > 0) {
                 var packet_new = packet_busy_.Compile(packet_last_);
 
                 if (packet_new != null) {

@@ -10,8 +10,7 @@ using Ratatoskr.FileFormats;
 using Ratatoskr.Gate.AutoTimeStamp;
 using Ratatoskr.Gate.AutoPacketSave;
 using Ratatoskr.PacketConverters;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.Gate
 {
@@ -137,14 +136,19 @@ namespace Ratatoskr.Gate
 
         public static void SetSystemEvent(DateTime dt, string title, string text)
         {
-            var packet = new MessagePacketObject(
+            var packet = new PacketObject(
                                 PacketFacility.System,
                                 "",
                                 PacketPriority.Notice,
+                                PacketAttribute.Message,
                                 dt,
                                 title,
+                                PacketDirection.Recv,
+                                "",
+                                "",
                                 0x00,
-                                text);
+                                text,
+                                null);
            
             BasePacketManager.Enqueue(packet);
         }

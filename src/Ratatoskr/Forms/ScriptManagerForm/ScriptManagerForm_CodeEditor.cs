@@ -28,10 +28,8 @@ namespace Ratatoskr.Forms.ScriptManagerForm
 
         private ScriptController controller_ = null;
         private object           controller_sync_ = new object();
-        private StringBuilder    controller_message_ = new StringBuilder();
 
-        public event EventHandler                 ScriptMessageClear;
-        public event ScriptMessageAppendedHandler ScriptMessageOutput;
+        public event ScriptMessageAppendedHandler ScriptMessageAppended;
         public event EventHandler                 ScriptStatusChanged;
 
 
@@ -46,7 +44,7 @@ namespace Ratatoskr.Forms.ScriptManagerForm
         {
             if (controller_ != null) {
                 System.Diagnostics.Debug.WriteLine("ScriptManagerForm_CodeEditor.OnDisposed");
-                controller_.MessageAppended -= Script_MessageOutput;
+                controller_.MessageAppended -= Script_MessageAppended;
                 controller_.StatusChanged -= Script_StatusChanged;
             }
         }
@@ -88,16 +86,9 @@ namespace Ratatoskr.Forms.ScriptManagerForm
             get { return ((controller_ != null) ? (controller_.IsRunning) : (false)); }
         }
 
-        public string ScriptMessage
+        public ScriptMessageData[] ScriptMessageList
         {
-            get { return (controller_message_.ToString()); }
-        }
-
-        public void ClearScriptMessage()
-        {
-            controller_message_ = new StringBuilder();
-
-            ScriptMessageClear?.Invoke(this, EventArgs.Empty);
+            get { return ((controller_ != null) ? (controller_.GetMessageList()) : (new ScriptMessageData[] { })); }
         }
 
         public void ScriptRun()
@@ -112,13 +103,10 @@ namespace Ratatoskr.Forms.ScriptManagerForm
             /* 現在のスクリプトをバックアップ */
             SaveScriptFile();
 
-            /* コンソールログをクリア */
-            ClearScriptMessage();
-
             /* スクリプト実行 */
             controller_ = ScriptManager.Register(script_path_, ScriptRunMode.OneShot);
             if (controller_ != null) {
-                controller_.MessageAppended += Script_MessageOutput;
+                controller_.MessageAppended += Script_MessageAppended;
                 controller_.StatusChanged += Script_StatusChanged;
                 controller_.RunAsync();
             }
@@ -149,22 +137,22 @@ namespace Ratatoskr.Forms.ScriptManagerForm
             AutoCShow(input_word_data.Length, string.Join(" ", aclist));
         }
 
-        private void Script_MessageOutput(object sender, ScriptMessageData msg)
+        private void Script_MessageAppended(object sender, ScriptMessageData msg)
         {
             if (InvokeRequired) {
-                Invoke((ScriptMessageAppendedHandler)Script_MessageOutput, sender, msg);
+                BeginInvoke((ScriptMessageAppendedHandler)Script_MessageAppended, sender, msg);
                 return;
             }
 
-            controller_message_.AppendLine(msg.Message);
+            if (IsDisposed)return;
 
-            ScriptMessageOutput?.Invoke(this, msg);
+            ScriptMessageAppended?.Invoke(this, msg);
         }
 
         private void Script_StatusChanged(object sender, EventArgs e)
         {
             if (InvokeRequired) {
-                Invoke((EventHandler)Script_StatusChanged, sender, e);
+                BeginInvoke((EventHandler)Script_StatusChanged, sender, e);
                 return;
             }
 

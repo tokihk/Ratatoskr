@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketViews
 {

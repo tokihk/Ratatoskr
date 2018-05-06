@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Ratatoskr.Gate;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.Scripts.ScriptEngines
 {
@@ -80,8 +81,21 @@ namespace Ratatoskr.Scripts.ScriptEngines
         [Flags]
         public enum WatchPacketType
         {
-            RawPacket  = API.API_RecvWait.WatchPacketType.RawPacket,
-            ViewPacket = API.API_RecvWait.WatchPacketType.ViewPacket,
+            RawPacket  = API.API_WaitPacket.WatchPacketType.RawPacket,
+            ViewPacket = API.API_WaitPacket.WatchPacketType.ViewPacket,
+        }
+
+        public enum PacketType
+        {
+            Message,
+            Data,
+        }
+
+        public sealed class Packet : PacketObject
+        {
+            internal Packet(PacketObject packet) : base(packet)
+            {
+            }
         }
 
         public void API_Pause()
@@ -110,7 +124,7 @@ namespace Ratatoskr.Scripts.ScriptEngines
             }
 
             if (target.HasFlag(PrintTargetType.Console)) {
-                runner.AddScriptOutput(obj.ToString());
+                runner.AddScriptMessage(obj.ToString());
             }
 
             if (target.HasFlag(PrintTargetType.Editor)) {
@@ -138,11 +152,11 @@ namespace Ratatoskr.Scripts.ScriptEngines
             return (api_obj.Success);
         }
 
-        public API.API_RecvWait API_RecvWaitAsync(string filter_exp, WatchPacketType watch_type, uint timeout)
+        public API.API_WaitPacket API_RecvWaitAsync(string filter_exp, WatchPacketType watch_type, uint timeout)
         {
-            var api_obj = new API.API_RecvWait();
+            var api_obj = new API.API_WaitPacket();
 
-            api_obj.ExecAsync(filter_exp, (API.API_RecvWait.WatchPacketType)watch_type, timeout, null);
+            api_obj.ExecAsync(filter_exp, (API.API_WaitPacket.WatchPacketType)watch_type, timeout, null);
 
             return (api_obj);
         }

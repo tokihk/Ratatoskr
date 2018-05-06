@@ -12,7 +12,7 @@ using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
 
@@ -461,7 +461,7 @@ namespace Ratatoskr.Forms.MainFrame
             watch_objs_view_ = objs_view.ToArray();
         }
 
-        private void OnRawPacketEntried(IEnumerable<Generic.Packet.PacketObject> packets)
+        private void OnRawPacketEntried(IEnumerable<PacketObject> packets)
         {
             if (watch_objs_raw_ != null) {
                 foreach (var obj in watch_objs_raw_) {
@@ -470,7 +470,7 @@ namespace Ratatoskr.Forms.MainFrame
             }
         }
 
-        private void OnDrawPacketEntried(IEnumerable<Generic.Packet.PacketObject> packets)
+        private void OnDrawPacketEntried(IEnumerable<PacketObject> packets)
         {
             if (watch_objs_view_ != null) {
                 foreach (var obj in watch_objs_view_) {

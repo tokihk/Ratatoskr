@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Forms;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
 {

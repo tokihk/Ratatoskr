@@ -60,7 +60,7 @@ namespace Ratatoskr.Configs
         }
 
 
-        public static FixedConfig    Fixed    { get; private set; }
+        public static FixedConfig    Fixed    { get; private set; } = new FixedConfig();
         public static SystemConfig   System   { get; private set; }
         public static UserConfig     User     { get; private set; }
         public static LanguageConfig Language { get; private set; }
@@ -68,7 +68,6 @@ namespace Ratatoskr.Configs
 
         public static void Startup()
         {
-            Fixed = new FixedConfig();
             System = new SystemConfig();
             User = new UserConfig();
             Language = new LanguageConfig();

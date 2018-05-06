@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 using Ratatoskr.Scripts.PacketFilterExp;
 
 namespace Ratatoskr.Scripts.API
@@ -96,7 +95,7 @@ namespace Ratatoskr.Scripts.API
 
             /* 送信タスク開始 */
             ar_task_ = (new ExecTaskHandler(ExecTask)).BeginInvoke(
-                gate_objs, detect_filter, reader, reader_info.option, new Queue<string>(reader_info.paths), null, null);
+                gate_objs, detect_filter, reader, reader_info.option, new Queue<string>(reader_info.paths), ExecTaskComplete, null);
         }
 
         private delegate void ExecTaskHandler(GateObject[] gates, ExpressionFilter filter, PacketLogReader reader, FileFormatOption option, Queue<string> paths);
@@ -105,7 +104,10 @@ namespace Ratatoskr.Scripts.API
             while ((!cancel_req_) && (paths.Count > 0)) {
                 PlayRecord(gates, filter, reader, option, paths.Dequeue());
             }
+        }
 
+        private void ExecTaskComplete(IAsyncResult ar)
+        {
             Dispose();
         }
 
@@ -117,7 +119,7 @@ namespace Ratatoskr.Scripts.API
             ProgressNow = (uint)reader.ProgressNow;
 
             var packet_busy = LoadPlayPacket(reader, filter);
-            var packet_next = (DataPacketObject)null;
+            var packet_next = (PacketObject)null;
             var delay_timer = new System.Diagnostics.Stopwatch();
             var delay_value = 0;
 
@@ -132,7 +134,7 @@ namespace Ratatoskr.Scripts.API
                 /* パケット送信 */
                 delay_timer.Restart();
                 foreach (var gate in gates) {
-                    gate.SendRequest(packet_busy.GetData());
+                    gate.SendRequest(packet_busy.Data);
                 }
 
                 /* 次のパケットを取得 */
@@ -150,7 +152,7 @@ namespace Ratatoskr.Scripts.API
             reader.Close();
         }
 
-        private DataPacketObject LoadPlayPacket(PacketLogReader reader, ExpressionFilter filter)
+        private PacketObject LoadPlayPacket(PacketLogReader reader, ExpressionFilter filter)
         {
             var packet = (PacketObject)null;
 
@@ -161,7 +163,7 @@ namespace Ratatoskr.Scripts.API
                 /* フィルターに合致しないパケットは無視 */
                 if (!filter.Input(packet))continue;
 
-                return (packet as DataPacketObject);
+                return (packet);
             }
 
             return (null);

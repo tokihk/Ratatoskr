@@ -6,8 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.PacketConverters.Convert.DataChange
@@ -250,7 +249,7 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
             Property.DataChangeProperty.ReplacePattern.Value = TBox_Replace.Text;
         }
 
-        public override void OnInputPacket(DataPacketObject input, ref List<PacketObject> output)
+        public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
             /* ターゲットコードが指定されていない場合はそのまま出力 */
             if (target_codes_obj_busy_ == null) {
@@ -258,14 +257,14 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
                 return;
             }
 
-            var data = input.GetData();
+            var data = input.Data;
 
             /* データ変換 */
             foreach (var code in target_codes_obj_busy_) {
                 data = ConvertCode(data, code, replace_code_obj_busy_);
             }
 
-            output.Add(new StaticDataPacketObject(input, data));
+            output.Add(new PacketObject(input, data));
         }
 
         private void TBox_KeyDown(object sender, KeyEventArgs e)

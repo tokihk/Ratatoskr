@@ -5,8 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Native;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.PacketViews.Compare
@@ -487,7 +486,7 @@ namespace Ratatoskr.PacketViews.Compare
             }
         }
 
-        private void DrawMessagePacket(MessagePacketObject packet)
+        private void DrawMessagePacket(PacketObject packet)
         {
             var str = new StringBuilder();
 
@@ -507,7 +506,7 @@ namespace Ratatoskr.PacketViews.Compare
             DrawBufferPush(str.ToString());
         }
 
-        private void DrawDataPacket(DataPacketObject packet)
+        private void DrawDataPacket(PacketObject packet)
         {
             if (   (!prop_.EchoBack.Value)
                 && (packet.Direction != PacketDirection.Recv)
@@ -519,7 +518,7 @@ namespace Ratatoskr.PacketViews.Compare
             var draw_data = (byte)0;
 
             DrawBufferPushBegin(PacketAttribute.Data);
-            foreach (var data_one in packet.GetData()) {
+            foreach (var data_one in packet.Data) {
                 /* 入力データをシフト処理 */
                 draw_data = DataShift(data_one);
 
@@ -706,10 +705,10 @@ namespace Ratatoskr.PacketViews.Compare
         {
             switch (packet.Attribute) {
                 case PacketAttribute.Message:
-                    DrawMessagePacket(packet as MessagePacketObject);
+                    DrawMessagePacket(packet);
                     break;
                 case PacketAttribute.Data:
-                    DrawDataPacket(packet as DataPacketObject);
+                    DrawDataPacket(packet);
                     break;
             }
         }

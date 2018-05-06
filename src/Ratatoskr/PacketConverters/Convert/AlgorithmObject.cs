@@ -7,8 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters.Convert
 {
@@ -38,7 +37,7 @@ namespace Ratatoskr.PacketConverters.Convert
         {
         }
 
-        public virtual void OnInputPacket(DataPacketObject input, ref List<PacketObject> output)
+        public virtual void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
         }
     }

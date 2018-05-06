@@ -4,60 +4,274 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using Ratatoskr.Generic;
 using Ratatoskr.Utility;
 
-namespace Ratatoskr.Generic.Packet.Types
+namespace Ratatoskr.Packet
 {
-    [Serializable]
-    internal abstract class DataPacketObject : PacketObject
+    public enum PacketElementID : byte
     {
-        public DataPacketObject(
+        Facility,
+        Alias,
+        Priority,
+        Attribute,
+        DateTime,
+        Direction,
+        Information,
+        Source,
+        Destination,
+        Mark,
+        Message,
+        Data,
+    }
+
+    public enum PacketFacility : byte
+    {
+        System,
+        View,
+        Device,
+    }
+
+    public enum PacketPriority : byte
+    {
+        Debug,
+        Standard,
+        Notice,
+        Warning,
+        Error,
+        Critical,
+        Alert,
+        Emergency,
+    }
+
+    public enum PacketAttribute : byte
+    {
+        Control,
+        Message,
+        Data,
+    }
+
+    public enum PacketDirection : byte
+    {
+        Recv,
+        Send,
+    }
+
+    [Serializable]
+    public class PacketObject
+    {
+        public PacketObject(
                     PacketFacility facility,
                     string alias,
                     PacketPriority prio,
+                    PacketAttribute attr,
                     DateTime dt,
                     string info,
                     PacketDirection dir,
                     string src,
                     string dst,
-                    byte mark
-                    ) : base(
-                        facility,
-                        alias,
-                        prio,
-                        PacketAttribute.Data,
-                        dt,
-                        info,
-                        dir,
-                        src,
-                        dst,
-                        mark
-                        )
-        {
+                    byte mark,
+                    string message,
+                    byte[] data
+        ) {
+            Facility = facility;
+            Alias = alias;
+            Priority = prio;
+            Attribute = attr;
+            MakeTime = dt;
+            Information = info;
+            Direction = dir;
+            Source = src;
+            Destination = dst;
+            UserMark = mark;
+            Message = (message ?? "");
+            Data = (data ?? new byte[] { });
         }
-        
-        public DataPacketObject(PacketObject packet) : base(packet) { }
 
-        public DataPacketObject() : base() { }
+        public PacketObject(PacketObject packet)
+            : this(
+                packet.Facility,
+                packet.Alias,
+                packet.Priority,
+                packet.Attribute,
+                packet.MakeTime,
+                packet.Information,
+                packet.Direction,
+                packet.Source,
+                packet.Destination,
+                packet.UserMark,
+                packet.Message,
+                packet.Data
+        ) {
+        }
 
-        public override string GetElementText(PacketElementID id)
+        public PacketObject(PacketObject packet, byte[] data)
+            : this(
+                packet.Facility,
+                packet.Alias,
+                packet.Priority,
+                packet.Attribute,
+                packet.MakeTime,
+                packet.Information,
+                packet.Direction,
+                packet.Source,
+                packet.Destination,
+                packet.UserMark,
+                packet.Message,
+                data
+        ) {
+        }
+
+        public PacketObject() { }
+
+
+        public DateTime MakeTime { get; }
+
+        public PacketFacility  Facility { get; }
+        public PacketPriority  Priority { get; }
+        public PacketAttribute Attribute { get; }
+
+        public string Alias       { get; set; }
+        public string Information { get; set; }
+
+        public PacketDirection Direction { get; }
+
+        public string Source      { get; }
+        public string Destination { get; }
+
+        public byte UserMark { get; }
+
+        public string Message { get; }
+
+        public virtual byte[] Data { get; }
+        public virtual int    DataLength { get { return (Data.Length); } }
+
+
+        public override bool Equals(object obj)
+        {
+            if (obj is PacketObject) {
+                return (this == (PacketObject)obj);
+            } else {
+                return (base.Equals(obj));
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public virtual bool AttributeCompare(PacketObject obj)
+        {
+            return (   (Facility == obj.Facility)
+                    && (Alias == obj.Alias)
+                    && (Priority == obj.Priority)
+                    && (Attribute == obj.Attribute)
+                    && (Direction == obj.Direction)
+                    && (Source == obj.Source)
+                    && (Destination == obj.Destination)
+                    );
+        }
+
+        public virtual string GetElementText(PacketElementID id)
         {
             switch (id) {
+                case PacketElementID.Facility:
+                {
+                    return (Facility.ToString());
+                }
+
+                case PacketElementID.Alias:
+                {
+                    return (Alias);
+                }
+
+                case PacketElementID.Priority:
+                {
+                    return (Priority.ToString());
+                }
+
+                case PacketElementID.Attribute:
+                {
+                    return (Attribute.ToString());
+                }
+
+                case PacketElementID.DateTime:
+                {
+                    return (MakeTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                }
+
+                case PacketElementID.Information:
+                {
+                    return (Information);
+                }
+
+                case PacketElementID.Direction:
+                {
+                    return (Direction.ToString());
+                }
+
+                case PacketElementID.Source:
+                {
+                    return (Source);
+                }
+
+                case PacketElementID.Destination:
+                {
+                    return (Destination);
+                }
+
+                case PacketElementID.Mark:
+                {
+                    return (UserMark.ToString());
+                }
+
                 case PacketElementID.Data:
                 {
                     return (GetHexText());
                 }
 
                 default:
-                {
-                    return (base.GetElementText(id));
-                }
+                    return ("");
             }
+        }
+
+        public static string GetCsvHeaderString()
+        {
+            var str = new StringBuilder();
+
+            foreach (var id in Enum.GetNames(typeof(PacketElementID))) {
+                str.Append(id.ToString());
+                str.Append(',');
+            }
+
+            if (str.Length > 0) {
+                str.Remove(str.Length - 1, 1);
+            }
+
+            return (str.ToString());
+        }
+
+        public string GetCsvDataString()
+        {
+            var str = new StringBuilder();
+
+            foreach (PacketElementID id in Enum.GetValues(typeof(PacketElementID))) {
+                str.Append(GetElementText(id));
+                str.Append(',');
+            }
+
+            if (str.Length > 0) {
+                str.Remove(str.Length - 1, 1);
+            }
+
+            return (str.ToString());
         }
 
         public string GetHexText(string separator = "")
         {
-            var raw_data = GetData();
+            var raw_data = Data;
 
             if (raw_data == null)return ("");
 
@@ -66,7 +280,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public string GetHexText(int offset, int size, string separator = "")
         {
-            var raw_data = GetData();
+            var raw_data = Data;
 
             if (raw_data == null)return ("");
 
@@ -75,7 +289,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public string GetBitText(string separator = "")
         {
-            var raw_data = GetData();
+            var raw_data = Data;
 
             if (raw_data == null)return ("");
 
@@ -84,7 +298,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public string GetBinText(int offset, int size, string separator = "")
         {
-            var raw_data = GetData();
+            var raw_data = Data;
 
             if (raw_data == null)return ("");
 
@@ -93,7 +307,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public string GetAsciiText()
         {
-            var raw_data = GetData();
+            var raw_data = Data;
 
             if (raw_data == null)return ("");
 
@@ -102,7 +316,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public string GetAsciiText(int offset, int size)
         {
-            var raw_data = GetData();
+            var raw_data = Data;
 
             if (raw_data == null)return ("");
 
@@ -113,7 +327,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public string GetUtf8Text()
         {
-            var raw_data = GetData();
+            var raw_data = Data;
 
             if (raw_data == null)return ("");
 
@@ -122,7 +336,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public string GetUtf8Text(int offset, int size)
         {
-            var raw_data = GetData();
+            var raw_data = Data;
 
             if (raw_data == null)return ("");
 
@@ -133,7 +347,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public string GetUnicodeText(bool little_endian)
         {
-            var raw_data = GetData();
+            var raw_data = Data;
 
             if (raw_data == null)return ("");
 
@@ -144,7 +358,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public string GetUnicodeText(int offset, int size, bool little_endian)
         {
-            var raw_data = GetData();
+            var raw_data = Data;
 
             if (raw_data == null)return ("");
 
@@ -162,7 +376,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public byte[] GetBytes(int offset, int size)
         {
-            var data_base = GetData();
+            var data_base = Data;
 
             if (data_base == null)return (new byte[] { });
 
@@ -179,7 +393,7 @@ namespace Ratatoskr.Generic.Packet.Types
 
         public byte[] GetBits(int offset, int size)
         {
-            var src_data = GetData();
+            var src_data = Data;
 
             if (src_data == null)return (new byte[] { });
 

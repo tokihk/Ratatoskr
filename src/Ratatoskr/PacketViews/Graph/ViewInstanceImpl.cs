@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketViews.Graph
 {
@@ -871,13 +870,11 @@ namespace Ratatoskr.PacketViews.Graph
         {
             if (chart_ == null)return;
 
-            var packet_d = packet as DataPacketObject;
-
             /* データパケット以外は無視 */
-            if (packet_d == null)return;
+            if (packet.Attribute != PacketAttribute.Data)return;
 
             /* チャートマネージャーに入力 */
-            chart_.InputPacket(packet_d);
+            chart_.InputPacket(packet);
         }
 
         private void OnUpdateTimer(object sender, EventArgs e)

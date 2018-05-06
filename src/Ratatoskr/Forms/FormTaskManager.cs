@@ -8,7 +8,7 @@ using Ratatoskr.Configs;
 using Ratatoskr.Gate;
 using Ratatoskr.PacketConverters;
 using Ratatoskr.PacketViews;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.Forms
 {

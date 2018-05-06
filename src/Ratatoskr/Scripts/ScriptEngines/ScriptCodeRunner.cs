@@ -64,7 +64,7 @@ namespace Ratatoskr.Scripts.ScriptEngines
             ClearMessage();
             ClearComment();
 
-            AddScriptOutput("Script Build and Start");
+            AddMessage(ScriptMessageType.Informational, "<< Script Build and Start >>");
 
             if (   (script_code_ == null)
                 || (script_code_.Length == 0)
@@ -176,12 +176,12 @@ namespace Ratatoskr.Scripts.ScriptEngines
             MessageAppended?.Invoke(this, msg_info);
         }
 
-        private void SetErrorMessage(CompilationErrorException exp)
+        private void AddCompileErrorMessage(CompilationErrorException exp)
         {
             AddMessage(ScriptMessageType.Error, exp.Message);
         }
 
-        public void AddScriptOutput(string message)
+        public void AddScriptMessage(string message)
         {
             if (message == null)return;
 
@@ -221,7 +221,7 @@ namespace Ratatoskr.Scripts.ScriptEngines
                 task_states.Wait();
 
             } catch (CompilationErrorException exp) {
-                SetErrorMessage(exp);
+                AddCompileErrorMessage(exp);
 
             } catch (TaskCanceledException) {
             } catch (OperationCanceledException) {
@@ -236,6 +236,9 @@ namespace Ratatoskr.Scripts.ScriptEngines
 
             if (script_busy_) {
                 script_busy_ = false;
+
+                AddMessage(ScriptMessageType.Informational, "<< Script Stop >>");
+
                 StatusChanged?.Invoke(this, EventArgs.Empty);
             }
         }

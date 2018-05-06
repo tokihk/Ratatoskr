@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketViews
 {

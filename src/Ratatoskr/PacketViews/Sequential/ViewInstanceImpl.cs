@@ -4,8 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.PacketViews.Sequential
@@ -373,8 +372,8 @@ namespace Ratatoskr.PacketViews.Sequential
             ChkBox_EchoBack.Checked = prop_.EchoBack.Value;
 
             CBox_DrawType.SelectedItem = prop_.DrawType.Value;
-            TBox_BoundaryText.Text = prop_.BoundaryText.Value;
-            TBox_LFCode.Text = prop_.EndLinePattern.Value;
+            TBox_BoundaryText.Text = prop_.BoundaryText.Value.Trim();
+            TBox_LFCode.Text = prop_.EndLinePattern.Value.Trim();
 
             /* TODO: 未実装なので今は非表示 */
             Splitter_Main.Panel2Collapsed = true;
@@ -486,7 +485,7 @@ namespace Ratatoskr.PacketViews.Sequential
             }
         }
 
-        private void DrawMessagePacket(MessagePacketObject packet)
+        private void DrawMessagePacket(PacketObject packet)
         {
             var str = new StringBuilder();
 
@@ -506,7 +505,7 @@ namespace Ratatoskr.PacketViews.Sequential
             DrawBufferPush(str.ToString());
         }
 
-        private void DrawDataPacket(DataPacketObject packet)
+        private void DrawDataPacket(PacketObject packet)
         {
             if (   (!prop_.EchoBack.Value)
                 && (packet.Direction != PacketDirection.Recv)
@@ -518,7 +517,7 @@ namespace Ratatoskr.PacketViews.Sequential
             var draw_data = (byte)0;
 
             DrawBufferPushBegin(PacketAttribute.Data);
-            foreach (var data_one in packet.GetData()) {
+            foreach (var data_one in packet.Data) {
                 /* 入力データをシフト処理 */
                 draw_data = DataShift(data_one);
 
@@ -705,10 +704,10 @@ namespace Ratatoskr.PacketViews.Sequential
         {
             switch (packet.Attribute) {
                 case PacketAttribute.Message:
-                    DrawMessagePacket(packet as MessagePacketObject);
+                    DrawMessagePacket(packet);
                     break;
                 case PacketAttribute.Data:
-                    DrawDataPacket(packet as DataPacketObject);
+                    DrawDataPacket(packet);
                     break;
             }
         }

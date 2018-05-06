@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpPcap;
 using SharpPcap.LibPcap;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.Devices.Ethernet
 {
@@ -34,7 +35,7 @@ namespace Ratatoskr.Devices.Ethernet
                 NotifyRecvComplete(packet_info.DateTime, "", packet_info.Source, packet_info.Destination, packet_info.Data);
 
             } catch (Exception exp) {
-                NotifyMessage(Generic.Packet.PacketPriority.Standard, "Ethernet", string.Format("Parse error.[{0}]", exp.Message));
+                NotifyMessage(PacketPriority.Standard, "Ethernet", string.Format("Parse error.[{0}]", exp.Message));
             }
         }
 

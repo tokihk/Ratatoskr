@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
 {
@@ -170,12 +169,12 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
             Property.CodeExtentionDecodeProperty.ExtMask.Value = Num_ExtMask.Value;
         }
 
-        public override void OnInputPacket(DataPacketObject input, ref List<PacketObject> output)
+        public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
-            var packet_new = new DynamicDataPacketObject(input);
+            var packet_new = new DynamicPacketObject(input);
             var fxext = false;
 
-            foreach (var data in input.GetData()) {
+            foreach (var data in input.Data) {
                 if (fxext) {
                     packet_new.AddData((byte)(data | ext_mask_));
                     fxext = false;

@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
 {
     internal sealed class RuleObjectImpl : RuleObject
     {
-        private DynamicDataPacketObject packet_busy_ = null;
-        private PacketObject            packet_last_ = null;
+        private DynamicPacketObject packet_busy_ = null;
+        private PacketObject        packet_last_ = null;
 
         private int match_length_ = -1;
         private Label label1;
@@ -118,7 +117,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
             packet_busy_ = null;
         }
 
-        public override void OnInputPacket(DataPacketObject input, ref List<PacketObject> output)
+        public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
             /* パターンが正しくない場合は無視 */
             if (match_length_ < 0) {
@@ -128,7 +127,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
 
             /* 収集開始 */
             if (packet_busy_ == null) {
-                packet_busy_ = new DynamicDataPacketObject(input);
+                packet_busy_ = new DynamicPacketObject(input);
             }
 
             /* 最終受信パケットを記憶 */
@@ -138,12 +137,12 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
             var packet_new = (PacketObject)null;
 
             /* データ収集 */
-            foreach (var data in input.GetData()) {
+            foreach (var data in input.Data) {
                 /* 仮想パケットにデータを追加 */
                 packet_busy_.AddData(data);
 
                 /* データ長が指定長以上になるまで無視 */
-                if (packet_busy_.GetDataSize() < match_length_)continue;
+                if (packet_busy_.DataLength < match_length_)continue;
 
                 /* パケット生成 */
                 packet_new = packet_busy_.Compile(input);
@@ -153,7 +152,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
                 }
 
                 /* 新しいパケットの収集を開始 */
-                packet_busy_ = new DynamicDataPacketObject(input);
+                packet_busy_ = new DynamicPacketObject(input);
             }
         }
 
@@ -163,7 +162,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
                 return;
             }
 
-            if (packet_busy_.GetDataSize() > 0) {
+            if (packet_busy_.DataLength > 0) {
                 var packet_new = packet_busy_.Compile(packet_last_);
 
                 if (packet_new != null) {

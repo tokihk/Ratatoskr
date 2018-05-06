@@ -5,10 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Native;
-using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 using Ratatoskr.PacketViews.Protocol.Configs;
 using Ratatoskr.Protocol;
 using RtsCore.Protocol;
@@ -749,7 +746,7 @@ namespace Ratatoskr.PacketViews.Protocol
             }
 
             /* デコーダーによる解析 */
-            AddDecodeData(packet, decoder_.Decode(packet.MakeTime, packet.GetData()));
+            AddDecodeData(packet, decoder_.Decode(packet.MakeTime, packet.Data));
         }
 
         protected override void OnBackupProperty()

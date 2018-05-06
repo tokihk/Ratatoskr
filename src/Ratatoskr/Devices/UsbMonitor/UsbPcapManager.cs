@@ -8,8 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 using Ratatoskr.Native;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
 
 namespace Ratatoskr.Devices.UsbMonitor
 {

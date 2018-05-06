@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.FileFormats;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.Gate.AutoPacketSave
 {

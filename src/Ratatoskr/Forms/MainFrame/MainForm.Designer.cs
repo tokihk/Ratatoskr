@@ -84,6 +84,12 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_Profile_Export = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.MenuBar_Gate = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Gate_Connect1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Gate_Connect2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Gate_Connect3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Gate_Connect4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Gate_Connect5 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -581,6 +587,53 @@
             this.toolStrip1.Size = new System.Drawing.Size(1, 0);
             this.toolStrip1.TabIndex = 1;
             // 
+            // MenuBar_Gate
+            // 
+            this.MenuBar_Gate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuBar_Gate_Connect1,
+            this.MenuBar_Gate_Connect2,
+            this.MenuBar_Gate_Connect3,
+            this.MenuBar_Gate_Connect4,
+            this.MenuBar_Gate_Connect5});
+            this.MenuBar_Gate.Name = "MenuBar_Gate";
+            this.MenuBar_Gate.Size = new System.Drawing.Size(41, 25);
+            this.MenuBar_Gate.Text = "Gate";
+            // 
+            // MenuBar_Gate_Connect1
+            // 
+            this.MenuBar_Gate_Connect1.Name = "MenuBar_Gate_Connect1";
+            this.MenuBar_Gate_Connect1.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_Gate_Connect1.Tag = "Gate1_Connect";
+            this.MenuBar_Gate_Connect1.Text = "Gate1 Connect/Disconnect";
+            // 
+            // MenuBar_Gate_Connect2
+            // 
+            this.MenuBar_Gate_Connect2.Name = "MenuBar_Gate_Connect2";
+            this.MenuBar_Gate_Connect2.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_Gate_Connect2.Tag = "Gate2_Connect";
+            this.MenuBar_Gate_Connect2.Text = "Gate2 Connect/Disconnect";
+            // 
+            // MenuBar_Gate_Connect3
+            // 
+            this.MenuBar_Gate_Connect3.Name = "MenuBar_Gate_Connect3";
+            this.MenuBar_Gate_Connect3.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_Gate_Connect3.Tag = "Gate3_Connect";
+            this.MenuBar_Gate_Connect3.Text = "Gate3 Connect/Disconnect";
+            // 
+            // MenuBar_Gate_Connect4
+            // 
+            this.MenuBar_Gate_Connect4.Name = "MenuBar_Gate_Connect4";
+            this.MenuBar_Gate_Connect4.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_Gate_Connect4.Tag = "Gate4_Connect";
+            this.MenuBar_Gate_Connect4.Text = "Gate4 Connect/Disconnect";
+            // 
+            // MenuBar_Gate_Connect5
+            // 
+            this.MenuBar_Gate_Connect5.Name = "MenuBar_Gate_Connect5";
+            this.MenuBar_Gate_Connect5.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_Gate_Connect5.Tag = "Gate5_Connect";
+            this.MenuBar_Gate_Connect5.Text = "Gate5 Connect/Disconnect";
+            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -670,5 +723,11 @@
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_Remove;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_Add;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect1;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect2;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect3;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect4;
+        private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect5;
     }
 }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
 

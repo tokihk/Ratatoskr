@@ -180,7 +180,7 @@
             this.Btn_Script_Stop.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.Btn_Script_Stop.Click += new System.EventHandler(this.Btn_Script_Stop_Click);
             // 
-            // ScriptIDEForm
+            // ScriptManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -188,9 +188,11 @@
             this.Controls.Add(this.Container_Main);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "ScriptIDEForm";
+            this.Name = "ScriptManagerForm";
             this.Text = "Script Editor";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptIDEForm_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptManagerForm_FormClosing);
+            this.Move += new System.EventHandler(this.ScriptManagerForm_Move);
+            this.Resize += new System.EventHandler(this.ScriptManagerForm_Resize);
             this.Container_Main.BottomToolStripPanel.ResumeLayout(false);
             this.Container_Main.BottomToolStripPanel.PerformLayout();
             this.Container_Main.TopToolStripPanel.ResumeLayout(false);

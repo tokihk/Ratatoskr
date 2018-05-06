@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters.Convert.ChangeAlias
 {
@@ -107,7 +106,7 @@ namespace Ratatoskr.PacketConverters.Convert.ChangeAlias
             Property.ChangeAliasProperty.Value.Value = TBox_Value.Text;
         }
 
-        public override void OnInputPacket(DataPacketObject input, ref List<PacketObject> output)
+        public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
             /* パケットを複製 */
             var packet = ClassUtil.Clone(input);

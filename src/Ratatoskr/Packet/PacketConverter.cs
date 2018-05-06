@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ratatoskr.Generic.Packet
+namespace Ratatoskr.Packet
 {
     internal static class PacketConverter
     {
@@ -14,10 +14,11 @@ namespace Ratatoskr.Generic.Packet
         {
             public enum SerializeFormat
             {
-                V000
+                V000,
+                V001
             }
 
-            private const SerializeFormat FORMAT_VERSION = SerializeFormat.V000;
+            private const SerializeFormat FORMAT_VERSION = SerializeFormat.V001;
 
 
             public static byte[] Serialize(PacketObject packet)
@@ -98,16 +99,14 @@ namespace Ratatoskr.Generic.Packet
                 switch (packet.Attribute) {
                     case PacketAttribute.Control:
                     {
-                        var packet_a = packet as Types.ControlPacketObject;
-
                         /* Code (4 Byte) */
-                        writer.Write((byte)((packet_a.ControlCommand >> 24) & 0xFF));
-                        writer.Write((byte)((packet_a.ControlCommand >> 16) & 0xFF));
-                        writer.Write((byte)((packet_a.ControlCommand >>  8) & 0xFF));
-                        writer.Write((byte)((packet_a.ControlCommand >>  0) & 0xFF));
+                        writer.Write((byte)(0));
+                        writer.Write((byte)(0));
+                        writer.Write((byte)(0));
+                        writer.Write((byte)(0));
 
                         /* Data (4 + xx Byte) */
-                        var data = packet_a.ControlData;
+                        var data = packet.Data;
                         var data_len = (uint)data.Length;
 
                         writer.Write((byte)((data_len >> 24) & 0xFF));
@@ -121,10 +120,8 @@ namespace Ratatoskr.Generic.Packet
 
                     case PacketAttribute.Message:
                     {
-                        var packet_a = packet as Types.MessagePacketObject;
-
                         /* Data (4 + xx Byte) */
-                        var data = Encoding.UTF8.GetBytes(packet_a.Message);
+                        var data = Encoding.UTF8.GetBytes(packet.Message);
                         var data_len = (uint)data.Length;
 
                         writer.Write((byte)((data_len >> 24) & 0xFF));
@@ -137,10 +134,8 @@ namespace Ratatoskr.Generic.Packet
 
                     case PacketAttribute.Data:
                     {
-                        var packet_a = packet as Types.DataPacketObject;
-
                         /* Data (4 + xx Byte)*/
-                        var data = packet_a.GetData();
+                        var data = packet.Data;
                         var data_len = (uint)data.Length;
 
                         writer.Write((byte)((data_len >> 24) & 0xFF));
@@ -153,6 +148,83 @@ namespace Ratatoskr.Generic.Packet
                 }
             }
 
+            private static void Serialize_V001(BinaryWriter writer, PacketObject packet)
+            {
+                /* Facility (1 Byte) */
+                writer.Write((byte)packet.Facility);
+
+                /* Alias (1 + xx Byte) */
+                var alias_data = Encoding.UTF8.GetBytes(packet.Alias);
+                var alias_data_len = Math.Min(alias_data.Length, 255);
+
+                writer.Write((byte)alias_data_len);
+                writer.Write(alias_data);
+
+                /* Priority (1 Byte) */
+                writer.Write((byte)packet.Priority);
+
+                /* Attribute (1 Byte) */
+                writer.Write((byte)packet.Attribute);
+
+                /* Make Time (2 + 1 + 1 + 1 + 1 + 1 + 2 Byte) */
+                var dt_utc = packet.MakeTime.ToUniversalTime();
+
+                writer.Write((byte)((dt_utc.Year >> 8) & 0xFF));
+                writer.Write((byte)((dt_utc.Year >> 0) & 0xFF));
+                writer.Write((byte)dt_utc.Month);
+                writer.Write((byte)dt_utc.Day);
+                writer.Write((byte)dt_utc.Hour);
+                writer.Write((byte)dt_utc.Minute);
+                writer.Write((byte)dt_utc.Second);
+                writer.Write((byte)((dt_utc.Millisecond >> 8) & 0xFF));
+                writer.Write((byte)((dt_utc.Millisecond >> 0) & 0xFF));
+
+                /* Information (2 + xx Byte) */
+                var info_data = Encoding.UTF8.GetBytes(packet.Information);
+                var info_data_len = Math.Min(info_data.Length, 65535);
+
+                writer.Write((byte)((info_data_len >> 8) & 0xFF));
+                writer.Write((byte)((info_data_len >> 0) & 0xFF));
+                writer.Write(info_data);
+
+                /* Direction (1 Byte) */
+                writer.Write((byte)packet.Direction);
+
+                /* Source (1 + xx Byte) */
+                var src_data = Encoding.UTF8.GetBytes(packet.Source);
+                var src_data_len = (byte)Math.Min(src_data.Length, 255);
+
+                writer.Write((byte)src_data_len);
+                writer.Write(src_data);
+
+                /* Destination (1 + xx Byte) */
+                var dst_data = Encoding.UTF8.GetBytes(packet.Destination);
+                var dst_data_len = (byte)Math.Min(dst_data.Length, 255);
+
+                writer.Write((byte)dst_data_len);
+                writer.Write(dst_data);
+
+                /* User Mark (1 Byte) */
+                writer.Write(packet.UserMark);
+
+                /* Message (2 + xx Byte) */
+                var msg_data = Encoding.UTF8.GetBytes(packet.Message);
+                var msg_data_len = (byte)Math.Min(dst_data.Length, 0xFFFF);
+                
+                writer.Write((ushort)msg_data_len);
+                writer.Write(msg_data);
+
+                /* Data (4 + xx Byte) */
+                var data = packet.Data;
+                var data_len = (uint)data.Length;
+
+                writer.Write((byte)((data_len >> 24) & 0xFF));
+                writer.Write((byte)((data_len >> 16) & 0xFF));
+                writer.Write((byte)((data_len >>  8) & 0xFF));
+                writer.Write((byte)((data_len >>  0) & 0xFF));
+                writer.Write(data);
+            }
+
             public static PacketObject Deserialize(byte[] data)
             {
                 using (var stream = new MemoryStream(data)) {
@@ -163,6 +235,7 @@ namespace Ratatoskr.Generic.Packet
                         /* フォーマット別処理 */
                         switch (format) {
                             case SerializeFormat.V000:  return (Deserialize_V000(reader));
+                            case SerializeFormat.V001:  return (Deserialize_V001(reader));
                             default:                    return (null);
                         }
                     }
@@ -249,13 +322,18 @@ namespace Ratatoskr.Generic.Packet
 
                         var data = reader.ReadBytes((int)data_len);
 
-                        return (new Types.ControlPacketObject(
+                        return (new PacketObject(
                                             facility,
                                             alias,
                                             prio,
+                                            attr,
                                             dt,
+                                            info,
+                                            dir,
+                                            src_data,
+                                            dst_data,
                                             mark,
-                                            code,
+                                            "",
                                             data));
                     }
 
@@ -271,14 +349,19 @@ namespace Ratatoskr.Generic.Packet
 
                         var data = Encoding.UTF8.GetString(reader.ReadBytes((int)data_len));
 
-                        return (new Types.MessagePacketObject(
+                        return (new PacketObject(
                                             facility,
                                             alias,
                                             prio,
+                                            attr,
                                             dt,
                                             info,
+                                            dir,
+                                            src_data,
+                                            dst_data,
                                             mark,
-                                            data));
+                                            data,
+                                            null));
                     }
 
                     case PacketAttribute.Data:
@@ -293,22 +376,112 @@ namespace Ratatoskr.Generic.Packet
 
                         var data = reader.ReadBytes((int)data_len);
 
-                        return (new Types.StaticDataPacketObject(
+                        return (new PacketObject(
                                             facility,
                                             alias,
                                             prio,
+                                            attr,
                                             dt,
                                             info,
                                             dir,
                                             src_data,
                                             dst_data,
                                             mark,
+                                            null,
                                             data));
                     }
 
                     default:
                         return (null);
                 }
+            }
+
+            private static PacketObject Deserialize_V001(BinaryReader reader)
+            {
+                /* Facility (1 Byte) */
+                var facility = (Packet.PacketFacility)reader.ReadByte();
+
+                /* Alias (1 + xx Byte) */
+                var alias_len = (int)reader.ReadByte();
+                var alias = Encoding.UTF8.GetString(reader.ReadBytes(alias_len));
+
+                /* Priority (1 Byte) */
+                var prio = (Packet.PacketPriority)reader.ReadByte();
+
+                /* Attribute (1 Byte) */
+                var attr = (Packet.PacketAttribute)reader.ReadByte();
+
+                /* Make Time (2 + 1 + 1 + 1 + 1 + 1 + 2 Byte) */
+                var dt_year = (int)0;
+                var dt_month = (int)0;
+                var dt_day = (int)0;
+                var dt_hour = (int)0;
+                var dt_min = (int)0;
+                var dt_sec = (int)0;
+                var dt_msec = (int)0;
+
+                dt_year  |= (int)reader.ReadByte() << 8;
+                dt_year  |= (int)reader.ReadByte() << 0;
+                dt_month  = (int)reader.ReadByte();
+                dt_day    = (int)reader.ReadByte();
+                dt_hour   = (int)reader.ReadByte();
+                dt_min    = (int)reader.ReadByte();
+                dt_sec    = (int)reader.ReadByte();
+                dt_msec  |= (int)reader.ReadByte() << 8;
+                dt_msec  |= (int)reader.ReadByte() << 0;
+
+                var dt = new DateTime(dt_year, dt_month, dt_day, dt_hour, dt_min, dt_sec, dt_msec, DateTimeKind.Utc);
+
+                /* Information (2 + xx Byte) */
+                var info_len = (ushort)0;
+                var info = "";
+                
+                info_len |= (ushort)((ushort)reader.ReadByte() << 8);
+                info_len |= (ushort)((ushort)reader.ReadByte() << 0);
+                info = Encoding.UTF8.GetString(reader.ReadBytes(info_len));
+
+                /* Direction (1 Byte) */
+                var dir = (PacketDirection)reader.ReadByte();
+
+                /* Source (1 + xx Byte) */
+                var src_data_len = (int)reader.ReadByte();
+                var src_data = Encoding.UTF8.GetString(reader.ReadBytes(src_data_len));
+
+                /* Destination (1 + xx Byte) */
+                var dst_data_len = (int)reader.ReadByte();
+                var dst_data = Encoding.UTF8.GetString(reader.ReadBytes(dst_data_len));
+
+                /* User Mark (1 Byte) */
+                var mark = reader.ReadByte();
+
+                /* Message (2 + xx Byte) */
+                var msg_data_len = (int)reader.ReadByte();
+                var msg_data = Encoding.UTF8.GetString(reader.ReadBytes(msg_data_len));
+
+                /* Data (4 + xx Byte) */
+                var data_len = (uint)0;
+
+                data_len |= (uint)((uint)reader.ReadByte() << 24);
+                data_len |= (uint)((uint)reader.ReadByte() << 16);
+                data_len |= (uint)((uint)reader.ReadByte() <<  8);
+                data_len |= (uint)((uint)reader.ReadByte() <<  0);
+
+                var data = reader.ReadBytes((int)data_len);
+
+                /* === パケット生成 === */
+                return (new PacketObject(
+                                    facility,
+                                    alias,
+                                    prio,
+                                    attr,
+                                    dt,
+                                    info,
+                                    dir,
+                                    src_data,
+                                    dst_data,
+                                    mark,
+                                    null,
+                                    data));
             }
         }
 

@@ -39,6 +39,12 @@ namespace Ratatoskr.Configs.SystemConfigs
                 new { id = MainFormActionId.PacketClear,            control = false, shift = false, alt = false, key = Keys.F4  },
                 new { id = MainFormActionId.PacketRedraw,           control = false, shift = false, alt = false, key = Keys.F5  },
                 new { id = MainFormActionId.ShowAppDocument,        control = false, shift = false, alt = false, key = Keys.F1  },
+
+                new { id = MainFormActionId.Gate1_Connect,          control = true,  shift = false, alt = false, key = Keys.D1  },
+                new { id = MainFormActionId.Gate2_Connect,          control = true,  shift = false, alt = false, key = Keys.D2  },
+                new { id = MainFormActionId.Gate3_Connect,          control = true,  shift = false, alt = false, key = Keys.D3  },
+                new { id = MainFormActionId.Gate4_Connect,          control = true,  shift = false, alt = false, key = Keys.D4  },
+                new { id = MainFormActionId.Gate5_Connect,          control = true,  shift = false, alt = false, key = Keys.D5  },
             };
 
             /* デフォルトキーマップを適用 */

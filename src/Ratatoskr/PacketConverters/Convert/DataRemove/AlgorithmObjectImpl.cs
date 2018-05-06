@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters.Convert.DataRemove
 {
@@ -210,9 +209,9 @@ namespace Ratatoskr.PacketConverters.Convert.DataRemove
             Property.DataRemoveProperty.DataLength.Value = Num_DataLength.Value;
         }
 
-        public override void OnInputPacket(DataPacketObject input, ref List<PacketObject> output)
+        public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
-            var data = input.GetData();
+            var data = input.Data;
             var offset = 0;
             var length = 0;
 
@@ -250,7 +249,7 @@ namespace Ratatoskr.PacketConverters.Convert.DataRemove
                 Buffer.BlockCopy(data, offset + length, data_new, offset, data.Length - offset - length);
             }
 
-            output.Add(new StaticDataPacketObject(input, data_new));
+            output.Add(new PacketObject(input, data_new));
         }
 
         private void Num_KeyDown(object sender, KeyEventArgs e)

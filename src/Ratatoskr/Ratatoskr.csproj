@@ -598,15 +598,6 @@
     <Compile Include="Generic\LicenseFileParser.cs" />
     <Compile Include="Generic\LicenseInfo.cs" />
     <Compile Include="Generic\Net\WebDownloader.cs" />
-    <Compile Include="Generic\Packet\PacketContainer.cs" />
-    <Compile Include="Generic\Packet\PacketConverter.cs" />
-    <Compile Include="Generic\Packet\PacketManager.cs" />
-    <Compile Include="Generic\Packet\PacketObject.cs" />
-    <Compile Include="Generic\Packet\Types\ControlPacketObject.cs" />
-    <Compile Include="Generic\Packet\Types\DataPacketObject.cs" />
-    <Compile Include="Generic\Packet\Types\DynamicDataPacketObject.cs" />
-    <Compile Include="Generic\Packet\Types\MessagePacketObject.cs" />
-    <Compile Include="Generic\Packet\Types\StaticDataPacketObject.cs" />
     <Compile Include="Generic\TextUtil.cs" />
     <Compile Include="Generic\Wildcard.cs" />
     <Compile Include="PacketConverters\Convert\DataChange\AlgorithmObjectImpl.cs">
@@ -639,15 +630,20 @@
     <Compile Include="PacketViews\ViewControl.Designer.cs">
       <DependentUpon>ViewControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Packet\DynamicPacketObject.cs" />
+    <Compile Include="Packet\PacketContainer.cs" />
+    <Compile Include="Packet\PacketConverter.cs" />
+    <Compile Include="Packet\PacketManager.cs" />
+    <Compile Include="Packet\PacketObject.cs" />
     <Compile Include="Plugin\PluginInfo.cs" />
     <Compile Include="Plugin\PluginManager.cs" />
     <Compile Include="Protocol\ProtocolDecoderInfo.cs" />
     <Compile Include="Protocol\ProtocolManager.cs" />
     <Compile Include="Scripts\API\API_CommentOut.cs" />
     <Compile Include="Scripts\API\API_PlayRecord.cs" />
-    <Compile Include="Scripts\API\API_RecvWait.cs" />
     <Compile Include="Scripts\API\API_Send.cs" />
     <Compile Include="Scripts\API\API_SendFile.cs" />
+    <Compile Include="Scripts\API\API_WaitPacket.cs" />
     <Compile Include="Scripts\PacketFilterExp\Terms\Term_Status.cs" />
     <Compile Include="Scripts\ScriptController.cs" />
     <Compile Include="Scripts\ScriptEngines\IScriptRunner.cs" />

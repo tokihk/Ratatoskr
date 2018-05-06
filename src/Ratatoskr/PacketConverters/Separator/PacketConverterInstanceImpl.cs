@@ -6,8 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters.Separator
 {
@@ -263,9 +262,7 @@ namespace Ratatoskr.PacketConverters.Separator
             }
 
             /* データパケット以外はスルー */
-            var packet_d = input as DataPacketObject;
-
-            if (packet_d == null) {
+            if (input.Attribute != PacketAttribute.Data) {
                 output.Add(input);
                 return;
             }
@@ -279,7 +276,7 @@ namespace Ratatoskr.PacketConverters.Separator
             }
 
             /* ターゲットオブジェクトに変換を任せる */
-            rule_obj_.OnInputPacket(packet_d, ref output);
+            rule_obj_.OnInputPacket(input, ref output);
 
             /* 最終処理パケットを記憶 */
             packet_last_ = input;
@@ -325,7 +322,7 @@ namespace Ratatoskr.PacketConverters.Separator
 
         private void OptionMenu_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem menu = sender as ToolStripMenuItem;
+            var menu = sender as ToolStripMenuItem;
 
             if (menu != null) {
                 menu.Checked = !menu.Checked;

@@ -34,6 +34,12 @@ namespace Ratatoskr.Forms
         ProfileEdit,
         ProfileExport,
 
+        Gate1_Connect,
+        Gate2_Connect,
+        Gate3_Connect,
+        Gate4_Connect,
+        Gate5_Connect,
+
         ShowOptionDialog,
         ShowAppDocument,
         ShowAppInformation,
@@ -159,6 +165,19 @@ namespace Ratatoskr.Forms
                 case MainFormActionId.ProfileExport:
                     ConfigManager.SaveConfig();
                     ConfigManager.ExportProfile(ConfigManager.GetCurrentProfileID());
+                    break;
+
+                case MainFormActionId.Gate1_Connect:
+                case MainFormActionId.Gate2_Connect:
+                case MainFormActionId.Gate3_Connect:
+                case MainFormActionId.Gate4_Connect:
+                case MainFormActionId.Gate5_Connect:
+                    var gate_list = GateManager.GetGateList();
+                    var gate_id = (int)(id - MainFormActionId.Gate1_Connect);
+
+                    if (gate_id < gate_list.Length) {
+                        gate_list[gate_id].ConnectRequest = !gate_list[gate_id].ConnectRequest;
+                    }
                     break;
 
                 case MainFormActionId.ShowOptionDialog:

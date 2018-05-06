@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ratatoskr.Generic.Packet.Types
+namespace Ratatoskr.Packet
 {
     [Serializable]
-    internal sealed class DynamicDataPacketObject : DataPacketObject
+    internal sealed class DynamicPacketObject : PacketObject
     {
         private const int TOTAL_BUFFER_SIZE = 0xFFFFFFF;
 
@@ -24,7 +24,7 @@ namespace Ratatoskr.Generic.Packet.Types
             {
             }
 
-            public int Add(byte[] data, int offset, int size)
+            public int AddData(byte[] data, int offset, int size)
             {
                 var copy_size = Math.Min(data_buffer_.Length - data_size_, Math.Min(data.Length - offset, size));
 
@@ -36,7 +36,7 @@ namespace Ratatoskr.Generic.Packet.Types
                 return (copy_size);
             }
 
-            public int Add(byte data)
+            public int AddData(byte data)
             {
                 data_buffer_[data_size_++] = data;
 
@@ -63,27 +63,30 @@ namespace Ratatoskr.Generic.Packet.Types
         private int data_size_ = 0;
 
 
-        public DynamicDataPacketObject(PacketObject packet) : base(packet)
+        public DynamicPacketObject(PacketObject packet) : base(packet)
         {
         }
 
-        public override byte[] GetData()
+        public override byte[] Data
         {
-            var copy_buffer = new byte[data_size_];
-            var copy_offset = 0;
+            get
+            {
+                var copy_buffer = new byte[data_size_];
+                var copy_offset = 0;
 
-            foreach (var block in blocks_) {
-                if (copy_offset >= copy_buffer.Length)break;
+                foreach (var block in blocks_) {
+                    if (copy_offset >= copy_buffer.Length)break;
 
-                copy_offset = block.Copy(copy_buffer, copy_offset);
+                    copy_offset = block.Copy(copy_buffer, copy_offset);
+                }
+
+                return (copy_buffer);
             }
-
-            return (copy_buffer);
         }
 
-        public override int GetDataSize()
+        public override int DataLength
         {
-            return (data_size_);
+            get { return (data_size_); }
         }
 
         public bool AddData(byte data)
@@ -115,7 +118,7 @@ namespace Ratatoskr.Generic.Packet.Types
                 }
 
                 /* ブロックにデータを追加 */
-                offset += block_last_.Add(data, offset, data.Length);
+                offset += block_last_.AddData(data, offset, data.Length);
 
                 /* オフセットが終端に達していない場合はブロック満タン */
                 if (offset < data.Length) {
@@ -126,13 +129,25 @@ namespace Ratatoskr.Generic.Packet.Types
             data_size_ += data.Length;
         }
 
-        public DataPacketObject Compile(PacketObject packet = null)
+        public PacketObject Compile(PacketObject packet = null)
         {
             if (packet == null) {
                 packet = this;
             }
 
-            return (new StaticDataPacketObject(packet, GetData()));
+            return (new PacketObject(
+                            packet.Facility,
+                            packet.Alias,
+                            packet.Priority,
+                            packet.Attribute,
+                            packet.MakeTime,
+                            packet.Information,
+                            packet.Direction,
+                            packet.Source,
+                            packet.Destination,
+                            packet.UserMark,
+                            packet.Message,
+                            Data));
         }
     }
 }

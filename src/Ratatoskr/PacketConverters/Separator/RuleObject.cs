@@ -7,8 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters.Separator
 {
@@ -42,7 +41,7 @@ namespace Ratatoskr.PacketConverters.Separator
         {
         }
 
-        public virtual void OnInputPacket(DataPacketObject intput, ref List<PacketObject> output)
+        public virtual void OnInputPacket(PacketObject intput, ref List<PacketObject> output)
         {
         }
 

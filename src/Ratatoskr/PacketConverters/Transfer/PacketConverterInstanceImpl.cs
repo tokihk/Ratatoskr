@@ -5,11 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Scripts.PacketFilterExp.Parser;
-using Ratatoskr.Scripts.PacketFilterExp;
-using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters.Transfer
 {
@@ -183,21 +179,19 @@ namespace Ratatoskr.PacketConverters.Transfer
             }
 
             /* データパケット以外は無視 */
-            var packet_d = input as DataPacketObject;
-
-            if (packet_d == null) {
+            if (input.Attribute != PacketAttribute.Data) {
                 output.Add(input);
                 return;
             }
 
             /* 受信パケット以外は無視 */
-            if (packet_d.Direction != PacketDirection.Recv) {
+            if (input.Direction != PacketDirection.Recv) {
                 output.Add(input);
                 return;
             }
 
             /* アルゴリズムオブジェクトに変換を任せる */
-            algorithm_obj_.OnInputPacket(packet_d, ref output);
+            algorithm_obj_.OnInputPacket(input, ref output);
         }
 
         private void CBox_Exp_SelectedIndexChanged(object sender, EventArgs e)

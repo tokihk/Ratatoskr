@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.SystemConfigs;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.Gate.AutoPacketSave
 {

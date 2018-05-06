@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Forms;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketViews.Graph
 {
@@ -31,10 +30,10 @@ namespace Ratatoskr.PacketViews.Graph
             return (OnLoadViewData());
         }
 
-        public void InputPacket(DataPacketObject packet)
+        public void InputPacket(PacketObject packet)
         {
             /* 入力データを通知 */
-            OnInputData(packet.GetData());
+            OnInputData(packet.Data);
         }
 
         protected virtual GraphViewData OnLoadViewData()

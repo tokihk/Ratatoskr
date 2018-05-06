@@ -41,11 +41,7 @@ namespace Ratatoskr
 #if !DEBUG
             try {
 #endif
-                Debugger.DebugManager.MessageOut("Command Line Parse - Start");
-
                 CommandLineParse(args);
-
-                Debugger.DebugManager.MessageOut("Command Line Parse - End");
 
                 Exec();
 
@@ -110,9 +106,12 @@ namespace Ratatoskr
 
         private static bool startup_state_ = false;
         private static bool shutdown_req_ = false;
+        private static bool shutdown_state_ = false;
         private static bool restart_req_ = false;
 
         private static Guid profile_id_load_ = Guid.Empty;
+
+        private static List<(ScriptRunMode mode, string path)> startup_script_list_ = new List<(ScriptRunMode, string)>();
 
 
         public static AppVersion Version    { get; private set; }
@@ -121,6 +120,8 @@ namespace Ratatoskr
 
         private static void CommandLineParse(string[] cmdlines)
         {
+            Debugger.DebugManager.MessageOut("Program.CommandLineParse - Start");
+
             foreach (var cmdline in cmdlines) {
                 var (name, value) = CommandLineParse(cmdline);
 
@@ -128,6 +129,8 @@ namespace Ratatoskr
 
                 CommandLineSetup(name, value);
             }
+
+            Debugger.DebugManager.MessageOut("Program.CommandLineParse - End");
         }
 
         private static (string name, string value) CommandLineParse(string cmdline)
@@ -187,6 +190,20 @@ namespace Ratatoskr
                 case "-safe-mode":
                 {
                     IsSafeMode = true;
+                }
+                    break;
+
+                /* スクリプト(OneShot) */
+                case "-script":
+                {
+                    startup_script_list_.Add((ScriptRunMode.OneShot, value));
+                }
+                    break;
+
+                /* スクリプト(Repeat) */
+                case "-rscript":
+                {
+                    startup_script_list_.Add((ScriptRunMode.Repeat, value));
                 }
                     break;
             }
@@ -249,8 +266,19 @@ namespace Ratatoskr
             /* スクリプトマネージャ初期化 */
             ScriptManager.Startup();
 
+            /* スタートアップスクリプト登録 */
+            foreach (var script_info in startup_script_list_) {
+                var script = ScriptManager.Register(script_info.path, script_info.mode);
+
+                if (script != null) {
+                    script.RunAsync();
+                }
+            }
+
             /* アプリケーションループ実行 */
+            Debugger.DebugManager.MessageOut("Application.Run - Start");
             Application.Run(app_context_);
+            Debugger.DebugManager.MessageOut("Application.Run - End");
 
             /* 実行中スクリプトを停止 */
             ScriptManager.Shutdown();
@@ -258,6 +286,8 @@ namespace Ratatoskr
 
         private static bool Startup()
         {
+            Debugger.DebugManager.MessageOut("Program.Startup - Start");
+
             /* 下層マネージャー初期化 */
             ConfigManager.Startup();
             GatePacketManager.Startup();
@@ -284,11 +314,15 @@ namespace Ratatoskr
             startup_state_ = true;
             restart_req_ = false;
 
+            Debugger.DebugManager.MessageOut("Program.Startup - End");
+
             return (true);
         }
 
         private static void Shutdown()
         {
+            Debugger.DebugManager.MessageOut("Program.Shutdown - Start");
+
             /* 設定ファイル保存 */
             ConfigManager.SaveConfig();
 
@@ -304,7 +338,8 @@ namespace Ratatoskr
             ConfigManager.Shutdown();
 
             startup_state_ = false;
-            shutdown_req_ = false;
+
+            Debugger.DebugManager.MessageOut("Program.Shutdown - End");
         }
 
         public static void ShutdownRequest()
@@ -315,8 +350,6 @@ namespace Ratatoskr
         public static void RestartRequest()
         {
             restart_req_ = true;
-
-            ShutdownRequest();
         }
 
         public static void ChangeProfile(Guid profile_id)
@@ -329,13 +362,15 @@ namespace Ratatoskr
         private static void OnAppTimer(object sender, EventArgs e)
         {
             /* 初期化処理 */
-            if (!startup_state_) {
+            if (   (!startup_state_)
+                && (!shutdown_req_)
+            ) {
                 Startup();
             }
 
             /* シャットダウン処理 */
             if (   (startup_state_)
-                && (shutdown_req_)
+                && ((restart_req_ || shutdown_req_))
             ) {
                 Shutdown();
             }
@@ -350,12 +385,15 @@ namespace Ratatoskr
                 ScriptManager.Poll();
             }
 
-            /* 終了処理 */
-            if (   (!restart_req_)
+            /* アプリケーション終了処理 */
+            if (   (shutdown_req_)
                 && (!startup_state_)
+                && (!shutdown_state_)
             ) {
                 /* for Debug */
                 System.Diagnostics.Debug.WriteLine("ExitThread");
+
+                shutdown_state_ = true;
 
                 app_context_.ExitThread();
             }

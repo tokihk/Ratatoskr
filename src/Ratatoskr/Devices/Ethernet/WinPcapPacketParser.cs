@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 using SharpPcap;
 
 namespace Ratatoskr.Devices.Ethernet
@@ -31,16 +30,18 @@ namespace Ratatoskr.Devices.Ethernet
         {
             var info = Parse(packet, option);
 
-            return (new StaticDataPacketObject(
+            return (new PacketObject(
                             PacketFacility.Device,
                             "",
                             PacketPriority.Standard,
+                            PacketAttribute.Data,
                             info.DateTime,
                             "",
                             PacketDirection.Recv,
                             info.Source,
                             info.Destination,
                             0x00,
+                            null,
                             info.Data));
         }
 

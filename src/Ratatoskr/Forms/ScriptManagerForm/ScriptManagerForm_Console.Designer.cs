@@ -34,6 +34,7 @@
             // 
             this.RTBox_Output.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RTBox_Output.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.RTBox_Output.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.RTBox_Output.Location = new System.Drawing.Point(0, 0);
             this.RTBox_Output.Name = "RTBox_Output";
             this.RTBox_Output.ReadOnly = true;

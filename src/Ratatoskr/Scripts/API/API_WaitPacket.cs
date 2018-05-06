@@ -5,12 +5,12 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 using Ratatoskr.Scripts.PacketFilterExp;
 
 namespace Ratatoskr.Scripts.API
 {
-    public class API_RecvWait
+    public class API_WaitPacket
     {
         public enum WatchPacketType
         {
@@ -24,6 +24,8 @@ namespace Ratatoskr.Scripts.API
 
         public bool CancelRequest { get; private set; } = false;
         public bool Success       { get; private set; } = false;
+
+        public PacketObject DetectPacket { get; private set; }
 
         private ExpressionFilter detect_filter_ = null;
 
@@ -93,7 +95,7 @@ namespace Ratatoskr.Scripts.API
             }
 
             /* 監視開始 */
-            ar_task_ = (new ExecTaskHandler(ExecTask)).BeginInvoke(timeout, null, null);
+            ar_task_ = (new ExecTaskHandler(ExecTask)).BeginInvoke(timeout, ExecTaskComplete, null);
         }
 
         private delegate void ExecTaskHandler(uint timeout);
@@ -105,7 +107,10 @@ namespace Ratatoskr.Scripts.API
             while ((!CancelRequest) && (!Success) && (sw_timeout.ElapsedMilliseconds < timeout)) {
                 System.Threading.Thread.Sleep(10);
             }
+        }
 
+        private void ExecTaskComplete(IAsyncResult ar)
+        {
             Dispose();
         }
 
@@ -116,6 +121,7 @@ namespace Ratatoskr.Scripts.API
             foreach (var packet in packets) {
                 if (detect_filter_.Input(packet)) {
                     Success = true;
+                    DetectPacket = packet;
                     return;
                 }
             }

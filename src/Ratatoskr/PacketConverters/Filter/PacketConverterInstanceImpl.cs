@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
 using Ratatoskr.Scripts.PacketFilterExp;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.PacketConverters.Filter
 {

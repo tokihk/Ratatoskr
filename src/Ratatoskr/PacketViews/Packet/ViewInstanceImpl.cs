@@ -8,11 +8,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
-using Ratatoskr.Forms;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Container;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 using Ratatoskr.Generic.Controls;
 
 namespace Ratatoskr.PacketViews.Packet
@@ -30,8 +27,8 @@ namespace Ratatoskr.PacketViews.Packet
         private ViewPropertyImpl prop_;
         private Encoding encoder_;
 
-        private readonly Regex   format_regex_ = new Regex(@"\$\{(?<value>[^\}]*)\}", RegexOptions.Compiled);
-        private DataPacketObject format_packet_ = null;
+        private readonly Regex format_regex_ = new Regex(@"\$\{(?<value>[^\}]*)\}", RegexOptions.Compiled);
+        private PacketObject   format_packet_ = null;
 
         private ulong next_item_no_ = 0;
 
@@ -618,12 +615,12 @@ namespace Ratatoskr.PacketViews.Packet
             if (LView_Main.SelectedIndices.Count == 0)return (PacketSelectStatus.NotSelect);
 
             var count = 0;
-            var packet = (DataPacketObject)null;
+            var packet = (PacketObject)null;
 
             /* 選択中のパケットにデータパケットが存在するかチェック */
             if (LView_Main.SelectedIndices.Count > 0) {
                 foreach (int index in LView_Main.SelectedIndices) {
-                    packet = LView_Main.ItemElementAt(index).Tag as DataPacketObject;
+                    packet = LView_Main.ItemElementAt(index).Tag as PacketObject;
                     if (packet == null) continue;
 
                     /* 2個以上のデータパケットを検出したらループ終了 */
@@ -711,12 +708,12 @@ namespace Ratatoskr.PacketViews.Packet
             if (   (ExtViewItem_SelectTotalSize != null)
                 || (ExtViewItem_SelectRate != null)
             ) {
-                var packet_d = (DataPacketObject)null;
+                var packet_d = (PacketObject)null;
 
                 foreach (int index in indices) {
-                    packet_d = LView_Main.ItemElementAt(index).Tag as DataPacketObject;
+                    packet_d = LView_Main.ItemElementAt(index).Tag as PacketObject;
                     if (packet_d == null)continue;
-                    select_total_size += (ulong)packet_d.GetDataSize();
+                    select_total_size += (ulong)packet_d.DataLength;
                 }
             }
 
@@ -779,7 +776,7 @@ namespace Ratatoskr.PacketViews.Packet
             if (packet != null) {
                 /* データパケットのときはデータ内容を表示する */
                 if (packet.Attribute == PacketAttribute.Data) {
-                    BBox_Main.SetData((packet as DataPacketObject).GetData());
+                    BBox_Main.SetData(packet.Data);
                 }
 
             } else {
@@ -909,7 +906,7 @@ namespace Ratatoskr.PacketViews.Packet
             }
         }
 
-        private string DataPacketToCustomText(DataPacketObject packet)
+        private string DataPacketToCustomText(PacketObject packet)
         {
             var text_prev = prop_.CustomFormat.Value;
             var text_new  = text_prev;
@@ -960,11 +957,11 @@ namespace Ratatoskr.PacketViews.Packet
         {
             switch (packet.Attribute) {
                 case PacketAttribute.Message:
-                    PacketToListViewItem_Message(item, packet as MessagePacketObject);
+                    PacketToListViewItem_Message(item, packet);
                     break;
 
                 case PacketAttribute.Data:
-                    PacketToListViewItem_Data(item, packet as DataPacketObject);
+                    PacketToListViewItem_Data(item, packet);
                     break;
 
                 default:
@@ -972,7 +969,7 @@ namespace Ratatoskr.PacketViews.Packet
             }
         }
 
-        private void PacketToListViewItem_Message(ListViewItem item, MessagePacketObject packet)
+        private void PacketToListViewItem_Message(ListViewItem item, PacketObject packet)
         {
             foreach (var config in prop_.ColumnList.Value) {
                 switch (config.Type) {
@@ -1010,7 +1007,7 @@ namespace Ratatoskr.PacketViews.Packet
             item.BackColor = Color.LightGoldenrodYellow;
         }
 
-        private void PacketToListViewItem_Data(ListViewItem item, DataPacketObject packet)
+        private void PacketToListViewItem_Data(ListViewItem item, PacketObject packet)
         {
             foreach (var config in prop_.ColumnList.Value) {
                 switch (config.Type) {
@@ -1039,7 +1036,7 @@ namespace Ratatoskr.PacketViews.Packet
                         break;
 
                     case ColumnType.DataLength:
-                        item.SubItems.Add(packet.GetDataSize().ToString());
+                        item.SubItems.Add(packet.DataLength.ToString());
                         break;
 
                     case ColumnType.DataPreviewBinary:
@@ -1089,15 +1086,15 @@ namespace Ratatoskr.PacketViews.Packet
         private string GetSelectPacketsData_String(bool new_line)
         {
             var str = new StringBuilder(0xFFFF);
-            var packet = (DataPacketObject)null;
+            var packet = (PacketObject)null;
 
             foreach (int index in LView_Main.SelectedIndices) {
                 /* データパケットを取得 */
-                packet = LView_Main.ItemElementAt(index).Tag as DataPacketObject;
+                packet = LView_Main.ItemElementAt(index).Tag as PacketObject;
                 if (packet == null)continue;
 
                 /* 文字列として追加 */
-                str.Append(encoder_.GetString(packet.GetData()));
+                str.Append(encoder_.GetString(packet.Data));
 
                 /* 改行コード挿入 */
                 if (new_line) {
@@ -1111,11 +1108,11 @@ namespace Ratatoskr.PacketViews.Packet
         private string GetSelectPacketsData_HexString(bool new_line)
         {
             var str = new StringBuilder(0xFFFF);
-            var packet = (DataPacketObject)null;
+            var packet = (PacketObject)null;
 
             foreach (int index in LView_Main.SelectedIndices) {
                 /* データパケットを取得 */
-                packet = LView_Main.ItemElementAt(index).Tag as DataPacketObject;
+                packet = LView_Main.ItemElementAt(index).Tag as PacketObject;
                 if (packet == null) continue;
 
                 /* 16進文字列として追加 */
@@ -1133,11 +1130,11 @@ namespace Ratatoskr.PacketViews.Packet
         private string GetSelectPacketsData_CustomString(bool new_line)
         {
             var str = new StringBuilder(0xFFFF);
-            var packet = (DataPacketObject)null;
+            var packet = (PacketObject)null;
 
             foreach (int index in LView_Main.SelectedIndices) {
                 /* データパケットを取得 */
-                packet = LView_Main.ItemElementAt(index).Tag as DataPacketObject;
+                packet = LView_Main.ItemElementAt(index).Tag as PacketObject;
                 if (packet == null) continue;
 
                 /* カスタム文字列として追加 */
@@ -1296,7 +1293,7 @@ namespace Ratatoskr.PacketViews.Packet
 
                 if (list_item == null)continue;
 
-                var packet = list_item.Tag as DataPacketObject;
+                var packet = list_item.Tag as PacketObject;
 
                 if (packet == null)continue;
             }

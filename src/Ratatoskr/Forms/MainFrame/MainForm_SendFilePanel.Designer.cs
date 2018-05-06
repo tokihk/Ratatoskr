@@ -28,8 +28,8 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.Btn_Send = new System.Windows.Forms.Button();
             this.CBox_FileList = new System.Windows.Forms.ComboBox();
-            this.Btn_Cancel = new System.Windows.Forms.Button();
             this.Btn_FileSelect = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.Num_BlockSize = new System.Windows.Forms.NumericUpDown();
@@ -48,8 +48,8 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.Btn_Send);
             this.groupBox1.Controls.Add(this.CBox_FileList);
-            this.groupBox1.Controls.Add(this.Btn_Cancel);
             this.groupBox1.Controls.Add(this.Btn_FileSelect);
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
@@ -59,6 +59,18 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Send file path";
             // 
+            // Btn_Send
+            // 
+            this.Btn_Send.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Btn_Send.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_Send.Location = new System.Drawing.Point(502, 15);
+            this.Btn_Send.Name = "Btn_Send";
+            this.Btn_Send.Size = new System.Drawing.Size(55, 21);
+            this.Btn_Send.TabIndex = 4;
+            this.Btn_Send.Text = "Send";
+            this.Btn_Send.UseVisualStyleBackColor = true;
+            this.Btn_Send.Click += new System.EventHandler(this.Btn_Send_Click);
+            // 
             // CBox_FileList
             // 
             this.CBox_FileList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -66,27 +78,12 @@
             this.CBox_FileList.FormattingEnabled = true;
             this.CBox_FileList.Location = new System.Drawing.Point(6, 16);
             this.CBox_FileList.Name = "CBox_FileList";
-            this.CBox_FileList.Size = new System.Drawing.Size(525, 20);
+            this.CBox_FileList.Size = new System.Drawing.Size(490, 20);
             this.CBox_FileList.TabIndex = 3;
             this.CBox_FileList.TextChanged += new System.EventHandler(this.CBox_FileList_TextChanged);
             this.CBox_FileList.DragDrop += new System.Windows.Forms.DragEventHandler(this.CBox_FileList_DragDrop);
             this.CBox_FileList.DragEnter += new System.Windows.Forms.DragEventHandler(this.CBox_FileList_DragEnter);
             this.CBox_FileList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CBox_FileList_KeyDown);
-            // 
-            // Btn_Cancel
-            // 
-            this.Btn_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Btn_Cancel.FlatAppearance.BorderSize = 0;
-            this.Btn_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_Cancel.Image = global::Ratatoskr.Properties.Resources.cancel_red_16x16;
-            this.Btn_Cancel.Location = new System.Drawing.Point(534, 12);
-            this.Btn_Cancel.Margin = new System.Windows.Forms.Padding(0);
-            this.Btn_Cancel.Name = "Btn_Cancel";
-            this.Btn_Cancel.Size = new System.Drawing.Size(26, 26);
-            this.Btn_Cancel.TabIndex = 2;
-            this.Btn_Cancel.UseVisualStyleBackColor = true;
-            this.Btn_Cancel.Visible = false;
-            this.Btn_Cancel.Click += new System.EventHandler(this.Btn_Cancel_Click);
             // 
             // Btn_FileSelect
             // 
@@ -184,14 +181,14 @@
             this.Label_TransSize.Text = "9,999,999,999";
             this.Label_TransSize.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // MainFrameSendFilePanel
+            // MainForm_SendFilePanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Name = "MainFrameSendFilePanel";
+            this.Name = "MainForm_SendFilePanel";
             this.Size = new System.Drawing.Size(961, 49);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
@@ -210,10 +207,10 @@
         private System.Windows.Forms.NumericUpDown Num_BlockSize;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label Label_FileSize;
-        private System.Windows.Forms.Button Btn_Cancel;
         private System.Windows.Forms.ComboBox CBox_FileList;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ProgressBar PBar_Progress;
         private System.Windows.Forms.Label Label_TransSize;
+        private System.Windows.Forms.Button Btn_Send;
     }
 }

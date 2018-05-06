@@ -15,7 +15,7 @@ using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Gate;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
+using Ratatoskr.Packet;
 using Ratatoskr.PacketConverters;
 using Ratatoskr.PacketViews;
 

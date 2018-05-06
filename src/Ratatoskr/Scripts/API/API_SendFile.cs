@@ -137,7 +137,7 @@ namespace Ratatoskr.Scripts.API
             ProgressNow = 0;
 
             /* 送信タスク開始 */
-            ar_task_ = (new ExecTaskHandler(ExecTask)).BeginInvoke(gate_tasks, null, null);
+            ar_task_ = (new ExecTaskHandler(ExecTask)).BeginInvoke(gate_tasks, ExecTaskComplete, null);
         }
 
         private delegate void ExecTaskHandler(List<GateTaskObject> gate_tasks);
@@ -159,7 +159,10 @@ namespace Ratatoskr.Scripts.API
             }
 
             Success = (gate_tasks.Count == 0);
+        }
 
+        private void ExecTaskComplete(IAsyncResult ar)
+        {
             Dispose();
         }
     }

@@ -48,6 +48,12 @@ namespace Ratatoskr.Forms.ScriptManagerForm
             LoadConfig_OpenText();
 
             UpdateCurrentEditorStatus();
+
+            Location = ConfigManager.System.ScriptWindow.Position.Value;
+            Size = ConfigManager.System.ScriptWindow.Size.Value;
+            if (ConfigManager.System.ScriptWindow.Maximize.Value) {
+                WindowState = FormWindowState.Maximized;
+            }
         }
 
         private void LoadFileExplorerConfig()
@@ -137,6 +143,16 @@ namespace Ratatoskr.Forms.ScriptManagerForm
             }
         }
 
+        private void BackupWindowConfig()
+        {
+            if (WindowState == FormWindowState.Normal) {
+                ConfigManager.System.ScriptWindow.Position.Value = Location;
+                ConfigManager.System.ScriptWindow.Size.Value = Size;
+            }
+
+            ConfigManager.System.ScriptWindow.Maximize.Value = (WindowState == FormWindowState.Maximized);
+        }
+
         private string GetScriptRootPath()
         {
             return (Program.GetWorkspaceDirectory("scripts"));
@@ -177,7 +193,7 @@ namespace Ratatoskr.Forms.ScriptManagerForm
             editor.ScriptPath = path;
 
             editor.UpdateUI += Editor_UpdateUI;
-            editor.ScriptMessageOutput += OnScriptMessageOutput;
+            editor.ScriptMessageAppended += OnScriptMessageOutput;
             editor.ScriptStatusChanged += OnScriptStatusChanged;
 
             /* 新しいタブでテキストを開く */
@@ -238,11 +254,13 @@ namespace Ratatoskr.Forms.ScriptManagerForm
 
             DC_Console.ClearMessage();
             if (editor != null) {
-                DC_Console.OutputMessageLine(editor.ScriptMessage);
+                foreach (var msg in editor.ScriptMessageList) {
+                    DC_Console.AddMessage(msg);
+                }
             }
         }
 
-        private void ScriptIDEForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void ScriptManagerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             /* 終了させずに非表示 */
             e.Cancel = true;
@@ -250,6 +268,16 @@ namespace Ratatoskr.Forms.ScriptManagerForm
             Hide();
 
             FormUiManager.MainFrameMenuBarUpdate();
+        }
+
+        private void ScriptManagerForm_Move(object sender, EventArgs e)
+        {
+            BackupWindowConfig();
+        }
+
+        private void ScriptManagerForm_Resize(object sender, EventArgs e)
+        {
+            BackupWindowConfig();
         }
 
         private void MenuBar_Script_Run_Click(object sender, EventArgs e)
@@ -328,7 +356,7 @@ namespace Ratatoskr.Forms.ScriptManagerForm
             }
 
             if (sender == (Panel_DockMain.GetActiveDocumentControl() as CodeEditorEx)) {
-                DC_Console.OutputMessageLine(msg.Message);
+                DC_Console.AddMessage(msg);
             }
         }
 

@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Generic.Container;
 
-namespace Ratatoskr.Generic.Packet
+namespace Ratatoskr.Packet
 {
     internal sealed class PacketContainer
         : SkipList<PacketObject>

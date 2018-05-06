@@ -6,8 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.Devices
 {
@@ -431,7 +430,7 @@ namespace Ratatoskr.Devices
                 if (   ((packet.Direction == PacketDirection.Recv) && (DataRateTarget.HasFlag(DeviceDataRateTarget.RecvData)))
                     || ((packet.Direction == PacketDirection.Send) && (DataRateTarget.HasFlag(DeviceDataRateTarget.SendData)))
                 ) {
-                    data_rate_value_busy_ += (ulong)packet.GetDataSize();
+                    data_rate_value_busy_ += (ulong)packet.DataLength;
                 }
             }
         }
@@ -448,29 +447,36 @@ namespace Ratatoskr.Devices
         public void NotifyMessage(PacketPriority prio, string info, string message)
         {
             NotifyPacket(
-                new MessagePacketObject(
+                new PacketObject(
                     PacketFacility.Device,
                     alias_,
                     PacketPriority.Standard,
+                    PacketAttribute.Message,
                     DateTime.UtcNow,
                     info,
+                    PacketDirection.Recv,
+                    "",
+                    "",
                     0x00,
-                    message));
+                    message,
+                    null));
         }
 
         public void NotifySendComplete(DateTime dt_utc, string info, string src, string dst, byte[] data)
         {
             NotifyPacket(
-                new StaticDataPacketObject(
+                new PacketObject(
                     PacketFacility.Device,
                     alias_,
                     PacketPriority.Standard,
+                    PacketAttribute.Data,
                     dt_utc,
                     info,
                     PacketDirection.Send,
                     src,
                     dst,
                     0x00,
+                    null,
                     data));
         }
 
@@ -488,16 +494,18 @@ namespace Ratatoskr.Devices
             RedirectRequest(data);
 
             NotifyPacket(
-                new StaticDataPacketObject(
+                new PacketObject(
                     PacketFacility.Device,
                     alias_,
                     PacketPriority.Standard,
+                    PacketAttribute.Data,
                     dt_utc,
                     info,
                     PacketDirection.Recv,
                     src,
                     dst,
                     0x00,
+                    null,
                     data));
         }
 

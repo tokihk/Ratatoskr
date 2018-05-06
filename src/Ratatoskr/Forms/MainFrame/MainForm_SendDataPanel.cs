@@ -242,5 +242,10 @@ namespace Ratatoskr.Forms.MainFrame
         {
             UpdatePreviewWindow();
         }
+
+        private void Btn_Send_Click(object sender, EventArgs e)
+        {
+            SendExecRequest();
+        }
     }
 }

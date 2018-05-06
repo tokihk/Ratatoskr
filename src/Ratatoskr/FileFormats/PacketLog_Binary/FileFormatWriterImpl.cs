@@ -4,8 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.FileFormats.PacketLog_Binary
 {
@@ -46,12 +45,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
                     break;
             }
 #endif
-
-            var packet_d = packet as DataPacketObject;
-
-            if (packet_d == null)return (false);
-
-            writer.Write(packet_d.GetData());
+            writer.Write(packet.Data);
 
             return (true);
         }

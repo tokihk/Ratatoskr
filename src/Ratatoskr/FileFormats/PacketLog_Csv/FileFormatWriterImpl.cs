@@ -5,8 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.FileFormats.PacketLog_Csv
@@ -124,31 +123,14 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                             items.Add(packet.UserMark.ToString());
                         }
                             break;
+                        case PacketElementID.Message:
+                        {
+                            items.Add(packet.Message);
+                        }
+                            break;
                         case PacketElementID.Data:
                         {
-                            switch (packet.Attribute) {
-                                case PacketAttribute.Control:
-                                {
-                                    var packet_i = packet as ControlPacketObject;
-
-                                    items.Add(string.Format("{0}-{1}", packet_i.ControlCommand, HexTextEncoder.ToHexText(packet_i.ControlData)));
-                                }
-                                    break;
-                                case PacketAttribute.Message:
-                                {
-                                    var packet_i = packet as MessagePacketObject;
-
-                                    items.Add(packet_i.Message);
-                                }
-                                    break;
-                                case PacketAttribute.Data:
-                                {
-                                    var packet_i = packet as DataPacketObject;
-
-                                    items.Add(packet_i.GetHexText());
-                                }
-                                    break;
-                            }
+                            items.Add(packet.GetHexText());
                         }
                             break;
                     }

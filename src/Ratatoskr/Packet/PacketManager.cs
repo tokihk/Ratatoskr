@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ratatoskr.Generic.Packet
+namespace Ratatoskr.Packet
 {
     [Flags]
     internal enum PacketDataRateTarget
@@ -70,7 +70,7 @@ namespace Ratatoskr.Generic.Packet
                     if (   ((packet.Direction == PacketDirection.Recv) && (DataRateTarget.HasFlag(PacketDataRateTarget.RecvData)))
                         || ((packet.Direction == PacketDirection.Send) && (DataRateTarget.HasFlag(PacketDataRateTarget.SendData)))
                     ) {
-                        rate_value_busy_ += (ulong)packet.GetDataSize();
+                        rate_value_busy_ += (ulong)packet.DataLength;
                     }
                 }
             }

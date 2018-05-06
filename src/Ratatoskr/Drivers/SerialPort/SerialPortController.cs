@@ -72,6 +72,9 @@ namespace Ratatoskr.Drivers.SerialPort
         public sbyte  XonChar  { get; set; } = 0x11;
         public sbyte  XoffChar { get; set; } = 0x13;
 
+        public ushort InQueue  { get; set; } = 2048;
+        public ushort OutQueue { get; set; } = 2048;
+
 
         public void Dispose()
         {
@@ -184,6 +187,10 @@ namespace Ratatoskr.Drivers.SerialPort
                 return (false);
             }
 
+            if (!NativeMethods.SetupComm(handle_, (uint)InQueue, (uint)OutQueue)) {
+                return (false);
+            }
+
             /* === タイムアウト設定 === */
             var timeout = new NativeMethods.COMMTIMEOUTS();
 
@@ -247,13 +254,14 @@ namespace Ratatoskr.Drivers.SerialPort
 
         public uint Write(byte[] data)
         {
-            uint send_size = 0;
+            uint send_size_result = 0;
+            uint send_size = Math.Min((uint)data.Length, OutQueue);
 
-            if (!NativeMethods.WriteFile(handle_, data, (uint)data.Length, out send_size, NativeMethods.Null)) {
+            if (!NativeMethods.WriteFile(handle_, data, send_size, out send_size_result, NativeMethods.Null)) {
                 return (0);
             }
 
-            return (send_size);
+            return (send_size_result);
         }
 
         public uint RecvDataSize

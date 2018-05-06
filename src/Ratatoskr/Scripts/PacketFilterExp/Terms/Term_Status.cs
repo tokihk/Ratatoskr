@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
-using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 
 namespace Ratatoskr.Scripts.PacketFilterExp.Terms
 {
@@ -58,13 +57,13 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
                     return (new Term_DateTimeOffset(cs.LastPacket.MakeTime - cs.PrevPacket.MakeTime));
                 }
                 case StatusType.Packet_IsControl: {
-                    return (new Term_Bool(cs.LastPacket.Attribute == Generic.Packet.PacketAttribute.Control));
+                    return (new Term_Bool(cs.LastPacket.Attribute == PacketAttribute.Control));
                 }
                 case StatusType.Packet_IsMessage: {
-                    return (new Term_Bool(cs.LastPacket.Attribute == Generic.Packet.PacketAttribute.Message));
+                    return (new Term_Bool(cs.LastPacket.Attribute == PacketAttribute.Message));
                 }
                 case StatusType.Packet_IsData: {
-                    return (new Term_Bool(cs.LastPacket.Attribute == Generic.Packet.PacketAttribute.Data));
+                    return (new Term_Bool(cs.LastPacket.Attribute == PacketAttribute.Data));
                 }
                 case StatusType.Packet_Alias: {
                     return (new Term_Text(cs.LastPacket.Alias));
@@ -79,10 +78,10 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
                     return (new Term_Number(cs.LastPacket.UserMark));
                 }
                 case StatusType.Packet_Data_IsSend: {
-                    return (new Term_Bool(cs.LastPacket.Direction == Generic.Packet.PacketDirection.Send));
+                    return (new Term_Bool(cs.LastPacket.Direction == PacketDirection.Send));
                 }
                 case StatusType.Packet_Data_IsRecv: {
-                    return (new Term_Bool(cs.LastPacket.Direction == Generic.Packet.PacketDirection.Recv));
+                    return (new Term_Bool(cs.LastPacket.Direction == PacketDirection.Recv));
                 }
                 case StatusType.Packet_Data_Source: {
                     return (new Term_Text(cs.LastPacket.Source));
@@ -91,37 +90,25 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
                     return (new Term_Text(cs.LastPacket.Destination));
                 }
                 case StatusType.Packet_Data_Length: {
-                    return (new Term_Number(cs.LastPacket.GetDataSize()));
+                    return (new Term_Number(cs.LastPacket.DataLength));
                 }
                 case StatusType.Packet_Data_BitText: {
-                    var packet_d = cs.LastPacket as DataPacketObject;
-
-                    return (new Term_Text((packet_d != null) ? (packet_d.GetBitText()) : ""));
+                    return (new Term_Text(cs.LastPacket.GetBitText()));
                 }
                 case StatusType.Packet_Data_HexText: {
-                    var packet_d = cs.LastPacket as DataPacketObject;
-
-                    return (new Term_Text((packet_d != null) ? (packet_d.GetHexText()) : ""));
+                    return (new Term_Text(cs.LastPacket.GetHexText()));
                 }
                 case StatusType.Packet_Data_AsciiText: {
-                    var packet_d = cs.LastPacket as DataPacketObject;
-
-                    return (new Term_Text((packet_d != null) ? (packet_d.GetAsciiText()) : ""));
+                    return (new Term_Text(cs.LastPacket.GetAsciiText()));
                 }
                 case StatusType.Packet_Data_Utf8Text: {
-                    var packet_d = cs.LastPacket as DataPacketObject;
-
-                    return (new Term_Text((packet_d != null) ? (packet_d.GetUtf8Text()) : ""));
+                    return (new Term_Text(cs.LastPacket.GetUtf8Text()));
                 }
                 case StatusType.Packet_Data_UnicodeLText: {
-                    var packet_d = cs.LastPacket as DataPacketObject;
-
-                    return (new Term_Text((packet_d != null) ? (packet_d.GetUnicodeText(true)) : ""));
+                    return (new Term_Text(cs.LastPacket.GetUnicodeText(true)));
                 }
                 case StatusType.Packet_Data_UnicodeBText: {
-                    var packet_d = cs.LastPacket as DataPacketObject;
-
-                    return (new Term_Text((packet_d != null) ? (packet_d.GetUnicodeText(false)) : ""));
+                    return (new Term_Text(cs.LastPacket.GetUnicodeText(false)));
                 }
                 default: return (null);
             }

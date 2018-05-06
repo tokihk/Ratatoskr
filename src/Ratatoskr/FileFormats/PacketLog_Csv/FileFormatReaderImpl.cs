@@ -5,8 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Generic;
-using Ratatoskr.Generic.Packet;
-using Ratatoskr.Generic.Packet.Types;
+using Ratatoskr.Packet;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.FileFormats.PacketLog_Csv
@@ -109,7 +108,9 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                 var src     = "";
                 var dst     = "";
                 var mark    = (byte)0;
+                var message = (string)null;
                 var data_s  = "";
+                var data    = (byte[])null;
 
                 foreach (var (order_value, order_index) in option.ItemOrder.Select((v, i) => (v, i))) {
                     item = items[order_index].TrimEnd();
@@ -165,6 +166,11 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                             mark = byte.Parse(item);
                         }
                             break;
+                        case PacketElementID.Message:
+                        {
+                            message = item;
+                        }
+                            break;
                         case PacketElementID.Data:
                         {
                             data_s = item;
@@ -175,50 +181,25 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
 
                 /* パケット生成 */
                 switch (attr) {
-                    case PacketAttribute.Control:
-                    {
-                        var blocks = data_s.Split('-');
-
-                        return (new ControlPacketObject(
-                                        fac,
-                                        alias,
-                                        prio,
-                                        mt,
-                                        mark,
-                                        uint.Parse(blocks[0]),
-                                        HexTextEncoder.ToByteArray(blocks[1])));
-                    }
-
                     case PacketAttribute.Message:
                     {
-                        return (new MessagePacketObject(
-                                        fac,
-                                        alias,
-                                        prio,
-                                        mt,
-                                        info,
-                                        mark,
-                                        data_s));
+                        if (message == null) {
+                            message = data_s;
+                        }
                     }
+                        break;
 
                     case PacketAttribute.Data:
                     {
-                        return (new StaticDataPacketObject(
-                                        fac,
-                                        alias,
-                                        prio,
-                                        mt,
-                                        info,
-                                        dir,
-                                        src,
-                                        dst,
-                                        mark,
-                                        HexTextEncoder.ToByteArray(data_s)));
+                        data = HexTextEncoder.ToByteArray(data_s);
                     }
+                        break;
 
                     default:
-                        return (null);
+                        break;
                 }
+
+                return (new PacketObject(fac, alias, prio, attr, mt, info, dir, src, dst, mark, message, data));
 
             } catch {
                 return (null);

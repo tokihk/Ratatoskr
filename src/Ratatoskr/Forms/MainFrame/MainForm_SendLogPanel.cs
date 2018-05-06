@@ -126,6 +126,15 @@ namespace Ratatoskr.Forms.MainFrame
             Label_TransSize.Text = transfer_value.ToString("#,0");
         }
 
+        private void UpdateSendButton()
+        {
+            if ((api_obj_ != null) && (api_obj_.IsBusy)) {
+                Btn_Send.Text = "Cancel";
+            } else {
+                Btn_Send.Text = "Send";
+            }            
+        }
+
         protected override void OnSendExecBegin(string target)
         {
             /* コンテンツを無効化 */
@@ -153,13 +162,10 @@ namespace Ratatoskr.Forms.MainFrame
             /* 進捗バー更新開始 */
             api_progress_timer_.Start();
 
-            /* キャンセルボタン表示 */
-            Btn_Cancel.Enabled = true;
-            Btn_Cancel.Show();
-
             /* 開始 */
             api_obj_.ExecAsync(target, path_file, filter, OnApiCompleted);
 
+            UpdateSendButton();
             UpdateProgressView();
         }
 
@@ -187,7 +193,7 @@ namespace Ratatoskr.Forms.MainFrame
             CBox_PlayDataType.Enabled = true;
 
             /* キャンセルボタン非表示 */
-            Btn_Cancel.Hide();
+            UpdateSendButton();
         }
 
         private void AddLog(string text)
@@ -260,9 +266,13 @@ namespace Ratatoskr.Forms.MainFrame
             UpdateLogListView();
         }
 
-        private void Btn_Cancel_Click(object sender, EventArgs e)
+        private void Btn_Send_Click(object sender, EventArgs e)
         {
-            api_obj_?.CancelRequest();
+            if ((api_obj_ != null) && (api_obj_.IsBusy)) {
+                api_obj_.CancelRequest();
+            } else {
+                SendExecRequest();
+            }
         }
     }
 }
