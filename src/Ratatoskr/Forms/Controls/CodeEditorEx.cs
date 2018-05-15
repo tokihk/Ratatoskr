@@ -40,5 +40,16 @@ namespace Ratatoskr.Forms.Controls
 
             ClearCmdKey(Keys.Control | Keys.S);
         }
+
+        public string DefaultFontName
+        {
+            get { return (Styles[Style.Default].Font); }
+            set { Styles[Style.Default].Font = value;  }
+        }
+        public int DefaultFontSize
+        {
+            get { return (Styles[Style.Default].Size); }
+            set { Styles[Style.Default].Size = value;  }
+        }
     }
 }

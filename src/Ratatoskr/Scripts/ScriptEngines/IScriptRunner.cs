@@ -27,7 +27,7 @@ namespace Ratatoskr.Scripts.ScriptEngines
         ScriptMessageData[] GetMessageList();
 
         void ClearComment();
-        KeyValuePair<int, ScriptMessageData>[] GetCommentList(int lineno_first, int lineno_last);
+        ScriptMessageData[] GetCommentList();
 
         event EventHandler                 StatusChanged;
         event ScriptMessageAppendedHandler MessageAppended;

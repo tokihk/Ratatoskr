@@ -4,13 +4,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Ratatoskr.Gate;
-using Ratatoskr.Packet;
 
 namespace Ratatoskr.Scripts.ScriptEngines
 {
-    public class ScriptSandbox
+    public class ScriptSandbox : Api.ApiSandbox
     {
         private ScriptCodeRunner runner;
         private Thread thread_;
@@ -71,31 +69,11 @@ namespace Ratatoskr.Scripts.ScriptEngines
         [Flags]
         public enum PrintTargetType
         {
-            PacketLog = 1 << 0,
-            Console   = 1 << 1,
-            Editor    = 1 << 2,
+            PacketLog     = 1 << 0,
+            EditorConsole = 1 << 1,
+            EditorComment = 1 << 2,
 
-            All       = -1,
-        }
-
-        [Flags]
-        public enum WatchPacketType
-        {
-            RawPacket  = API.API_WaitPacket.WatchPacketType.RawPacket,
-            ViewPacket = API.API_WaitPacket.WatchPacketType.ViewPacket,
-        }
-
-        public enum PacketType
-        {
-            Message,
-            Data,
-        }
-
-        public sealed class Packet : PacketObject
-        {
-            internal Packet(PacketObject packet) : base(packet)
-            {
-            }
+            All = -1,
         }
 
         public void API_Pause()
@@ -106,7 +84,7 @@ namespace Ratatoskr.Scripts.ScriptEngines
             }
         }
 
-        public void API_Sleep(uint msec)
+        public override void API_Sleep(uint msec)
         {
             var sw = new System.Diagnostics.Stopwatch();
 
@@ -123,78 +101,13 @@ namespace Ratatoskr.Scripts.ScriptEngines
                 GatePacketManager.SetComment(obj.ToString());
             }
 
-            if (target.HasFlag(PrintTargetType.Console)) {
+            if (target.HasFlag(PrintTargetType.EditorConsole)) {
                 runner.AddScriptMessage(obj.ToString());
             }
 
-            if (target.HasFlag(PrintTargetType.Editor)) {
-                runner.SetScriptComment(line_no, ScriptMessageType.Notice, obj.ToString());
+            if (target.HasFlag(PrintTargetType.EditorComment)) {
+                runner.SetScriptComment(line_no - 1, ScriptMessageType.Notice, obj.ToString());
             }
-        }
-
-        public API.API_PlayRecord API_PlayRecordAsync(string gate, string file_path, string filter_exp)
-        {
-            var api_obj = new API.API_PlayRecord();
-
-            api_obj.ExecAsync(gate, file_path, filter_exp, null);
-
-            return (api_obj);
-        }
-
-        public bool API_PlayRecord(string gate, string file_path, string filter_exp)
-        {
-            var api_obj = API_PlayRecordAsync(gate, file_path, filter_exp);
-
-            while (api_obj.IsBusy) {
-                API_Sleep(10);
-            }
-
-            return (api_obj.Success);
-        }
-
-        public API.API_WaitPacket API_RecvWaitAsync(string filter_exp, WatchPacketType watch_type, uint timeout)
-        {
-            var api_obj = new API.API_WaitPacket();
-
-            api_obj.ExecAsync(filter_exp, (API.API_WaitPacket.WatchPacketType)watch_type, timeout, null);
-
-            return (api_obj);
-        }
-
-        public bool API_RecvWait(string filter_exp, WatchPacketType watch_type, uint timeout)
-        {
-            var api_obj = API_RecvWaitAsync(filter_exp, watch_type, timeout);
-
-            while (api_obj.IsBusy) {
-                API_Sleep(10);
-            }
-
-            return (api_obj.Success);
-        }
-
-        public void API_Send(string gate, string data_text)
-        {
-            API.API_Send.Exec(gate, data_text);
-        }
-
-        public API.API_SendFile API_SendFileAsync(string gate, string file_path, uint block_size)
-        {
-            var api_obj = new API.API_SendFile();
-
-            api_obj.ExecAsync(gate, file_path, block_size, null);
-
-            return (api_obj);
-        }
-
-        public bool API_SendFile(string gate, string file_path, uint block_size)
-        {
-            var api_obj = API_SendFileAsync(gate, file_path, block_size);
-
-            while (api_obj.IsBusy) {
-                API_Sleep(10);
-            }
-
-            return (api_obj.Success);
         }
     }
 }

@@ -123,7 +123,7 @@ namespace Ratatoskr.Configs
 
         public static void SetCurrentDirectory(string path)
         {
-            System.CurrentDirectory.Value = path;
+            System.CurrentDirectory.Value = (path ?? "");
         }
 
         public static string GetProfileRootPath()

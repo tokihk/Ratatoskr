@@ -7,12 +7,12 @@ using System.Windows.Forms;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("GateDebugger")]
+[assembly: AssemblyTitle("Ratatoskr")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GateDebugger")]
-[assembly: AssemblyCopyright("Copyright © 2017-2018 H.Kouno")]
+[assembly: AssemblyProduct("Ratatoskr")]
+[assembly: AssemblyCopyright("Copyright © 2018 Toki.H.K")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -22,7 +22,7 @@ using System.Windows.Forms;
 [assembly: ComVisible(false)]
 
 // このプロジェクトが COM に公開される場合、次の GUID が typelib の ID になります
-[assembly: Guid("1f152782-7cc1-4ee9-9b39-d5ca4b4a597e")]
+[assembly: Guid("577191D4-A8E0-409D-947D-BA57BEDD3E68")]
 
 // アセンブリのバージョン情報は次の 4 つの値で構成されています:
 //
@@ -31,8 +31,8 @@ using System.Windows.Forms;
 //      ビルド番号
 //      Revision
 //
-[assembly: AssemblyVersion("3.4.0.0")]
-[assembly: AssemblyFileVersion("3.4.0.0")]
+[assembly: AssemblyVersion("0.3.0.0")]
+[assembly: AssemblyFileVersion("0.3.0.0")]
 
 internal static class AppInfo
 {

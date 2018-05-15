@@ -132,7 +132,10 @@ namespace Ratatoskr.Forms
             viewm_.AddView(new PacketViews.Packet.ViewClassImpl());
             viewm_.AddView(new PacketViews.Sequential.ViewClassImpl());
             viewm_.AddView(new PacketViews.Graph.ViewClassImpl());
+
+#if DEBUG
             viewm_.AddView(new PacketViews.Protocol.ViewClassImpl());
+#endif
 //            viewm_.AddView(new PacketViews.DeviceEmurator.ViewClassImpl());
         }
 

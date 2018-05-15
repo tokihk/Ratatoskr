@@ -45,7 +45,7 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.TView_FileList);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(533, 467);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(533, 506);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -63,7 +63,7 @@
             this.TView_FileList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TView_FileList.Location = new System.Drawing.Point(0, 0);
             this.TView_FileList.Name = "TView_FileList";
-            this.TView_FileList.Size = new System.Drawing.Size(533, 467);
+            this.TView_FileList.Size = new System.Drawing.Size(533, 506);
             this.TView_FileList.TabIndex = 0;
             this.TView_FileList.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.TView_FileList_BeforeExpand);
             this.TView_FileList.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TView_FileList_NodeMouseDoubleClick);
@@ -82,6 +82,7 @@
             this.toolStrip1.Size = new System.Drawing.Size(533, 39);
             this.toolStrip1.Stretch = true;
             this.toolStrip1.TabIndex = 0;
+            this.toolStrip1.Visible = false;
             // 
             // Btn_Refresh
             // 

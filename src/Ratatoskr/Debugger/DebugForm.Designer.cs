@@ -44,11 +44,11 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.TBox_Message);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(665, 470);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(792, 472);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(665, 496);
+            this.toolStripContainer1.Size = new System.Drawing.Size(792, 496);
             this.toolStripContainer1.TabIndex = 0;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -66,7 +66,7 @@
             this.TBox_Message.Name = "TBox_Message";
             this.TBox_Message.ReadOnly = true;
             this.TBox_Message.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.TBox_Message.Size = new System.Drawing.Size(665, 470);
+            this.TBox_Message.Size = new System.Drawing.Size(792, 472);
             this.TBox_Message.TabIndex = 1;
             // 
             // menuStrip1
@@ -76,7 +76,7 @@
             this.編集EToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(665, 26);
+            this.menuStrip1.Size = new System.Drawing.Size(792, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -85,13 +85,13 @@
             this.編集EToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MenuBar_Edit_ScreenClear});
             this.編集EToolStripMenuItem.Name = "編集EToolStripMenuItem";
-            this.編集EToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
+            this.編集EToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.編集EToolStripMenuItem.Text = "編集(&E)";
             // 
             // MenuBar_Edit_ScreenClear
             // 
             this.MenuBar_Edit_ScreenClear.Name = "MenuBar_Edit_ScreenClear";
-            this.MenuBar_Edit_ScreenClear.Size = new System.Drawing.Size(154, 22);
+            this.MenuBar_Edit_ScreenClear.Size = new System.Drawing.Size(134, 22);
             this.MenuBar_Edit_ScreenClear.Text = "画面クリア(&C)";
             this.MenuBar_Edit_ScreenClear.Click += new System.EventHandler(this.MenuBar_Edit_ScreenClear_Click);
             // 
@@ -99,7 +99,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(665, 496);
+            this.ClientSize = new System.Drawing.Size(792, 496);
             this.Controls.Add(this.toolStripContainer1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "DebugForm";

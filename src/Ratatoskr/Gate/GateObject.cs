@@ -98,7 +98,7 @@ namespace Ratatoskr.Gate
             get { return (gatep_.ConnectRequest); }
             set
             {
-                gatep_.ConnectRequest = !gatep_.ConnectRequest;
+                gatep_.ConnectRequest = value;
                 ApplyGateProperty();
 
                 if (gatep_.ConnectRequest) {

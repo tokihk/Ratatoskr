@@ -117,6 +117,7 @@ namespace Ratatoskr
         public static AppVersion Version    { get; private set; }
         public static bool       IsSafeMode { get; private set; } = false;
 
+        public static Api.ApiSandbox API { get; } = new Api.ApiSandbox();
 
         private static void CommandLineParse(string[] cmdlines)
         {

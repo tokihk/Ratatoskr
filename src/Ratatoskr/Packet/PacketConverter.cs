@@ -29,7 +29,7 @@ namespace Ratatoskr.Packet
                         writer.Write((byte)FORMAT_VERSION);
 
                         /* フォーマット別処理 */
-                        Serialize_V000(writer, packet);
+                        Serialize_V001(writer, packet);
                     }
 
                     return (stream.ToArray());
@@ -455,7 +455,11 @@ namespace Ratatoskr.Packet
                 var mark = reader.ReadByte();
 
                 /* Message (2 + xx Byte) */
-                var msg_data_len = (int)reader.ReadByte();
+                var msg_data_len = (ushort)0;
+
+                msg_data_len |= (ushort)((ushort)reader.ReadByte() <<  8);
+                msg_data_len |= (ushort)((ushort)reader.ReadByte() <<  0);
+
                 var msg_data = Encoding.UTF8.GetString(reader.ReadBytes(msg_data_len));
 
                 /* Data (4 + xx Byte) */

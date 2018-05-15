@@ -10,9 +10,6 @@ namespace Ratatoskr.Scripts
 {
     internal class ScriptFileController : ScriptController
     {
-        private ScriptFileRunner runner_;
-
-
         public ScriptFileController(string script_path) : base(new ScriptFileRunner(script_path))
         {
         }

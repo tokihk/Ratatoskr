@@ -80,10 +80,10 @@ namespace Ratatoskr.Packet
             Priority = prio;
             Attribute = attr;
             MakeTime = dt;
-            Information = info;
+            Information = (info ?? "");
             Direction = dir;
-            Source = src;
-            Destination = dst;
+            Source = (src ?? "");
+            Destination = (dst ?? "");
             UserMark = mark;
             Message = (message ?? "");
             Data = (data ?? new byte[] { });

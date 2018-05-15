@@ -69,9 +69,9 @@ namespace Ratatoskr.Forms
                 MainFrame = null;
             }
 
-            if (ScriptManager != null) {
-                ScriptManager.Dispose();
-                ScriptManager = null;
+            if (ScriptWindow != null) {
+                ScriptWindow.Dispose();
+                ScriptWindow = null;
             }
         }
 
@@ -91,12 +91,12 @@ namespace Ratatoskr.Forms
         public static void BackupConfig()
         {
             MainFrame?.BackupConfig();
-            ScriptManager?.BackupConfig();
+            ScriptWindow?.BackupConfig();
         }
 
-        private static Controls.SplashScreen       SplashScreen { get; set; }
-        private static MainFrame.MainForm         MainFrame    { get; set; }
-        private static ScriptManagerForm.ScriptManagerForm ScriptManager    { get; set; }
+        private static Controls.SplashScreen          SplashScreen { get; set; }
+        private static MainWindow.MainWindow_Form     MainFrame    { get; set; }
+        private static ScriptWindow.ScriptWindow_Form ScriptWindow { get; set; }
 
         public static bool InvokeRequired
         {
@@ -119,7 +119,7 @@ namespace Ratatoskr.Forms
         {
             /* フォーム作成 */
             if (MainFrame == null) {
-                MainFrame = new Forms.MainFrame.MainForm();
+                MainFrame = new MainWindow.MainWindow_Form();
                 MainFrame.LoadConfig();
             }
 
@@ -140,29 +140,29 @@ namespace Ratatoskr.Forms
             return ((MainFrame != null) ? (MainFrame.Visible) : (false));
         }
 
-        public static void ScriptIDEVisible(bool show)
+        public static void ScriptWindowVisible(bool show)
         {
             /* フォーム作成 */
-            if (ScriptManager == null) {
-                ScriptManager = new ScriptManagerForm.ScriptManagerForm();
-                ScriptManager.LoadConfig();
+            if (ScriptWindow == null) {
+                ScriptWindow = new ScriptWindow.ScriptWindow_Form();
+                ScriptWindow.LoadConfig();
             }
 
-            if (!ScriptManager.Visible) {
+            if (!ScriptWindow.Visible) {
                 /* 非表示→表示 */
-                ScriptManager.Activate();
-                ScriptManager.Show();
-                ScriptManager.Update();
+                ScriptWindow.Activate();
+                ScriptWindow.Show();
+                ScriptWindow.Update();
 
             } else {
                 /* 表示→非表示 */
-                ScriptManager.Hide();
+                ScriptWindow.Hide();
             }
         }
 
-        public static bool ScriptIDEVisible()
+        public static bool ScriptWindowVisible()
         {
-            return ((ScriptManager != null) ? (ScriptManager.Visible) : (false));
+            return ((ScriptWindow != null) ? (ScriptWindow.Visible) : (false));
         }
 
         public static void SplashScreen_SetValue(string text, byte value)

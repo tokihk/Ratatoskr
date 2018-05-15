@@ -13,6 +13,42 @@ using Ratatoskr.Forms;
 
 namespace Ratatoskr.Configs.SystemConfigs
 {
+    internal enum MainWindowActionId
+    {
+        ApplicationExit,
+
+        TimeStamp,
+
+        PacketRedraw,
+        PacketClear,
+
+        PacketSaveConvertOff,
+        PacketSaveConvertOn,
+        PacketSaveAsConvertOff,
+        PacketSaveAsConvertOn,
+
+        FileOpen,
+
+        AutoTimeStampToggle,
+        AutoScrollToggle,
+
+        ProfileAdd,
+        ProfileRemove,
+        ProfileEdit,
+        ProfileExport,
+
+        Gate1_Connect,
+        Gate2_Connect,
+        Gate3_Connect,
+        Gate4_Connect,
+        Gate5_Connect,
+
+        ShowScriptWindow,
+        ShowOptionDialog,
+        ShowAppDocument,
+        ShowAppInformation,
+    }
+
     [Serializable]
     internal sealed class MainWindowConfig : ConfigHolder
     {
@@ -24,27 +60,27 @@ namespace Ratatoskr.Configs.SystemConfigs
         public EnumConfig<DockState> RedirectListPanel_DockState { get; } = new EnumConfig<DockState>(DockState.DockBottomAutoHide);
         public EnumConfig<DockState> DataListPanel_DockState     { get; } = new EnumConfig<DockState>(DockState.DockBottomAutoHide);
 
-        public KeyConfig<MainFormActionId> ShortcutKey { get; } = new KeyConfig<MainFormActionId>();
+        public KeyConfig<MainWindowActionId> ShortcutKey { get; } = new KeyConfig<MainWindowActionId>();
 
 
         public MainWindowConfig()
         {
             /* ここにショートカットキーの初期設定を追加 */
             var key_map_default = new [] {
-                new { id = MainFormActionId.ApplicationExit,        control = false, shift = false, alt = true,  key = Keys.F4  },
-                new { id = MainFormActionId.FileOpen,               control = true,  shift = false, alt = false, key = Keys.O   },
-                new { id = MainFormActionId.PacketSaveConvertOff,   control = true,  shift = false, alt = false, key = Keys.S   },
-                new { id = MainFormActionId.PacketSaveAsConvertOff, control = true,  shift = true,  alt = false, key = Keys.S   },
-                new { id = MainFormActionId.TimeStamp,              control = false, shift = false, alt = false, key = Keys.F6  },
-                new { id = MainFormActionId.PacketClear,            control = false, shift = false, alt = false, key = Keys.F4  },
-                new { id = MainFormActionId.PacketRedraw,           control = false, shift = false, alt = false, key = Keys.F5  },
-                new { id = MainFormActionId.ShowAppDocument,        control = false, shift = false, alt = false, key = Keys.F1  },
+                new { id = MainWindowActionId.ApplicationExit,        control = false, shift = false, alt = true,  key = Keys.F4  },
+                new { id = MainWindowActionId.FileOpen,               control = true,  shift = false, alt = false, key = Keys.O   },
+                new { id = MainWindowActionId.PacketSaveConvertOff,   control = true,  shift = false, alt = false, key = Keys.S   },
+                new { id = MainWindowActionId.PacketSaveAsConvertOff, control = true,  shift = true,  alt = false, key = Keys.S   },
+                new { id = MainWindowActionId.TimeStamp,              control = false, shift = false, alt = false, key = Keys.F6  },
+                new { id = MainWindowActionId.PacketClear,            control = false, shift = false, alt = false, key = Keys.F4  },
+                new { id = MainWindowActionId.PacketRedraw,           control = false, shift = false, alt = false, key = Keys.F5  },
+                new { id = MainWindowActionId.ShowAppDocument,        control = false, shift = false, alt = false, key = Keys.F1  },
 
-                new { id = MainFormActionId.Gate1_Connect,          control = true,  shift = false, alt = false, key = Keys.D1  },
-                new { id = MainFormActionId.Gate2_Connect,          control = true,  shift = false, alt = false, key = Keys.D2  },
-                new { id = MainFormActionId.Gate3_Connect,          control = true,  shift = false, alt = false, key = Keys.D3  },
-                new { id = MainFormActionId.Gate4_Connect,          control = true,  shift = false, alt = false, key = Keys.D4  },
-                new { id = MainFormActionId.Gate5_Connect,          control = true,  shift = false, alt = false, key = Keys.D5  },
+                new { id = MainWindowActionId.Gate1_Connect,          control = true,  shift = false, alt = false, key = Keys.D1  },
+                new { id = MainWindowActionId.Gate2_Connect,          control = true,  shift = false, alt = false, key = Keys.D2  },
+                new { id = MainWindowActionId.Gate3_Connect,          control = true,  shift = false, alt = false, key = Keys.D3  },
+                new { id = MainWindowActionId.Gate4_Connect,          control = true,  shift = false, alt = false, key = Keys.D4  },
+                new { id = MainWindowActionId.Gate5_Connect,          control = true,  shift = false, alt = false, key = Keys.D5  },
             };
 
             /* デフォルトキーマップを適用 */
@@ -58,7 +94,7 @@ namespace Ratatoskr.Configs.SystemConfigs
                         && (value.KeyPattern.KeyCode == config.key)));
 
                 /* キー情報を追加 */
-                ShortcutKey.Value.Add(new KeyActionConfig<MainFormActionId>(config.control, config.shift, config.alt, config.key, config.id));
+                ShortcutKey.Value.Add(new KeyActionConfig<MainWindowActionId>(config.control, config.shift, config.alt, config.key, config.id));
             }
         }
     }

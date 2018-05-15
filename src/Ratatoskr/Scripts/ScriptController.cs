@@ -188,9 +188,9 @@ namespace Ratatoskr.Scripts
             runner_.ClearComment();
         }
 
-        public KeyValuePair<int, ScriptMessageData>[] GetCommentList(int lineno_first, int lineno_last)
+        public ScriptMessageData[] GetCommentList()
         {
-            return (runner_.GetCommentList(lineno_first, lineno_last));
+            return (runner_.GetCommentList());
         }
 
         private void Runner_StatusChanged(object sender, EventArgs e)

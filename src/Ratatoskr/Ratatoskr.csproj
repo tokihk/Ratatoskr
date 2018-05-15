@@ -54,6 +54,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -88,6 +89,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\ApiSandbox.cs" />
+    <Compile Include="Api\ApiTask_CapturePacket.cs" />
+    <Compile Include="Api\ApiTask_ReplayRecordFile.cs" />
+    <Compile Include="Api\ApiTask_SendFile.cs" />
+    <Compile Include="Api\ApiTask_WaitPacket.cs" />
+    <Compile Include="Api\IApiTask.cs" />
     <Compile Include="Configs\ConfigHolder.cs" />
     <Compile Include="Configs\ConfigManager.cs" />
     <Compile Include="Configs\ConfigManagerBase.cs" />
@@ -355,105 +362,105 @@
     <Compile Include="Forms\Dialog\NotifyMailConfigDialog.Designer.cs">
       <DependentUpon>NotifyMailConfigDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormKeyManager.cs" />
+    <Compile Include="Forms\FormAction.cs" />
     <Compile Include="Forms\LinearDataForm\LinearDataForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\LinearDataForm\LinearDataForm.Designer.cs">
       <DependentUpon>LinearDataForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm.cs">
+    <Compile Include="Forms\MainWindow\MainWindow_CommandListPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_CommandListPanel.Designer.cs">
+      <DependentUpon>MainWindow_CommandListPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_DeviceControlPanel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="Forms\MainWindow\MainWindow_DeviceControlPanel.Designer.cs">
+      <DependentUpon>MainWindow_DeviceControlPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_CommandListPanel.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Forms\MainWindow\MainWindow_ExpEditBox.cs">
+      <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_CommandListPanel.Designer.cs">
-      <DependentUpon>MainForm_CommandListPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_DeviceControlPanel.cs">
+    <Compile Include="Forms\MainWindow\MainWindow_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_DeviceControlPanel.Designer.cs">
-      <DependentUpon>MainForm_DeviceControlPanel.cs</DependentUpon>
+    <Compile Include="Forms\MainWindow\MainWindow_Form.Designer.cs">
+      <DependentUpon>MainWindow_Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_ExpEditBox.cs">
+    <Compile Include="Forms\MainWindow\MainWindow_FrameCenter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_FrameCenter.Designer.cs">
+      <DependentUpon>MainWindow_FrameCenter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_FuncGenPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_FuncGenPanel.Designer.cs">
+      <DependentUpon>MainWindow_FuncGenPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_Gate.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_Gate.Designer.cs">
+      <DependentUpon>MainWindow_Gate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_GatePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_GatePanel.Designer.cs">
+      <DependentUpon>MainWindow_GatePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_PacketConverter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_PacketConverter.Designer.cs">
+      <DependentUpon>MainWindow_PacketConverter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_PacketConverterPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_FrameCenter.cs">
+    <Compile Include="Forms\MainWindow\MainWindow_SendDataListPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_FrameCenter.Designer.cs">
-      <DependentUpon>MainForm_FrameCenter.cs</DependentUpon>
+    <Compile Include="Forms\MainWindow\MainWindow_SendDataListPanel.Designer.cs">
+      <DependentUpon>MainWindow_SendDataListPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_FuncGenPanel.cs">
+    <Compile Include="Forms\MainWindow\MainWindow_SendDataPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_FuncGenPanel.Designer.cs">
-      <DependentUpon>MainForm_FuncGenPanel.cs</DependentUpon>
+    <Compile Include="Forms\MainWindow\MainWindow_SendDataPanel.Designer.cs">
+      <DependentUpon>MainWindow_SendDataPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_Gate.cs">
+    <Compile Include="Forms\MainWindow\MainWindow_SendFilePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_Gate.Designer.cs">
-      <DependentUpon>MainForm_Gate.cs</DependentUpon>
+    <Compile Include="Forms\MainWindow\MainWindow_SendFilePanel.Designer.cs">
+      <DependentUpon>MainWindow_SendFilePanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_GatePanel.cs">
+    <Compile Include="Forms\MainWindow\MainWindow_SendLogPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_GatePanel.Designer.cs">
-      <DependentUpon>MainForm_GatePanel.cs</DependentUpon>
+    <Compile Include="Forms\MainWindow\MainWindow_SendLogPanel.Designer.cs">
+      <DependentUpon>MainWindow_SendLogPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_PacketConverter.cs">
+    <Compile Include="Forms\MainWindow\MainWindow_SendPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_PacketConverter.Designer.cs">
-      <DependentUpon>MainForm_PacketConverter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_PacketConverterPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendDataListPanel.cs">
+    <Compile Include="Forms\MainWindow\MainWindow_SendPanelContainer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendDataListPanel.Designer.cs">
-      <DependentUpon>MainForm_SendDataListPanel.cs</DependentUpon>
+    <Compile Include="Forms\MainWindow\MainWindow_SendPanelContainer.Designer.cs">
+      <DependentUpon>MainWindow_SendPanelContainer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendDataPanel.cs">
+    <Compile Include="Forms\MainWindow\MainWindow_WatchListPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendDataPanel.Designer.cs">
-      <DependentUpon>MainForm_SendDataPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendFilePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendFilePanel.Designer.cs">
-      <DependentUpon>MainForm_SendFilePanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendLogPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendLogPanel.Designer.cs">
-      <DependentUpon>MainForm_SendLogPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendPanelContainer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_SendPanelContainer.Designer.cs">
-      <DependentUpon>MainForm_SendPanelContainer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_WatchListPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\MainFrame\MainForm_WatchListPanel.Designer.cs">
-      <DependentUpon>MainForm_WatchListPanel.cs</DependentUpon>
+    <Compile Include="Forms\MainWindow\MainWindow_WatchListPanel.Designer.cs">
+      <DependentUpon>MainWindow_WatchListPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\OptionEditForm\OptionDataMap.cs" />
     <Compile Include="Forms\OptionEditForm\OptionEditForm.cs">
@@ -522,28 +529,22 @@
     <Compile Include="Forms\AboutForm\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ScriptManagerForm\ScriptManagerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ScriptManagerForm\ScriptManagerForm.Designer.cs">
-      <DependentUpon>ScriptManagerForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ScriptManagerForm\ScriptManagerForm_CodeEditor.cs">
+    <Compile Include="Forms\ScriptWindow\ScriptWindow_CodeEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\ScriptManagerForm\ScriptManagerForm_Console.cs">
+    <Compile Include="Forms\ScriptWindow\ScriptWindow_Console.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ScriptManagerForm\ScriptManagerForm_Console.Designer.cs">
-      <DependentUpon>ScriptManagerForm_Console.cs</DependentUpon>
+    <Compile Include="Forms\ScriptWindow\ScriptWindow_Console.Designer.cs">
+      <DependentUpon>ScriptWindow_Console.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ScriptManagerForm\ScriptManagerForm_Debug_WatchList.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Forms\ScriptWindow\ScriptWindow_Form.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ScriptManagerForm\ScriptManagerForm_Debug_WatchList.Designer.cs">
-      <DependentUpon>ScriptManagerForm_Debug_WatchList.cs</DependentUpon>
+    <Compile Include="Forms\ScriptWindow\ScriptWindow_Form.Designer.cs">
+      <DependentUpon>ScriptWindow_Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ScriptManagerForm\ScriptManagerForm_ScriptList.cs">
+    <Compile Include="Forms\ScriptWindow\ScriptWindow_ScriptList.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Gate\AutoPacketSave\AutoPacketSaveManager.cs" />
@@ -639,11 +640,6 @@
     <Compile Include="Plugin\PluginManager.cs" />
     <Compile Include="Protocol\ProtocolDecoderInfo.cs" />
     <Compile Include="Protocol\ProtocolManager.cs" />
-    <Compile Include="Scripts\API\API_CommentOut.cs" />
-    <Compile Include="Scripts\API\API_PlayRecord.cs" />
-    <Compile Include="Scripts\API\API_Send.cs" />
-    <Compile Include="Scripts\API\API_SendFile.cs" />
-    <Compile Include="Scripts\API\API_WaitPacket.cs" />
     <Compile Include="Scripts\PacketFilterExp\Terms\Term_Status.cs" />
     <Compile Include="Scripts\ScriptController.cs" />
     <Compile Include="Scripts\ScriptEngines\IScriptRunner.cs" />
@@ -1013,50 +1009,50 @@
     <EmbeddedResource Include="Forms\LinearDataForm\LinearDataForm.resx">
       <DependentUpon>LinearDataForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_CommandListPanel.resx">
+      <DependentUpon>MainWindow_CommandListPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_CommandListPanel.resx">
-      <DependentUpon>MainForm_CommandListPanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_DeviceControlPanel.resx">
+      <DependentUpon>MainWindow_DeviceControlPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_DeviceControlPanel.resx">
-      <DependentUpon>MainForm_DeviceControlPanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_Form.resx">
+      <DependentUpon>MainWindow_Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_FrameCenter.resx">
-      <DependentUpon>MainForm_FrameCenter.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_FrameCenter.resx">
+      <DependentUpon>MainWindow_FrameCenter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_FuncGenPanel.resx">
-      <DependentUpon>MainForm_FuncGenPanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_FuncGenPanel.resx">
+      <DependentUpon>MainWindow_FuncGenPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_Gate.resx">
-      <DependentUpon>MainForm_Gate.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_Gate.resx">
+      <DependentUpon>MainWindow_Gate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_GatePanel.resx">
-      <DependentUpon>MainForm_GatePanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_GatePanel.resx">
+      <DependentUpon>MainWindow_GatePanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_PacketConverter.resx">
-      <DependentUpon>MainForm_PacketConverter.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_PacketConverter.resx">
+      <DependentUpon>MainWindow_PacketConverter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_PacketConverterPanel.resx">
-      <DependentUpon>MainForm_PacketConverterPanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_PacketConverterPanel.resx">
+      <DependentUpon>MainWindow_PacketConverterPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_SendDataListPanel.resx">
-      <DependentUpon>MainForm_SendDataListPanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_SendDataListPanel.resx">
+      <DependentUpon>MainWindow_SendDataListPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_SendDataPanel.resx">
-      <DependentUpon>MainForm_SendDataPanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_SendDataPanel.resx">
+      <DependentUpon>MainWindow_SendDataPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_SendFilePanel.resx">
-      <DependentUpon>MainForm_SendFilePanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_SendFilePanel.resx">
+      <DependentUpon>MainWindow_SendFilePanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_SendLogPanel.resx">
-      <DependentUpon>MainForm_SendLogPanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_SendLogPanel.resx">
+      <DependentUpon>MainWindow_SendLogPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_SendPanelContainer.resx">
-      <DependentUpon>MainForm_SendPanelContainer.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_SendPanelContainer.resx">
+      <DependentUpon>MainWindow_SendPanelContainer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainFrame\MainForm_WatchListPanel.resx">
-      <DependentUpon>MainForm_WatchListPanel.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_WatchListPanel.resx">
+      <DependentUpon>MainWindow_WatchListPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OptionEditForm\OptionEditForm.resx">
       <DependentUpon>OptionEditForm.cs</DependentUpon>
@@ -1088,14 +1084,14 @@
     <EmbeddedResource Include="Forms\AboutForm\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ScriptManagerForm\ScriptManagerForm.resx">
-      <DependentUpon>ScriptManagerForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ScriptWindow\ScriptWindow_CodeEditor.resx">
+      <DependentUpon>ScriptWindow_CodeEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ScriptManagerForm\ScriptManagerForm_CodeEditor.resx">
-      <DependentUpon>ScriptManagerForm_CodeEditor.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ScriptWindow\ScriptWindow_Console.resx">
+      <DependentUpon>ScriptWindow_Console.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ScriptManagerForm\ScriptManagerForm_Console.resx">
-      <DependentUpon>ScriptManagerForm_Console.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ScriptWindow\ScriptWindow_Form.resx">
+      <DependentUpon>ScriptWindow_Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generic\Controls\BinEditBox.resx">
       <DependentUpon>BinEditBox.cs</DependentUpon>

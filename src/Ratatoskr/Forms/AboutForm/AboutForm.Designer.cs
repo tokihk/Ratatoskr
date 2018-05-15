@@ -29,13 +29,13 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.TabPage_About = new System.Windows.Forms.TabPage();
+            this.LLabel_HomePage = new System.Windows.Forms.LinkLabel();
             this.Label_Copyright = new System.Windows.Forms.Label();
             this.Label_Version = new System.Windows.Forms.Label();
             this.PictBox_Logo = new System.Windows.Forms.PictureBox();
             this.PictBox_Icon = new System.Windows.Forms.PictureBox();
             this.TabPage_License = new System.Windows.Forms.TabPage();
             this.RTBox_LicenseList = new System.Windows.Forms.RichTextBox();
-            this.LLabel_HomePage = new System.Windows.Forms.LinkLabel();
             this.tabControl1.SuspendLayout();
             this.TabPage_About.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Logo)).BeginInit();
@@ -71,12 +71,22 @@
             this.TabPage_About.Text = "About application";
             this.TabPage_About.UseVisualStyleBackColor = true;
             // 
+            // LLabel_HomePage
+            // 
+            this.LLabel_HomePage.AutoEllipsis = true;
+            this.LLabel_HomePage.Font = new System.Drawing.Font("MS UI Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LLabel_HomePage.Location = new System.Drawing.Point(148, 106);
+            this.LLabel_HomePage.Name = "LLabel_HomePage";
+            this.LLabel_HomePage.Size = new System.Drawing.Size(340, 29);
+            this.LLabel_HomePage.TabIndex = 4;
+            this.LLabel_HomePage.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LLabel_HomePage_LinkClicked);
+            // 
             // Label_Copyright
             // 
             this.Label_Copyright.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Label_Copyright.Location = new System.Drawing.Point(139, 99);
+            this.Label_Copyright.Location = new System.Drawing.Point(159, 83);
             this.Label_Copyright.Name = "Label_Copyright";
-            this.Label_Copyright.Size = new System.Drawing.Size(351, 23);
+            this.Label_Copyright.Size = new System.Drawing.Size(331, 23);
             this.Label_Copyright.TabIndex = 3;
             this.Label_Copyright.Text = "Copyright";
             this.Label_Copyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -84,9 +94,9 @@
             // Label_Version
             // 
             this.Label_Version.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Label_Version.Location = new System.Drawing.Point(159, 76);
+            this.Label_Version.Location = new System.Drawing.Point(159, 60);
             this.Label_Version.Name = "Label_Version";
-            this.Label_Version.Size = new System.Drawing.Size(329, 23);
+            this.Label_Version.Size = new System.Drawing.Size(331, 23);
             this.Label_Version.TabIndex = 2;
             this.Label_Version.Text = "0.0.0.0";
             this.Label_Version.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -131,15 +141,6 @@
             this.RTBox_LicenseList.TabIndex = 0;
             this.RTBox_LicenseList.Text = "";
             // 
-            // LLabel_HomePage
-            // 
-            this.LLabel_HomePage.AutoSize = true;
-            this.LLabel_HomePage.Location = new System.Drawing.Point(141, 60);
-            this.LLabel_HomePage.Name = "LLabel_HomePage";
-            this.LLabel_HomePage.Size = new System.Drawing.Size(0, 12);
-            this.LLabel_HomePage.TabIndex = 4;
-            this.LLabel_HomePage.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LLabel_HomePage_LinkClicked);
-            // 
             // AboutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -156,7 +157,6 @@
             this.Text = "About";
             this.tabControl1.ResumeLayout(false);
             this.TabPage_About.ResumeLayout(false);
-            this.TabPage_About.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Logo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Icon)).EndInit();
             this.TabPage_License.ResumeLayout(false);

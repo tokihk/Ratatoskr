@@ -250,7 +250,7 @@
             // 
             this.ChkBox_RedirectEnable.AutoCheck = false;
             this.ChkBox_RedirectEnable.AutoSize = true;
-            this.ChkBox_RedirectEnable.BackColor = System.Drawing.SystemColors.Window;
+            this.ChkBox_RedirectEnable.BackColor = System.Drawing.SystemColors.Control;
             this.ChkBox_RedirectEnable.Location = new System.Drawing.Point(6, 0);
             this.ChkBox_RedirectEnable.Name = "ChkBox_RedirectEnable";
             this.ChkBox_RedirectEnable.Size = new System.Drawing.Size(134, 16);

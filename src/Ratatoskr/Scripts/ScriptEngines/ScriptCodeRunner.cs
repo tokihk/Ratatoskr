@@ -21,13 +21,14 @@ namespace Ratatoskr.Scripts.ScriptEngines
         private ScriptSandbox task_sandbox_ = null;
 
         private string script_code_ = null;
+        private int    script_code_line_count_ = 0;
         private bool   script_busy_ = false;
 
         private object                  message_list_sync_ = new object();
         private List<ScriptMessageData> message_list_;
 
-        private object                             comment_list_sync_ = new object();
-        private Dictionary<int, ScriptMessageData> comment_list_;
+        private object              comment_list_sync_ = new object();
+        private ScriptMessageData[] comment_list_;
 
 
         public event EventHandler                 StatusChanged;
@@ -38,6 +39,9 @@ namespace Ratatoskr.Scripts.ScriptEngines
         public ScriptCodeRunner(string script_code)
         {
             script_code_ = script_code;
+            if (script_code_ != null) {
+                script_code_line_count_ = script_code_.Count(code => code == '\n');
+            }
         }
 
         public bool IsRunning
@@ -155,13 +159,13 @@ namespace Ratatoskr.Scripts.ScriptEngines
 
         public void ClearComment()
         {
-            comment_list_ = new Dictionary<int, ScriptMessageData>();
+            comment_list_ = new ScriptMessageData[script_code_line_count_];
         }
 
-        public KeyValuePair<int, ScriptMessageData>[] GetCommentList(int lineno_first, int lineno_last)
+        public ScriptMessageData[] GetCommentList()
         {
             lock (comment_list_sync_) {
-                return (comment_list_.Where(data => (data.Key >= lineno_first) && (data.Key <= lineno_last)).ToArray());
+                return (comment_list_.Clone() as ScriptMessageData[]);
             }
         }
 
@@ -194,15 +198,17 @@ namespace Ratatoskr.Scripts.ScriptEngines
             var msg_data = (ScriptMessageData)null;
 
             lock (comment_list_sync_) {
-                if (message != null) {
-                    /* データ有りの場合はデータベースに上書き登録 */
-                    msg_data = new ScriptMessageData(DateTime.UtcNow, type, message);
-                    comment_list_.Add(line_no, msg_data);
-                    change = true;
+                if (line_no < comment_list_.Length) {
+                    if (message != null) {
+                        /* データ有りの場合はデータベースに上書き登録 */
+                        comment_list_[line_no] = new ScriptMessageData(DateTime.UtcNow, type, message);
+                        change = true;
 
-                } else {
-                    /* データ無しの場合はデータベースから削除 */
-                    change = comment_list_.Remove(line_no);
+                    } else {
+                        /* データ無しの場合はデータベースから削除 */
+                        comment_list_[line_no] = null;
+                        change = true;
+                    }
                 }
             }
 

@@ -86,14 +86,14 @@ namespace Ratatoskr.Gate
 
             /* スキャン実行 */
             lock (gates_) {
-                return (gates_.FindAll(gate => regex.IsMatch(gate.Alias)).ToArray());
+                return (gates_.FindAll(gate => (gate.DeviceClassID != Guid.Empty) && (regex.IsMatch(gate.Alias))).ToArray());
             }
         }
 
         public static GateObject[] FindGateObjectFromAlias(string alias)
         {
             lock (gates_) {
-                return (gates_.FindAll(gate => gate.Alias == alias).ToArray());
+                return (gates_.FindAll(gate => (gate.DeviceClassID != Guid.Empty) && (gate.Alias == alias)).ToArray());
             }
         }
 

@@ -13,6 +13,16 @@ using Ratatoskr.Forms;
 
 namespace Ratatoskr.Configs.SystemConfigs
 {
+    internal enum ScriptWindowActionId
+    {
+        FormExit,
+
+        OpenScriptDirectory,
+
+        ScriptRun,
+        ScriptStop,
+    }
+
     [Serializable]
     internal sealed class ScriptWindowConfig : ConfigHolder
     {
@@ -25,15 +35,15 @@ namespace Ratatoskr.Configs.SystemConfigs
         public EnumConfig<DockState> RedirectListPanel_DockState { get; } = new EnumConfig<DockState>(DockState.DockBottomAutoHide);
         public EnumConfig<DockState> DataListPanel_DockState     { get; } = new EnumConfig<DockState>(DockState.DockBottomAutoHide);
 
-        public KeyConfig<ScriptIDEActionId> ShortcutKey { get; } = new KeyConfig<ScriptIDEActionId>();
+        public KeyConfig<ScriptWindowActionId> ShortcutKey { get; } = new KeyConfig<ScriptWindowActionId>();
 
 
         public ScriptWindowConfig()
         {
             /* ここにショートカットキーの初期設定を追加 */
             var key_map_default = new [] {
-                new { id = ScriptIDEActionId.ScriptRun,             control = false, shift = true,  alt = false,  key = Keys.F5  },
-                new { id = ScriptIDEActionId.ScriptStop,            control = false, shift = false, alt = false,  key = Keys.F5  },
+                new { id = ScriptWindowActionId.ScriptRun,             control = false, shift = true,  alt = false,  key = Keys.F5  },
+                new { id = ScriptWindowActionId.ScriptStop,            control = false, shift = false, alt = false,  key = Keys.F5  },
             };
 
             /* デフォルトキーマップを適用 */
@@ -47,7 +57,7 @@ namespace Ratatoskr.Configs.SystemConfigs
                         && (value.KeyPattern.KeyCode == config.key)));
 
                 /* キー情報を追加 */
-                ShortcutKey.Value.Add(new KeyActionConfig<ScriptIDEActionId>(config.control, config.shift, config.alt, config.key, config.id));
+                ShortcutKey.Value.Add(new KeyActionConfig<ScriptWindowActionId>(config.control, config.shift, config.alt, config.key, config.id));
             }
         }
     }
