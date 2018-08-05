@@ -7,8 +7,10 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
+	<link href="params.css" rel="stylesheet">
+
 	<!-- JQuery -->
-	<script type="text/javascript" src="./_lib/jquery/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="_lib/jquery/jquery-3.2.1.min.js"></script>
 
 	<!-- Bootstrap -->
 	<link href="_lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -27,18 +29,22 @@
 			return ($("#language_mode").val());
 		}
 
-		function loadContents(load_url, load_target, load_language = "jpn") {
+		function loadContents(load_url, load_target, load_language) {
+			if (typeof load_language === 'undefined') {
+				load_language = "jpn";
+			}
+
 			if ((load_url == null) || (load_url == "#"))return;
 
 			if (load_target == null) {
 				load_target = "contents";
 			}
 
-			// [1]:拡張子無しパス [2]:ドット有り拡張子
-			var url_info = load_url.match(/(.+)(\.[^.\/]+$)/);
+			// {lng}を言語コードに変換
+			load_url = load_url.replace("{lng}", load_language);
 
-			// 新しいパスで読み込み
-			window.open(url_info[1] + "." + load_language + url_info[2], load_target);
+			// URL読み込み
+			window.open(load_url, load_target);
 		}
 
 		function loadContentsFromNode(node) {
@@ -64,37 +70,25 @@
   	</script>
 </head>
 <body>
+	<!--
 	<div id="mode" align="right">
 		<select id="language_mode" onchange="reloadContents();">
 			<option value="jpn">Japanese</option>
 			<option value="eng">English</option>
 		</select>
 	</div>
+	-->
 	<h2>Menu</h2>
 	<div id="navigation">
 		<ul>
-			<li id="node_home" data-jstree='{"icon":"glyphicon glyphicon-home"}'><a href="./pages/introduction.html">Introduction</a></li>
-			<li data-jstree='{"icon":"glyphicon glyphicon-tasks"}'><a href="./pages/basic-operation.html">Basic Operation</a></li>
-			<li data-jstree='{"opened":true, "icon":"glyphicon glyphicon-random"}'>Packet Converter<ul>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/packet-converter/packet-filter.html">Filter</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/packet-converter/packet-grouping.html">Grouping</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/packet-converter/packet-convert.html">Convert</a></li>
-			</ul></li>
-			<li data-jstree='{"opened":true, "icon":"glyphicon glyphicon-picture"}'>Packet View<ul>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/packet-view/packet.html">Packet</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/packet-view/sequential.html">Sequential</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/packet-view/graph.html">Graph</a></li>
-			</ul></li>
-			<li data-jstree='{"opened":true, "icon":"glyphicon glyphicon glyphicon-phone"}'>Gate Device<ul>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/gate-device/serial-port.html">Serial Port</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/gate-device/tcpip-server.html">TCP/IP Server</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/gate-device/tcpip-client.html">TCP/IP Client</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/gate-device/udpip-client.html">UDP Client</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/gate-device/ethernet.html">Ethernet</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/gate-device/usb-monitor.html">USB Monitor</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/gate-device/audio-device.html">Audio Device</a></li>
-				<li data-jstree='{"icon":"glyphicon glyphicon-check"}'><a href="./pages/gate-device/audio-file.html">Audio File</a></li>
-			</ul></li>
+			<li id="node_home" data-jstree='{"icon":"glyphicon glyphicon-home"}'><a href="./pages/introduction.{lng}.html">Introduction</a></li>
+			<li data-jstree='{"icon":"glyphicon glyphicon-leaf"}'><a href="./pages/basic-operation.{lng}.html">Basic Operation</a></li>
+			<li data-jstree='{"icon":"glyphicon glyphicon-send"}'><a href="./pages/send-mode.{lng}.html">Send Mode</a></li>
+			<li data-jstree='{"icon":"glyphicon glyphicon-phone"}'><a href="./pages/gate-device.{lng}.html">Gate Device</a></li>
+			<li data-jstree='{"icon":"glyphicon glyphicon-random"}'><a href="./pages/packet-converter.{lng}.html">Packet Converter</a></li>
+			<li data-jstree='{"icon":"glyphicon glyphicon-picture"}'><a href="./pages/packet-view.{lng}.html">Packet View</a></li>
+			<li data-jstree='{"icon":"glyphicon glyphicon-console"}'><a href="./pages/script-codestyle.{lng}.html">Script - Code Style</a></li>
+			<li data-jstree='{"icon":"glyphicon glyphicon-console"}'><a href="./pages/script-api.{lng}.html">Script - API</a></li>
 		</ul>
 	</div>
 </body>

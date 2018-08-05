@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>introduction.eng.md</title>
+<title>script-api.jpn.md</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 
 <style>
@@ -382,66 +382,125 @@ blockquote {
 }
 
 </style>
-<link rel="stylesheet" href="file:///c%3A/root/home/github/Ratatoskr/docs/_lib/css/github-markdown.css" type="text/css">
+<link rel="stylesheet" href="file:///c%3A/root/home/github/Ratatoskr/docs/_lib/github/github-markdown.css" type="text/css">
 </head>
 <body>
-<link href="../params.css" rel="stylesheet" />
-<h1 id="span-classapp-name-users-manual"><span class="app-name" /> User's manual</h1>
-<p><img src="../_images/app_icon_128x128.png" alt="image"> <img src="../_images/app_logo_600x120.png" alt="image"></p>
-<p><span class = "app-name" /> is a development support tool that can communicate with various devices that can be connected to a personal computer. <br>
-It provides a general-purpose communication debugging environment for various communication ports such as serial port and TCP / UDP.</p>
-<p>You can intuitively operate input / output to / from ports by easy-to-view packet view and interface that emphasizes operability.</p>
-<p><span class = "app-name" /> has the following features.</p>
-<ul>
-<li>Supports various communication such as serial port, TCP / IP, UDP
-  * Serial Port
-  * TCP / IP Server or Client
-  * UDP
-  * USB Capture</li>
-<li>Supports packet view according to usage, such as packet unit and data unit</li>
-<li>Simultaneous connection to multiple ports</li>
-<li>Simultaneous display of multiple types of packet views</li>
-<li>Saving / loading / saving packet logs automatically</li>
-<li>Real-time packet control such as filtering, packet combining</li>
-<li>Redirect transfer from port to port</li>
-</ul>
-<p><img src="../_images/basic.png" alt=""></p>
-<h2 id="copyright">Copyright</h2>
-<ul>
-<li><span class = "author" /> - <span class = "author-mail" /></li>
-</ul>
-<h2 id="license">license</h2>
-<p>GPL 3 (GNU GENERAL PUBLIC LICENSE v 3)</p>
-<h2 id="operating-environment">Operating environment</h2>
-<ul>
-<li>.NET Framework 4.7</li>
-</ul>
-<h2 id="installation">Installation</h2>
-<p>After installing .NET Framwork, decompress it to an arbitrary folder and execute it.</p>
-<p>Other software is required when using some functions.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">Features</th>
-<th style="text-align:left">Required Software</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">USB Monitor</td>
-<td style="text-align:left">USBPcap (<a href="http://desowin.org/usbpcap/" title="USBPcap">http://desowin.org/usbpcap/</a>)</td>
-</tr>
-<tr>
-<td style="text-align:left">Ehernet</td>
-<td style="text-align:left">WinPcap (<a href="https://www.winpcap.org/">https://www.winpcap.org/</a>)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="uninstall">Uninstall</h3>
-<p><span class = "app-name" /> does not use the registry.</p>
-<p>Delete the file decompressed by installation and delete the configuration file.
-The configuration file exists in the following location.</p>
-<p><code>%APPDATA%\<span class="app-name" /></code></p>
+<link href="../params.css" rel="stylesheet"></link>
+<h1 id="script---api">Script - API</h1>
+<h2 id="%E5%AE%9A%E6%95%B0">定数</h2>
+<h3 id="printtargettype">PrintTargetType</h3>
+<pre><code>PacketLog     = 1 &lt;&lt; 0,     // メッセージパケットとしてログに出力します
+EditorConsole = 1 &lt;&lt; 1,     // スクリプトエディタのコンソールに出力します
+EditorComment = 1 &lt;&lt; 2,     // スクリプトエディタのコメントウィンドウに出力します
+All = -1,                   // 全ての出力先に出力します
+</code></pre>
+<h3 id="watchpackettype">WatchPacketType</h3>
+<pre><code>RawPacket  = 1 &lt;&lt; 0,        // ゲートから発生した元パケットを対象とします
+ViewPacket = 1 &lt;&lt; 1,        // 変換器を経由したパケットを対象とします
+</code></pre>
+<h2 id="%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89">メソッド</h2>
+<h3 id="apipause">API_Pause</h3>
+<p><code>void API_Pause()</code></p>
+<p>スクリプトを実行状態のままブロックします。<br></p>
+<h3 id="apisleep">API_Sleep</h3>
+<p><code>void API_Sleep(uint msec)</code></p>
+<p>スクリプトを実行状態のまま指定時間ブロックします。</p>
+<h3 id="apiprint">API_Print</h3>
+<p><code>void API_Print(object obj, PrintTargetType target = PrintTargetType.All)</code></p>
+<p>任意のオブジェクトテキストを出力します。</p>
+<p>objには文字列を含めたオブジェクトを指定できます。</p>
+<p>targetには出力先を指定します。<br>
+複数の条件を指定することで複数の出力先へ同時に出力します。</p>
+<h3 id="apigateconnect">API_GateConnect</h3>
+<p><code>void API_GateConnect(string gate_alias)</code></p>
+<p>指定したパターン名に一致するゲートを接続します。<br>
+該当した全てのゲートが接続されるまでブロックします。</p>
+<h3 id="apigatedisconnect">API_GateDisconnect</h3>
+<p><code>void API_GateDisconnect(string gate_alias)</code></p>
+<p>指定したパターン名に一致するゲートを接続します。<br>
+該当した全てのゲートが切断されるまでブロックします。</p>
+<h3 id="apisenddata">API_SendData</h3>
+<p><code>void API_SendData(string gate_alias, byte[] data)</code>
+<code>void API_SendData(string gate_alias, string bin_text)</code></p>
+<p>指定したパターン名に一致するゲートにデータを送信します。<br>
+bin_textには送信パネルと同じコードパターンでデータを設定します。</p>
+<h3 id="apisendfileasync">API_SendFileAsync</h3>
+<p><code>ApiTask_SendFile API_SendFileAsync(string gate_alias, string file_path, uint send_block_size = 1024)</code></p>
+<p>指定したパターン名に一致するゲートにファイルを送信します。<br>
+実行するとすぐに応答が返ります。<br>
+送信状況は戻り値のオブジェクトを使用して確認します。<br></p>
+<h3 id="apisendfile">API_SendFile</h3>
+<p><code>bool API_SendFile(string gate_alias, string file_path, uint send_block_size = 1024)</code></p>
+<p>指定したパターン名に一致するゲートにファイルを送信します。<br>
+送信が完了もしくは失敗するまでブロックします。<br></p>
+<h3 id="apicapturepacketasync">API_CapturePacketAsync</h3>
+<p><code>ApiTask_CapturePacket API_CapturePacketAsync(WatchPacketType target, PacketDetectedHandler callback, string filter = &quot;&quot;)</code></p>
+<p>条件に一致するパケットをキャプチャします。</p>
+<h3 id="apiwaitpacketasync">API_WaitPacketAsync</h3>
+<p><code>ApiTask_WaitPacket API_WaitPacketAsync(WatchPacketType target, string filter = &quot;&quot;)</code></p>
+<p>条件に一致するパケットの受信を監視します。</p>
+<h3 id="apiwaitpacket">API_WaitPacket</h3>
+<p><code>PacketObject API_WaitPacket(WatchPacketType target, string filter = &quot;&quot;, int timeout_ms = -1)</code></p>
+<h3 id="apireplayrecordfileasync">API_ReplayRecordFileAsync</h3>
+<p><code>ApiTask_ReplayRecordFile API_ReplayRecordFileAsync(string gate_alias, string file_path, string filter = &quot;&quot;)</code></p>
+<h3 id="apireplayrecordfile">API_ReplayRecordFile</h3>
+<p><code>bool API_ReplayRecordFile(string gate_alias, string file_path, string filter = &quot;&quot;)</code></p>
+<h2 id="%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88">オブジェクト</h2>
+<h3 id="apitaskcapturepacket">ApiTask_CapturePacket</h3>
+<pre>
+class ApiTask_CapturePacket
+{
+    public bool IsRunning { get; }
+
+    public void Stop()
+}
+</pre>
+<h3 id="apitaskreplayrecordfile">ApiTask_ReplayRecordFile</h3>
+<pre>
+class ApiTask_ReplayRecordFile
+{
+    public string GateAlias { get; }
+    public string FilePath  { get; }
+    public string Filter    { get; }
+
+    public bool Success   { get; }
+    public bool IsRunning { get; }
+
+    public void Stop()
+    public bool Join(int timeout_ms = -1)
+}
+</pre>
+<h3 id="apitasksendfile">ApiTask_SendFile</h3>
+<pre>
+class ApiTask_SendFile : IDisposable
+{
+    public string GateAlias     { get; }
+    public string FilePath      { get; }
+    public uint   SendBlockSize { get; }
+
+    public bool Success { get; }
+    public bool IsRunning { get; }
+
+    public void Stop()
+    public bool Join(int timeout_ms = -1)
+}
+</pre>
+<h3 id="apitaskwaitpacket">ApiTask_WaitPacket</h3>
+<pre>
+class ApiTask_WaitPacket : IDisposable
+{
+    public PacketObject DetectPacket { get; }
+    public bool IsRunning
+
+    public void Stop()
+    public PacketObject Join(int timeout_ms)
+}
+</pre>
+<h2 id="%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E3%83%8F%E3%83%B3%E3%83%89%E3%83%A9">イベントハンドラ</h2>
+<h3 id="packetdetectedhandler">PacketDetectedHandler</h3>
+<pre>
+delegate void PacketDetectedHandler(object sender, PacketObject packet)
+</pre>
 
 </body>
 </html>

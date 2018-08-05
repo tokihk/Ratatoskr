@@ -1,15 +1,15 @@
-# Ratatoskr ユーザーマニュアル
+<link href="../params.css" rel="stylesheet" />
+
+# <span class="app-name" /> ユーザーマニュアル
 
 ![image](../_images/app_icon_128x128.png) ![image](../_images/app_logo_600x120.png)
 
-https://github.com/tokihk/Ratatoskr
-
-Ratatoskrは、パソコンに接続できる様々なデバイスと通信を行うことができる開発支援ツールです。
+<span class="app-name" />は、パソコンに接続できる様々なデバイスと通信を行うことができる開発支援ツールです。<br>
 シリアルポートやTCP/UDP等の様々な通信ポートに対して、汎用的な通信デバッグ環境を提供します。
 
 見やすいパケットビューや、操作性を重視したインターフェースにより、ポートへの入出力を直感的に操作することができます。
 
-Ratatoskrには以下の特徴があります。
+<span class="app-name" />には以下の特徴があります。
 
 * シリアルポート、TCP/IP、UDP等の様々な通信に対応
   * Serial Port
@@ -27,7 +27,7 @@ Ratatoskrには以下の特徴があります。
 
 ## 著作権
 
-* Toki.H.K - [Mail](mailto:toki.h.k@outlook.com) , [GitHub](https://github.com/tokihk)
+* <span class="author" /> - <span class="author-mail" />
 
 ## ライセンス
 
@@ -50,9 +50,9 @@ Ratatoskrには以下の特徴があります。
 
 ### アンインストール
 
-Ratatoskrはレジストリを使用しません。
+<span class="app-name" />はレジストリを使用しません。
 
 インストールで解凍したファイルを削除した後に、設定ファイルを削除してください。
 設定ファイルは以下の場所に存在します。
-`%APPDATA%\Ratatoskr`
 
+<code>%APPDATA%&#92;<span class="app-name" /></code>

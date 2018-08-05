@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>introduction.eng.md</title>
+<title>send-mode.jpn.md</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 
 <style>
@@ -386,62 +386,61 @@ blockquote {
 </head>
 <body>
 <link href="../params.css" rel="stylesheet" />
-<h1 id="span-classapp-name-users-manual"><span class="app-name" /> User's manual</h1>
-<p><img src="../_images/app_icon_128x128.png" alt="image"> <img src="../_images/app_logo_600x120.png" alt="image"></p>
-<p><span class = "app-name" /> is a development support tool that can communicate with various devices that can be connected to a personal computer. <br>
-It provides a general-purpose communication debugging environment for various communication ports such as serial port and TCP / UDP.</p>
-<p>You can intuitively operate input / output to / from ports by easy-to-view packet view and interface that emphasizes operability.</p>
-<p><span class = "app-name" /> has the following features.</p>
-<ul>
-<li>Supports various communication such as serial port, TCP / IP, UDP
-  * Serial Port
-  * TCP / IP Server or Client
-  * UDP
-  * USB Capture</li>
-<li>Supports packet view according to usage, such as packet unit and data unit</li>
-<li>Simultaneous connection to multiple ports</li>
-<li>Simultaneous display of multiple types of packet views</li>
-<li>Saving / loading / saving packet logs automatically</li>
-<li>Real-time packet control such as filtering, packet combining</li>
-<li>Redirect transfer from port to port</li>
-</ul>
-<p><img src="../_images/basic.png" alt=""></p>
-<h2 id="copyright">Copyright</h2>
-<ul>
-<li><span class = "author" /> - <span class = "author-mail" /></li>
-</ul>
-<h2 id="license">license</h2>
-<p>GPL 3 (GNU GENERAL PUBLIC LICENSE v 3)</p>
-<h2 id="operating-environment">Operating environment</h2>
-<ul>
-<li>.NET Framework 4.7</li>
-</ul>
-<h2 id="installation">Installation</h2>
-<p>After installing .NET Framwork, decompress it to an arbitrary folder and execute it.</p>
-<p>Other software is required when using some functions.</p>
+<h1 id="send-mode">Send Mode</h1>
+<h2 id="%E3%82%A8%E3%83%87%E3%82%A3%E3%83%83%E3%83%88%E9%80%81%E4%BF%A1%E3%83%A2%E3%83%BC%E3%83%89"><img src="../_images/pen_32x32.png" alt=""> エディット送信モード</h2>
+<p><img src="../_images/ss-send-panel-data.png" alt=""></p>
+<p>任意のデータをテキストで指定して送信します。<br>
+16進数表現で入力し、Enterキーで送信します。<br>
+3文字目もしくはスペースで別データとして認識します。<br></p>
+<p><code>Preview</code> にチェックを入れると実際に送信するデータを確認できます。<br></p>
+<p><code>'...'</code> で囲むと囲まれた文字を現在の文字コードで変換します。<br>
+<code>&lt;...&gt;</code> で囲むと文字コードを変更できます。(デフォルトはutf-8)<br></p>
 <table>
 <thead>
 <tr>
-<th style="text-align:left">Features</th>
-<th style="text-align:left">Required Software</th>
+<th style="text-align:left">入力データ例</th>
+<th style="text-align:left">送信データ</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left">USB Monitor</td>
-<td style="text-align:left">USBPcap (<a href="http://desowin.org/usbpcap/" title="USBPcap">http://desowin.org/usbpcap/</a>)</td>
+<td style="text-align:left"><code>0123456789</code></td>
+<td style="text-align:left"><code>01 23 45 67 89</code></td>
 </tr>
 <tr>
-<td style="text-align:left">Ehernet</td>
-<td style="text-align:left">WinPcap (<a href="https://www.winpcap.org/">https://www.winpcap.org/</a>)</td>
+<td style="text-align:left"><code>0 1 2 3 4</code></td>
+<td style="text-align:left"><code>00 01 02 03 04</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>02'test'03</code></td>
+<td style="text-align:left"><code>02 74 65 73 74 03</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>02'あいうえお'03</code></td>
+<td style="text-align:left"><code>02 E3 81 82 E3 81 84 E3 81 86 E3 81 88 E3 81 8A 03</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>02&lt;shift-jis&gt;'あいうえお'03</code></td>
+<td style="text-align:left"><code>02 82 A0 82 A2 82 A4 82 A6 82 A8 03</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="uninstall">Uninstall</h3>
-<p><span class = "app-name" /> does not use the registry.</p>
-<p>Delete the file decompressed by installation and delete the configuration file.
-The configuration file exists in the following location.</p>
-<p><code>%APPDATA%\<span class="app-name" /></code></p>
+<hr>
+<h2 id="%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E9%80%81%E4%BF%A1%E3%83%A2%E3%83%BC%E3%83%89"><img src="../_images/file_32x32.png" alt=""> ファイル送信モード</h2>
+<p><img src="../_images/ss-send-panel-file.png" alt=""></p>
+<p>任意のファイルをバイナリデータとして送信します。<br>
+送信ブロックサイズを[Block size]に指定します。</p>
+<p>送信データをドラッグ＆ドロップするか、ファイル選択ダイアログから選択します。<br>
+※管理者モードのときはドラッグ＆ドロップはできません。<br>
+Enterキーもしくは[Send]ボタンで送信します。<br></p>
+<hr>
+<h2 id="%E3%83%AD%E3%82%B0%E5%86%8D%E7%94%9F%E3%83%A2%E3%83%BC%E3%83%89"><img src="../_images/play2_32x32.png" alt=""> ログ再生モード</h2>
+<p><img src="../_images/ss-send-panel-record.png" alt=""></p>
+<p>任意のパケットログをログに記述されているタイミングで送信します。<br>
+パケットログ内のどのデータを送信するかを[Play data type]で指定します。<br></p>
+<p>キャプチャデータをドラッグ＆ドロップするか、ファイル選択ダイアログから選択します。<br>
+※管理者モードのときはドラッグ＆ドロップはできません。<br>
+Enterキーもしくは[Send]ボタンで送信します。<br></p>
 
 </body>
 </html>

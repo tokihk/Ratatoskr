@@ -22,6 +22,7 @@ You can set the gate from the button of the gate bar.
 ## 3.Send
 
 Data can be sent from the transmission control box at the bottom of the frame.
+
 ![](../_images/send_control_box.png)
 
 The destination gate is specified with `wild card 'in`Target alias`.

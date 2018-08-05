@@ -1,0 +1,12 @@
+span.app-name:before {
+	content: "Ratatoskr";
+}
+
+span.author:before {
+	content: "Toki.H.K";
+}
+
+span.author-mail:before {
+	content: "toki.h.k@outlook.com";
+}
+

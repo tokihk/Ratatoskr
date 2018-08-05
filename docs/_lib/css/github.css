@@ -145,7 +145,7 @@ dl {
 blockquote {
   border-left: 4px solid #dddddd;
   padding: 0 15px;
-  color: #777777; }
+  color: #888888; }
   blockquote > :first-child {
     margin-top: 0; }
   blockquote > :last-child {
@@ -243,10 +243,15 @@ span.float-right {
 code, tt {
   margin: 0 2px;
   padding: 0 5px;
+  color: #333333;
   white-space: nowrap;
   border: 1px solid #eaeaea;
-  background-color: #f8f8f8;
+  background-color: #1b1a1a;
   border-radius: 3px; }
+
+code {
+  color: #333333;
+}
 
 pre code {
   margin: 0;
