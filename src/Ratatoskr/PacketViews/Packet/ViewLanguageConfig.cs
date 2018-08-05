@@ -10,6 +10,7 @@ namespace Ratatoskr.PacketViews.Packet
 {
     internal sealed class ViewLanguageConfig : ConfigHolder
     {
+        public StringConfig Column_Class               { get; } = new StringConfig("Class");
         public StringConfig Column_Alias               { get; } = new StringConfig("Alias");
         public StringConfig Column_Datetime_UTC        { get; } = new StringConfig("DateTime(UTC)");
         public StringConfig Column_Datetime_Local      { get; } = new StringConfig("DateTime(Local)");
@@ -22,23 +23,29 @@ namespace Ratatoskr.PacketViews.Packet
         public StringConfig Column_DataPreviewText     { get; } = new StringConfig("Data Preview(Text)");
         public StringConfig Column_DataPreviewCustom   { get; } = new StringConfig("Data Preview(Custom)");
 
-        public StringConfig CopyMenu_Alias          { get; } = new StringConfig("Alias");
-        public StringConfig CopyMenu_Datetime_UTC   { get; } = new StringConfig("DateTime(UTC)");
-        public StringConfig CopyMenu_Datetime_Local { get; } = new StringConfig("DateTime(Local)");
-        public StringConfig CopyMenu_Information    { get; } = new StringConfig("Information");
-        public StringConfig CopyMenu_Mark           { get; } = new StringConfig("Mark");
-        public StringConfig CopyMenu_Source         { get; } = new StringConfig("Source");
-        public StringConfig CopyMenu_Destination    { get; } = new StringConfig("Destination");
-        public StringConfig CopyMenu_DataLength     { get; } = new StringConfig("Data Length");
-        public StringConfig CopyMenu_DataRaw        { get; } = new StringConfig("Data (Raw)");
-        public StringConfig CopyMenu_DataHexText    { get; } = new StringConfig("Data (Hex Text)");
-
-        public StringConfig CMenu_Packet_CopyToClipboard               { get; } = new StringConfig("Copy to clipboard");
-        public StringConfig CMenu_Packet_CopyToClipboard_AllInfo_Csv   { get; } = new StringConfig("All Information(CSV)");
-        public StringConfig CMenu_Packet_CopyToClipboard_DataString    { get; } = new StringConfig("Data: String");
-        public StringConfig CMenu_Packet_CopyToClipboard_DataHex       { get; } = new StringConfig("Data: Hex");
-        public StringConfig CMenu_Packet_CopyToClipboard_DataCustom    { get; } = new StringConfig("Data: Custom");
-        public StringConfig CMenu_Packet_CopyToClipboard_NewLineOn     { get; } = new StringConfig("Line feed on");
-        public StringConfig CMenu_Packet_CopyToClipboard_NewLineOff    { get; } = new StringConfig("Line feed off");
+        public StringConfig CMenu_Packet_Copy                           { get; } = new StringConfig("Copy");
+        public StringConfig CMenu_Packet_Copy_AllInfo_Csv               { get; } = new StringConfig("All Information(CSV)");
+        public StringConfig CMenu_Packet_Copy_Class                     { get; } = new StringConfig("Class");
+        public StringConfig CMenu_Packet_Copy_Alias                     { get; } = new StringConfig("Alias");
+        public StringConfig CMenu_Packet_Copy_Information               { get; } = new StringConfig("Information");
+        public StringConfig CMenu_Packet_Copy_Source                    { get; } = new StringConfig("Source");
+        public StringConfig CMenu_Packet_Copy_Destination               { get; } = new StringConfig("Destination");
+        public StringConfig CMenu_Packet_Copy_Message                   { get; } = new StringConfig("Message");
+        public StringConfig CMenu_Packet_Copy_DateTime                  { get; } = new StringConfig("DateTime");
+        public StringConfig CMenu_Packet_Copy_DateTime_UTC_ISO8601      { get; } = new StringConfig("UTC: ISO8601 format");
+        public StringConfig CMenu_Packet_Copy_DateTime_UTC_Display      { get; } = new StringConfig("UTC: Display format");
+        public StringConfig CMenu_Packet_Copy_DateTime_Local_ISO8601    { get; } = new StringConfig("Local: ISO8601 format");
+        public StringConfig CMenu_Packet_Copy_DateTime_Local_Display    { get; } = new StringConfig("Local: Display format");
+        public StringConfig CMenu_Packet_Copy_Data                      { get; } = new StringConfig("Data (without Line Feed)");
+        public StringConfig CMenu_Packet_Copy_DataLF                    { get; } = new StringConfig("Data (with Line Feed)");
+        public StringConfig CMenu_Packet_Copy_Data_BitString            { get; } = new StringConfig("Bit string");
+        public StringConfig CMenu_Packet_Copy_Data_HexString            { get; } = new StringConfig("Hex string");
+        public StringConfig CMenu_Packet_Copy_Data_AsciiText            { get; } = new StringConfig("ASCII text");
+        public StringConfig CMenu_Packet_Copy_Data_Utf8Text             { get; } = new StringConfig("UTF-8 text");
+        public StringConfig CMenu_Packet_Copy_Data_Utf16BeText          { get; } = new StringConfig("UTF-16BE text");
+        public StringConfig CMenu_Packet_Copy_Data_Utf16LeText          { get; } = new StringConfig("UTF-16LE text");
+        public StringConfig CMenu_Packet_Copy_Data_ShiftJisText         { get; } = new StringConfig("Shift_JIS text");
+        public StringConfig CMenu_Packet_Copy_Data_EucJpText            { get; } = new StringConfig("EUC-JP text");
+        public StringConfig CMenu_Packet_Copy_Data_Custom               { get; } = new StringConfig("Custom preview format");
     }
 }

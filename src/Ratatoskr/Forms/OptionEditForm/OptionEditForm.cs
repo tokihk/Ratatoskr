@@ -22,6 +22,7 @@ namespace Ratatoskr.Forms.OptionEditForm
             AutoUpdate,
             AutoTimeStamp,
             AutoSave,
+            Memory,
             Notify_MailList,
             Notify_Mail_Top,
             Notify_Mail_Last = Notify_Mail_Top + NOTIFY_MAIL_CONFIG_NUM - 1,
@@ -66,6 +67,7 @@ namespace Ratatoskr.Forms.OptionEditForm
                 new { level = 1, text = "Auto timestamp", page = PageId.AutoTimeStamp },
                 new { level = 0, text = "Log",            page = PageId.None },
                 new { level = 1, text = "Auto save",      page = PageId.AutoSave },
+                new { level = 0, text = "Memory",         page = PageId.Memory },
 //                new { level = 0, text = "Notify setting", page = PageId.None },
 //                new { level = 1, text = "Mail setting",   page = PageId.Notify_Mail_Top },
 
@@ -131,6 +133,7 @@ namespace Ratatoskr.Forms.OptionEditForm
                     case PageId.AutoUpdate:          return (new OptionEditPage_AutoUpdate());
                     case PageId.AutoTimeStamp:       return (new OptionEditPage_AutoTimeStamp());
                     case PageId.AutoSave:            return (new OptionEditPage_AutoSave());
+                    case PageId.Memory:              return (new OptionEditPage_Memory());
                     case PageId.Notify_MailList:     return (new OptionEditPage_NotifyMailList());
                     default:                         return (null);
                 }

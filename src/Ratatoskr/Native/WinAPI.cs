@@ -66,6 +66,26 @@ namespace Ratatoskr.Native
 
         public const Int32 WS_EX_NOACTIVATE     = 0x08000000;
 
+        public const UInt32 LVIF_TEXT           = 0x00000001;
+        public const UInt32 LVIF_IMAGE          =    0x00000002;
+        public const UInt32 LVIF_PARAM          =    0x00000004;
+        public const UInt32 LVIF_STATE          =    0x00000008;
+        public const UInt32 LVIF_INDENT         =    0x00000010;
+        public const UInt32 LVIF_NORECOMPUTE    =    0x00000800;
+        public const UInt32 LVIF_GROUPID        =    0x00000100;
+        public const UInt32 LVIF_COLUMNS        =    0x00000200;
+        public const UInt32 LVIF_COLFMT         =    0x00010000; // The piColFmt member is valid in addition to puColumns
+
+        public const UInt32 LVIS_FOCUSED        =    0x0001;
+        public const UInt32 LVIS_SELECTED       =    0x0002;
+        public const UInt32 LVIS_CUT            =    0x0004;
+        public const UInt32 LVIS_DROPHILITED    =    0x0008;
+        public const UInt32 LVIS_GLOW           =    0x0010;
+        public const UInt32 LVIS_ACTIVATING     =    0x0020;
+
+        public const UInt32 LVIS_OVERLAYMASK    =    0x0F00;
+        public const UInt32 LVIS_STATEIMAGEMASK =    0xF000;
+
         public const UInt32 MA_ACTIVATE         = 1;
         public const UInt32 MA_ACTIVATEANDEAT   = 2;
         public const UInt32 MA_NOACTIVATE       = 3;
@@ -209,6 +229,11 @@ namespace Ratatoskr.Native
         public const UInt32 PURGE_RXABORT = 0x0002;  // Kill the pending/current reads to the comm port.
         public const UInt32 PURGE_TXCLEAR = 0x0004;  // Kill the transmit queue if there.
         public const UInt32 PURGE_RXCLEAR = 0x0008;  // Kill the typeahead buffer if there.
+
+        public const UInt32 MS_CTS_ON  = 0x0010;
+        public const UInt32 MS_DSR_ON  = 0x0020;
+        public const UInt32 MS_RING_ON = 0x0040;
+        public const UInt32 MS_RLSD_ON = 0x0080;
 
         public const UInt32 SETXOFF  = 1;       // Simulate XOFF received
         public const UInt32 SETXON   = 2;       // Simulate XON received
@@ -422,6 +447,20 @@ namespace Ratatoskr.Native
         public const UInt32 TIME_ONESHOT  = 0;
         public const UInt32 TIME_PERIDOIC = 1;
 
+        public enum USB_CONNECTION_STATUS : UInt32
+        {
+            NoDeviceConnected         ,
+            DeviceConnected           ,
+            DeviceFailedEnumeration   ,
+            DeviceGeneralFailure      ,
+            DeviceCausedOvercurrent   ,
+            DeviceNotEnoughPower      ,
+            DeviceNotEnoughBandwidth  ,
+            DeviceHubNestedTooDeeply  ,
+            DeviceInLegacyHub         ,
+            DeviceEnumerating         ,
+            DeviceReset
+        }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct SYSTEMTIME
@@ -599,6 +638,20 @@ namespace Ratatoskr.Native
         }
 
         [StructLayout(LayoutKind.Sequential)]
+        public struct LVITEM
+        {
+            public UInt32 mask;
+            public Int32 iItem;
+            public Int32 iSubItem;
+            public UInt32 state;
+            public UInt32 stateMask;
+            public string pszText;
+            public Int32 cchTextMax;
+            public Int32 iImage;
+            public IntPtr lParam;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
         public struct COMSTAT
         {
             public UInt32 Flags;
@@ -607,14 +660,13 @@ namespace Ratatoskr.Native
 
             public enum FlagsParamOffset
             {
-                CtsHold  = 31,
-                DsrHold  = 30,
-                RlsHold  = 29,
-                XoffHold = 28,
-                XoffSent = 27,
-                Eof      = 26,
-                Txim     = 25,
-                Reserved = 0,
+                CtsHold  = 0,
+                DsrHold  = 1,
+                RlsHold  = 2,
+                XoffHold = 3,
+                XoffSent = 4,
+                Eof      = 5,
+                Txim     = 6,
             }
         }
 
@@ -817,11 +869,63 @@ namespace Ratatoskr.Native
             public USB_MI_PARENT_INFORMATION MiParentInformation;
         }
 
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct USB_DEVICE_DESCRIPTOR 
+        { 
+            public Byte     bLength; 
+            public Byte     bDescriptorType; 
+            public UInt16   bcdUSB; 
+            public Byte     bDeviceClass; 
+            public Byte     bDeviceSubClass; 
+            public Byte     bDeviceProtocol; 
+            public Byte     bMaxPacketSize0; 
+            public UInt16   idVendor; 
+            public UInt16   idProduct; 
+            public UInt16   bcdDevice; 
+            public Byte     iManufacturer; 
+            public Byte     iProduct; 
+            public Byte     iSerialNumber; 
+            public Byte     bNumConfigurations; 
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         public struct USB_NODE_INFORMATION
         {
             public USB_HUB_NODE NodeType;    /* hub, mi parent */
             public UsbNodeUnion u;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)] 
+        internal struct USB_ENDPOINT_DESCRIPTOR 
+        {
+            public Byte     bLength;
+            public Byte     bDescriptorType;
+            public Byte     bEndpointAddress;
+            public Byte     bmAttributes;
+            public UInt16   wMaxPacketSize;
+            public Byte     bInterval;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)] 
+        internal struct USB_PIPE_INFO 
+        {
+            public USB_ENDPOINT_DESCRIPTOR  EndpointDescriptor;
+            public UInt32                   ScheduleOffset;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct USB_NODE_CONNECTION_INFORMATION
+        {
+            public UInt32                   ConnectionIndex;
+            public USB_DEVICE_DESCRIPTOR    DeviceDescriptor;
+            public Byte                     CurrentConfigurationValue;
+            public Byte                     LowSpeed;
+            public Byte                     DeviceIsHub;
+            public UInt16                   DeviceAddress;
+            public UInt32                   NumberOfOpenPipes;
+            public USB_CONNECTION_STATUS    ConnectionStatus;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
+            public USB_PIPE_INFO[]          PipeList;
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -832,6 +936,9 @@ namespace Ratatoskr.Native
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public extern static IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public extern static IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, ref LVITEM lParam);
 
         [DllImport("advapi32.dll", EntryPoint = "OpenSCManagerW", ExactSpelling = true, CharSet = CharSet.Unicode, SetLastError = true)]
         public extern static IntPtr OpenSCManager
@@ -1080,6 +1187,13 @@ namespace Ratatoskr.Native
         );
 
         [DllImport("kernel32.dll", SetLastError = true)]
+        public extern static bool GetCommModemStatus
+        (
+            IntPtr hFile,
+            out uint lpModemStat
+        );
+
+        [DllImport("kernel32.dll", SetLastError = true)]
         public extern static bool SetCommTimeouts
         (
             IntPtr hFile,
@@ -1102,7 +1216,9 @@ namespace Ratatoskr.Native
         );
 
         [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern bool DeviceIoControl(IntPtr hDevice, uint dwIoControlCode,
+        public static extern bool DeviceIoControl(
+            IntPtr hDevice,
+            uint dwIoControlCode,
             IntPtr lpInBuffer,
             uint nInBufferSize,
             IntPtr lpOutBuffer,

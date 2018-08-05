@@ -18,7 +18,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
         private MemoryStream block_stream_ = null;
 
 
-        public FileFormatWriterImpl() : base()
+        public FileFormatWriterImpl(FileFormatClass fmtc) : base(fmtc)
         {
         }
 

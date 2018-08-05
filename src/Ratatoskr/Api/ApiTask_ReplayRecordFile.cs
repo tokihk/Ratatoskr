@@ -62,14 +62,10 @@ namespace Ratatoskr.Api
             ProgressNow = 1;
 
             /* 送信ログファイル取得 */
-            var reader_info = FormUiManager.CreatePacketLogReader(FilePath);
-            var reader = reader_info.reader as PacketLogReader;
+            var info = FileManager.PacketLogOpen.GetReadTargetFromPath(FilePath);
 
-            if (   (reader == null)
-                || (reader_info.paths.Length == 0)
-            ) {
-                return;
-            }
+            if (info == null)return;
+            if (info.FilePath == null)return;
 
             /* フィルターモジュール生成 */
             var filter_obj = ExpressionFilter.Build(Filter);
@@ -83,7 +79,7 @@ namespace Ratatoskr.Api
 
             /* 送信タスク開始 */
             ar_task_ = (new ExecTaskHandler(ExecTask)).BeginInvoke(
-                gate_objs, filter_obj, reader, reader_info.option, new Queue<string>(reader_info.paths), null, null);
+                gate_objs, filter_obj, info, null, null);
         }
 
         public void Stop()
@@ -117,19 +113,21 @@ namespace Ratatoskr.Api
             return (Success);
         }
 
-        private delegate void ExecTaskHandler(GateObject[] gates, ExpressionFilter filter, PacketLogReader reader, FileFormatOption option, Queue<string> paths);
-        private void ExecTask(GateObject[] gates, ExpressionFilter filter, PacketLogReader reader, FileFormatOption option, Queue<string> paths)
+        private delegate void ExecTaskHandler(GateObject[] gates, ExpressionFilter filter, FileReadTargetInfo info);
+        private void ExecTask(GateObject[] gates, ExpressionFilter filter, FileReadTargetInfo info)
         {
-            while ((!cancel_req_) && (paths.Count > 0)) {
-                PlayRecord(gates, filter, reader, option, paths.Dequeue());
-            }
+            PlayRecord(gates, filter, info);
 
-            Success = ((!cancel_req_) && (paths.Count == 0));
+            Success = (!cancel_req_);
         }
 
-        private void PlayRecord(GateObject[] gates, ExpressionFilter filter, PacketLogReader reader, FileFormatOption option, string path)
+        private void PlayRecord(GateObject[] gates, ExpressionFilter filter, FileReadTargetInfo info)
         {
-            if (!reader.Open(option, path))return;
+            var reader = info.Reader as PacketLogReader;
+
+            if (reader == null)return;
+
+            if (!reader.Open(info.Option, info.FilePath))return;
 
             ProgressMax = (uint)reader.ProgressMax;
             ProgressNow = (uint)reader.ProgressNow;

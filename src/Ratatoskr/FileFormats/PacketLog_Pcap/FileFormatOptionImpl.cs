@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Devices.Ethernet;
+using Ratatoskr.Drivers.WinPcap;
 
 namespace Ratatoskr.FileFormats.PacketLog_Pcap
 {

@@ -36,7 +36,8 @@ namespace Ratatoskr.Forms.MainWindow
         {
             LoadFileListConfig();
 
-            Num_BlockSize.Value = ConfigManager.User.SendPanel_File_BlockSize.Value;
+            Num_SendBlockSize.Value = ConfigManager.User.SendPanel_File_BlockSize.Value;
+            Num_SendDelay.Value = ConfigManager.User.SendPanel_File_SendDelay.Value;
 
             UpdateFileListView();
         }
@@ -62,7 +63,8 @@ namespace Ratatoskr.Forms.MainWindow
         {
             BackupFileListConfig();
 
-            ConfigManager.User.SendPanel_File_BlockSize.Value = Num_BlockSize.Value;
+            ConfigManager.User.SendPanel_File_BlockSize.Value = Num_SendBlockSize.Value;
+            ConfigManager.User.SendPanel_File_SendDelay.Value = Num_SendDelay.Value;
         }
 
         private void BackupFileListConfig()
@@ -135,7 +137,7 @@ namespace Ratatoskr.Forms.MainWindow
             }
 
             /* 送信開始 */
-            api_obj_ = Program.API.API_SendFileAsync(target, file_path, (uint)Num_BlockSize.Value);
+            api_obj_ = Program.API.API_SendFileAsync(target, file_path, (uint)Num_SendBlockSize.Value, (uint)Num_SendDelay.Value);
             if (api_obj_ == null) {
                 SendExecComplete(false);
                 return;

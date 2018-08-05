@@ -27,13 +27,14 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
             ItemOrder.Add(PacketElementID.Alias);
             ItemOrder.Add(PacketElementID.Priority);
             ItemOrder.Add(PacketElementID.Attribute);
-            ItemOrder.Add(PacketElementID.DateTime);
+            ItemOrder.Add(PacketElementID.DateTime_UTC_Display);
+            ItemOrder.Add(PacketElementID.DateTime_Local_Display);
             ItemOrder.Add(PacketElementID.Information);
             ItemOrder.Add(PacketElementID.Direction);
             ItemOrder.Add(PacketElementID.Source);
             ItemOrder.Add(PacketElementID.Destination);
             ItemOrder.Add(PacketElementID.Mark);
-            ItemOrder.Add(PacketElementID.Data);
+            ItemOrder.Add(PacketElementID.Data_HexString);
         }
 
         public override FileFormatOptionEditor GetEditor()

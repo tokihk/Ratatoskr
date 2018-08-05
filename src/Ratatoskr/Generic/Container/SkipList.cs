@@ -146,6 +146,16 @@ namespace Ratatoskr.Generic.Container
             get { return (item_count_); }
         }
 
+        public Type First
+        {
+            get { return (block_l1_.First().First()); }
+        }
+
+        public Type Last
+        {
+            get { return (block_l1_.Last().Last()); }
+        }
+
         private void GCCollect()
         {
             if (gc_collect_count_++ < GC_COLLECT_STEP)return;

@@ -120,8 +120,8 @@ namespace Ratatoskr.Devices.TcpClient
 
             NotifyMessage(
                 PacketPriority.Standard,
-                String.Format("Connect => [{0:G}]", remote_text_),
-                "");
+                "Device Event",
+                String.Format("Connect => [{0:G}]", remote_text_));
 
             send_state_ = false;
             recv_state_ = false;
@@ -155,8 +155,8 @@ namespace Ratatoskr.Devices.TcpClient
         {
             NotifyMessage(
                 PacketPriority.Standard,
-                String.Format("Disconnect <= [{0:G}]", remote_text_),
-                "");
+                "Device Event",
+                String.Format("Disconnect <= [{0:G}]", remote_text_));
         }
 
         protected override PollState OnPoll()

@@ -14,8 +14,6 @@ namespace Ratatoskr.Devices
     {
         public DevicePropertyEditor()
         {
-            SuspendLayout();
-
             InitializeComponent();
         }
 

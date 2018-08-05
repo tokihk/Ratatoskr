@@ -22,6 +22,11 @@ namespace Ratatoskr.Devices.Ethernet
             get { return (Name); }
         }
 
+        public override string DescID
+        {
+            get { return ("Ethernet"); }
+        }
+
         public override Type GetPropertyType()
         {
             return (typeof(DevicePropertyImpl));

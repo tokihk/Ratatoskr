@@ -55,8 +55,8 @@ namespace Ratatoskr.Devices.TcpServer
 
             devi_.NotifyMessage(
                 PacketPriority.Standard,
-                String.Format("Connect <= [{0:G}]", remote_text_),
-                "");
+                "Device Event",
+                String.Format("Connect <= [{0:G}]", remote_text_));
         }
 
         public void Dispose()
@@ -80,8 +80,8 @@ namespace Ratatoskr.Devices.TcpServer
 
             devi_.NotifyMessage(
                 PacketPriority.Standard,
-                String.Format("Disconnect => [{0:G}]", remote_text_),
-                "");
+                "Device Event",
+                String.Format("Disconnect => [{0:G}]", remote_text_));
 
             dispose_state_ = true;
         }

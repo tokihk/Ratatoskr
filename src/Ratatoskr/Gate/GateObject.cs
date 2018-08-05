@@ -197,6 +197,8 @@ namespace Ratatoskr.Gate
 
         private void SendExec()
         {
+            if (send_queue_.Count == 0)return;
+
             lock (send_queue_sync_) {
                 if (   (send_queue_.Count > 0)
                     && (devi_ != null)
@@ -228,7 +230,9 @@ namespace Ratatoskr.Gate
                 }
 
                 /* 送信データキューにデータをセット */
-                send_queue_.Enqueue(data);
+                if (data != null) {
+                    send_queue_.Enqueue(data);
+                }
             }
 
             /* 送信実行 */

@@ -182,7 +182,13 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void DockPanel_Main_DockContentClosed(object sender, Control control, FormClosedEventArgs e)
         {
-            FormTaskManager.RemovePacketView(control as ViewControl);
+            var viewc = control as ViewControl;
+
+            if (viewc == null)return;
+
+            FormTaskManager.RemovePacketView(viewc);
+
+            viewc.Dispose();
         }
     }
 }

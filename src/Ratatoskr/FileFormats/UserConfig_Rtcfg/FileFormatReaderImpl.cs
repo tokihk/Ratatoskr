@@ -16,7 +16,7 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
         private BinaryReader reader_ = null;
 
         
-        public FileFormatReaderImpl() : base()
+        public FileFormatReaderImpl(FileFormatClass fmtc) : base(fmtc)
         {
         }
 

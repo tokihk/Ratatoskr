@@ -22,6 +22,11 @@ namespace Ratatoskr.Devices.TcpClient
             get { return (Name); }
         }
 
+        public override string DescID
+        {
+            get { return ("TcpClient"); }
+        }
+
         public override Type GetPropertyType()
         {
             return (typeof(DevicePropertyImpl));

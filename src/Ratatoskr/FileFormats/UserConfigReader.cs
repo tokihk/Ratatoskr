@@ -9,6 +9,10 @@ namespace Ratatoskr.FileFormats
 {
     internal class UserConfigReader : FileFormatReader
     {
+        public UserConfigReader(FileFormatClass fmtc) : base(fmtc)
+        {
+        }
+
         public (UserConfig config, Guid profile_id) Load()
         {
             if (!IsOpen)return (null, Guid.Empty);

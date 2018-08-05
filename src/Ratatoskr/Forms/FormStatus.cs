@@ -14,7 +14,8 @@ namespace Ratatoskr.Forms
         public bool   MainProgressBar_Visible = false;
         public byte   MainProgressBar_Value   = 0;
 
-        public ulong  PacketCount_All      = 0;
+        public ulong  PacketCount_Cache    = 0;
+        public ulong  PacketCount_Raw      = 0;
         public ulong  PacketCount_DrawAll  = 0;
         public ulong  PacketCount_DrawBusy = 0;
 

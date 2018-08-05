@@ -32,12 +32,12 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
 
         public override FileFormatReader CreateReader()
         {
-            return (new FileFormatReaderImpl());
+            return (new FileFormatReaderImpl(this));
         }
 
         public override FileFormatWriter CreateWriter()
         {
-            return (new FileFormatWriterImpl());
+            return (new FileFormatWriterImpl(this));
         }
     }
 }

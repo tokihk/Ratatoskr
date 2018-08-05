@@ -22,6 +22,11 @@ namespace Ratatoskr.Devices.SerialPort
             get { return (Name); }
         }
 
+        public override string DescID
+        {
+            get { return ("SerialPort"); }
+        }
+
         public override Type GetPropertyType()
         {
             return (typeof(DevicePropertyImpl));

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SharpPcap;
 using SharpPcap.LibPcap;
 using Ratatoskr.Packet;
+using Ratatoskr.Drivers.WinPcap;
 
 namespace Ratatoskr.Devices.Ethernet
 {

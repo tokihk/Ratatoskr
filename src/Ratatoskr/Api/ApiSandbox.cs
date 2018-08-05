@@ -86,9 +86,9 @@ namespace Ratatoskr.Api
             API_SendData(gate_alias, HexTextEncoder.ToByteArray(bin_text));
         }
 
-        public ApiTask_SendFile API_SendFileAsync(string gate_alias, string file_path, uint send_block_size = 1024)
+        public ApiTask_SendFile API_SendFileAsync(string gate_alias, string file_path, uint send_block_size = 1024, uint send_delay = 0)
         {
-            var obj = new ApiTask_SendFile(this, gate_alias, file_path, send_block_size);
+            var obj = new ApiTask_SendFile(this, gate_alias, file_path, send_block_size, send_delay);
 
             obj.StartAsync();
 

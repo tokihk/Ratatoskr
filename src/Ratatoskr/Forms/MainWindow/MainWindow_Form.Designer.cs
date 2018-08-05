@@ -38,6 +38,7 @@
             this.Menu_DataRate_SendData = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_DataRate_RecvData = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.Label_PktCount_Cache = new System.Windows.Forms.ToolStripStatusLabel();
             this.Label_PktCount_Raw = new System.Windows.Forms.ToolStripStatusLabel();
             this.Label_PktCount_View = new System.Windows.Forms.ToolStripStatusLabel();
             this.Label_PktCount_Busy = new System.Windows.Forms.ToolStripStatusLabel();
@@ -131,6 +132,7 @@
             this.toolStripStatusLabel2,
             this.DDBtn_DataRate,
             this.toolStripStatusLabel1,
+            this.Label_PktCount_Cache,
             this.Label_PktCount_Raw,
             this.Label_PktCount_View,
             this.Label_PktCount_Busy,
@@ -143,7 +145,7 @@
             // Label_Status
             // 
             this.Label_Status.Name = "Label_Status";
-            this.Label_Status.Size = new System.Drawing.Size(189, 22);
+            this.Label_Status.Size = new System.Drawing.Size(74, 22);
             this.Label_Status.Spring = true;
             this.Label_Status.Text = "起動完了";
             this.Label_Status.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -194,6 +196,17 @@
             this.toolStripStatusLabel1.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(4, 22);
+            // 
+            // Label_PktCount_Cache
+            // 
+            this.Label_PktCount_Cache.AutoSize = false;
+            this.Label_PktCount_Cache.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.Label_PktCount_Cache.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.Label_PktCount_Cache.Name = "Label_PktCount_Cache";
+            this.Label_PktCount_Cache.Size = new System.Drawing.Size(115, 22);
+            this.Label_PktCount_Cache.Text = "Cache: 999999999";
             // 
             // Label_PktCount_Raw
             // 
@@ -377,7 +390,7 @@
             // MenuBar_Edit_EventClear
             // 
             this.MenuBar_Edit_EventClear.Name = "MenuBar_Edit_EventClear";
-            this.MenuBar_Edit_EventClear.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_Edit_EventClear.Size = new System.Drawing.Size(131, 22);
             this.MenuBar_Edit_EventClear.Tag = "PacketClear";
             this.MenuBar_Edit_EventClear.Text = "Buffer clear";
             // 
@@ -397,36 +410,36 @@
             // MenuBar_View_PacketConverterAdd
             // 
             this.MenuBar_View_PacketConverterAdd.Name = "MenuBar_View_PacketConverterAdd";
-            this.MenuBar_View_PacketConverterAdd.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_View_PacketConverterAdd.Size = new System.Drawing.Size(155, 22);
             this.MenuBar_View_PacketConverterAdd.Text = "Add converter";
             // 
             // MenuBar_View_PacketViewAdd
             // 
             this.MenuBar_View_PacketViewAdd.Name = "MenuBar_View_PacketViewAdd";
-            this.MenuBar_View_PacketViewAdd.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_View_PacketViewAdd.Size = new System.Drawing.Size(155, 22);
             this.MenuBar_View_PacketViewAdd.Text = "Add packet view";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(152, 6);
             // 
             // MenuBar_View_PacketViewRedraw
             // 
             this.MenuBar_View_PacketViewRedraw.Name = "MenuBar_View_PacketViewRedraw";
-            this.MenuBar_View_PacketViewRedraw.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_View_PacketViewRedraw.Size = new System.Drawing.Size(155, 22);
             this.MenuBar_View_PacketViewRedraw.Tag = "PacketRedraw";
             this.MenuBar_View_PacketViewRedraw.Text = "Redraw";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(152, 6);
             // 
             // MenuBar_View_AutoScroll
             // 
             this.MenuBar_View_AutoScroll.Name = "MenuBar_View_AutoScroll";
-            this.MenuBar_View_AutoScroll.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_View_AutoScroll.Size = new System.Drawing.Size(155, 22);
             this.MenuBar_View_AutoScroll.Tag = "AutoScrollToggle";
             this.MenuBar_View_AutoScroll.Text = "Auto scroll";
             // 
@@ -493,38 +506,38 @@
             // MenuBar_Edit_TimeStamp
             // 
             this.MenuBar_Edit_TimeStamp.Name = "MenuBar_Edit_TimeStamp";
-            this.MenuBar_Edit_TimeStamp.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_Edit_TimeStamp.Size = new System.Drawing.Size(158, 22);
             this.MenuBar_Edit_TimeStamp.Tag = "TimeStamp";
             this.MenuBar_Edit_TimeStamp.Text = "Time stamp";
             // 
             // MenuBar_Tool_AutoTimeStamp
             // 
             this.MenuBar_Tool_AutoTimeStamp.Name = "MenuBar_Tool_AutoTimeStamp";
-            this.MenuBar_Tool_AutoTimeStamp.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_Tool_AutoTimeStamp.Size = new System.Drawing.Size(158, 22);
             this.MenuBar_Tool_AutoTimeStamp.Tag = "AutoTimeStampToggle";
             this.MenuBar_Tool_AutoTimeStamp.Text = "Auto Time stamp";
             // 
             // toolStripSeparator11
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator11.Size = new System.Drawing.Size(155, 6);
             // 
             // MenuBar_Tool_ScriptManager
             // 
             this.MenuBar_Tool_ScriptManager.Name = "MenuBar_Tool_ScriptManager";
-            this.MenuBar_Tool_ScriptManager.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_Tool_ScriptManager.Size = new System.Drawing.Size(158, 22);
             this.MenuBar_Tool_ScriptManager.Tag = "ShowScriptWindow";
             this.MenuBar_Tool_ScriptManager.Text = "Script Manager...";
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(155, 6);
             // 
             // MenuBar_Tool_Option
             // 
             this.MenuBar_Tool_Option.Name = "MenuBar_Tool_Option";
-            this.MenuBar_Tool_Option.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_Tool_Option.Size = new System.Drawing.Size(158, 22);
             this.MenuBar_Tool_Option.Tag = "ShowOptionDialog";
             this.MenuBar_Tool_Option.Text = "Options...";
             // 
@@ -541,19 +554,19 @@
             // MenuBar_Help_Document
             // 
             this.MenuBar_Help_Document.Name = "MenuBar_Help_Document";
-            this.MenuBar_Help_Document.Size = new System.Drawing.Size(182, 22);
+            this.MenuBar_Help_Document.Size = new System.Drawing.Size(180, 22);
             this.MenuBar_Help_Document.Tag = "ShowAppDocument";
-            this.MenuBar_Help_Document.Text = "Application Document";
+            this.MenuBar_Help_Document.Text = "Contents";
             // 
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(179, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(177, 6);
             // 
             // MenuBar_Help_About
             // 
             this.MenuBar_Help_About.Name = "MenuBar_Help_About";
-            this.MenuBar_Help_About.Size = new System.Drawing.Size(182, 22);
+            this.MenuBar_Help_About.Size = new System.Drawing.Size(180, 22);
             this.MenuBar_Help_About.Tag = "ShowAppInformation";
             this.MenuBar_Help_About.Text = "About Application";
             // 
@@ -729,5 +742,6 @@
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect3;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect4;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect5;
+        private System.Windows.Forms.ToolStripStatusLabel Label_PktCount_Cache;
     }
 }

@@ -33,6 +33,7 @@ namespace Ratatoskr.PacketViews.Packet.Configs
         public static uint GetInitWidth(ColumnType type)
         {
             switch (type) {
+                case ColumnType.Class:                  return (80);
                 case ColumnType.Alias:                  return (80);
                 case ColumnType.Datetime_UTC:           return (150);
                 case ColumnType.Datetime_Local:         return (150);
@@ -58,6 +59,7 @@ namespace Ratatoskr.PacketViews.Packet.Configs
 
         public ColumnListConfig()
         {
+            Value.Add(new ColumnHeaderConfig(ColumnType.Class));
             Value.Add(new ColumnHeaderConfig(ColumnType.Alias));
             Value.Add(new ColumnHeaderConfig(ColumnType.Datetime_Local));
             Value.Add(new ColumnHeaderConfig(ColumnType.Information));

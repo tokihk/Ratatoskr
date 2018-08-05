@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Devices.Ethernet;
 using Ratatoskr.Packet;
+using Ratatoskr.Drivers.WinPcap;
 using SharpPcap.LibPcap;
 
 namespace Ratatoskr.FileFormats.PacketLog_Pcap
@@ -17,7 +18,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Pcap
         private CaptureFileReaderDevice   device_ = null;
 
 
-        public FileFormatReaderImpl() : base()
+        public FileFormatReaderImpl(FileFormatClass fmtc) : base(fmtc)
         {
         }
 

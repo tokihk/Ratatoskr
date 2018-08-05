@@ -26,6 +26,14 @@ namespace Ratatoskr.Debugger
                 DateTime = date;
                 Message = msg;
             }
+
+            public override string ToString()
+            {
+                return (String.Format(
+                    "{0} {1}",
+                    DateTime.ToLocalTime().ToString("yyyy-MM-dd hh:mm:ss.fff"),
+                    Message));
+            }
         }
 
 
@@ -52,12 +60,7 @@ namespace Ratatoskr.Debugger
 
             draw_time_.Restart();
             while ((msg = PopMessage()) != null) {
-                TBox_Message.AppendText(
-                    String.Format(
-                        "{0} {1} {2}",
-                        msg.DateTime.ToLocalTime().ToString("yyyy-MM-dd hh:mm:ss.fff"),
-                        msg.Message,
-                        Environment.NewLine));
+                TBox_Message.AppendText(msg.ToString() + Environment.NewLine);
 
                 if (draw_time_.ElapsedMilliseconds >= (DRAW_INTERVAL / 2))break;
             }
@@ -96,9 +99,11 @@ namespace Ratatoskr.Debugger
 
         public void AddMessage(string text)
         {
-            PushMessage(new MessageInfo(DateTime.Now, string.Copy(text)));
+            var msg = new MessageInfo(DateTime.Now, string.Copy(text));
 
-            System.Diagnostics.Debug.WriteLine(text);
+            PushMessage(msg);
+
+            System.Diagnostics.Debug.WriteLine(msg.ToString());
         }
 
         private void DebugForm_VisibleChanged(object sender, EventArgs e)

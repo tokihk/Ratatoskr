@@ -43,9 +43,14 @@ namespace Ratatoskr.Configs.SystemConfigs
         Gate4_Connect,
         Gate5_Connect,
 
+        PacketConverterVisible,
+
         ShowScriptWindow,
         ShowOptionDialog,
+
         ShowAppDocument,
+        ShowAppDocument_PacketFilter,
+
         ShowAppInformation,
     }
 
@@ -62,6 +67,7 @@ namespace Ratatoskr.Configs.SystemConfigs
 
         public KeyConfig<MainWindowActionId> ShortcutKey { get; } = new KeyConfig<MainWindowActionId>();
 
+        public BoolConfig PacketConverterVisible { get; } = new BoolConfig(true);
 
         public MainWindowConfig()
         {

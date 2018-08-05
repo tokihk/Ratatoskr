@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
+using Ratatoskr.Forms.Controls;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
 using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Packet;
@@ -24,6 +25,8 @@ namespace Ratatoskr.PacketConverters.Filter
         private string           filter_exp_new_ = "";
         private ExpressionFilter filter_obj_new_ = null;
 
+        private PreviewLabel help_window_ = new PreviewLabel();
+
         private ToolTip TTip_Filter;
         private System.ComponentModel.IContainer components;
         private System.Windows.Forms.ComboBox CBox_Exp;
@@ -41,7 +44,7 @@ namespace Ratatoskr.PacketConverters.Filter
 
             InitializeComponent();
 
-            TTip_Filter.SetToolTip(CBox_Exp, ConfigManager.Language.MainMessage.Description_FilterExp.Value);
+//            TTip_Filter.SetToolTip(CBox_Exp, ConfigManager.Language.MainMessage.Description_FilterExp.Value);
 
             SetExpList(prop_.ExpList.Value);
 

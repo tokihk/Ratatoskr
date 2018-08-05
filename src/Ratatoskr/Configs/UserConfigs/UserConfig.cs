@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.Types;
-using Ratatoskr.Gate.AutoPacketSave;
+using Ratatoskr.Gate.AutoLogger;
 using Ratatoskr.Packet;
 
 
@@ -59,6 +59,7 @@ namespace Ratatoskr.Configs.UserConfigs
 
         public StringListConfig SendPanel_File_List      { get; } = new StringListConfig();
         public IntegerConfig    SendPanel_File_BlockSize { get; } = new IntegerConfig(100);
+        public IntegerConfig    SendPanel_File_SendDelay { get; } = new IntegerConfig(0);
 
         public StringListConfig            SendPanel_Log_List         { get; } = new StringListConfig();
         public EnumConfig<SendLogDataType> SendPanel_Log_PlayDataType { get; } = new EnumConfig<SendLogDataType>(SendLogDataType.RecvOnly);

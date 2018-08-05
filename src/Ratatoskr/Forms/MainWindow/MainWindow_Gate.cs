@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Devices;
+using Ratatoskr.Forms.Dialog;
 using Ratatoskr.Gate;
 using Ratatoskr.Generic;
 
@@ -15,15 +16,6 @@ namespace Ratatoskr.Forms.MainWindow
 {
     internal partial class MainWindow_Gate : UserControl
     {
-        public class ButtonEx : Button
-        {
-            public ButtonEx()
-            {
-                SetStyle(ControlStyles.Selectable, false);
-            }
-        }
-
-
         private const int MOUSE_HOLD_TIMER = 1000;
         private const int DRAW_IMAGE_SPACE = 2;
         private const int DRAW_TEXT_ALIAS_TOP = 0;
@@ -178,7 +170,7 @@ namespace Ratatoskr.Forms.MainWindow
             var devp    = gate_.DeviceProperty;
 
             /* 編集 */
-            var edit_form = new GateEditForm.GateEditForm(gatep, devconf, devc_id, devp);
+            var edit_form = new GateEditDialog(gatep, devconf, devc_id, devp);
 
             if (edit_form.ShowDialog() != DialogResult.OK)return;
 

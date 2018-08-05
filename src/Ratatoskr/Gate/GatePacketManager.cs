@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using Ratatoskr.Configs;
 using Ratatoskr.Forms;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Gate.AutoTimeStamp;
-using Ratatoskr.Gate.AutoPacketSave;
+using Ratatoskr.Gate.AutoLogger;
 using Ratatoskr.PacketConverters;
 using Ratatoskr.Packet;
 
@@ -18,8 +19,8 @@ namespace Ratatoskr.Gate
     {
         private static bool enable_ = true;
 
-        private static PacketContainer packets_;
-        private static object          packets_sync_ = new object();
+        private static IPacketContainer packets_;
+        private static readonly object  packets_sync_ = new object();
 
         private static IAsyncResult ar_load_ = null;
         private static IAsyncResult ar_save_ = null;
@@ -37,6 +38,11 @@ namespace Ratatoskr.Gate
 
         public static void Startup()
         {
+            packets_?.Dispose();
+
+            /* 使用していないパケットキャッシュを削除する */
+//            ResetPacketCacheDirectory();
+
             packets_ = CreatePacketContainer();
 
             /* パケットマネージャー初期化 */
@@ -46,13 +52,14 @@ namespace Ratatoskr.Gate
 
         public static void Shutdown()
         {
+            packets_?.Dispose();
         }
 
         public static void Poll()
         {
             AutoTimeStampManager.Poll();
 
-            AutoPacketSaveManager.Poll();
+            AutoLogManager.Poll();
 
             /* パケット処理 */
             PacketPoll();
@@ -89,14 +96,65 @@ namespace Ratatoskr.Gate
             get { return (packets_.Count); }
         }
 
-        public static IEnumerable<PacketObject> GetPackets()
+        public static IPacketContainerReadOnly GetPackets()
         {
             return (packets_);
         }
 
-        public static PacketContainer CreatePacketContainer()
+        private static string GetPacketCacheDirectory()
         {
-            return (new PacketContainer((ulong)ConfigManager.System.ApplicationCore.RawPacketCountLimit.Value));
+            return (Program.GetWorkspaceDirectory("packet-cache"));
+        }
+
+        private static void ResetPacketCacheDirectory()
+        {
+            var cache_dir_base = GetPacketCacheDirectory();
+
+            if (!Directory.Exists(cache_dir_base))return;
+
+            var process_id_str = "";
+            var process_id = 0;
+            var process = (Process)null;
+
+            foreach (var path in Directory.EnumerateDirectories(cache_dir_base)) {
+                process_id_str = Path.GetFileName(path);
+
+                if (!int.TryParse(process_id_str, out process_id))continue;
+
+                try {
+                    process = Process.GetProcessById(process_id);
+                    process.Dispose();
+                } catch {
+                    /* プロセスが存在しない場合はキャッシュを削除 */
+                    Native.Shell.rm(path);
+                }
+            }
+        }
+
+        public static IPacketContainer CreatePacketContainer()
+        {
+#if false
+            /* プロセス番号でルートディレクトリを作成する */
+            var work_dir_base = string.Format(
+                                    "{0}\\{1}",
+                                    Program.GetWorkspaceDirectory("packet-cache"),
+                                    Process.GetCurrentProcess().Id);
+
+            /* 重複しない作業ディレクトリを作成する */
+            var work_dir = "";
+
+            do {
+                work_dir = work_dir_base + "\\" + Path.GetRandomFileName();
+            } while (Directory.Exists(work_dir));
+
+            Directory.CreateDirectory(work_dir);
+#endif
+
+//            return (new PacketContainerHuge(work_dir, (ulong)ConfigManager.System.ApplicationCore.RawPacketCountLimit.Value));
+//            return (new PacketContainerHuge(work_dir, (ulong)999999));
+
+            return (new PacketContainerLarge((ulong)ConfigManager.System.ApplicationCore.RawPacketCountLimit.Value));
+//            return (new PacketContainerNormal((ulong)ConfigManager.System.ApplicationCore.RawPacketCountLimit.Value));
         }
 
         public static void ClearPacket()
@@ -105,6 +163,7 @@ namespace Ratatoskr.Gate
 
             /* コンテナ初期化 */
             lock (packets_sync_) {
+                packets_?.Dispose();
                 packets_ = CreatePacketContainer();
             }
 
@@ -124,9 +183,6 @@ namespace Ratatoskr.Gate
             /* パケット一覧に追加 */
             packets_.AddRange(packets);
 
-            /* 自動保存モジュールに転送 */
-            AutoPacketSaveManager.Output(packets);
-
             /* 描画実行 */
             FormTaskManager.DrawPacketPush(packets);
 
@@ -137,6 +193,7 @@ namespace Ratatoskr.Gate
         public static void SetSystemEvent(DateTime dt, string title, string text)
         {
             var packet = new PacketObject(
+                                "System",
                                 PacketFacility.System,
                                 "",
                                 PacketPriority.Notice,
@@ -183,10 +240,13 @@ namespace Ratatoskr.Gate
             get { return ((ar_save_ != null) && (!ar_save_.IsCompleted)); }
         }
 
-        public static void LoadPacketFile(IEnumerable<string> paths, PacketLogReader reader, FileFormatOption option)
+        public static void LoadPacketFile(IEnumerable<FileReadTargetInfo> infos)
         {
-            if (paths == null)return;
-            if (reader == null)return;
+            if (   (infos == null)
+                || (infos.Count() == 0)
+            ) {
+                return;
+            }
 
             if (IsLoadBusy)return;
             if (IsSaveBusy)return;
@@ -195,39 +255,40 @@ namespace Ratatoskr.Gate
             ClearPacket();
 
             /* 読込処理を開始 */
-            ar_load_ = (new LoadPacketFilesTaskDelegate(LoadPacketFilesTask)).BeginInvoke(paths, reader, option, null, null);
+            ar_load_ = (new LoadPacketFilesTaskDelegate(LoadPacketFilesTask)).BeginInvoke(infos, null, null);
         }
 
-        private delegate void LoadPacketFilesTaskDelegate(IEnumerable<string> paths, PacketLogReader reader, FileFormatOption option);
-        private static void LoadPacketFilesTask(IEnumerable<string> paths, PacketLogReader reader, FileFormatOption option)
+        private delegate void LoadPacketFilesTaskDelegate(IEnumerable<FileReadTargetInfo> infos);
+        private static void LoadPacketFilesTask(IEnumerable<FileReadTargetInfo> infos)
         {
             var packets_new = CreatePacketContainer();
 
-            foreach (var (path_value, path_index) in paths.Select((value, index) => (value, index))) {
+            foreach (var (info, index) in infos.Select((value, index) => (value, index))) {
                 /* ステータステキストを更新 */
                 FormUiManager.SetStatusText(
                     StatusTextID.SaveLoadEventFile,
                     String.Format(
                         "{0} {1} / {2}",
                         ConfigManager.Language.MainMessage.EventFileLoading.Value,
-                        path_index + 1,
-                        paths.Count()));
+                        index + 1,
+                        infos.Count()));
                 
                 /* プログレスバーを初期化 */
                 FormUiManager.SetProgressBar(0, false);
 
                 /* ファイルを1つずつ処理 */
                 var task = (new LoadPacketFileExecTaskDelegate(LoadPacketFileExecTask)).BeginInvoke(
-                                packets_new, path_value, reader, option, null, null);
+                                packets_new, info, null, null);
 
                 /* 完了待ち */
                 while (!task.IsCompleted) {
                     System.Threading.Thread.Sleep(100);
-                    FormUiManager.SetProgressBar((byte)(reader.ProgressNow / (Math.Max(reader.ProgressMax / 100, 1))), false);
+                    FormUiManager.SetProgressBar((byte)(info.Reader.ProgressNow / (Math.Max(info.Reader.ProgressMax / 100, 1))), false);
                 }
             }
 
             /* コンテナ差し替え */
+            packets_?.Dispose();
             packets_ = packets_new;
 
             /* ステータスバーを終了 */
@@ -238,11 +299,22 @@ namespace Ratatoskr.Gate
             FormTaskManager.RedrawPacketRequest();
         }
 
-        private delegate void LoadPacketFileExecTaskDelegate(PacketContainer packets, string path, PacketLogReader reader, FileFormatOption option);
-        private static void LoadPacketFileExecTask(PacketContainer packets, string path, PacketLogReader reader, FileFormatOption option)
+        private delegate void LoadPacketFileExecTaskDelegate(IPacketContainer packets, FileReadTargetInfo info);
+        private static void LoadPacketFileExecTask(IPacketContainer packets, FileReadTargetInfo info)
         {
+            if (   (info == null)
+                || (info.FilePath == null)
+                || (info.Reader == null)
+            ) {
+                return;
+            }
+
+            var reader = info.Reader as PacketLogReader;
+
+            if (reader == null)return;
+
             /* ファイルオープン */
-            if (!reader.Open(option, path)) {
+            if (!reader.Open(info.Option, info.FilePath)) {
                 return;
             }
 
@@ -252,23 +324,31 @@ namespace Ratatoskr.Gate
                 packets.Add(packet);
             }
 
-            reader.Close();
+            info.Reader.Close();
         }
 
-        public static void SavePacketFile(string path, PacketLogWriter writer, FileFormatOption option, IEnumerable<PacketConverterInstance> pcvt_list)
+        public static void SavePacketFile(FileWriteTargetInfo info, IEnumerable<PacketConverterInstance> pcvt_list)
         {
+            if (info == null)return;
+            if (info.FilePath == null)return;
+            if (info.Writer == null)return;
+
             if (IsLoadBusy)return;
             if (IsSaveBusy)return;
 
             /* タスク開始 */
-            ar_save_ = (new SavePacketFileTaskDelegate(SavePacketFileTask)).BeginInvoke(path, writer, option, pcvt_list, null, null);
+            ar_save_ = (new SavePacketFileTaskDelegate(SavePacketFileTask)).BeginInvoke(info, pcvt_list, null, null);
         }
 
-        private delegate void SavePacketFileTaskDelegate(string path, PacketLogWriter writer, FileFormatOption option, IEnumerable<PacketConverterInstance> pcvt_list);
-        private static void SavePacketFileTask(string path, PacketLogWriter writer, FileFormatOption option, IEnumerable<PacketConverterInstance> pcvt_list)
+        private delegate void SavePacketFileTaskDelegate(FileWriteTargetInfo info, IEnumerable<PacketConverterInstance> pcvt_list);
+        private static void SavePacketFileTask(FileWriteTargetInfo info, IEnumerable<PacketConverterInstance> pcvt_list)
         {
+            var writer = info.Writer as PacketLogWriter;
+
+            if (writer == null)return;
+
             /* ファイルオープン */
-            if (!writer.Open(option, path, false)) {
+            if (!writer.Open(info.Option, info.FilePath, false)) {
                 return;
             }
 

@@ -20,6 +20,12 @@ namespace Ratatoskr.Configs.SystemConfigs
         Binary,
     }
 
+    internal enum AutoPacketSaveTargetType
+    {
+        DevicePacket,
+        ViewPacket,
+    }
+
     internal enum AutoPacketSaveTimmingType
     {
         NoSave,         // 保存無し
@@ -34,6 +40,7 @@ namespace Ratatoskr.Configs.SystemConfigs
         public StringConfig                          SaveDirectory         { get; } = new StringConfig("");
         public StringConfig                          SavePrefix            { get; } = new StringConfig("autosave");
         public EnumConfig<AutoPacketSaveFormatType>  SaveFormat            { get; } = new EnumConfig<AutoPacketSaveFormatType>(AutoPacketSaveFormatType.Ratatoskr);
+        public EnumConfig<AutoPacketSaveTargetType>  SaveTarget            { get; } = new EnumConfig<AutoPacketSaveTargetType>(AutoPacketSaveTargetType.DevicePacket);
         public EnumConfig<AutoPacketSaveTimmingType> SaveTimming           { get; } = new EnumConfig<AutoPacketSaveTimmingType>(AutoPacketSaveTimmingType.NoSave);
         public IntegerConfig                         SaveValue_Interval    { get; } = new IntegerConfig(10);
         public IntegerConfig                         SaveValue_FileSize    { get; } = new IntegerConfig(500);

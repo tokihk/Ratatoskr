@@ -24,10 +24,11 @@ namespace Ratatoskr.Configs.SystemConfigs
 
         public BoolConfig AutoScroll { get; } = new BoolConfig(true);
 
-
         public MailListConfig MailList { get; } = new MailListConfig();
 
-        public SystemConfig() : base("system") { }
+        public SystemConfig() : base("system")
+        {
+        }
 
         public bool Load()
         {

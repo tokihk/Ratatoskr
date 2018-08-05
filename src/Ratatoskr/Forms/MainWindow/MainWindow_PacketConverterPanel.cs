@@ -13,17 +13,34 @@ using Ratatoskr.PacketConverters;
 
 namespace Ratatoskr.Forms.MainWindow
 {
-    internal partial class MainWindow_PacketConverterPanel : FlowLayoutPanel
+    internal partial class MainWindow_PacketConverterPanel : Panel
     {
+        private FlowLayoutPanel   Panel_ConverterList;
+        private Button  Btn_Collapse;
+
 
         public MainWindow_PacketConverterPanel() : base()
         {
-            InitializeComponent();
+            Btn_Collapse = new Button();
+            Btn_Collapse.FlatStyle = FlatStyle.Flat;
+            Btn_Collapse.FlatAppearance.BorderSize = 0;
+            Btn_Collapse.Image = Properties.Resources.collapse_up_group_16x16;
+            Btn_Collapse.ImageAlign = ContentAlignment.MiddleLeft;
+            Btn_Collapse.Height = Btn_Collapse.Image.Height;
+            Btn_Collapse.Click += Btn_Collapse_Click;
+
+            Panel_ConverterList = new FlowLayoutPanel();
+            Panel_ConverterList.FlowDirection = FlowDirection.TopDown;
+
+            Controls.Add(Btn_Collapse);
+            Controls.Add(Panel_ConverterList);
         }
 
         public void LoadConfig()
         {
             LoadPacketConverterConfig();
+
+            SetPacketConverterVisible(ConfigManager.System.MainWindow.PacketConverterVisible.Value);
         }
 
         private void LoadPacketConverterConfig()
@@ -55,10 +72,23 @@ namespace Ratatoskr.Forms.MainWindow
             }
         }
 
+        private void SetPacketConverterVisible(bool show)
+        {
+            ConfigManager.System.MainWindow.PacketConverterVisible.Value = show;
+
+            Panel_ConverterList.Visible = ConfigManager.System.MainWindow.PacketConverterVisible.Value;
+
+            Btn_Collapse.Image = (ConfigManager.System.MainWindow.PacketConverterVisible.Value)
+                               ? (Properties.Resources.collapse_up_group_16x16)
+                               : (Properties.Resources.collapse_down_group_16x16);
+
+            AdjustControlSize();
+        }
+
         public void ClearPacketConverter()
         {
-            while (Controls.Count > 0) {
-                RemovePacketConverter(Controls[0] as MainWindow_PacketConverter);
+            while (Panel_ConverterList.Controls.Count > 0) {
+                RemovePacketConverter(Panel_ConverterList.Controls[0] as MainWindow_PacketConverter);
             }
         }
 
@@ -68,9 +98,11 @@ namespace Ratatoskr.Forms.MainWindow
 
             if (pcvti == null)return;
 
-            var control = new MainWindow_PacketConverter(pcvti);
+            var control = new MainWindow_PacketConverter(this, pcvti);
 
-            Controls.Add(control);
+            Panel_ConverterList.Controls.Add(control);
+
+            AdjustControlSize();
         }
 
         public void RemovePacketConverter(MainWindow_PacketConverter control)
@@ -81,35 +113,53 @@ namespace Ratatoskr.Forms.MainWindow
             FormTaskManager.RemovePacketConverter(control.Instance);
 
             /* コントロールを削除 */
-            Controls.Remove(control);
+            Panel_ConverterList.Controls.Remove(control);
+
+            AdjustControlSize();
         }
 
         private void AdjustControlSize()
         {
-            var size_base = ClientSize;
-            var rect_child = new Rectangle(0, 0, size_base.Width, 0);
+            /* 高さのみコントロールのサイズを適用する */
+            var rect_total = new Rectangle(0, 0, ClientSize.Width, 0);
 
-            foreach (Control control in Controls) {
-                /* 高さのみコントロールのサイズを適用する */
-                rect_child.Height = control.Height;
+            /* 伸縮ボタンの調整 */
+            Btn_Collapse.Location = new Point(0, 0);
+            Btn_Collapse.Size = new Size(rect_total.Width, Btn_Collapse.Height);
+            rect_total.Height += Btn_Collapse.Height;
 
-                control.Location = rect_child.Location;
-                control.Size = rect_child.Size;
+            /* 変換器毎の調整 */
+            if (Panel_ConverterList.Visible) {
+                var rect_child = new Rectangle(0, 0, rect_total.Width, 0);
 
-                rect_child.Offset(0, rect_child.Height);
+                foreach (Control control in Panel_ConverterList.Controls) {
+                    rect_child.Height = control.Height;
+
+                    control.Location = rect_child.Location;
+                    control.Size = rect_child.Size;
+
+                    rect_child.Offset(0, rect_child.Height);
+                }
+
+                /* 変換器パネルの調整 */
+                Panel_ConverterList.Location = new Point(0, rect_total.Bottom);
+                Panel_ConverterList.Size = new Size(rect_child.Width, rect_child.Top);
+                rect_total.Height += Panel_ConverterList.Height;
             }
 
-            ClientSize = new Size(rect_child.Width, rect_child.Top);
+            Size = new Size(rect_total.Width, rect_total.Bottom);
         }
 
         public void MoveConverterIndex(MainWindow_PacketConverter control, Point pos_screen)
         {
-            var index_old = Controls.GetChildIndex(control);
-            var index_new = GetConverterIndex(PointToClient(pos_screen));
+            var index_old = Panel_ConverterList.Controls.GetChildIndex(control);
+            var index_new = GetConverterIndex(Panel_ConverterList.PointToClient(pos_screen));
 
             if (index_new != index_old) {
+                Debugger.DebugManager.MessageOut(string.Format("MoveConverterIndex {0} => {1}", index_new, index_old));
+
                 /* コントロールを入れ替え */
-                Controls.SetChildIndex(control, (int)index_new);
+                Panel_ConverterList.Controls.SetChildIndex(control, (int)index_new);
 
                 /* 変換器のインスタンスの順番も変更 */
                 FormTaskManager.SetPacketConverterIndex(control.Instance, (int)index_new);
@@ -123,12 +173,12 @@ namespace Ratatoskr.Forms.MainWindow
             if (pos_client.Y <= 0) {
                 return (0);
             } else if (pos_client.Y > Height) {
-                return ((uint)Math.Max(0, Controls.Count - 1));
+                return ((uint)Math.Max(0, Panel_ConverterList.Controls.Count - 1));
             } else {
                 var bottom = 0;
                 var control_index = (uint)0;
 
-                foreach (Control control in Controls) {
+                foreach (Control control in Panel_ConverterList.Controls) {
                     /* 高さのみコントロールのサイズを適用する */
                     bottom += control.Height;
 
@@ -145,7 +195,7 @@ namespace Ratatoskr.Forms.MainWindow
 
         public void UpdateView()
         {
-            foreach (MainWindow_PacketConverter control in Controls) {
+            foreach (MainWindow_PacketConverter control in Panel_ConverterList.Controls) {
                 control.UpdatePacketCount();
             }
         }
@@ -155,15 +205,9 @@ namespace Ratatoskr.Forms.MainWindow
             AdjustControlSize();
         }
 
-        private void InitializeComponent()
+        private void Btn_Collapse_Click(object sender, EventArgs e)
         {
-            this.SuspendLayout();
-            // 
-            // MainFramePacketConverterPanel
-            // 
-            this.Name = "MainFramePacketConverterPanel";
-            this.ResumeLayout(false);
-
+            SetPacketConverterVisible(!ConfigManager.System.MainWindow.PacketConverterVisible.Value);
         }
     }
 }

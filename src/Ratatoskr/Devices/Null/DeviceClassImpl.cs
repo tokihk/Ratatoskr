@@ -22,6 +22,11 @@ namespace Ratatoskr.Devices.Null
             get { return (Name); }
         }
 
+        public override string DescID
+        {
+            get { return ("Null"); }
+        }
+
         public override Type GetPropertyType()
         {
             return (typeof(DevicePropertyImpl));

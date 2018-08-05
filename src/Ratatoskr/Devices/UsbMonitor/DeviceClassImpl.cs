@@ -22,6 +22,11 @@ namespace Ratatoskr.Devices.UsbMonitor
             get { return (Name); }
         }
 
+        public override string DescID
+        {
+            get { return ("UsbMonitor"); }
+        }
+
         public override bool AdminOnly => true;
 
         public override Type GetPropertyType()

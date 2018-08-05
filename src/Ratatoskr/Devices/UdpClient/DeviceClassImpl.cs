@@ -22,6 +22,11 @@ namespace Ratatoskr.Devices.UdpClient
             get { return (Name); }
         }
 
+        public override string DescID
+        {
+            get { return ("UdpClient"); }
+        }
+
         public override Type GetPropertyType()
         {
             return (typeof(DevicePropertyImpl));

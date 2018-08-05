@@ -9,13 +9,16 @@ namespace Ratatoskr.FileFormats
 {
     internal abstract class FileFormatReader
     {
+        public FileFormatClass  Class      { get; }
+
         protected string           FilePath   { get; private set; } = "";
         protected FileFormatOption Option     { get; private set; } = null;
         protected FileStream       BaseStream { get; private set; } = null;
 
 
-        public FileFormatReader()
+        public FileFormatReader(FileFormatClass fmtc)
         {
+            Class = fmtc;
         }
 
         public virtual ulong ProgressMax

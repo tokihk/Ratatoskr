@@ -284,6 +284,8 @@ namespace Ratatoskr.PacketViews
                 } else {
                     /* 描画間隔短縮 */
                     draw_timer_ival_ = 0;
+
+                    Idle();
                 }
 
                 /* 描画間隔補正 */
@@ -304,26 +306,36 @@ namespace Ratatoskr.PacketViews
 
             /* 描画開始 */
             lock (draw_sync_) {
-                viewc_list_.ForEach(viewi => viewi.BeginDrawPacket(AutoScroll));
+                /* 1つでもビジー状態のビューが存在する場合はパケット処理をしない */
+                if (viewc_list_.TrueForAll(viewc => !viewc.Instance.OperationBusy)) {
+                    viewc_list_.ForEach(viewc => viewc.BeginDrawPacket(AutoScroll));
 
-                /* 描画時間の測定開始 */
-                draw_busy_timer.Restart();
+                    /* 描画時間の測定開始 */
+                    draw_busy_timer.Restart();
 
-                while ((draw_packets = PopDrawPackets()) != null) {
-                    /* 描画実行 */
-                    viewc_list_.ForEach(viewi => viewi.DrawPacket(draw_packets));
+                    while ((draw_packets = PopDrawPackets()) != null) {
+                        /* 描画実行 */
+                        viewc_list_.ForEach(viewc => viewc.DrawPacket(draw_packets));
 
-                    /* 描画処理のタイムアウト */
-                    if (draw_busy_timer.ElapsedMilliseconds > (draw_timer_ival_ * 2 / 3)) {
-                        break;
+                        /* 描画処理のタイムアウト */
+                        if (draw_busy_timer.ElapsedMilliseconds > (draw_timer_ival_ * 2 / 3)) {
+                            break;
+                        }
                     }
-                }
 
-                /* 描画終了 */
-                viewc_list_.ForEach(viewi => viewi.EndDrawPacket(AutoScroll));
+                    /* 描画終了 */
+                    viewc_list_.ForEach(viewi => viewi.EndDrawPacket(AutoScroll));
+                }
             }
 
             return (true);
+        }
+
+        private void Idle()
+        {
+            lock (draw_sync_) {
+                viewc_list_.ForEach(viewc => viewc.Idle());
+            }
         }
     }
 }

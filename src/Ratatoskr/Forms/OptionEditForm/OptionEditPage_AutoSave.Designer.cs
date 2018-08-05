@@ -45,6 +45,8 @@
             this.RBtn_Timing_PacketCount = new System.Windows.Forms.RadioButton();
             this.RBtn_Timing_FileSize = new System.Windows.Forms.RadioButton();
             this.RBtn_Timing_Interval = new System.Windows.Forms.RadioButton();
+            this.GBox_SaveTarget = new System.Windows.Forms.GroupBox();
+            this.CBox_SaveTarget = new System.Windows.Forms.ComboBox();
             this.GBox_SavePrefix.SuspendLayout();
             this.GBox_Basic.SuspendLayout();
             this.GBox_SaveFormat.SuspendLayout();
@@ -53,6 +55,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.Num_PacketCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_FileSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_Interval)).BeginInit();
+            this.GBox_SaveTarget.SuspendLayout();
             this.SuspendLayout();
             // 
             // GBox_SavePrefix
@@ -75,12 +78,13 @@
             // 
             // GBox_Basic
             // 
+            this.GBox_Basic.Controls.Add(this.GBox_SaveTarget);
             this.GBox_Basic.Controls.Add(this.GBox_SaveFormat);
             this.GBox_Basic.Controls.Add(this.GBox_SaveDir);
             this.GBox_Basic.Controls.Add(this.GBox_SavePrefix);
             this.GBox_Basic.Location = new System.Drawing.Point(3, 3);
             this.GBox_Basic.Name = "GBox_Basic";
-            this.GBox_Basic.Size = new System.Drawing.Size(514, 120);
+            this.GBox_Basic.Size = new System.Drawing.Size(514, 168);
             this.GBox_Basic.TabIndex = 4;
             this.GBox_Basic.TabStop = false;
             this.GBox_Basic.Text = "Basic setting";
@@ -149,9 +153,9 @@
             this.GBox_Timing.Controls.Add(this.RBtn_Timing_PacketCount);
             this.GBox_Timing.Controls.Add(this.RBtn_Timing_FileSize);
             this.GBox_Timing.Controls.Add(this.RBtn_Timing_Interval);
-            this.GBox_Timing.Location = new System.Drawing.Point(3, 130);
+            this.GBox_Timing.Location = new System.Drawing.Point(3, 177);
             this.GBox_Timing.Name = "GBox_Timing";
-            this.GBox_Timing.Size = new System.Drawing.Size(356, 123);
+            this.GBox_Timing.Size = new System.Drawing.Size(366, 123);
             this.GBox_Timing.TabIndex = 5;
             this.GBox_Timing.TabStop = false;
             this.GBox_Timing.Text = "Auto save timming";
@@ -170,9 +174,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(301, 48);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(33, 12);
+            this.label1.Size = new System.Drawing.Size(45, 12);
             this.label1.TabIndex = 12;
-            this.label1.Text = "hours";
+            this.label1.Text = "minutes";
             // 
             // RBtn_Timing_None
             // 
@@ -283,14 +287,34 @@
             this.RBtn_Timing_Interval.Text = "Time interval";
             this.RBtn_Timing_Interval.UseVisualStyleBackColor = true;
             // 
-            // ConfigPage_AutoSave
+            // GBox_SaveTarget
+            // 
+            this.GBox_SaveTarget.Controls.Add(this.CBox_SaveTarget);
+            this.GBox_SaveTarget.Location = new System.Drawing.Point(6, 120);
+            this.GBox_SaveTarget.Name = "GBox_SaveTarget";
+            this.GBox_SaveTarget.Size = new System.Drawing.Size(200, 41);
+            this.GBox_SaveTarget.TabIndex = 5;
+            this.GBox_SaveTarget.TabStop = false;
+            this.GBox_SaveTarget.Text = "Save target packet";
+            // 
+            // CBox_SaveTarget
+            // 
+            this.CBox_SaveTarget.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CBox_SaveTarget.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_SaveTarget.FormattingEnabled = true;
+            this.CBox_SaveTarget.Location = new System.Drawing.Point(3, 15);
+            this.CBox_SaveTarget.Name = "CBox_SaveTarget";
+            this.CBox_SaveTarget.Size = new System.Drawing.Size(194, 20);
+            this.CBox_SaveTarget.TabIndex = 0;
+            // 
+            // OptionEditPage_AutoSave
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.GBox_Timing);
             this.Controls.Add(this.GBox_Basic);
-            this.Name = "ConfigPage_AutoSave";
-            this.Size = new System.Drawing.Size(525, 256);
+            this.Name = "OptionEditPage_AutoSave";
+            this.Size = new System.Drawing.Size(525, 305);
             this.GBox_SavePrefix.ResumeLayout(false);
             this.GBox_SavePrefix.PerformLayout();
             this.GBox_Basic.ResumeLayout(false);
@@ -302,6 +326,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.Num_PacketCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_FileSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_Interval)).EndInit();
+            this.GBox_SaveTarget.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -326,5 +351,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.RadioButton RBtn_Timing_None;
+        private System.Windows.Forms.GroupBox GBox_SaveTarget;
+        private System.Windows.Forms.ComboBox CBox_SaveTarget;
     }
 }

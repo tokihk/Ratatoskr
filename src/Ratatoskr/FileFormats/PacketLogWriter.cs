@@ -9,6 +9,10 @@ namespace Ratatoskr.FileFormats
 {
     internal class PacketLogWriter : FileFormatWriter
     {
+        public PacketLogWriter(FileFormatClass fmtc) : base(fmtc)
+        {
+        }
+
         public void WritePacket(PacketObject packet)
         {
             if (!IsOpen)return;

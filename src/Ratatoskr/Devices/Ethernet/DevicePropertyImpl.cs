@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Generic;
 using Ratatoskr.Configs.Types;
+using Ratatoskr.Drivers.WinPcap;
 
 namespace Ratatoskr.Devices.Ethernet
 {

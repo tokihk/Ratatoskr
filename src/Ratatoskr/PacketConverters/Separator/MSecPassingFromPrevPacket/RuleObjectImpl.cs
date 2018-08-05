@@ -90,13 +90,6 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromPrevPacket
             Num_Value.Value = value;
         }
 
-        private void Apply()
-        {
-            match_interval_ = (int)Property.MSecPassingFromPrevPacketProperty.Interval.Value;
-
-            UpdateConvertStatus();
-        }
-
         private void UpdateView()
         {
             var value = Num_Value.Value;
@@ -104,6 +97,14 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromPrevPacket
             Num_Value.ForeColor = (value == Property.MSecPassingFromPrevPacketProperty.Interval.Value)
                                 ? (Color.Black)
                                 : (Color.Gray);
+        }
+
+        private void Apply()
+        {
+            match_interval_ = (int)Property.MSecPassingFromPrevPacketProperty.Interval.Value;
+
+            UpdateConvertStatus();
+            UpdateView();
         }
 
         public override void OnBackupProperty()
@@ -125,19 +126,9 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromPrevPacket
                 return;
             }
 
-            /* 収集開始 */
-            if (packet_busy_ == null) {
-                packet_busy_ = new DynamicPacketObject(input);
-            }
-
-            /* 最終受信パケットを記憶 */
-            packet_last_ = input;
-
-            /* データ収集 */
-            packet_busy_.AddData(input.Data);
-
             /* 最後に受信した時刻から一定時間経過しているかどうか */
-            if (   (input.MakeTime > dt_base_)
+            if (   (packet_busy_ != null)
+                && (input.MakeTime > dt_base_)
                 && ((input.MakeTime - dt_base_).TotalMilliseconds >= match_interval_)
             ) {
                 /* 最新パケットで生成 */
@@ -149,6 +140,17 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromPrevPacket
 
                 packet_busy_ = null;
             }
+
+            /* 収集開始 */
+            if (packet_busy_ == null) {
+                packet_busy_ = new DynamicPacketObject(input);
+            }
+
+            /* 最終受信パケットを記憶 */
+            packet_last_ = input;
+
+            /* データ収集 */
+            packet_busy_.AddData(input.Data);
 
             /* 最終受信時刻を記憶 */
             dt_base_ = input.MakeTime;

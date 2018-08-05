@@ -13,6 +13,9 @@ namespace Ratatoskr.Forms.MainWindow
 {
     internal partial class MainWindow_PacketConverter : UserControl
     {
+        private MainWindow_PacketConverterPanel panel_ = null;
+
+
         private bool init_complete_ = false;
 
 
@@ -21,8 +24,9 @@ namespace Ratatoskr.Forms.MainWindow
             InitializeComponent();
         }
 
-        public MainWindow_PacketConverter(PacketConverterInstance pcvti) : this()
+        public MainWindow_PacketConverter(MainWindow_PacketConverterPanel panel, PacketConverterInstance pcvti) : this()
         {
+            panel_ = panel;
             Instance = pcvti;
             Instance.Dock = DockStyle.Fill;
 
@@ -42,11 +46,7 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void MoveControl(Point pos)
         {
-            var panel = Parent as MainWindow_PacketConverterPanel;
-
-            if (panel == null)return;
-
-            panel.MoveConverterIndex(this, PointToScreen(pos));
+            panel_.MoveConverterIndex(this, PointToScreen(pos));
         }
 
         public void UpdatePacketCount()
@@ -93,11 +93,7 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void Btn_Remove_Click(object sender, EventArgs e)
         {
-            var panel = Parent as MainWindow_PacketConverterPanel;
-
-            if (panel == null)return;
-
-            panel.RemovePacketConverter(this);
+            panel_.RemovePacketConverter(this);
         }
 
         private void Label_Handle_MouseMove(object sender, MouseEventArgs e)

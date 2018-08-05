@@ -90,13 +90,6 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
             Num_Value.Value = value;
         }
 
-        private void Apply()
-        {
-            match_interval_ = (int)Property.MSecPassingFromFirstPacketProperty.Interval.Value;
-
-            UpdateConvertStatus();
-        }
-
         private void UpdateView()
         {
             var value = Num_Value.Value;
@@ -104,6 +97,14 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
             Num_Value.ForeColor = (value == Property.MSecPassingFromFirstPacketProperty.Interval.Value)
                                 ? (Color.Black)
                                 : (Color.Gray);
+        }
+
+        private void Apply()
+        {
+            match_interval_ = (int)Property.MSecPassingFromFirstPacketProperty.Interval.Value;
+
+            UpdateConvertStatus();
+            UpdateView();
         }
 
         public override void OnBackupProperty()

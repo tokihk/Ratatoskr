@@ -15,8 +15,9 @@ namespace Ratatoskr.Devices
 
         public Guid ID { get; }
 
-        public abstract string Name { get; }
+        public abstract string Name    { get; }
         public abstract string Details { get; }
+        public abstract string DescID  { get; }
 
         public abstract Type GetPropertyType();
         public abstract DeviceProperty CreateProperty();

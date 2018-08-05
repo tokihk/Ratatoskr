@@ -49,8 +49,8 @@ namespace Ratatoskr.Api
 
         private void UnregisterWatchEvent()
         {
-            GatePacketManager.RawPacketEntried += OnPacketEntried;
-            FormTaskManager.DrawPacketEntried += OnPacketEntried;
+            GatePacketManager.RawPacketEntried -= OnPacketEntried;
+            FormTaskManager.DrawPacketEntried -= OnPacketEntried;
         }
 
         public bool IsRunning

@@ -18,7 +18,7 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
         private BinaryWriter writer_ = null;
 
 
-        public FileFormatWriterImpl() : base()
+        public FileFormatWriterImpl(FileFormatClass fmtc) : base(fmtc)
         {
         }
 

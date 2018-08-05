@@ -283,6 +283,36 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap collapse_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("collapse_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap collapse_down_group_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("collapse_down_group_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap collapse_up_group_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("collapse_up_group_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap connect_busy {
             get {
                 object obj = ResourceManager.GetObject("connect_busy", resourceCulture);
@@ -313,9 +343,29 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap csv_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("csv_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap csv_48x48 {
             get {
                 object obj = ResourceManager.GetObject("csv_48x48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap csv_48x481 {
+            get {
+                object obj = ResourceManager.GetObject("csv_48x481", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -356,6 +406,16 @@ namespace Ratatoskr.Properties {
         internal static System.Drawing.Bitmap document_24x24 {
             get {
                 object obj = ResourceManager.GetObject("document_24x24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap expand_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("expand_16x16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -503,9 +563,39 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap item_change_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("item_change_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap memo_32x32 {
             get {
                 object obj = ResourceManager.GetObject("memo_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap ncom_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("ncom_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap ncom_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("ncom_32x32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -809,6 +899,26 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap user_add_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("user_add_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap user_delete_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("user_delete_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap view_setting {
             get {
                 object obj = ResourceManager.GetObject("view_setting", resourceCulture);
@@ -829,9 +939,29 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap wireshark_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("wireshark_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap wireshark_32x32 {
             get {
                 object obj = ResourceManager.GetObject("wireshark_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap wireshark_32x321 {
+            get {
+                object obj = ResourceManager.GetObject("wireshark_32x321", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

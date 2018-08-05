@@ -17,7 +17,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
         private BinaryReader block_reader_ = null;
 
 
-        public FileFormatReaderImpl() : base()
+        public FileFormatReaderImpl(FileFormatClass fmtc) : base(fmtc)
         {
         }
 
@@ -29,6 +29,11 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
             if (!ReadPatternCode(reader_main_))return (false);
 
             return (true);
+        }
+
+        protected override void OnClose()
+        {
+            reader_main_?.Dispose();
         }
 
         protected override PacketObject OnReadPacket()
@@ -90,6 +95,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
             using (var stream_i = new MemoryStream(reader.ReadBytes((int)size))) {
                 using (var stream_c = new GZipStream(stream_i, CompressionMode.Decompress)) {
                     /* 解凍データを出力用ストリームに書き込み */
+                    block_stream_?.Dispose();
                     block_stream_ = new MemoryStream();
                     stream_c.CopyTo(block_stream_);
 
@@ -97,6 +103,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
                     block_stream_.Position = 0;
 
                     /* パケット読込用リーダー生成 */
+                    block_reader_?.Dispose();
                     block_reader_ = new BinaryReader(block_stream_);
                 }
             }

@@ -10,6 +10,10 @@ namespace Ratatoskr.FileFormats
 {
     internal class PacketLogReader : FileFormatReader
     {
+        public PacketLogReader(FileFormatClass fmtc) : base(fmtc)
+        {
+        }
+
         public PacketObject ReadPacket()
         {
             if (!IsOpen)return (null);

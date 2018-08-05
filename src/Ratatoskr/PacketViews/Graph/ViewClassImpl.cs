@@ -8,7 +8,7 @@ namespace Ratatoskr.PacketViews.Graph
 {
     internal sealed class ViewClassImpl : ViewClass
     {
-        public static readonly Guid ClassID = new Guid("547D1DAF-45EF-4A8E-A37A-F16B8A708F70");
+        public static readonly Guid ClassID = new Guid("9CEC36E8-B675-4CFB-A6B5-1FE79DBA16EB");
 
 
         public ViewClassImpl() : base(ClassID)

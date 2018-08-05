@@ -16,7 +16,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
         private FileFormatOptionImpl option_ = null;
 
 
-        public FileFormatWriterImpl() : base()
+        public FileFormatWriterImpl(FileFormatClass fmtc) : base(fmtc)
         {
         }
 
@@ -72,68 +72,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                 var items = new List<string>();
 
                 foreach (var order in option.ItemOrder) {
-                    switch (order) {
-                        case PacketElementID.Facility:
-                        {
-                            items.Add(packet.Facility.ToString());
-                        }
-                            break;
-                        case PacketElementID.Alias:
-                        {
-                            items.Add(packet.Alias);
-                        }
-                            break;
-                        case PacketElementID.Priority:
-                        {
-                            items.Add(packet.Priority.ToString());
-                        }
-                            break;
-                        case PacketElementID.Attribute:
-                        {
-                            items.Add(packet.Attribute.ToString());
-                        }
-                            break;
-                        case PacketElementID.DateTime:
-                        {
-                            items.Add(packet.MakeTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                        }
-                            break;
-                        case PacketElementID.Information:
-                        {
-                            items.Add(packet.Information);
-                        }
-                            break;
-                        case PacketElementID.Direction:
-                        {
-                            items.Add(packet.Direction.ToString());
-                        }
-                            break;
-                        case PacketElementID.Source:
-                        {
-                            items.Add(packet.Source);
-                        }
-                            break;
-                        case PacketElementID.Destination:
-                        {
-                            items.Add(packet.Destination);
-                        }
-                            break;
-                        case PacketElementID.Mark:
-                        {
-                            items.Add(packet.UserMark.ToString());
-                        }
-                            break;
-                        case PacketElementID.Message:
-                        {
-                            items.Add(packet.Message);
-                        }
-                            break;
-                        case PacketElementID.Data:
-                        {
-                            items.Add(packet.GetHexText());
-                        }
-                            break;
-                    }
+                    items.Add(packet.GetElementText(order));
                 }
 
                 /* 出力 */

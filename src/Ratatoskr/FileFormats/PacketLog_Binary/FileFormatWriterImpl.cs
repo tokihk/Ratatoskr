@@ -14,7 +14,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
         private FileFormatWriterOptionImpl option_;
 
 
-        public FileFormatWriterImpl() : base()
+        public FileFormatWriterImpl(FileFormatClass fmtc) : base(fmtc)
         {
         }
 

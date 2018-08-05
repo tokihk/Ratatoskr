@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using Ratatoskr.Gate.AutoPacketSave;
+using Ratatoskr.Gate.AutoLogger;
 using Ratatoskr.Generic;
 using Ratatoskr.Native;
 using Ratatoskr.Plugin;
@@ -241,7 +241,7 @@ namespace Ratatoskr
             FormUiManager.MainFormVisible(true);
 
             /* イベント処理開始 */
-            AutoPacketSaveManager.Poll();
+            AutoLogManager.Poll();
             GateTransferManager.Startup();
         }
 

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ratatoskr.Drivers.USBPcap;
 
 namespace Ratatoskr.Devices.UsbMonitor
 {
@@ -68,6 +69,15 @@ namespace Ratatoskr.Devices.UsbMonitor
             devp_.Filter_BulkTransfer.Value = ChkBox_Filter_BulkTransfer.Checked;
             devp_.Filter_InterruptTransfer.Value = ChkBox_Filter_InterruptTransfer.Checked;
             devp_.Filter_IsochronousTransfer.Value = ChkBox_Filter_IsochronousTransfer.Checked;
+        }
+
+        private void CBox_DeviceList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var item = CBox_DeviceList.SelectedItem as UsbPcapDeviceObject;
+
+            if (item == null)return;
+
+//            USBPcapCMD.enumerate_attached_devices(item.DeviceName, USBPcapCMD.EnumerationType.ENUMERATE_USBPCAPCMD);
         }
     }
 }

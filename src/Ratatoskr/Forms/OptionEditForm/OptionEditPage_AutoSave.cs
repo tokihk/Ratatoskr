@@ -52,6 +52,7 @@ namespace Ratatoskr.Forms.OptionEditForm
         {
             InitializeComponent();
             InitializeSaveFormat();
+            InitializeSaveTarget();
         }
 
         private void InitializeSaveFormat()
@@ -63,6 +64,20 @@ namespace Ratatoskr.Forms.OptionEditForm
                 }
             }
             CBox_SaveFormat.EndUpdate();
+        }
+
+        private void InitializeSaveTarget()
+        {
+            CBox_SaveTarget.BeginUpdate();
+            {
+                foreach (AutoPacketSaveTargetType type in Enum.GetValues(typeof(AutoPacketSaveTargetType))) {
+                    CBox_SaveTarget.Items.Add(type);
+                }
+                if (CBox_SaveTarget.Items.Count > 0) {
+                    CBox_SaveTarget.SelectedIndex = 0;
+                }
+            }
+            CBox_SaveTarget.EndUpdate();
         }
 
         private void SelectSaveFormat(AutoPacketSaveFormatType type)
@@ -157,6 +172,7 @@ namespace Ratatoskr.Forms.OptionEditForm
             SelectSaveFormat(Config.AutoSaveFormat);
             SetSavePrefix(Config.AutoSavePrefix);
             SetSaveDirectory(Config.AutoSaveDirectory);
+            CBox_SaveTarget.SelectedItem = Config.AutoSaveTarget;
             SelectSaveTimming(Config.AutoSaveTimming);
             SetSaveTimmingValue_Interval(Config.AutoSaveValue_Interval);
             SetSaveTimmingValue_FileSize(Config.AutoSaveValue_FileSize);
@@ -168,6 +184,7 @@ namespace Ratatoskr.Forms.OptionEditForm
             Config.AutoSaveFormat = GetSaveFormat();
             Config.AutoSavePrefix = GetSavePrefix();
             Config.AutoSaveDirectory = GetSaveDirectory();
+            Config.AutoSaveTarget = (AutoPacketSaveTargetType)CBox_SaveTarget.SelectedItem;
             Config.AutoSaveTimming = GetSaveTimming();
             Config.AutoSaveValue_Interval = Num_Interval.Value;
             Config.AutoSaveValue_FileSize = Num_FileSize.Value;

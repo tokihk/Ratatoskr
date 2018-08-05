@@ -67,7 +67,7 @@ namespace Ratatoskr.Plugin
 
             /* プラグイン検索 */
             try {
-                var asm_paths = Directory.EnumerateFiles(path_plugin, "*.dll", SearchOption.AllDirectories);
+                var asm_paths = Directory.EnumerateFiles(path_plugin, "*.dll", SearchOption.TopDirectoryOnly);
 
                 foreach (var asm_path in asm_paths.Select((v, i) => (v, i))) {
                     LoadPlugin(asm_path.v);
@@ -86,25 +86,28 @@ namespace Ratatoskr.Plugin
         {
             if (!File.Exists(asm_path))return;
 
-            var asm_object = Assembly.LoadFile(asm_path);
+            try {
+                var asm_object = Assembly.LoadFile(asm_path);
 
-            if (asm_object == null)return;
+                if (asm_object == null)return;
 
-            var plugin_info = (PluginInfo)null;
+                var plugin_info = (PluginInfo)null;
 
-            foreach (var asm_type in asm_object.GetTypes()) {
-                /* デコーダークラスを継承しているクラスのみロード */
-                if (   (!asm_type.IsClass)
-                    || (!asm_type.IsPublic)
-                    || (asm_type.IsAbstract)
-                ) {
-                    continue;
+                foreach (var asm_type in asm_object.GetTypes()) {
+                    /* デコーダークラスを継承しているクラスのみロード */
+                    if (   (!asm_type.IsClass)
+                        || (!asm_type.IsPublic)
+                        || (asm_type.IsAbstract)
+                    ) {
+                        continue;
+                    }
+
+                    plugin_info = new PluginInfo(asm_path, asm_object, asm_type);
+
+                    /* モジュール読み込み */
+                    ProtocolManager.LoadFromPlugin(plugin_info);
                 }
-
-                plugin_info = new PluginInfo(asm_path, asm_object, asm_type);
-
-                /* モジュール読み込み */
-                ProtocolManager.LoadFromPlugin(plugin_info);
+            } catch {
             }
         }
     }

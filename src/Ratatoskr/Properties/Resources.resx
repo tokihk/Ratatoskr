@@ -349,4 +349,43 @@
   <data name="file_explorer_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Icons\file_explorer_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="collapse_down_group_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\collapse_down_group_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="collapse_up_group_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\collapse_up_group_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="item_change_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\item_change_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="expand_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\expand_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="collapse_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\collapse_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="csv_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\3rdparty\csv_32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="csv_48x481" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\3rdparty\csv_48x48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ncom_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\3rdparty\ncom_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ncom_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\3rdparty\ncom_32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="wireshark_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\3rdparty\wireshark_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="wireshark_32x321" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\3rdparty\wireshark_32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="user_add_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\user_add_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="user_delete_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\user_delete_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

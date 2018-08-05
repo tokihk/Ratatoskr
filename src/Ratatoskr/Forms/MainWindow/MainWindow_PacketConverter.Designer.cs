@@ -45,12 +45,12 @@
             // 
             // Label_Handle
             // 
-            this.Label_Handle.BackColor = System.Drawing.Color.Black;
-            this.Label_Handle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Label_Handle.BackColor = System.Drawing.SystemColors.Control;
             this.Label_Handle.Cursor = System.Windows.Forms.Cursors.NoMoveVert;
+            this.Label_Handle.Image = global::Ratatoskr.Properties.Resources.item_change_16x16;
             this.Label_Handle.Location = new System.Drawing.Point(3, 0);
             this.Label_Handle.Name = "Label_Handle";
-            this.Label_Handle.Size = new System.Drawing.Size(8, 24);
+            this.Label_Handle.Size = new System.Drawing.Size(23, 24);
             this.Label_Handle.TabIndex = 0;
             this.Label_Handle.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Label_Handle_MouseMove);
             // 
@@ -58,10 +58,10 @@
             // 
             this.Panel_Contents.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Panel_Contents.Location = new System.Drawing.Point(175, 0);
+            this.Panel_Contents.Location = new System.Drawing.Point(189, 0);
             this.Panel_Contents.Margin = new System.Windows.Forms.Padding(0);
             this.Panel_Contents.Name = "Panel_Contents";
-            this.Panel_Contents.Size = new System.Drawing.Size(593, 24);
+            this.Panel_Contents.Size = new System.Drawing.Size(579, 24);
             this.Panel_Contents.TabIndex = 2;
             // 
             // Label_OutputCount
@@ -111,7 +111,7 @@
             this.Btn_Filter.FlatAppearance.BorderSize = 0;
             this.Btn_Filter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Btn_Filter.Image = global::Ratatoskr.Properties.Resources.target_22x22;
-            this.Btn_Filter.Location = new System.Drawing.Point(149, 0);
+            this.Btn_Filter.Location = new System.Drawing.Point(163, 1);
             this.Btn_Filter.Name = "Btn_Filter";
             this.Btn_Filter.Size = new System.Drawing.Size(23, 23);
             this.Btn_Filter.TabIndex = 9;
@@ -144,7 +144,7 @@
             // ChkBox_Enable
             // 
             this.ChkBox_Enable.AutoSize = true;
-            this.ChkBox_Enable.Location = new System.Drawing.Point(17, 5);
+            this.ChkBox_Enable.Location = new System.Drawing.Point(32, 6);
             this.ChkBox_Enable.Name = "ChkBox_Enable";
             this.ChkBox_Enable.Size = new System.Drawing.Size(15, 14);
             this.ChkBox_Enable.TabIndex = 10;
@@ -153,14 +153,14 @@
             // 
             // Label_Name
             // 
-            this.Label_Name.Location = new System.Drawing.Point(39, 0);
+            this.Label_Name.Location = new System.Drawing.Point(53, 1);
             this.Label_Name.Name = "Label_Name";
             this.Label_Name.Size = new System.Drawing.Size(104, 24);
             this.Label_Name.TabIndex = 11;
             this.Label_Name.Text = "label1";
             this.Label_Name.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // MainFramePacketConverter
+            // MainWindow_PacketConverter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -174,7 +174,7 @@
             this.Controls.Add(this.Panel_Contents);
             this.Controls.Add(this.Label_Handle);
             this.Margin = new System.Windows.Forms.Padding(0);
-            this.Name = "MainFramePacketConverter";
+            this.Name = "MainWindow_PacketConverter";
             this.Size = new System.Drawing.Size(895, 27);
             this.CMenu_Target.ResumeLayout(false);
             this.CMenu_Target.PerformLayout();

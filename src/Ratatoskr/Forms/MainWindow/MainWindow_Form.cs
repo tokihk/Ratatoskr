@@ -12,6 +12,7 @@ using Ratatoskr.Configs;
 using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.Gate;
 using Ratatoskr.Generic;
+using Ratatoskr.Native;
 using Ratatoskr.Packet;
 using Ratatoskr.PacketConverters;
 using Ratatoskr.PacketViews;
@@ -322,6 +323,10 @@ namespace Ratatoskr.Forms.MainWindow
                     FormUiManager.ShowAppDocument();
                     break;
 
+                case MainWindowActionId.ShowAppDocument_PacketFilter:
+                    FormUiManager.ShowAppDocument();
+                    break;
+
                 case MainWindowActionId.ShowAppInformation:
                     FormUiManager.ShowAppInfo();
                     break;
@@ -341,7 +346,8 @@ namespace Ratatoskr.Forms.MainWindow
 
             /* ステータスバーのカウンターを更新 */
             DDBtn_DataRate.Text = String.Format("Rate: {0,7}B/s", TextUtil.DecToText(status.PacketBytePSec_All));
-            Label_PktCount_Raw.Text = String.Format("Raw: {0,9}", status.PacketCount_All);
+            Label_PktCount_Cache.Text = String.Format("Cache: {0,9}", status.PacketCount_Cache);
+            Label_PktCount_Raw.Text = String.Format("Raw: {0,9}", status.PacketCount_Raw);
             Label_PktCount_View.Text = String.Format("View: {0,9}", status.PacketCount_DrawAll);
             Label_PktCount_Busy.Text = String.Format("Busy: {0,9}", status.PacketCount_DrawBusy);
 
@@ -402,6 +408,16 @@ namespace Ratatoskr.Forms.MainWindow
             PBar_Status.Visible = show;
             PBar_Status.Maximum = (int)max;
             PBar_Status.Value = Math.Min((int)now, PBar_Status.Maximum);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            switch ((WindowMessage)m.Msg) {
+                case WindowMessage.WM_DEVICECHANGE:
+                    break;
+            }
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -511,7 +527,7 @@ namespace Ratatoskr.Forms.MainWindow
 
             if (files == null)return;
 
-            FormUiManager.FileOpen(files, null);
+            FormUiManager.FileOpen(files);
         }
 
         private void Label_ViewDrawMode_DoubleClick(object sender, EventArgs e)

@@ -18,7 +18,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
         private ulong line_count_ = 0;
 
         
-        public FileFormatReaderImpl() : base()
+        public FileFormatReaderImpl(FileFormatClass fmtc) : base(fmtc)
         {
         }
 
@@ -67,7 +67,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
 
                 /* パケット変換 */
                 packet = ReadContentsRecord(option_, csv_line);
-            } while (packet == null);
+            } while ((packet == null) && (!reader_.EndOfStream));
 
             return (packet);
         }
@@ -98,6 +98,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                 /* 要素解析 */
                 var item = (string)null;
 
+                var class_n = "Csv";
                 var fac     = PacketFacility.Device;
                 var alias   = "";
                 var prio    = PacketPriority.Standard;
@@ -116,6 +117,12 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                     item = items[order_index].TrimEnd();
 
                     switch (order_value) {
+                        case PacketElementID.Class:
+                        {
+                            class_n = item;
+                        }
+                            break;
+
                         case PacketElementID.Facility:
                         {
                             fac = (PacketFacility)Enum.Parse(typeof(PacketFacility), item);
@@ -136,9 +143,14 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                             attr = (PacketAttribute)Enum.Parse(typeof(PacketAttribute), item);
                         }
                             break;
-                        case PacketElementID.DateTime:
+                        case PacketElementID.DateTime_UTC_Display:
                         {
-                            mt = DateTime.ParseExact(item, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture);
+                            mt = DateTime.ParseExact(item, PacketObject.DATETIME_FORMAT_UTC_DISPLAY, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal);
+                        }
+                            break;
+                        case PacketElementID.DateTime_Local_Display:
+                        {
+                            mt = DateTime.ParseExact(item, PacketObject.DATETIME_FORMAT_LOCAL_DISPLAY, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeLocal);
                         }
                             break;
                         case PacketElementID.Information:
@@ -171,7 +183,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                             message = item;
                         }
                             break;
-                        case PacketElementID.Data:
+                        case PacketElementID.Data_HexString:
                         {
                             data_s = item;
                         }
@@ -199,7 +211,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
                         break;
                 }
 
-                return (new PacketObject(fac, alias, prio, attr, mt, info, dir, src, dst, mark, message, data));
+                return (new PacketObject(class_n, fac, alias, prio, attr, mt, info, dir, src, dst, mark, message, data));
 
             } catch {
                 return (null);

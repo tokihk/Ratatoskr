@@ -50,6 +50,11 @@ namespace Ratatoskr.Gate
             devm_.AddClass(new Devices.UsbMonitor.DeviceClassImpl());
             devm_.AddClass(new Devices.AudioDevice.DeviceClassImpl());
             devm_.AddClass(new Devices.AudioFile.DeviceClassImpl());
+
+#if DEBUG
+            devm_.AddClass(new Devices.UsbComm.DeviceClassImpl());
+            devm_.AddClass(new Devices.Ncom.DeviceClassImpl());
+#endif
         }
 
         public static DeviceClass[] GetDeviceList()

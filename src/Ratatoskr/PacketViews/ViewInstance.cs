@@ -15,6 +15,7 @@ namespace Ratatoskr.PacketViews
     internal partial class ViewInstance : UserControl, IDisposable
     {
         internal bool InitializeComplete { get; set; } = false;
+        internal bool OperationBusy      { get; set; } = false;
 
         private ViewManager      viewm_;
 
@@ -46,6 +47,11 @@ namespace Ratatoskr.PacketViews
             OnBackupProperty();
         }
 
+        internal void Idle()
+        {
+            OnIdle();
+        }
+
         internal void ClearPacket()
         {
             OnClearPacket();
@@ -54,11 +60,6 @@ namespace Ratatoskr.PacketViews
         protected void RedrawPacket()
         {
             viewm_.RedrawPacket();
-        }
-
-        internal void Poll()
-        {
-            OnPoll();
         }
 
         internal void BeginDrawPacket(bool auto_scroll)
@@ -77,8 +78,8 @@ namespace Ratatoskr.PacketViews
         }
 
         protected virtual void OnBackupProperty() { }
+        protected virtual void OnIdle() { }
         protected virtual void OnClearPacket() { }
-        protected virtual void OnPoll() { }
         protected virtual void OnDrawPacketBegin(bool auto_scroll) { }
         protected virtual void OnDrawPacketEnd(bool auto_scroll) { }
         protected virtual void OnDrawPacket(PacketObject packet) { }

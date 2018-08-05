@@ -136,6 +136,7 @@ namespace Ratatoskr.Packet
             }
 
             return (new PacketObject(
+                            packet.Class,
                             packet.Facility,
                             packet.Alias,
                             packet.Priority,

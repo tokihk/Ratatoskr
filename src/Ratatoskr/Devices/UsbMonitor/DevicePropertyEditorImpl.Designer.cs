@@ -59,6 +59,7 @@
             this.CBox_DeviceList.Name = "CBox_DeviceList";
             this.CBox_DeviceList.Size = new System.Drawing.Size(401, 20);
             this.CBox_DeviceList.TabIndex = 0;
+            this.CBox_DeviceList.SelectedIndexChanged += new System.EventHandler(this.CBox_DeviceList_SelectedIndexChanged);
             // 
             // groupBox1
             // 

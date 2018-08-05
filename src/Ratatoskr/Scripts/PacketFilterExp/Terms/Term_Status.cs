@@ -19,6 +19,7 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
             Packet_IsData,
             Packet_Alias,
             Packet_MakeTime,
+            Packet_Class,
             Packet_Information,
             Packet_Mark,
             Packet_Data_IsSend,
@@ -26,12 +27,14 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
             Packet_Data_Source,
             Packet_Data_Destination,
             Packet_Data_Length,
-            Packet_Data_BitText,
-            Packet_Data_HexText,
+            Packet_Data_BitString,
+            Packet_Data_HexString,
             Packet_Data_AsciiText,
             Packet_Data_Utf8Text,
-            Packet_Data_UnicodeLText,
-            Packet_Data_UnicodeBText,
+            Packet_Data_Utf16BeText,
+            Packet_Data_Utf16LeText,
+            Packet_Data_ShiftJisText,
+            Packet_Data_EucJpText,
         }
 
 
@@ -71,6 +74,9 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
                 case StatusType.Packet_MakeTime: {
                     return (new Term_DateTime(cs.LastPacket.MakeTime));
                 }
+                case StatusType.Packet_Class: {
+                    return (new Term_Text(cs.LastPacket.Class));
+                }
                 case StatusType.Packet_Information: {
                     return (new Term_Text(cs.LastPacket.Information));
                 }
@@ -92,23 +98,29 @@ namespace Ratatoskr.Scripts.PacketFilterExp.Terms
                 case StatusType.Packet_Data_Length: {
                     return (new Term_Number(cs.LastPacket.DataLength));
                 }
-                case StatusType.Packet_Data_BitText: {
-                    return (new Term_Text(cs.LastPacket.GetBitText()));
+                case StatusType.Packet_Data_BitString: {
+                    return (new Term_Text(cs.LastPacket.DataToBitString()));
                 }
-                case StatusType.Packet_Data_HexText: {
-                    return (new Term_Text(cs.LastPacket.GetHexText()));
+                case StatusType.Packet_Data_HexString: {
+                    return (new Term_Text(cs.LastPacket.DataToHexString()));
                 }
                 case StatusType.Packet_Data_AsciiText: {
-                    return (new Term_Text(cs.LastPacket.GetAsciiText()));
+                    return (new Term_Text(cs.LastPacket.DataToText(Encoding.ASCII)));
                 }
                 case StatusType.Packet_Data_Utf8Text: {
-                    return (new Term_Text(cs.LastPacket.GetUtf8Text()));
+                    return (new Term_Text(cs.LastPacket.DataToText(Encoding.UTF8)));
                 }
-                case StatusType.Packet_Data_UnicodeLText: {
-                    return (new Term_Text(cs.LastPacket.GetUnicodeText(true)));
+                case StatusType.Packet_Data_Utf16BeText: {
+                    return (new Term_Text(cs.LastPacket.DataToText(Encoding.BigEndianUnicode)));
                 }
-                case StatusType.Packet_Data_UnicodeBText: {
-                    return (new Term_Text(cs.LastPacket.GetUnicodeText(false)));
+                case StatusType.Packet_Data_Utf16LeText: {
+                    return (new Term_Text(cs.LastPacket.DataToText(Encoding.Unicode)));
+                }
+                case StatusType.Packet_Data_ShiftJisText: {
+                    return (new Term_Text(cs.LastPacket.DataToText(Encoding.GetEncoding(932))));
+                }
+                case StatusType.Packet_Data_EucJpText: {
+                    return (new Term_Text(cs.LastPacket.DataToText(Encoding.GetEncoding(20932))));
                 }
                 default: return (null);
             }

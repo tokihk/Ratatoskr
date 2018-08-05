@@ -65,6 +65,7 @@ namespace Ratatoskr.Devices.SerialPort
         public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
             : base(devm, devconf, devd, devp)
         {
+            port_.CommStatusUpdated += OnCommStatusUpdated;
         }
 
         protected override EventResult OnConnectStart()
@@ -193,6 +194,11 @@ namespace Ratatoskr.Devices.SerialPort
 
         protected override PollState OnPoll()
         {
+            if (port_.GetDeviceDetachStatus()) {
+                NotifyMessage(Packet.PacketPriority.Alert, "Device Event", "Device has been disconnected.");
+                ConnectReboot();
+            }
+
             return (PollState.Idle);
         }
 
@@ -489,5 +495,59 @@ namespace Ratatoskr.Devices.SerialPort
             NotifyRecvComplete("", "", "", recv_data);
         }
 
+        private void CommEventMessage(string msg)
+        {
+            NotifyMessage(
+                Packet.PacketPriority.Notice,
+                "Comm Event",
+                msg);
+        }
+
+        private void CommEventMessage(string event_name, string status)
+        {
+            CommEventMessage(string.Format("{0} {1}", event_name, status));
+        }
+
+        private void CommEventMessage(string event_name, bool status)
+        {
+            CommEventMessage(event_name, (status) ? ("ON") : ("OFF"));
+        }
+
+        private void OnCommStatusUpdated(object sender, SerialPortController.CommStatusUpdatedEventArgs e)
+        {
+            if (e.ErrorStatus != 0) {
+                NotifyMessage(Packet.PacketPriority.Error, "Comm Error", e.ErrorStatus.ToString());
+            }
+
+            if (e.CommStatusMask != 0) {
+                if (e.CommStatusMask.HasFlag(CommStatus.CTS_HOLD)) {
+                    CommEventMessage("Dst -> Src - CTS", e.CommStatus.HasFlag(CommStatus.CTS_HOLD));
+                }
+
+                if (e.CommStatusMask.HasFlag(CommStatus.DSR_HOLD)) {
+                    CommEventMessage("Dst -> Src - DSR", e.CommStatus.HasFlag(CommStatus.DSR_HOLD));
+                }
+
+                if (e.CommStatusMask.HasFlag(CommStatus.RLSD_HOLD)) {
+                    CommEventMessage("Dst -> Src - RLSD", e.CommStatus.HasFlag(CommStatus.RLSD_HOLD));
+                }
+
+                if (e.CommStatusMask.HasFlag(CommStatus.XOFF_HOLD)) {
+                    if (e.CommStatus.HasFlag(CommStatus.XOFF_HOLD)) {
+                        CommEventMessage("Dst -> Src - XOFF");
+                    } else {
+                        CommEventMessage("Dst -> Src - XON");
+                    }
+                }
+
+                if (e.CommStatusMask.HasFlag(CommStatus.XOFF_SENT)) {
+                    if (e.CommStatus.HasFlag(CommStatus.XOFF_SENT)) {
+                        CommEventMessage("Src -> Dst - XOFF");
+                    } else {
+                        CommEventMessage("Src -> Dst - XON");
+                    }
+                }
+            }
+        }
     }
 }

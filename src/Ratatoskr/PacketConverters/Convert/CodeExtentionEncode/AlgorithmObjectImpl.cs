@@ -111,6 +111,8 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
             this.Num_ExtTarget_Min.Size = new System.Drawing.Size(50, 19);
             this.Num_ExtTarget_Min.TabIndex = 10;
             this.Num_ExtTarget_Min.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_ExtTarget_Min.ValueChanged += new System.EventHandler(this.Num_ExtTarget_Min_ValueChanged);
+            this.Num_ExtTarget_Min.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Num_KeyDown);
             // 
             // label2
             // 
@@ -137,6 +139,8 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
             this.Num_ExtTarget_Max.Size = new System.Drawing.Size(50, 19);
             this.Num_ExtTarget_Max.TabIndex = 12;
             this.Num_ExtTarget_Max.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_ExtTarget_Max.ValueChanged += new System.EventHandler(this.Num_ExtTarget_Max_ValueChanged);
+            this.Num_ExtTarget_Max.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Num_KeyDown);
             // 
             // label5
             // 
@@ -174,6 +178,8 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
             this.Num_ExtCode.Size = new System.Drawing.Size(50, 19);
             this.Num_ExtCode.TabIndex = 16;
             this.Num_ExtCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_ExtCode.ValueChanged += new System.EventHandler(this.Num_ValueChanged);
+            this.Num_ExtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Num_KeyDown);
             // 
             // label4
             // 
@@ -211,6 +217,8 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
             this.Num_ExtMask.Size = new System.Drawing.Size(50, 19);
             this.Num_ExtMask.TabIndex = 19;
             this.Num_ExtMask.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_ExtMask.ValueChanged += new System.EventHandler(this.Num_ValueChanged);
+            this.Num_ExtMask.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Num_KeyDown);
             // 
             // AlgorithmObjectImpl
             // 
@@ -262,7 +270,7 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
         public override void OnBackupProperty()
         {
             Property.CodeExtentionEncodeProperty.ExtTargetCode_Min.Value = Num_ExtTarget_Min.Value;
-            Property.CodeExtentionEncodeProperty.ExtTargetCode_Max.Value = Num_ExtTarget_Min.Value;
+            Property.CodeExtentionEncodeProperty.ExtTargetCode_Max.Value = Num_ExtTarget_Max.Value;
             Property.CodeExtentionEncodeProperty.ExtCode.Value = Num_ExtCode.Value;
             Property.CodeExtentionEncodeProperty.ExtMask.Value = Num_ExtMask.Value;
         }

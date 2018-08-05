@@ -17,7 +17,11 @@ namespace Ratatoskr.Forms
         private const int PACKET_CONVERTER_LIMIT = 10;
         private const int PACKET_VIEW_LIMIT = 5;
 
-        private const int PACKET_BLOCK_CAPACITY = 200;
+//        private const int PACKET_BLOCK_CAPACITY = 500;
+//        private const int PACKET_BLOCK_CAPACITY = 2000;
+//        private const int PACKET_BLOCK_CAPACITY = 4000;
+//        private const int PACKET_BLOCK_CAPACITY = 8000;
+          private const int PACKET_BLOCK_CAPACITY = 15000;
 
         private enum RedrawSequence
         {
@@ -282,6 +286,8 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.Ready:
                 {
+                    Debugger.DebugManager.MessageOut("RedrawSequence.Ready");
+
                     /* 高速描画モード開始 */
                     viewm_.HiSpeedDrawStart(false);
 
@@ -294,6 +300,8 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.PreprocessingStart:
                 {
+                    Debugger.DebugManager.MessageOut("RedrawSequence.PreprocessingStart");
+
                     redraw_step_all_ = (ulong)(Math.Max(draw_packets_.Count, 1));
                     redraw_step_end_ = 0;
                     redraw_progress_ = 0;
@@ -323,6 +331,8 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.DrawingStart:
                 {
+                    Debugger.DebugManager.MessageOut("RedrawSequence.DrawingStart");
+
                     redraw_step_all_ = (ulong)Math.Max(viewm_.DrawPacketCount, 1);
                     redraw_step_end_ = 0;
                     redraw_progress_ = 0;
@@ -363,6 +373,8 @@ namespace Ratatoskr.Forms
                     FormUiManager.SetProgressBar(100, true);
 
                     redraw_state_ = false;
+
+                    Debugger.DebugManager.MessageOut("RedrawSequence.Complete");
                 }
                     break;
 
@@ -405,6 +417,7 @@ namespace Ratatoskr.Forms
         {
             lock (draw_packets_sync_) {
                 var packets_block = new Queue<PacketObject>();
+                var packets_count = (ulong)0;
 
                 /* 入力されたパケットをブロック単位で格納 */
                 foreach (var packet in packets) {
@@ -413,16 +426,18 @@ namespace Ratatoskr.Forms
                     /* ブロックの最大パケット数に達した場合は区切り */
                     if (packets_block.Count >= PACKET_BLOCK_CAPACITY) {
                         draw_packets_.Enqueue(packets_block);
+                        packets_count += (ulong)packets_block.Count;
                         packets_block = new Queue<PacketObject>();
                     }
                 }
 
                 /* 処理中のブロックを格納 */
                 if (packets_block.Count > 0) {
+                    packets_count += (ulong)packets_block.Count;
                     draw_packets_.Enqueue(packets_block);
                 }
 
-                packet_count_all_ += (ulong)packets.Count();
+                packet_count_all_ += packets_count;
             }
         }
 
@@ -525,7 +540,7 @@ namespace Ratatoskr.Forms
 
         private static void UpdatePacketCount()
         {
-            FormUiManager.SetPacketCounter(packet_count_all_, packet_count_draw_, viewm_.DrawPacketCount);
+            FormUiManager.SetPacketCounter(GatePacketManager.PacketCount, packet_count_all_, packet_count_draw_, viewm_.DrawPacketCount);
         }
     }
 }

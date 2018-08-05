@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
+using Ratatoskr.Forms.Controls;
 using Ratatoskr.Generic;
 using Ratatoskr.Packet;
 using Ratatoskr.Generic.Controls;
@@ -16,6 +17,21 @@ namespace Ratatoskr.PacketViews.Packet
 {
     internal sealed class ViewInstanceImpl : ViewInstance
     {
+        private const ulong ITEM_NO_MIN = 1;
+        private const ulong ITEM_NO_MAX = ulong.MaxValue;
+
+        private class PacketListViewItem
+        {
+            public PacketListViewItem(ulong no, PacketObject packet)
+            {
+                No = no;
+                Packet = packet;
+            }
+
+            public ulong No { get; }
+            public PacketObject Packet { get; }
+        }
+
         private enum PacketSelectStatus
         {
             NotSelect,
@@ -23,6 +39,38 @@ namespace Ratatoskr.PacketViews.Packet
             MultiSelect,
         }
 
+        private enum MenuActionId
+        {
+            Copy_Packet_AllInfo_Csv,
+            Copy_Packet_Class,
+            Copy_Packet_Alias,
+            Copy_Packet_DateTime_UTC_ISO8601,
+            Copy_Packet_DateTime_UTC_Display,
+            Copy_Packet_DateTime_Local_ISO8601,
+            Copy_Packet_DateTime_Local_Display,
+            Copy_Packet_Information,
+            Copy_Packet_Source,
+            Copy_Packet_Destination,
+            Copy_Packet_Message,
+            Copy_Packet_Data_BitString,
+            Copy_Packet_Data_HexString,
+            Copy_Packet_Data_AsciiText,
+            Copy_Packet_Data_Utf8Text,
+            Copy_Packet_Data_Utf16BeText,
+            Copy_Packet_Data_Utf16LeText,
+            Copy_Packet_Data_ShiftJisText,
+            Copy_Packet_Data_EucJpText,
+            Copy_Packet_Data_Custom,
+            Copy_Packet_Data_LF_BitString,
+            Copy_Packet_Data_LF_HexString,
+            Copy_Packet_Data_LF_AsciiText,
+            Copy_Packet_Data_LF_Utf8Text,
+            Copy_Packet_Data_LF_Utf16BeText,
+            Copy_Packet_Data_LF_Utf16LeText,
+            Copy_Packet_Data_LF_ShiftJisText,
+            Copy_Packet_Data_LF_EucJpText,
+            Copy_Packet_Data_LF_Custom,
+        }
 
         private ViewPropertyImpl prop_;
         private Encoding encoder_;
@@ -32,7 +80,7 @@ namespace Ratatoskr.PacketViews.Packet
 
         private ulong next_item_no_ = 0;
 
-        private List<ListViewItem> list_items_temp_;
+        private List<PacketListViewItem> list_items_temp_;
 
         private ListViewItem ExtViewItem_SelectPacketCount = null;
         private ListViewItem ExtViewItem_SelectTotalSize = null;
@@ -53,21 +101,8 @@ namespace Ratatoskr.PacketViews.Packet
 
         private BinEditBox BBox_Main;
 
-        private ContextMenuStrip CMenu_Packet;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard_AllInfo_Csv;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_String;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_String_NewLineOn;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_String_NewLineOff;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Hex;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff;
-
         private GroupBox GBox_CustomFormat;
         private NumericUpDown Num_PreviewDataSize;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Custom;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn;
-        private ToolStripMenuItem CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff;
         private ToolStrip toolStrip1;
         private ToolStripDropDownButton Menu_ExtView;
         private ToolStripMenuItem Menu_ExtView_SelectPacketCount;
@@ -80,6 +115,49 @@ namespace Ratatoskr.PacketViews.Packet
         private ColumnHeader LView_ExtInfoColumn_Value;
         private Label label1;
         private ToolStripMenuItem Menu_ExtView_SelectRate;
+
+        private ContextMenuStrip CMenu_Packet;
+        private ToolStripMenuItem CMenu_Packet_Copy;
+        private ToolStripMenuItem CMenu_Packet_Copy_AllInfo_Csv;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem CMenu_Packet_Copy_Alias;
+        private ToolStripMenuItem CMenu_Packet_Copy_Information;
+        private ToolStripMenuItem CMenu_Packet_Copy_Source;
+        private ToolStripMenuItem CMenu_Packet_Copy_Destination;
+        private ToolStripMenuItem CMenu_Packet_Copy_Message;
+        private ToolStripMenuItem CMenu_Packet_Copy_DateTime;
+        private ToolStripMenuItem CMenu_Packet_Copy_DateTime_UTC_ISO8601;
+        private ToolStripMenuItem CMenu_Packet_Copy_DateTime_Local_ISO8601;
+        private ToolStripMenuItem CMenu_Packet_Copy_DateTime_Local_Display;
+        private ToolStripMenuItem CMenu_Packet_Copy_DateTime_UTC_Display;
+        private ToolStripMenuItem CMenu_Packet_Copy_Data;
+        private ToolStripMenuItem CMenu_Packet_Copy_Data_BitString;
+        private ToolStripMenuItem CMenu_Packet_Copy_Data_HexString;
+        private ToolStripMenuItem CMenu_Packet_Copy_Data_Utf8Text;
+        private ToolStripMenuItem CMenu_Packet_Copy_Data_Utf16BeText;
+        private ToolStripMenuItem CMenu_Packet_Copy_Data_Utf16LeText;
+        private ToolStripMenuItem CMenu_Packet_Copy_Data_AsciiText;
+        private ToolStripMenuItem CMenu_Packet_Copy_Data_ShiftJisText;
+        private ToolStripMenuItem CMenu_Packet_Copy_Data_EucJpText;
+        private ToolStripMenuItem CMenu_Packet_Copy_Data_Custom;
+        private ToolStripSeparator toolStripSeparator5;
+        private ToolStripMenuItem CMenu_Packet_Copy_DataLF;
+        private ToolStripMenuItem CMenu_Packet_Copy_DataLF_BitString;
+        private ToolStripMenuItem CMenu_Packet_Copy_DataLF_HexString;
+        private ToolStripSeparator toolStripSeparator6;
+        private ToolStripMenuItem CMenu_Packet_Copy_DataLF_AsciiText;
+        private ToolStripMenuItem CMenu_Packet_Copy_DataLF_Utf8Text;
+        private ToolStripMenuItem CMenu_Packet_Copy_DataLF_Utf16BeText;
+        private ToolStripMenuItem CMenu_Packet_Copy_DataLF_Utf16LeText;
+        private ToolStripSeparator toolStripSeparator7;
+        private ToolStripMenuItem CMenu_Packet_Copy_DataLF_ShiftJisText;
+        private ToolStripMenuItem CMenu_Packet_Copy_DataLF_EucJpText;
+        private ToolStripSeparator toolStripSeparator8;
+        private ToolStripMenuItem CMenu_Packet_Copy_DataLF_Custom;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripSeparator toolStripSeparator4;
+        private ToolStripMenuItem CMenu_Packet_Copy_Class;
         private TextBox TBox_CustomFormat;
 
 
@@ -96,7 +174,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.label1 = new System.Windows.Forms.Label();
             this.Num_PreviewDataSize = new System.Windows.Forms.NumericUpDown();
             this.Split_Main = new System.Windows.Forms.SplitContainer();
-            this.LView_Main = new Ratatoskr.Generic.Controls.ListViewEx();
+            this.LView_Main = new Ratatoskr.Forms.Controls.ListViewEx();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.BBox_Main = new Ratatoskr.Generic.Controls.BinEditBox();
             this.LView_ExtInfo = new System.Windows.Forms.ListView();
@@ -109,19 +187,49 @@ namespace Ratatoskr.PacketViews.Packet
             this.Menu_ExtView_FirstPacketInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_ExtView_LastPacketInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_ExtView_SelectDelta = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.CMenu_Packet_CopyToClipboard = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToClipboard_Data_String = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToClipboard_Data_Hex = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToClipboard_Data_Custom = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_ExtView_SelectRate = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.CMenu_Packet_Copy = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_AllInfo_Csv = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.CMenu_Packet_Copy_Class = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Alias = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DateTime = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DateTime_UTC_ISO8601 = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DateTime_UTC_Display = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.CMenu_Packet_Copy_DateTime_Local_ISO8601 = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DateTime_Local_Display = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Information = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Source = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Destination = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Message = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DataLF = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DataLF_BitString = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DataLF_HexString = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.CMenu_Packet_Copy_DataLF_AsciiText = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DataLF_Utf8Text = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DataLF_Utf16BeText = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DataLF_Utf16LeText = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.CMenu_Packet_Copy_DataLF_ShiftJisText = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_DataLF_EucJpText = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.CMenu_Packet_Copy_DataLF_Custom = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Data = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Data_BitString = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Data_HexString = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.CMenu_Packet_Copy_Data_AsciiText = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Data_Utf8Text = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Data_Utf16BeText = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Data_Utf16LeText = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.CMenu_Packet_Copy_Data_ShiftJisText = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Copy_Data_EucJpText = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.CMenu_Packet_Copy_Data_Custom = new System.Windows.Forms.ToolStripMenuItem();
             this.Panel_ToolBar.SuspendLayout();
             this.GBox_CustomFormat.SuspendLayout();
             this.GBox_CharCode.SuspendLayout();
@@ -257,6 +365,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.LView_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.LView_Main.FullRowSelect = true;
             this.LView_Main.GridLines = true;
+            this.LView_Main.ItemCountMax = 999999;
             this.LView_Main.Location = new System.Drawing.Point(0, 0);
             this.LView_Main.Name = "LView_Main";
             this.LView_Main.ReadOnly = true;
@@ -265,7 +374,9 @@ namespace Ratatoskr.PacketViews.Packet
             this.LView_Main.UseCompatibleStateImageBehavior = false;
             this.LView_Main.View = System.Windows.Forms.View.Details;
             this.LView_Main.VirtualMode = true;
+            this.LView_Main.ItemSelectBusyStatusChanged += new System.EventHandler(this.LView_Main_ItemSelectBusyStatusChanged);
             this.LView_Main.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LView_Main_ColumnClick);
+            this.LView_Main.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.LView_Main_RetrieveVirtualItem);
             this.LView_Main.SelectedIndexChanged += new System.EventHandler(this.LView_Main_SelectedIndexChanged);
             this.LView_Main.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LView_Main_MouseClick);
             // 
@@ -354,156 +465,339 @@ namespace Ratatoskr.PacketViews.Packet
             this.Menu_ExtView.Image = ((System.Drawing.Image)(resources.GetObject("Menu_ExtView.Image")));
             this.Menu_ExtView.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Menu_ExtView.Name = "Menu_ExtView";
-            this.Menu_ExtView.Size = new System.Drawing.Size(132, 22);
+            this.Menu_ExtView.Size = new System.Drawing.Size(117, 22);
             this.Menu_ExtView.Text = "Display item select";
             // 
             // Menu_ExtView_SelectPacketCount
             // 
             this.Menu_ExtView_SelectPacketCount.Name = "Menu_ExtView_SelectPacketCount";
-            this.Menu_ExtView_SelectPacketCount.Size = new System.Drawing.Size(373, 22);
+            this.Menu_ExtView_SelectPacketCount.Size = new System.Drawing.Size(333, 22);
             this.Menu_ExtView_SelectPacketCount.Text = "Select packet count";
             this.Menu_ExtView_SelectPacketCount.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_SelectTotalSize
             // 
             this.Menu_ExtView_SelectTotalSize.Name = "Menu_ExtView_SelectTotalSize";
-            this.Menu_ExtView_SelectTotalSize.Size = new System.Drawing.Size(373, 22);
+            this.Menu_ExtView_SelectTotalSize.Size = new System.Drawing.Size(333, 22);
             this.Menu_ExtView_SelectTotalSize.Text = "Select packet total size";
             this.Menu_ExtView_SelectTotalSize.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_FirstPacketInfo
             // 
             this.Menu_ExtView_FirstPacketInfo.Name = "Menu_ExtView_FirstPacketInfo";
-            this.Menu_ExtView_FirstPacketInfo.Size = new System.Drawing.Size(373, 22);
+            this.Menu_ExtView_FirstPacketInfo.Size = new System.Drawing.Size(333, 22);
             this.Menu_ExtView_FirstPacketInfo.Text = "Information on selected packet (first)";
             this.Menu_ExtView_FirstPacketInfo.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_LastPacketInfo
             // 
             this.Menu_ExtView_LastPacketInfo.Name = "Menu_ExtView_LastPacketInfo";
-            this.Menu_ExtView_LastPacketInfo.Size = new System.Drawing.Size(373, 22);
+            this.Menu_ExtView_LastPacketInfo.Size = new System.Drawing.Size(333, 22);
             this.Menu_ExtView_LastPacketInfo.Text = "Information on selected packet (last)";
             this.Menu_ExtView_LastPacketInfo.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_SelectDelta
             // 
             this.Menu_ExtView_SelectDelta.Name = "Menu_ExtView_SelectDelta";
-            this.Menu_ExtView_SelectDelta.Size = new System.Drawing.Size(373, 22);
+            this.Menu_ExtView_SelectDelta.Size = new System.Drawing.Size(333, 22);
             this.Menu_ExtView_SelectDelta.Text = "Time difference of selection packet (last-first)";
             this.Menu_ExtView_SelectDelta.Click += new System.EventHandler(this.Menu_ExtView_Click);
-            // 
-            // CMenu_Packet
-            // 
-            this.CMenu_Packet.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CMenu_Packet_CopyToClipboard});
-            this.CMenu_Packet.Name = "CMenu_Data";
-            this.CMenu_Packet.Size = new System.Drawing.Size(178, 26);
-            // 
-            // CMenu_Packet_CopyToClipboard
-            // 
-            this.CMenu_Packet_CopyToClipboard.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv,
-            this.CMenu_Packet_CopyToClipboard_Data_String,
-            this.CMenu_Packet_CopyToClipboard_Data_Hex,
-            this.CMenu_Packet_CopyToClipboard_Data_Custom});
-            this.CMenu_Packet_CopyToClipboard.Name = "CMenu_Packet_CopyToClipboard";
-            this.CMenu_Packet_CopyToClipboard.Size = new System.Drawing.Size(177, 22);
-            this.CMenu_Packet_CopyToClipboard.Text = "Copy to clipboard";
-            // 
-            // CMenu_Packet_CopyToClipboard_AllInfo_Csv
-            // 
-            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Name = "CMenu_Packet_CopyToClipboard_AllInfo_Csv";
-            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Size = new System.Drawing.Size(252, 22);
-            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Text = "All information (CSV format)";
-            this.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_AllInfo_Csv_Click);
-            // 
-            // CMenu_Packet_CopyToClipboard_Data_String
-            // 
-            this.CMenu_Packet_CopyToClipboard_Data_String.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn,
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff});
-            this.CMenu_Packet_CopyToClipboard_Data_String.Name = "CMenu_Packet_CopyToClipboard_Data_String";
-            this.CMenu_Packet_CopyToClipboard_Data_String.Size = new System.Drawing.Size(252, 22);
-            this.CMenu_Packet_CopyToClipboard_Data_String.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_String.Text = "Data: Raw text";
-            this.CMenu_Packet_CopyToClipboard_Data_String.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_String_Click);
-            // 
-            // CMenu_Packet_CopyToClipboard_Data_String_NewLineOn
-            // 
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Name = "CMenu_Packet_CopyToClipboard_Data_String_NewLineOn";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Size = new System.Drawing.Size(148, 22);
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Tag = "1";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Text = "Line feed on";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_String_Click);
-            // 
-            // CMenu_Packet_CopyToClipboard_Data_String_NewLineOff
-            // 
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Name = "CMenu_Packet_CopyToClipboard_Data_String_NewLineOff";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Size = new System.Drawing.Size(148, 22);
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Text = "Line feed off";
-            this.CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_String_Click);
-            // 
-            // CMenu_Packet_CopyToClipboard_Data_Hex
-            // 
-            this.CMenu_Packet_CopyToClipboard_Data_Hex.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn,
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff});
-            this.CMenu_Packet_CopyToClipboard_Data_Hex.Name = "CMenu_Packet_CopyToClipboard_Data_Hex";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex.Size = new System.Drawing.Size(252, 22);
-            this.CMenu_Packet_CopyToClipboard_Data_Hex.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex.Text = "Data: HEX text";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Hex_Click);
-            // 
-            // CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn
-            // 
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Name = "CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Size = new System.Drawing.Size(148, 22);
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Tag = "1";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Text = "Line feed on";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Hex_Click);
-            // 
-            // CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff
-            // 
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Name = "CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Size = new System.Drawing.Size(148, 22);
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Text = "Line feed off";
-            this.CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Hex_Click);
-            // 
-            // CMenu_Packet_CopyToClipboard_Data_Custom
-            // 
-            this.CMenu_Packet_CopyToClipboard_Data_Custom.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn,
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff});
-            this.CMenu_Packet_CopyToClipboard_Data_Custom.Name = "CMenu_Packet_CopyToClipboard_Data_Custom";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom.Size = new System.Drawing.Size(252, 22);
-            this.CMenu_Packet_CopyToClipboard_Data_Custom.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom.Text = "Data: Custom preview format";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Custom_Click);
-            // 
-            // CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn
-            // 
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Name = "CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Size = new System.Drawing.Size(148, 22);
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Tag = "1";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Text = "Line feed on";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Custom_Click);
-            // 
-            // CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff
-            // 
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Name = "CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Size = new System.Drawing.Size(148, 22);
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Tag = "0";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Text = "Line feed off";
-            this.CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Click += new System.EventHandler(this.CMenu_Packet_CopyToClipboard_Data_Custom_Click);
             // 
             // Menu_ExtView_SelectRate
             // 
             this.Menu_ExtView_SelectRate.Name = "Menu_ExtView_SelectRate";
-            this.Menu_ExtView_SelectRate.Size = new System.Drawing.Size(373, 22);
+            this.Menu_ExtView_SelectRate.Size = new System.Drawing.Size(333, 22);
             this.Menu_ExtView_SelectRate.Text = "Communication rate of Selection packet (last-first)";
             this.Menu_ExtView_SelectRate.Click += new System.EventHandler(this.Menu_ExtView_Click);
+            // 
+            // CMenu_Packet
+            // 
+            this.CMenu_Packet.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CMenu_Packet_Copy});
+            this.CMenu_Packet.Name = "CMenu_Data";
+            this.CMenu_Packet.Size = new System.Drawing.Size(97, 26);
+            // 
+            // CMenu_Packet_Copy
+            // 
+            this.CMenu_Packet_Copy.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CMenu_Packet_Copy_AllInfo_Csv,
+            this.toolStripSeparator1,
+            this.CMenu_Packet_Copy_Class,
+            this.CMenu_Packet_Copy_Alias,
+            this.CMenu_Packet_Copy_DateTime,
+            this.CMenu_Packet_Copy_Information,
+            this.CMenu_Packet_Copy_Source,
+            this.CMenu_Packet_Copy_Destination,
+            this.CMenu_Packet_Copy_Message,
+            this.CMenu_Packet_Copy_DataLF,
+            this.CMenu_Packet_Copy_Data});
+            this.CMenu_Packet_Copy.Name = "CMenu_Packet_Copy";
+            this.CMenu_Packet_Copy.Size = new System.Drawing.Size(96, 22);
+            this.CMenu_Packet_Copy.Text = "Copy";
+            // 
+            // CMenu_Packet_Copy_AllInfo_Csv
+            // 
+            this.CMenu_Packet_Copy_AllInfo_Csv.Name = "CMenu_Packet_Copy_AllInfo_Csv";
+            this.CMenu_Packet_Copy_AllInfo_Csv.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_AllInfo_Csv.Text = "All information (CSV format)";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(214, 6);
+            // 
+            // CMenu_Packet_Copy_Class
+            // 
+            this.CMenu_Packet_Copy_Class.Name = "CMenu_Packet_Copy_Class";
+            this.CMenu_Packet_Copy_Class.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Class.Text = "Class";
+            // 
+            // CMenu_Packet_Copy_Alias
+            // 
+            this.CMenu_Packet_Copy_Alias.Name = "CMenu_Packet_Copy_Alias";
+            this.CMenu_Packet_Copy_Alias.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Alias.Text = "Alias";
+            // 
+            // CMenu_Packet_Copy_DateTime
+            // 
+            this.CMenu_Packet_Copy_DateTime.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CMenu_Packet_Copy_DateTime_UTC_ISO8601,
+            this.CMenu_Packet_Copy_DateTime_UTC_Display,
+            this.toolStripSeparator5,
+            this.CMenu_Packet_Copy_DateTime_Local_ISO8601,
+            this.CMenu_Packet_Copy_DateTime_Local_Display});
+            this.CMenu_Packet_Copy_DateTime.Name = "CMenu_Packet_Copy_DateTime";
+            this.CMenu_Packet_Copy_DateTime.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_DateTime.Text = "DateTime";
+            // 
+            // CMenu_Packet_Copy_DateTime_UTC_ISO8601
+            // 
+            this.CMenu_Packet_Copy_DateTime_UTC_ISO8601.Name = "CMenu_Packet_Copy_DateTime_UTC_ISO8601";
+            this.CMenu_Packet_Copy_DateTime_UTC_ISO8601.Size = new System.Drawing.Size(182, 22);
+            this.CMenu_Packet_Copy_DateTime_UTC_ISO8601.Text = "UTC: ISO8601 format";
+            // 
+            // CMenu_Packet_Copy_DateTime_UTC_Display
+            // 
+            this.CMenu_Packet_Copy_DateTime_UTC_Display.Name = "CMenu_Packet_Copy_DateTime_UTC_Display";
+            this.CMenu_Packet_Copy_DateTime_UTC_Display.Size = new System.Drawing.Size(182, 22);
+            this.CMenu_Packet_Copy_DateTime_UTC_Display.Text = "UTC: Display";
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(179, 6);
+            // 
+            // CMenu_Packet_Copy_DateTime_Local_ISO8601
+            // 
+            this.CMenu_Packet_Copy_DateTime_Local_ISO8601.Name = "CMenu_Packet_Copy_DateTime_Local_ISO8601";
+            this.CMenu_Packet_Copy_DateTime_Local_ISO8601.Size = new System.Drawing.Size(182, 22);
+            this.CMenu_Packet_Copy_DateTime_Local_ISO8601.Text = "Local: ISO8601 format";
+            // 
+            // CMenu_Packet_Copy_DateTime_Local_Display
+            // 
+            this.CMenu_Packet_Copy_DateTime_Local_Display.Name = "CMenu_Packet_Copy_DateTime_Local_Display";
+            this.CMenu_Packet_Copy_DateTime_Local_Display.Size = new System.Drawing.Size(182, 22);
+            this.CMenu_Packet_Copy_DateTime_Local_Display.Text = "Local: Display";
+            // 
+            // CMenu_Packet_Copy_Information
+            // 
+            this.CMenu_Packet_Copy_Information.Name = "CMenu_Packet_Copy_Information";
+            this.CMenu_Packet_Copy_Information.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Information.Text = "Information";
+            // 
+            // CMenu_Packet_Copy_Source
+            // 
+            this.CMenu_Packet_Copy_Source.Name = "CMenu_Packet_Copy_Source";
+            this.CMenu_Packet_Copy_Source.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Source.Text = "Source";
+            // 
+            // CMenu_Packet_Copy_Destination
+            // 
+            this.CMenu_Packet_Copy_Destination.Name = "CMenu_Packet_Copy_Destination";
+            this.CMenu_Packet_Copy_Destination.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Destination.Text = "Destination";
+            // 
+            // CMenu_Packet_Copy_Message
+            // 
+            this.CMenu_Packet_Copy_Message.Name = "CMenu_Packet_Copy_Message";
+            this.CMenu_Packet_Copy_Message.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Message.Text = "Message";
+            // 
+            // CMenu_Packet_Copy_DataLF
+            // 
+            this.CMenu_Packet_Copy_DataLF.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CMenu_Packet_Copy_DataLF_BitString,
+            this.CMenu_Packet_Copy_DataLF_HexString,
+            this.toolStripSeparator6,
+            this.CMenu_Packet_Copy_DataLF_AsciiText,
+            this.CMenu_Packet_Copy_DataLF_Utf8Text,
+            this.CMenu_Packet_Copy_DataLF_Utf16BeText,
+            this.CMenu_Packet_Copy_DataLF_Utf16LeText,
+            this.toolStripSeparator7,
+            this.CMenu_Packet_Copy_DataLF_ShiftJisText,
+            this.CMenu_Packet_Copy_DataLF_EucJpText,
+            this.toolStripSeparator8,
+            this.CMenu_Packet_Copy_DataLF_Custom});
+            this.CMenu_Packet_Copy_DataLF.Name = "CMenu_Packet_Copy_DataLF";
+            this.CMenu_Packet_Copy_DataLF.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_DataLF.Text = "Data (with Line Feed)";
+            // 
+            // CMenu_Packet_Copy_DataLF_BitString
+            // 
+            this.CMenu_Packet_Copy_DataLF_BitString.Name = "CMenu_Packet_Copy_DataLF_BitString";
+            this.CMenu_Packet_Copy_DataLF_BitString.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_BitString.Text = "BIN string";
+            // 
+            // CMenu_Packet_Copy_DataLF_HexString
+            // 
+            this.CMenu_Packet_Copy_DataLF_HexString.Name = "CMenu_Packet_Copy_DataLF_HexString";
+            this.CMenu_Packet_Copy_DataLF_HexString.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_HexString.Text = "HEX string";
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(186, 6);
+            // 
+            // CMenu_Packet_Copy_DataLF_AsciiText
+            // 
+            this.CMenu_Packet_Copy_DataLF_AsciiText.Name = "CMenu_Packet_Copy_DataLF_AsciiText";
+            this.CMenu_Packet_Copy_DataLF_AsciiText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_AsciiText.Text = "ASCII text";
+            // 
+            // CMenu_Packet_Copy_DataLF_Utf8Text
+            // 
+            this.CMenu_Packet_Copy_DataLF_Utf8Text.Name = "CMenu_Packet_Copy_DataLF_Utf8Text";
+            this.CMenu_Packet_Copy_DataLF_Utf8Text.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_Utf8Text.Text = "UTF-8 text";
+            // 
+            // CMenu_Packet_Copy_DataLF_Utf16BeText
+            // 
+            this.CMenu_Packet_Copy_DataLF_Utf16BeText.Name = "CMenu_Packet_Copy_DataLF_Utf16BeText";
+            this.CMenu_Packet_Copy_DataLF_Utf16BeText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_Utf16BeText.Text = "UTF-16BE text";
+            // 
+            // CMenu_Packet_Copy_DataLF_Utf16LeText
+            // 
+            this.CMenu_Packet_Copy_DataLF_Utf16LeText.Name = "CMenu_Packet_Copy_DataLF_Utf16LeText";
+            this.CMenu_Packet_Copy_DataLF_Utf16LeText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_Utf16LeText.Text = "UTF-16LE text";
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(186, 6);
+            // 
+            // CMenu_Packet_Copy_DataLF_ShiftJisText
+            // 
+            this.CMenu_Packet_Copy_DataLF_ShiftJisText.Name = "CMenu_Packet_Copy_DataLF_ShiftJisText";
+            this.CMenu_Packet_Copy_DataLF_ShiftJisText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_ShiftJisText.Text = "Shift_JIS text";
+            // 
+            // CMenu_Packet_Copy_DataLF_EucJpText
+            // 
+            this.CMenu_Packet_Copy_DataLF_EucJpText.Name = "CMenu_Packet_Copy_DataLF_EucJpText";
+            this.CMenu_Packet_Copy_DataLF_EucJpText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_EucJpText.Text = "EUC-JP text";
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(186, 6);
+            // 
+            // CMenu_Packet_Copy_DataLF_Custom
+            // 
+            this.CMenu_Packet_Copy_DataLF_Custom.Name = "CMenu_Packet_Copy_DataLF_Custom";
+            this.CMenu_Packet_Copy_DataLF_Custom.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_Custom.Text = "Custom preview format";
+            // 
+            // CMenu_Packet_Copy_Data
+            // 
+            this.CMenu_Packet_Copy_Data.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CMenu_Packet_Copy_Data_BitString,
+            this.CMenu_Packet_Copy_Data_HexString,
+            this.toolStripSeparator2,
+            this.CMenu_Packet_Copy_Data_AsciiText,
+            this.CMenu_Packet_Copy_Data_Utf8Text,
+            this.CMenu_Packet_Copy_Data_Utf16BeText,
+            this.CMenu_Packet_Copy_Data_Utf16LeText,
+            this.toolStripSeparator3,
+            this.CMenu_Packet_Copy_Data_ShiftJisText,
+            this.CMenu_Packet_Copy_Data_EucJpText,
+            this.toolStripSeparator4,
+            this.CMenu_Packet_Copy_Data_Custom});
+            this.CMenu_Packet_Copy_Data.Name = "CMenu_Packet_Copy_Data";
+            this.CMenu_Packet_Copy_Data.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Data.Text = "Data (without Line Feed)";
+            // 
+            // CMenu_Packet_Copy_Data_BitString
+            // 
+            this.CMenu_Packet_Copy_Data_BitString.Name = "CMenu_Packet_Copy_Data_BitString";
+            this.CMenu_Packet_Copy_Data_BitString.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_BitString.Text = "BIN string";
+            // 
+            // CMenu_Packet_Copy_Data_HexString
+            // 
+            this.CMenu_Packet_Copy_Data_HexString.Name = "CMenu_Packet_Copy_Data_HexString";
+            this.CMenu_Packet_Copy_Data_HexString.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_HexString.Text = "HEX string";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(186, 6);
+            // 
+            // CMenu_Packet_Copy_Data_AsciiText
+            // 
+            this.CMenu_Packet_Copy_Data_AsciiText.Name = "CMenu_Packet_Copy_Data_AsciiText";
+            this.CMenu_Packet_Copy_Data_AsciiText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_AsciiText.Text = "ASCII text";
+            // 
+            // CMenu_Packet_Copy_Data_Utf8Text
+            // 
+            this.CMenu_Packet_Copy_Data_Utf8Text.Name = "CMenu_Packet_Copy_Data_Utf8Text";
+            this.CMenu_Packet_Copy_Data_Utf8Text.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_Utf8Text.Text = "UTF-8 text";
+            // 
+            // CMenu_Packet_Copy_Data_Utf16BeText
+            // 
+            this.CMenu_Packet_Copy_Data_Utf16BeText.Name = "CMenu_Packet_Copy_Data_Utf16BeText";
+            this.CMenu_Packet_Copy_Data_Utf16BeText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_Utf16BeText.Text = "UTF-16BE text";
+            // 
+            // CMenu_Packet_Copy_Data_Utf16LeText
+            // 
+            this.CMenu_Packet_Copy_Data_Utf16LeText.Name = "CMenu_Packet_Copy_Data_Utf16LeText";
+            this.CMenu_Packet_Copy_Data_Utf16LeText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_Utf16LeText.Text = "UTF-16LE text";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(186, 6);
+            // 
+            // CMenu_Packet_Copy_Data_ShiftJisText
+            // 
+            this.CMenu_Packet_Copy_Data_ShiftJisText.Name = "CMenu_Packet_Copy_Data_ShiftJisText";
+            this.CMenu_Packet_Copy_Data_ShiftJisText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_ShiftJisText.Text = "Shift_JIS text";
+            // 
+            // CMenu_Packet_Copy_Data_EucJpText
+            // 
+            this.CMenu_Packet_Copy_Data_EucJpText.Name = "CMenu_Packet_Copy_Data_EucJpText";
+            this.CMenu_Packet_Copy_Data_EucJpText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_EucJpText.Text = "EUC-JP text";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(186, 6);
+            // 
+            // CMenu_Packet_Copy_Data_Custom
+            // 
+            this.CMenu_Packet_Copy_Data_Custom.Name = "CMenu_Packet_Copy_Data_Custom";
+            this.CMenu_Packet_Copy_Data_Custom.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_Custom.Text = "Custom preview format";
             // 
             // ViewInstanceImpl
             // 
@@ -551,7 +845,7 @@ namespace Ratatoskr.PacketViews.Packet
             InitializeCharCodeType();
 
             /* --- プロパティをUIに反映 --- */
-            LView_Main.ItemCountMax = (ulong)prop_.ViewPacketCountLimit.Value;
+            LView_Main.ItemCountMax = (int)ConfigManager.System.ApplicationCore.Packet_ViewPacketCountLimit.Value;
             BuildPacketViewHeader();
             Num_PreviewDataSize.Value = prop_.PreviewDataSize.Value;
             CBox_CharCode.SelectedItem = prop_.CharCode.Value;
@@ -577,19 +871,93 @@ namespace Ratatoskr.PacketViews.Packet
 
         private void InitializeContextMenu()
         {
-            var language = ConfigManager.Language.PacketView.Packet;
+            void SetupMenuEvent(ToolStripMenuItem menu)
+            {
+                if (menu == null)return;
 
-            CMenu_Packet_CopyToClipboard.Text = language.CMenu_Packet_CopyToClipboard.Value;
-            CMenu_Packet_CopyToClipboard_AllInfo_Csv.Text = language.CMenu_Packet_CopyToClipboard_AllInfo_Csv.Value;
-            CMenu_Packet_CopyToClipboard_Data_String.Text = language.CMenu_Packet_CopyToClipboard_DataString.Value;
-            CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Text = language.CMenu_Packet_CopyToClipboard_NewLineOn.Value;
-            CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Text = language.CMenu_Packet_CopyToClipboard_NewLineOff.Value;
-            CMenu_Packet_CopyToClipboard_Data_Hex.Text = language.CMenu_Packet_CopyToClipboard_DataHex.Value;
-            CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Text = language.CMenu_Packet_CopyToClipboard_NewLineOn.Value;
-            CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Text = language.CMenu_Packet_CopyToClipboard_NewLineOff.Value;
-            CMenu_Packet_CopyToClipboard_Data_Custom.Text = language.CMenu_Packet_CopyToClipboard_DataCustom.Value;
-            CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Text = language.CMenu_Packet_CopyToClipboard_NewLineOn.Value;
-            CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Text = language.CMenu_Packet_CopyToClipboard_NewLineOff.Value;
+                if (menu.HasDropDownItems) {
+                    foreach (var menu_sub in menu.DropDownItems) {
+                        SetupMenuEvent(menu_sub as ToolStripMenuItem);
+                    }
+                } else {
+                    menu.Click += OnMenuClick;
+                }
+            }
+
+            /* イベント設定 */
+            foreach (var item in CMenu_Packet.Items) {
+                SetupMenuEvent(item as ToolStripMenuItem);
+            }
+
+            /* 言語設定 */
+            var lang = ConfigManager.Language.PacketView.Packet;
+
+            CMenu_Packet_Copy.Text                        = lang.CMenu_Packet_Copy.Value;
+            CMenu_Packet_Copy_AllInfo_Csv.Text            = lang.CMenu_Packet_Copy_AllInfo_Csv.Value;
+            CMenu_Packet_Copy_Class.Text                  = lang.CMenu_Packet_Copy_Class.Value;
+            CMenu_Packet_Copy_Alias.Text                  = lang.CMenu_Packet_Copy_Alias.Value;
+            CMenu_Packet_Copy_Information.Text            = lang.CMenu_Packet_Copy_Information.Value;
+            CMenu_Packet_Copy_Source.Text                 = lang.CMenu_Packet_Copy_Source.Value;
+            CMenu_Packet_Copy_Destination.Text            = lang.CMenu_Packet_Copy_Destination.Value;
+            CMenu_Packet_Copy_Message.Text                = lang.CMenu_Packet_Copy_Message.Value;
+            CMenu_Packet_Copy_DateTime.Text               = lang.CMenu_Packet_Copy_DateTime.Value;
+            CMenu_Packet_Copy_DateTime_UTC_ISO8601.Text   = lang.CMenu_Packet_Copy_DateTime_UTC_ISO8601.Value;
+            CMenu_Packet_Copy_DateTime_UTC_Display.Text   = lang.CMenu_Packet_Copy_DateTime_UTC_Display.Value;
+            CMenu_Packet_Copy_DateTime_Local_ISO8601.Text = lang.CMenu_Packet_Copy_DateTime_Local_ISO8601.Value;
+            CMenu_Packet_Copy_DateTime_Local_Display.Text = lang.CMenu_Packet_Copy_DateTime_Local_Display.Value;
+            CMenu_Packet_Copy_Data.Text                   = lang.CMenu_Packet_Copy_Data.Value;
+            CMenu_Packet_Copy_Data_BitString.Text         = lang.CMenu_Packet_Copy_Data_BitString.Value;
+            CMenu_Packet_Copy_Data_HexString.Text         = lang.CMenu_Packet_Copy_Data_HexString.Value;
+            CMenu_Packet_Copy_Data_AsciiText.Text         = lang.CMenu_Packet_Copy_Data_AsciiText.Value;
+            CMenu_Packet_Copy_Data_Utf8Text.Text          = lang.CMenu_Packet_Copy_Data_Utf8Text.Value;
+            CMenu_Packet_Copy_Data_Utf16BeText.Text       = lang.CMenu_Packet_Copy_Data_Utf16BeText.Value;
+            CMenu_Packet_Copy_Data_Utf16LeText.Text       = lang.CMenu_Packet_Copy_Data_Utf16LeText.Value;
+            CMenu_Packet_Copy_Data_ShiftJisText.Text      = lang.CMenu_Packet_Copy_Data_ShiftJisText.Value;
+            CMenu_Packet_Copy_Data_EucJpText.Text         = lang.CMenu_Packet_Copy_Data_EucJpText.Value;
+            CMenu_Packet_Copy_Data_Custom.Text            = lang.CMenu_Packet_Copy_Data_Custom.Value;
+            CMenu_Packet_Copy_DataLF.Text                 = lang.CMenu_Packet_Copy_DataLF.Value;
+            CMenu_Packet_Copy_DataLF_BitString.Text       = lang.CMenu_Packet_Copy_Data_BitString.Value;
+            CMenu_Packet_Copy_DataLF_HexString.Text       = lang.CMenu_Packet_Copy_Data_HexString.Value;
+            CMenu_Packet_Copy_DataLF_AsciiText.Text       = lang.CMenu_Packet_Copy_Data_AsciiText.Value;
+            CMenu_Packet_Copy_DataLF_Utf8Text.Text        = lang.CMenu_Packet_Copy_Data_Utf8Text.Value;
+            CMenu_Packet_Copy_DataLF_Utf16BeText.Text     = lang.CMenu_Packet_Copy_Data_Utf16BeText.Value;
+            CMenu_Packet_Copy_DataLF_Utf16LeText.Text     = lang.CMenu_Packet_Copy_Data_Utf16LeText.Value;
+            CMenu_Packet_Copy_DataLF_ShiftJisText.Text    = lang.CMenu_Packet_Copy_Data_ShiftJisText.Value;
+            CMenu_Packet_Copy_DataLF_EucJpText.Text       = lang.CMenu_Packet_Copy_Data_EucJpText.Value;
+            CMenu_Packet_Copy_DataLF_Custom.Text          = lang.CMenu_Packet_Copy_Data_Custom.Value;
+
+            CMenu_Packet_Copy.Tag                        = null;
+            CMenu_Packet_Copy_AllInfo_Csv.Tag            = MenuActionId.Copy_Packet_AllInfo_Csv;
+            CMenu_Packet_Copy_Alias.Tag                  = MenuActionId.Copy_Packet_Alias;
+            CMenu_Packet_Copy_Information.Tag            = MenuActionId.Copy_Packet_Information;
+            CMenu_Packet_Copy_Source.Tag                 = MenuActionId.Copy_Packet_Source;
+            CMenu_Packet_Copy_Destination.Tag            = MenuActionId.Copy_Packet_Destination;
+            CMenu_Packet_Copy_Message.Tag                = MenuActionId.Copy_Packet_Message;
+            CMenu_Packet_Copy_DateTime.Tag               = null;
+            CMenu_Packet_Copy_DateTime_UTC_ISO8601.Tag   = MenuActionId.Copy_Packet_DateTime_UTC_ISO8601;
+            CMenu_Packet_Copy_DateTime_UTC_Display.Tag   = MenuActionId.Copy_Packet_DateTime_UTC_Display;
+            CMenu_Packet_Copy_DateTime_Local_ISO8601.Tag = MenuActionId.Copy_Packet_DateTime_Local_ISO8601;
+            CMenu_Packet_Copy_DateTime_Local_Display.Tag = MenuActionId.Copy_Packet_DateTime_Local_Display;
+            CMenu_Packet_Copy_Data.Tag                   = null;
+            CMenu_Packet_Copy_Data_BitString.Tag         = MenuActionId.Copy_Packet_Data_BitString;
+            CMenu_Packet_Copy_Data_HexString.Tag         = MenuActionId.Copy_Packet_Data_HexString;
+            CMenu_Packet_Copy_Data_AsciiText.Tag         = MenuActionId.Copy_Packet_Data_AsciiText;
+            CMenu_Packet_Copy_Data_Utf8Text.Tag          = MenuActionId.Copy_Packet_Data_Utf8Text;
+            CMenu_Packet_Copy_Data_Utf16BeText.Tag       = MenuActionId.Copy_Packet_Data_Utf16BeText;
+            CMenu_Packet_Copy_Data_Utf16LeText.Tag       = MenuActionId.Copy_Packet_Data_Utf16LeText;
+            CMenu_Packet_Copy_Data_ShiftJisText.Tag      = MenuActionId.Copy_Packet_Data_ShiftJisText;
+            CMenu_Packet_Copy_Data_EucJpText.Tag         = MenuActionId.Copy_Packet_Data_EucJpText;
+            CMenu_Packet_Copy_Data_Custom.Tag            = MenuActionId.Copy_Packet_Data_Custom;
+            CMenu_Packet_Copy_DataLF.Tag                 = null;
+            CMenu_Packet_Copy_DataLF_BitString.Tag       = MenuActionId.Copy_Packet_Data_LF_BitString;
+            CMenu_Packet_Copy_DataLF_HexString.Tag       = MenuActionId.Copy_Packet_Data_LF_HexString;
+            CMenu_Packet_Copy_DataLF_AsciiText.Tag       = MenuActionId.Copy_Packet_Data_LF_AsciiText;
+            CMenu_Packet_Copy_DataLF_Utf8Text.Tag        = MenuActionId.Copy_Packet_Data_LF_Utf8Text;
+            CMenu_Packet_Copy_DataLF_Utf16BeText.Tag     = MenuActionId.Copy_Packet_Data_LF_Utf16BeText;
+            CMenu_Packet_Copy_DataLF_Utf16LeText.Tag     = MenuActionId.Copy_Packet_Data_LF_Utf16LeText;
+            CMenu_Packet_Copy_DataLF_ShiftJisText.Tag    = MenuActionId.Copy_Packet_Data_LF_ShiftJisText;
+            CMenu_Packet_Copy_DataLF_EucJpText.Tag       = MenuActionId.Copy_Packet_Data_LF_EucJpText;
+            CMenu_Packet_Copy_DataLF_Custom.Tag          = MenuActionId.Copy_Packet_Data_LF_Custom;
         }
 
         private void InitializePreviewDataSize(decimal size)
@@ -615,13 +983,14 @@ namespace Ratatoskr.PacketViews.Packet
             if (LView_Main.SelectedIndices.Count == 0)return (PacketSelectStatus.NotSelect);
 
             var count = 0;
-            var packet = (PacketObject)null;
+            var item_info = (PacketListViewItem)null;
 
             /* 選択中のパケットにデータパケットが存在するかチェック */
             if (LView_Main.SelectedIndices.Count > 0) {
-                foreach (int index in LView_Main.SelectedIndices) {
-                    packet = LView_Main.ItemElementAt(index).Tag as PacketObject;
-                    if (packet == null) continue;
+                for (int index = 0; index < LView_Main.SelectedIndices.Count; index++) {
+                    item_info = LView_Main.ItemElementAt(LView_Main.SelectedIndices[index]) as PacketListViewItem;
+
+                    if (item_info == null)continue;
 
                     /* 2個以上のデータパケットを検出したらループ終了 */
                     if ((++count) > 1)break;
@@ -642,12 +1011,7 @@ namespace Ratatoskr.PacketViews.Packet
             var status = GetDataPacketSelectStatus();
 
             if (status != PacketSelectStatus.NotSelect) {
-                CMenu_Packet_CopyToClipboard_Data_String_NewLineOff.Visible = (status == PacketSelectStatus.MultiSelect);
-                CMenu_Packet_CopyToClipboard_Data_String_NewLineOn.Visible = (status == PacketSelectStatus.MultiSelect);
-                CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOff.Visible = (status == PacketSelectStatus.MultiSelect);
-                CMenu_Packet_CopyToClipboard_Data_Hex_NewLineOn.Visible = (status == PacketSelectStatus.MultiSelect);
-                CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOff.Visible = (status == PacketSelectStatus.MultiSelect);
-                CMenu_Packet_CopyToClipboard_Data_Custom_NewLineOn.Visible = (status == PacketSelectStatus.MultiSelect);
+                CMenu_Packet_Copy_DataLF.Visible = (status == PacketSelectStatus.MultiSelect);
                 LView_Main.ContextMenuStrip = CMenu_Packet;
             } else {
                 LView_Main.ContextMenuStrip = null;
@@ -674,6 +1038,11 @@ namespace Ratatoskr.PacketViews.Packet
                                         : (Color.Black);
         }
 
+        private void UpdateOperationBusyStatus()
+        {
+            OperationBusy = LView_Main.ItemSelectBusy;
+        }
+
         private void UpdateSelectStatus()
         {
             UpdateBinEditBox();
@@ -682,9 +1051,18 @@ namespace Ratatoskr.PacketViews.Packet
 
         private void UpdateBinEditBox()
         {
-            var item = LView_Main.FocusedItem;
+            var item = LView_Main.FocusedItem as ListViewItem;
+            var packet = (PacketObject)null;
 
-            SetCurrentPacketStatus((item != null) ? (item.Tag as PacketObject) : (null));
+            if (item != null) {
+                var item_i = item.Tag as PacketListViewItem;
+
+                if (item_i != null) {
+                    packet = item_i.Packet;
+                }
+            }
+
+            SetCurrentPacketStatus(packet);
         }
 
         private void UpdateExtView()
@@ -692,28 +1070,28 @@ namespace Ratatoskr.PacketViews.Packet
             var indices = LView_Main.SelectedIndices;
             var index_first = 0;
             var index_last = 0;
-            var packet_first = (PacketObject)null;
-            var packet_last = (PacketObject)null;
+            var packet_first = (PacketListViewItem)null;
+            var packet_last = (PacketListViewItem)null;
             var select_total_size = (ulong)0;
             var select_delta = TimeSpan.Zero;
 
             if (indices.Count > 0) {
                 index_first = indices[0];
                 index_last = indices[indices.Count - 1];
-                packet_first = LView_Main.ItemElementAt(index_first).Tag as PacketObject;
-                packet_last = LView_Main.ItemElementAt(index_last).Tag as PacketObject;
+                packet_first = LView_Main.ItemElementAt(index_first) as PacketListViewItem;
+                packet_last = LView_Main.ItemElementAt(index_last) as PacketListViewItem;
             }
 
             /* 選択中のパケットサイズを取得 */
             if (   (ExtViewItem_SelectTotalSize != null)
                 || (ExtViewItem_SelectRate != null)
             ) {
-                var packet_d = (PacketObject)null;
+                var packet_d = (PacketListViewItem)null;
 
                 foreach (int index in indices) {
-                    packet_d = LView_Main.ItemElementAt(index).Tag as PacketObject;
+                    packet_d = LView_Main.ItemElementAt(index) as PacketListViewItem;
                     if (packet_d == null)continue;
-                    select_total_size += (ulong)packet_d.DataLength;
+                    select_total_size += (ulong)packet_d.Packet.DataLength;
                 }
             }
 
@@ -722,7 +1100,7 @@ namespace Ratatoskr.PacketViews.Packet
                 || (ExtViewItem_SelectRate != null)
             ) {
                 if ((packet_first != null) && (packet_last != null)) {
-                    select_delta = packet_last.MakeTime - packet_first.MakeTime;
+                    select_delta = packet_last.Packet.MakeTime - packet_first.Packet.MakeTime;
                 }
             }
 
@@ -739,7 +1117,7 @@ namespace Ratatoskr.PacketViews.Packet
             /* 選択パケット(最初)の情報 */
             if (ExtViewItem_FirstPacketInfo != null) {
                 if (packet_first != null) {
-                    ExtViewItem_FirstPacketInfo.SubItems[1].Text = String.Format("{0} - No.{1}", packet_first.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"), index_first + 1);
+                    ExtViewItem_FirstPacketInfo.SubItems[1].Text = String.Format("{0} - No.{1}", packet_first.Packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"), index_first + 1);
                 } else {
                     ExtViewItem_FirstPacketInfo.SubItems[1].Text = "";
                 }
@@ -748,7 +1126,7 @@ namespace Ratatoskr.PacketViews.Packet
             /* 選択パケット(最後)の情報 */
             if (ExtViewItem_LastPacketInfo != null) {
                 if (packet_last != null) {
-                    ExtViewItem_LastPacketInfo.SubItems[1].Text = String.Format("{0} - No.{1}", packet_last.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"), index_last + 1);
+                    ExtViewItem_LastPacketInfo.SubItems[1].Text = String.Format("{0} - No.{1}", packet_last.Packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"), index_last + 1);
                 } else {
                     ExtViewItem_LastPacketInfo.SubItems[1].Text = "";
                 }
@@ -791,6 +1169,14 @@ namespace Ratatoskr.PacketViews.Packet
                 case CharCodeType.UTF8:         return (Encoding.UTF8);
                 default:                        return (Encoding.ASCII);
             }
+        }
+
+        private ToolStripMenuItem BuildContextMenu()
+        {
+            var menu_root = new ToolStripMenuItem();
+
+
+            return (menu_root);
         }
 
         private void BuildPacketViewHeader()
@@ -891,6 +1277,7 @@ namespace Ratatoskr.PacketViews.Packet
         private string GetListViewHeaderName(ColumnType type)
         {
             switch (type) {
+                case ColumnType.Class:                  return (ConfigManager.Language.PacketView.Packet.Column_Class.Value);
                 case ColumnType.Alias:                  return (ConfigManager.Language.PacketView.Packet.Column_Alias.Value);
                 case ColumnType.Datetime_UTC:           return (ConfigManager.Language.PacketView.Packet.Column_Datetime_UTC.Value);
                 case ColumnType.Datetime_Local:         return (ConfigManager.Language.PacketView.Packet.Column_Datetime_Local.Value);
@@ -936,19 +1323,16 @@ namespace Ratatoskr.PacketViews.Packet
             return (format_packet_.GetFormatString(match.Groups["value"].Captures[0].Value));
         }
 
-        private ListViewItem PacketToListViewItem(PacketObject packet)
+        private ListViewItem ItemInfoToListViewItem(PacketListViewItem item_i)
         {
             var item = new ListViewItem();
 
             /* メインアイテム */
-            item.Text = (next_item_no_).ToString();
-            item.Tag = packet;
+            item.Text = item_i.No.ToString();
+            item.Tag = item_i;
 
             /* サブサイテム */
-            PacketToListViewItem_SubUpdate(item, packet);
-
-            /* 次のインデックス番号を更新 */
-            next_item_no_ = Math.Max(1, next_item_no_ + 1);
+            PacketToListViewItem_SubUpdate(item, item_i.Packet);
 
             return (item);
         }
@@ -969,36 +1353,47 @@ namespace Ratatoskr.PacketViews.Packet
             }
         }
 
+        private void PacketToListViewItem_Common(ColumnType type, ListViewItem item, PacketObject packet)
+        {
+            switch (type) {
+                case ColumnType.Class:
+                    item.SubItems.Add(packet.Class);
+                    break;
+
+                case ColumnType.Alias:
+                    item.SubItems.Add(packet.Alias);
+                    break;
+
+                case ColumnType.Datetime_UTC:
+                    item.SubItems.Add(packet.GetElementText(PacketElementID.DateTime_UTC_Display));
+                    break;
+
+                case ColumnType.Datetime_Local:
+                    item.SubItems.Add(packet.GetElementText(PacketElementID.DateTime_Local_Display));
+                    break;
+
+                case ColumnType.Information:
+                    item.SubItems.Add(packet.Information);
+                    break;
+
+                default:
+                    item.SubItems.Add("");
+                    break;
+            }
+        }
+
         private void PacketToListViewItem_Message(ListViewItem item, PacketObject packet)
         {
             foreach (var config in prop_.ColumnList.Value) {
                 switch (config.Type) {
-                    case ColumnType.Alias:
-                        item.SubItems.Add(packet.Alias);
-                        break;
-
-                    case ColumnType.Datetime_UTC:
-                        item.SubItems.Add(packet.MakeTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                        break;
-
-                    case ColumnType.Datetime_Local:
-                        item.SubItems.Add(packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                        break;
-
-                    case ColumnType.Information:
-                        item.SubItems.Add(packet.Information);
-                        break;
-
                     case ColumnType.DataPreviewBinary:
-                        item.SubItems.Add(packet.Message);
-                        break;
-
                     case ColumnType.DataPreviewText:
+                    case ColumnType.DataPreviewCustom:
                         item.SubItems.Add(packet.Message);
                         break;
 
                     default:
-                        item.SubItems.Add("");
+                        PacketToListViewItem_Common(config.Type, item, packet);
                         break;
                 }
             }
@@ -1011,22 +1406,6 @@ namespace Ratatoskr.PacketViews.Packet
         {
             foreach (var config in prop_.ColumnList.Value) {
                 switch (config.Type) {
-                    case ColumnType.Alias:
-                        item.SubItems.Add(packet.Alias);
-                        break;
-
-                    case ColumnType.Datetime_UTC:
-                        item.SubItems.Add(packet.MakeTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                        break;
-
-                    case ColumnType.Datetime_Local:
-                        item.SubItems.Add(packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                        break;
-
-                    case ColumnType.Information:
-                        item.SubItems.Add(packet.Information);
-                        break;
-
                     case ColumnType.Source:
                         item.SubItems.Add(packet.Source);
                         break;
@@ -1040,7 +1419,7 @@ namespace Ratatoskr.PacketViews.Packet
                         break;
 
                     case ColumnType.DataPreviewBinary:
-                        item.SubItems.Add(packet.GetHexText(0, (int)prop_.PreviewDataSize.Value, " "));
+                        item.SubItems.Add(packet.DataToHexString(0, (int)prop_.PreviewDataSize.Value, " "));
                         break;
 
                     case ColumnType.DataPreviewText:
@@ -1052,6 +1431,7 @@ namespace Ratatoskr.PacketViews.Packet
                         break;
 
                     default:
+                        PacketToListViewItem_Common(config.Type, item, packet);
                         break;
                 }
             }
@@ -1062,42 +1442,74 @@ namespace Ratatoskr.PacketViews.Packet
                            : (Color.LightPink);
         }
 
-        private string GetSelectPacketsData_CsvText()
+        private IEnumerable<PacketListViewItem> GetSelectItems()
+        {
+            var packet = (PacketListViewItem)null;
+
+            for (int index = 0; index < LView_Main.SelectedIndices.Count; index++) {
+                /* データパケットを取得 */
+                packet = LView_Main.ItemElementAt(LView_Main.SelectedIndices[index]) as PacketListViewItem;
+
+                if (packet != null) {
+                    yield return (packet);
+                }
+            }
+        }
+
+        private string GetPacketInfoTextFromSelectPackets(PacketElementID elem_id, string divider)
         {
             var str = new StringBuilder(0xFFFF);
-            var packet = (PacketObject)null;
+
+            foreach (var item_info in GetSelectItems()) {
+                /* 16進文字列として追加 */
+                str.Append(item_info.Packet.GetElementText(elem_id));
+
+                /* 分割コード挿入 */
+                str.Append(divider);
+            }
+
+            return (str.ToString());
+        }
+
+        private string GetPacketInfoCsvFromSelectPackets()
+        {
+            var str = new StringBuilder(0xFFFF);
+
+            var elem_list = new[]
+            {
+                PacketElementID.Facility,
+                PacketElementID.Alias,
+                PacketElementID.Priority,
+                PacketElementID.Attribute,
+                PacketElementID.DateTime_UTC_Display,
+                PacketElementID.DateTime_Local_Display,
+                PacketElementID.Direction,
+                PacketElementID.Information,
+                PacketElementID.Source,
+                PacketElementID.Destination,
+                PacketElementID.Mark,
+                PacketElementID.Message,
+                PacketElementID.Data_HexString
+            };
 
             /* ヘッダー */
-            str.AppendLine(PacketObject.GetCsvHeaderString());
+            foreach (var elem in elem_list) {
+                str.Append(elem.ToString());
+                str.Append(',');
+            }
+            if (str.Length > 0) {
+                str.Remove(str.Length - 1, 1);
+                str.AppendLine();
+            }
 
             /* データ */
-            foreach (int index in LView_Main.SelectedIndices) {
-                /* データパケットを取得 */
-                packet = LView_Main.ItemElementAt(index).Tag as PacketObject;
-                if (packet == null)continue;
-
-                /* CSV文字列として追加 */
-                str.AppendLine(packet.GetCsvDataString());
-            }
-
-            return (str.ToString());
-        }
-
-        private string GetSelectPacketsData_String(bool new_line)
-        {
-            var str = new StringBuilder(0xFFFF);
-            var packet = (PacketObject)null;
-
-            foreach (int index in LView_Main.SelectedIndices) {
-                /* データパケットを取得 */
-                packet = LView_Main.ItemElementAt(index).Tag as PacketObject;
-                if (packet == null)continue;
-
-                /* 文字列として追加 */
-                str.Append(encoder_.GetString(packet.Data));
-
-                /* 改行コード挿入 */
-                if (new_line) {
+            foreach (var item_info in GetSelectItems()) {
+                foreach (var elem in elem_list) {
+                    str.Append(item_info.Packet.GetElementText(elem));
+                    str.Append(',');
+                }
+                if (str.Length > 0) {
+                    str.Remove(str.Length - 1, 1);
                     str.AppendLine();
                 }
             }
@@ -1105,45 +1517,16 @@ namespace Ratatoskr.PacketViews.Packet
             return (str.ToString());
         }
 
-        private string GetSelectPacketsData_HexString(bool new_line)
+        private string GetPacketInfoCustomFromSelectPackets(string divider)
         {
             var str = new StringBuilder(0xFFFF);
-            var packet = (PacketObject)null;
 
-            foreach (int index in LView_Main.SelectedIndices) {
-                /* データパケットを取得 */
-                packet = LView_Main.ItemElementAt(index).Tag as PacketObject;
-                if (packet == null) continue;
-
-                /* 16進文字列として追加 */
-                str.Append(packet.GetHexText());
-
-                /* 改行コード挿入 */
-                if (new_line) {
-                    str.AppendLine();
-                }
-            }
-
-            return (str.ToString());
-        }
-
-        private string GetSelectPacketsData_CustomString(bool new_line)
-        {
-            var str = new StringBuilder(0xFFFF);
-            var packet = (PacketObject)null;
-
-            foreach (int index in LView_Main.SelectedIndices) {
-                /* データパケットを取得 */
-                packet = LView_Main.ItemElementAt(index).Tag as PacketObject;
-                if (packet == null) continue;
-
+            foreach (var item_info in GetSelectItems()) {
                 /* カスタム文字列として追加 */
-                str.Append(DataPacketToCustomText(packet));
+                str.Append(DataPacketToCustomText(item_info.Packet));
 
-                /* 改行コード挿入 */
-                if (new_line) {
-                    str.AppendLine();
-                }
+                /* 分割コード挿入 */
+                str.Append(divider);
             }
 
             return (str.ToString());
@@ -1174,13 +1557,16 @@ namespace Ratatoskr.PacketViews.Packet
             LView_Main.ItemClear();
             BBox_Main.DataClear();
 
+            /* リストビューの最大数を再セットアップ */
+            LView_Main.ItemCountMax = (int)ConfigManager.System.ApplicationCore.Packet_ViewPacketCountLimit.Value;
+
             next_item_no_ = 1;
         }
 
         protected override void OnDrawPacketBegin(bool auto_scroll)
         {
             /* ちらつき防止用の一時バッファ */
-            list_items_temp_ = new List<ListViewItem>();
+            list_items_temp_ = new List<PacketListViewItem>();
 
             /* リストビューの描画開始 */
             LView_Main.BeginUpdate();
@@ -1203,7 +1589,12 @@ namespace Ratatoskr.PacketViews.Packet
 
         protected override void OnDrawPacket(PacketObject packet)
         {
-            list_items_temp_.Add(PacketToListViewItem(packet));
+            next_item_no_ = Math.Max(next_item_no_, ITEM_NO_MIN);
+            next_item_no_ = Math.Min(next_item_no_, ITEM_NO_MAX);
+
+            list_items_temp_.Add(new PacketListViewItem(next_item_no_, packet));
+
+            next_item_no_++;
         }
 
         private void LView_Main_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -1286,61 +1677,195 @@ namespace Ratatoskr.PacketViews.Packet
             RedrawPacket();
         }
 
-        private void CMenu_MultiData_CopyToPacketList_Click(object sender, EventArgs e)
+        private void OnMenuClick(object sender, EventArgs e)
         {
-            foreach (int index in LView_Main.SelectedIndices) {
-                var list_item = LView_Main.ItemElementAt(index);
+            var menu = sender as ToolStripMenuItem;
 
-                if (list_item == null)continue;
+            if (menu == null)return;
 
-                var packet = list_item.Tag as PacketObject;
+            try {
+                switch ((MenuActionId)Enum.ToObject(typeof(MenuActionId), menu.Tag)) {
+                    case MenuActionId.Copy_Packet_AllInfo_Csv:
+                    {
+                        Clipboard.SetText(GetPacketInfoCsvFromSelectPackets(), TextDataFormat.Text);
+                    }
+                        break;
 
-                if (packet == null)continue;
+                    case MenuActionId.Copy_Packet_Alias:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Alias, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_DateTime_UTC_ISO8601:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_UTC_ISO8601, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_DateTime_UTC_Display:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_UTC_Display, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_DateTime_Local_ISO8601:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_Local_ISO8601, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_DateTime_Local_Display:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_Local_Display, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Information:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Information, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Source:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Source, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Destination:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Destination, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Message:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Message, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_BitString:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_BitString, ""), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_HexString:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_HexString, ""), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_AsciiText:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextAscii, ""), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_Utf8Text:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF8, ""), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_Utf16BeText:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16BE, ""), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_Utf16LeText:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16LE, ""), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_ShiftJisText:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextShiftJIS, ""), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_EucJpText:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextEucJp, ""), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_Custom:
+                    {
+                        Clipboard.SetText(GetPacketInfoCustomFromSelectPackets(""), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_LF_BitString:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_BitString, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_LF_HexString:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_HexString, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_LF_AsciiText:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextAscii, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_LF_Utf8Text:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF8, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_LF_Utf16BeText:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16BE, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_LF_Utf16LeText:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16LE, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_LF_ShiftJisText:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextShiftJIS, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_LF_EucJpText:
+                    {
+                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextEucJp, Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+
+                    case MenuActionId.Copy_Packet_Data_LF_Custom:
+                    {
+                        Clipboard.SetText(GetPacketInfoCustomFromSelectPackets(Environment.NewLine), TextDataFormat.Text);
+                    }
+                        break;
+                }
+
+            } catch {
             }
         }
 
-        private void CMenu_Packet_CopyToClipboard_AllInfo_Csv_Click(object sender, EventArgs e)
+        private void LView_Main_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            /* クリップボードへセット */
-            Clipboard.SetText(
-                GetSelectPacketsData_CsvText(),
-                TextDataFormat.Text);
+            e.Item = ItemInfoToListViewItem(LView_Main.ItemElementAt(e.ItemIndex) as PacketListViewItem);
         }
 
-        private void CMenu_Packet_CopyToClipboard_Data_String_Click(object sender, EventArgs e)
+        private void LView_Main_ItemSelectBusyStatusChanged(object sender, EventArgs e)
         {
-            var menu = sender as ToolStripMenuItem;
-
-            if (menu == null)return;
-
-            /* クリップボードへセット */
-            Clipboard.SetText(
-                GetSelectPacketsData_String((menu.Tag is string) && ((menu.Tag as string) == "1")),
-                TextDataFormat.Text);
-        }
-
-        private void CMenu_Packet_CopyToClipboard_Data_Hex_Click(object sender, EventArgs e)
-        {
-            var menu = sender as ToolStripMenuItem;
-
-            if (menu == null)return;
-
-            /* クリップボードへセット */
-            Clipboard.SetText(
-                GetSelectPacketsData_HexString((menu.Tag is string) && ((menu.Tag as string) == "1")),
-                TextDataFormat.Text);
-        }
-
-        private void CMenu_Packet_CopyToClipboard_Data_Custom_Click(object sender, EventArgs e)
-        {
-            var menu = sender as ToolStripMenuItem;
-
-            if (menu == null)return;
-
-            /* クリップボードへセット */
-            Clipboard.SetText(
-                GetSelectPacketsData_CustomString((menu.Tag is string) && ((menu.Tag as string) == "1")),
-                TextDataFormat.Text);
+            UpdateOperationBusyStatus();
         }
     }
 }

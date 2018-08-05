@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Btn_Main = new Ratatoskr.Forms.MainWindow.MainWindow_Gate.ButtonEx();
+            this.Btn_Main = new Ratatoskr.Forms.Controls.ButtonEx();
             this.PBox_DataRate = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.PBox_DataRate)).BeginInit();
             this.SuspendLayout();
@@ -43,6 +43,7 @@
             this.Btn_Main.Location = new System.Drawing.Point(0, 0);
             this.Btn_Main.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_Main.Name = "Btn_Main";
+            this.Btn_Main.Selectable = false;
             this.Btn_Main.Size = new System.Drawing.Size(160, 32);
             this.Btn_Main.TabIndex = 0;
             this.Btn_Main.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -62,7 +63,7 @@
             this.PBox_DataRate.TabStop = false;
             this.PBox_DataRate.Paint += new System.Windows.Forms.PaintEventHandler(this.PBox_DataRate_Paint);
             // 
-            // MainFrameGate
+            // MainWindow_Gate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 11F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -70,7 +71,7 @@
             this.Controls.Add(this.PBox_DataRate);
             this.Font = new System.Drawing.Font("ＭＳ ゴシック", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Name = "MainFrameGate";
+            this.Name = "MainWindow_Gate";
             this.Size = new System.Drawing.Size(160, 54);
             ((System.ComponentModel.ISupportInitialize)(this.PBox_DataRate)).EndInit();
             this.ResumeLayout(false);
@@ -78,7 +79,7 @@
         }
 
         #endregion
-        private ButtonEx Btn_Main;
+        private Ratatoskr.Forms.Controls.ButtonEx Btn_Main;
         private System.Windows.Forms.PictureBox PBox_DataRate;
     }
 }

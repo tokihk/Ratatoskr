@@ -22,7 +22,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
 
         public override FileFormatWriter CreateWriter()
         {
-            return (new FileFormatWriterImpl());
+            return (new FileFormatWriterImpl(this));
         }
 
         public override FileFormatOption CreateWriterOption()

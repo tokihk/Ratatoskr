@@ -14,6 +14,6 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
         public IntegerConfig ExtTargetCode_Min { get; } = new IntegerConfig(0xF0);
         public IntegerConfig ExtTargetCode_Max { get; } = new IntegerConfig(0xFF);
         public IntegerConfig ExtCode           { get; } = new IntegerConfig(0xFF);
-        public IntegerConfig ExtMask           { get; } = new IntegerConfig(0xF0);
+        public IntegerConfig ExtMask           { get; } = new IntegerConfig(0x0F);
     }
 }

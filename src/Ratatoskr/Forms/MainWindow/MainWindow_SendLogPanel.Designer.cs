@@ -101,9 +101,9 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.CBox_PlayDataType);
-            this.groupBox2.Location = new System.Drawing.Point(838, 0);
+            this.groupBox2.Location = new System.Drawing.Point(615, 0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(120, 46);
+            this.groupBox2.Size = new System.Drawing.Size(120, 44);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Play data type";
@@ -146,16 +146,16 @@
             this.groupBox3.Controls.Add(this.Label_TransSize);
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.Label_FileSize);
-            this.groupBox3.Location = new System.Drawing.Point(615, 0);
+            this.groupBox3.Location = new System.Drawing.Point(741, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(217, 46);
+            this.groupBox3.Size = new System.Drawing.Size(217, 44);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Play record status";
             // 
             // PBar_Progress
             // 
-            this.PBar_Progress.Location = new System.Drawing.Point(6, 32);
+            this.PBar_Progress.Location = new System.Drawing.Point(6, 31);
             this.PBar_Progress.Name = "PBar_Progress";
             this.PBar_Progress.Size = new System.Drawing.Size(203, 9);
             this.PBar_Progress.TabIndex = 6;
@@ -171,14 +171,14 @@
             this.Label_TransSize.Text = "9,999,999,999";
             this.Label_TransSize.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // MainForm_SendLogPanel
+            // MainWindow_SendLogPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Name = "MainForm_SendLogPanel";
+            this.Name = "MainWindow_SendLogPanel";
             this.Size = new System.Drawing.Size(961, 49);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);

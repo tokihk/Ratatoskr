@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Native;
@@ -40,9 +42,72 @@ namespace Ratatoskr.Drivers.SerialPort
         RTS_CONTROL_TOGGLE,
     }
 
+    [Flags]
+    internal enum ModemStatus
+    {
+        CTS_ON      = (int)NativeMethods.MS_CTS_ON,
+        DSR_ON      = (int)NativeMethods.MS_DSR_ON,
+        RING_ON     = (int)NativeMethods.MS_RING_ON,
+        RLSD_ON     = (int)NativeMethods.MS_RLSD_ON,
+    }
+
+    [Flags]
+    internal enum ErrorStatus
+    {
+        BREAK    = (int)NativeMethods.CE_BREAK,
+        DNS      = (int)NativeMethods.CE_DNS,
+        FRAME    = (int)NativeMethods.CE_FRAME,
+        IOE      = (int)NativeMethods.CE_IOE,
+        MODE     = (int)NativeMethods.CE_MODE,
+        OOP      = (int)NativeMethods.CE_OOP,
+        OVERRUN  = (int)NativeMethods.CE_OVERRUN,
+        PTO      = (int)NativeMethods.CE_PTO,
+        RXOVER   = (int)NativeMethods.CE_RXOVER,
+        RXPARITY = (int)NativeMethods.CE_RXPARITY,
+        TXFULL   = (int)NativeMethods.CE_TXFULL,
+    }
+
+    [Flags]
+    internal enum CommStatus
+    {
+        CTS_HOLD    = 1 << NativeMethods.COMSTAT.FlagsParamOffset.CtsHold,
+        DSR_HOLD    = 1 << NativeMethods.COMSTAT.FlagsParamOffset.DsrHold,
+        RLSD_HOLD   = 1 << NativeMethods.COMSTAT.FlagsParamOffset.RlsHold,
+        XOFF_HOLD   = 1 << NativeMethods.COMSTAT.FlagsParamOffset.XoffHold,
+        XOFF_SENT   = 1 << NativeMethods.COMSTAT.FlagsParamOffset.XoffSent,
+        EOF         = 1 << NativeMethods.COMSTAT.FlagsParamOffset.Eof,
+        TXIM        = 1 << NativeMethods.COMSTAT.FlagsParamOffset.Txim,
+    }
+
     internal class SerialPortController : IDisposable
     {
+        public class CommStatusUpdatedEventArgs : EventArgs
+        {
+            public CommStatusUpdatedEventArgs(ErrorStatus error_status, CommStatus comm_status, CommStatus comm_status_old)
+            {
+                ErrorStatus = error_status;
+
+                CommStatus = comm_status;
+                CommStatusMask = comm_status ^ comm_status_old;
+            }
+
+            public ErrorStatus ErrorStatus   { get; }
+            public CommStatus  CommStatus     { get; }
+            public CommStatus  CommStatusMask { get; }
+        }
+
+
         private IntPtr handle_ = NativeMethods.INVALID_HANDLE_VALUE;
+        private object handle_sync_ = new object();
+
+        private uint error_stat_ = 0;
+
+        private NativeMethods.COMSTAT comstat_ = new NativeMethods.COMSTAT();
+        private NativeMethods.COMSTAT comstat_temp_ = new NativeMethods.COMSTAT();
+
+
+        public delegate void CommStatusUpdatedEvent(object sender, CommStatusUpdatedEventArgs e);
+
 
 
         public SerialPortController()
@@ -75,6 +140,7 @@ namespace Ratatoskr.Drivers.SerialPort
         public ushort InQueue  { get; set; } = 2048;
         public ushort OutQueue { get; set; } = 2048;
 
+        public event CommStatusUpdatedEvent CommStatusUpdated;
 
         public void Dispose()
         {
@@ -119,6 +185,9 @@ namespace Ratatoskr.Drivers.SerialPort
                 NativeMethods.CloseHandle(handle_);
                 handle_ = NativeMethods.INVALID_HANDLE_VALUE;
             }
+
+            error_stat_ = 0;
+            comstat_ = new NativeMethods.COMSTAT();
         }
 
         public bool Setup()
@@ -218,6 +287,9 @@ namespace Ratatoskr.Drivers.SerialPort
                 return (false);
             }
 
+            error_stat_ = 0;
+            comstat_ = new NativeMethods.COMSTAT();
+
             return (true);
         }
 
@@ -226,30 +298,104 @@ namespace Ratatoskr.Drivers.SerialPort
             if (handle_ == NativeMethods.INVALID_HANDLE_VALUE)return;
 
             /* 処理中の操作を全てキャンセル */
-            NativeMethods.PurgeComm(
-                handle_,
-                  NativeMethods.PURGE_RXABORT
-                | NativeMethods.PURGE_RXCLEAR
-                | NativeMethods.PURGE_TXABORT
-                | NativeMethods.PURGE_TXCLEAR);
+            if (!NativeMethods.PurgeComm(
+                    handle_,
+                      NativeMethods.PURGE_RXABORT
+                    | NativeMethods.PURGE_RXCLEAR
+                    | NativeMethods.PURGE_TXABORT
+                    | NativeMethods.PURGE_TXCLEAR)
+            ) {
+//                throw new Win32Exception();
+            }
 
-            NativeMethods.EscapeCommFunction(handle_, NativeMethods.CLRDTR);
-            NativeMethods.SetCommMask(handle_, 0);
+            if (!NativeMethods.EscapeCommFunction(handle_, NativeMethods.CLRDTR)) {
+//                throw new Win32Exception();
+            }
+
+            if (!NativeMethods.SetCommMask(handle_, 0)) {
+//                throw new Win32Exception();
+            }
+        }
+
+        public void UpdateCommStatus()
+        {
+            lock (handle_sync_) {
+                if (!NativeMethods.ClearCommError(handle_, out error_stat_, out comstat_temp_)) {
+                    error_stat_ = 0;
+                    comstat_temp_.Flags = 0;
+                    comstat_temp_.cbInQue = 0;
+                    comstat_temp_.cbOutQue = 0;
+                }
+
+                if (   (error_stat_ != 0)
+                    || (comstat_.Flags != comstat_temp_.Flags)
+                ) {
+                    CommStatusUpdated?.Invoke(
+                        this,
+                        new CommStatusUpdatedEventArgs(
+                            (ErrorStatus)error_stat_,
+                            (CommStatus)comstat_temp_.Flags,
+                            (CommStatus)comstat_.Flags));
+                }
+
+                comstat_.Flags = comstat_temp_.Flags;
+                comstat_.cbInQue = comstat_temp_.cbInQue;
+                comstat_.cbOutQue = comstat_temp_.cbOutQue;
+            }
+        }
+
+        public bool IsOpened
+        {
+            get { return (handle_ != NativeMethods.INVALID_HANDLE_VALUE); }
         }
 
         public bool IsWriteBusy
         {
             get
             {
-                var comm_error = (uint)0;
-                var comm_stat = new NativeMethods.COMSTAT();
+                UpdateCommStatus();
 
-                if (!NativeMethods.ClearCommError(handle_, out comm_error, out comm_stat)) {
-                    return (false);
-                }
-
-                return (comm_stat.cbOutQue > 0);
+                return (comstat_.cbOutQue > 0);
             }
+        }
+
+        public ModemStatus GetModemStatus()
+        {
+            var status = (uint)0;
+
+            if (!NativeMethods.GetCommModemStatus(handle_, out status)) {
+                status = 0;
+            }
+
+            return ((ModemStatus)status);
+        }
+
+        public bool GetDeviceDetachStatus()
+        {
+            if (!IsOpened)return (false);
+
+            bool error_state = false;
+
+            var handle_temp = NativeMethods.CreateFile(
+                "\\\\.\\" + PortName,
+                NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE,
+                0,
+                NativeMethods.Null,
+                NativeMethods.OPEN_EXISTING,
+                0,
+                NativeMethods.Null);
+
+            if (handle_temp == NativeMethods.INVALID_HANDLE_VALUE) {
+                switch ((WinErrorCode)Marshal.GetLastWin32Error()) {
+                    case WinErrorCode.ERROR_FILE_NOT_FOUND:
+                        error_state = true;
+                        break;
+                }
+            } else {
+                NativeMethods.CloseHandle(handle_temp);
+            }
+
+            return (error_state);
         }
 
         public uint Write(byte[] data)
@@ -258,6 +404,8 @@ namespace Ratatoskr.Drivers.SerialPort
             uint send_size = Math.Min((uint)data.Length, OutQueue);
 
             if (!NativeMethods.WriteFile(handle_, data, send_size, out send_size_result, NativeMethods.Null)) {
+                var error_code = Marshal.GetLastWin32Error();
+
                 return (0);
             }
 
@@ -268,15 +416,9 @@ namespace Ratatoskr.Drivers.SerialPort
         {
             get
             {
-                var comm_error = (uint)0;
-                var comm_stat = new NativeMethods.COMSTAT();
+                UpdateCommStatus();
 
-                if (!NativeMethods.ClearCommError(handle_, out comm_error, out comm_stat)) {
-                    return (0);
-                }
-
-                /* 受信していなければスキップ */
-                return (comm_stat.cbInQue);
+                return (comstat_.cbInQue);
             }
         }
 

@@ -62,7 +62,9 @@ namespace Ratatoskr.Devices.SerialPort
             CBox_PortList.BeginUpdate();
             {
                 CBox_PortList.Items.AddRange(ports.ToArray());
-                CBox_PortList.SelectedIndex = 0;
+                if (CBox_PortList.Items.Count > 0) {
+                    CBox_PortList.SelectedIndex = 0;
+                }
             }
             CBox_PortList.EndUpdate();
         }
@@ -101,7 +103,7 @@ namespace Ratatoskr.Devices.SerialPort
         {
             CBox_Parity.BeginUpdate();
             {
-                foreach (var obj in Enum.GetValues(typeof(Parity))) {
+                foreach (var obj in Enum.GetValues(typeof(SerialPortParity))) {
                     CBox_Parity.Items.Add(obj);
                 }
                 CBox_Parity.SelectedIndex = 0;
@@ -133,7 +135,7 @@ namespace Ratatoskr.Devices.SerialPort
         {
             CBox_StopBits.BeginUpdate();
             {
-                foreach (var obj in Enum.GetValues(typeof(StopBits))) {
+                foreach (var obj in Enum.GetValues(typeof(SerialPortStopBits))) {
                     CBox_StopBits.Items.Add(obj);
                 }
                 CBox_StopBits.SelectedIndex = 0;

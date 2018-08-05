@@ -323,6 +323,7 @@ namespace Ratatoskr.Packet
                         var data = reader.ReadBytes((int)data_len);
 
                         return (new PacketObject(
+                                            "",
                                             facility,
                                             alias,
                                             prio,
@@ -350,6 +351,7 @@ namespace Ratatoskr.Packet
                         var data = Encoding.UTF8.GetString(reader.ReadBytes((int)data_len));
 
                         return (new PacketObject(
+                                            "",
                                             facility,
                                             alias,
                                             prio,
@@ -377,6 +379,7 @@ namespace Ratatoskr.Packet
                         var data = reader.ReadBytes((int)data_len);
 
                         return (new PacketObject(
+                                            "",
                                             facility,
                                             alias,
                                             prio,
@@ -472,8 +475,18 @@ namespace Ratatoskr.Packet
 
                 var data = reader.ReadBytes((int)data_len);
 
+                /* Class (1 + xx Byte) [オプション情報なので有無判定が必要] */
+                var class_n_len = (byte)0;
+                var class_n = "";
+
+                if (reader.PeekChar() >= 0) {
+                    class_n_len = reader.ReadByte();
+                    class_n = Encoding.UTF8.GetString(reader.ReadBytes(class_n_len));
+                }
+
                 /* === パケット生成 === */
                 return (new PacketObject(
+                                    class_n,
                                     facility,
                                     alias,
                                     prio,
@@ -489,30 +502,38 @@ namespace Ratatoskr.Packet
             }
         }
 
-        public static byte[] Serialize(PacketObject packet)
+        public static byte[] Serialize(PacketObject packet, bool compless = true)
         {
             if (packet == null)return (null);
 
             /* 圧縮前データを作成 */
-            var data_base = Binary.Serialize(packet);
+            var data = Binary.Serialize(packet);
 
-            if (data_base == null)return (null);
+            if (data == null)return (null);
+
+            var data_type = false;
 
             /* 圧縮後データを作成 */
-            var data_comp = (byte[])null;
+            if (compless) {
+                var data_comp = (byte[])null;
 
-            using (var mstream = new MemoryStream()) {
-                using (var cstream = new GZipStream(mstream, CompressionMode.Compress)) {
-                    cstream.Write(data_base, 0, data_base.Length);
+                using (var mstream = new MemoryStream()) {
+                    using (var cstream = new GZipStream(mstream, CompressionMode.Compress)) {
+                        cstream.Write(data, 0, data.Length);
+                        cstream.Close();
 
-                    data_comp = mstream.ToArray();
+                        data_comp = mstream.ToArray();
+                    }
+                }
+
+                /* 圧縮前と圧縮後のデータサイズを比較して書き込むデータを選定 */
+                if (data_comp.Length < data.Length) {
+                    data = data_comp;
+                    data_type = true;
                 }
             }
 
-            /* 圧縮前と圧縮後のデータサイズを比較して書き込むデータを選定 */
-            var data_type = (data_base.Length < data_comp.Length);
-            var data = (data_type) ? (data_comp) : (data_base);
-
+            /* 書込み */
             using (var stream = new MemoryStream()) {
                 using (var writer = new BinaryWriter(stream)) {
                     /* データタイプ (1 Byte) */

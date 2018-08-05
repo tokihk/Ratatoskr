@@ -22,7 +22,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Pcap
 
         public override FileFormatReader CreateReader()
         {
-            return (new FileFormatReaderImpl());
+            return (new FileFormatReaderImpl(this));
         }
     }
 }

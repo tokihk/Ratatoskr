@@ -83,6 +83,11 @@ namespace Ratatoskr.PacketViews
             TBox_Filter.ForeColor = (filter_exp_busy_ != filter_exp_new_) ? (Color.Gray) : (Color.Black);
         }
 
+        internal void Idle()
+        {
+            Instance.Idle();
+        }
+
         internal void ClearPacket()
         {
             Instance.ClearPacket();

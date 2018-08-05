@@ -28,7 +28,11 @@ namespace Ratatoskr.Protocol
 
         public ProtocolDecoder LoadModule()
         {
-            return (Activator.CreateInstance(plugin_info_.AssemblyType) as ProtocolDecoder);
+            try {
+                return (Activator.CreateInstance(plugin_info_.AssemblyType) as ProtocolDecoder);
+            } catch {
+                return (null);
+            }
         }
 
         public override string ToString()

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Native;
+using Ratatoskr.Drivers.USBPcap;
 
 namespace Ratatoskr.Devices.UsbMonitor
 {

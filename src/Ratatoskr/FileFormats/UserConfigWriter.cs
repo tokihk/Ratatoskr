@@ -8,6 +8,10 @@ namespace Ratatoskr.FileFormats
 {
     internal class UserConfigWriter : FileFormatWriter
     {
+        public UserConfigWriter(FileFormatClass fmtc) : base(fmtc)
+        {
+        }
+
         public bool Save()
         {
             if (!IsOpen)return (false);

@@ -3,6 +3,7 @@
 
 %using System.Diagnostics;
 %using Ratatoskr.Utility;
+%using Ratatoskr.Scripts.PacketFilterExp.Terms;
 
 %visibility internal
 
@@ -63,8 +64,20 @@ Tf  ([0-9]{3})
 }
 
 // --- 時刻(ISO8601) --------------------------
-<INITIAL>{TY}-{TM}-{TD}T{Th}:{Tm}:{Ts}(\.{Tf})([\+\-]{Th}:{Tm}|Z) {
-	yylval.term = new Terms.Term_DateTime(yytext);
+<INITIAL>[$]{TY}-{TM}-{TD}T{Th}:{Tm}:{Ts}(\.{Tf})?([\+\-]{Th}:{Tm}|Z)[$] {
+	yylval.term = new Terms.Term_DateTime(Term_DateTime.FormatType.ISO8601, yytext);
+	return (int)Tokens.VALUE_DATETIME;
+}
+
+// --- ローカル時刻(日付ベース) --------------------------
+<INITIAL>[$]{TY}(-{TM}(-{TD}([ ]{Th}(:{Tm}(:{Ts}(\.{Tf})?)?)?)?)?)?[$] {
+	yylval.term = new Terms.Term_DateTime(Term_DateTime.FormatType.LocalTime_DateBase, yytext);
+	return (int)Tokens.VALUE_DATETIME;
+}
+
+// --- ローカル時刻(時刻ベース) --------------------------
+<INITIAL>[$]((({TY}-)?{TM}-)?{TD}[ ])?{Th}:{Tm}:{Ts}(\.{Tf})?[$] {
+	yylval.term = new Terms.Term_DateTime(Term_DateTime.FormatType.LocalTime_TimeBase, yytext);
 	return (int)Tokens.VALUE_DATETIME;
 }
 
@@ -115,6 +128,10 @@ Tf  ([0-9]{3})
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_MakeTime);
 	return (int)Tokens.VALUE_STATUS;
 }
+<INITIAL>[Cc]lass {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Class);
+	return (int)Tokens.VALUE_STATUS;
+}
 <INITIAL>[Ii]nformation {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Information);
 	return (int)Tokens.VALUE_STATUS;
@@ -143,12 +160,12 @@ Tf  ([0-9]{3})
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Length);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>[Bb]it[Tt]ext {
-	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_BitText);
+<INITIAL>[Bb]it[Ss]tring {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_BitString);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>[Hh]ex[Tt]ext {
-	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_HexText);
+<INITIAL>[Hh]ex[Ss]tring {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_HexString);
 	return (int)Tokens.VALUE_STATUS;
 }
 <INITIAL>[Aa]scii[Tt]ext {
@@ -159,12 +176,20 @@ Tf  ([0-9]{3})
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Utf8Text);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>[Uu]nicode[Ll][Tt]ext {
-	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_UnicodeLText);
+<INITIAL>[Uu]tf16[Bb]e[Tt]ext {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Utf16BeText);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>[Uu]nicode[Bb][Tt]ext {
-	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_UnicodeBText);
+<INITIAL>[Uu]tf16[Ll]e[Tt]ext {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_Utf16LeText);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>[Ss]hift[Jj]is[Tt]ext {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_ShiftJisText);
+	return (int)Tokens.VALUE_STATUS;
+}
+<INITIAL>[Ee]uc[Jj]p[Tt]ext {
+	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.Packet_Data_EucJpText);
 	return (int)Tokens.VALUE_STATUS;
 }
 

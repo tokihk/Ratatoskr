@@ -448,6 +448,7 @@ namespace Ratatoskr.Devices
         {
             NotifyPacket(
                 new PacketObject(
+                    Class.DescID,
                     PacketFacility.Device,
                     alias_,
                     PacketPriority.Standard,
@@ -466,6 +467,7 @@ namespace Ratatoskr.Devices
         {
             NotifyPacket(
                 new PacketObject(
+                    Class.DescID,
                     PacketFacility.Device,
                     alias_,
                     PacketPriority.Standard,
@@ -495,6 +497,7 @@ namespace Ratatoskr.Devices
 
             NotifyPacket(
                 new PacketObject(
+                    Class.DescID,
                     PacketFacility.Device,
                     alias_,
                     PacketPriority.Standard,

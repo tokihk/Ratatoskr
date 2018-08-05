@@ -10,6 +10,7 @@ using Ratatoskr.Configs.FixedConfigs;
 using Ratatoskr.Configs.LanguageConfigs;
 using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.FileFormats;
 using Ratatoskr.Forms;
 using Ratatoskr.Native;
 
@@ -325,17 +326,23 @@ namespace Ratatoskr.Configs
 
         public static void ExportProfile(Guid profile_id)
         {
-            var writer_info = FormUiManager.CreateUserConfigWriter();
+            var info = FormUiManager.CreateUserConfigWriter();
 
-            if (writer_info.writer == null)return;
+            if (info == null)return;
+
+            var writer = info.Writer as UserConfigWriter;
+            var option = info.Option as UserConfigWriterOption;
+
+            if (writer == null)return;
+            if (option == null)return;
 
             /* 出力設定 */
-            writer_info.option.TargetProfileID = profile_id;
+            option.TargetProfileID = profile_id;
 
             /* 出力 */
-            if (writer_info.writer.Open(writer_info.option, writer_info.path)) {
-                writer_info.writer.Save();
-                writer_info.writer.Close();
+            if (writer.Open(option, info.FilePath)) {
+                writer.Save();
+                writer.Close();
             }
         }
     }

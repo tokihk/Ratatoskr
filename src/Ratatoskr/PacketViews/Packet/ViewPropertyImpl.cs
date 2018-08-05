@@ -12,6 +12,7 @@ namespace Ratatoskr.PacketViews.Packet
 {
     internal enum ColumnType
     {
+        Class,
         Alias,
         Datetime_UTC,
         Datetime_Local,
@@ -34,8 +35,6 @@ namespace Ratatoskr.PacketViews.Packet
 
     internal class ViewPropertyImpl : ViewProperty
     {
-        public IntegerConfig ViewPacketCountLimit { get; } = new IntegerConfig(999999);
-
         public ColumnListConfig           ColumnList      { get; } = new ColumnListConfig();
         public IntegerConfig              PreviewDataSize { get; } = new IntegerConfig(16);
         public EnumConfig<CharCodeType>   CharCode        { get; } = new EnumConfig<CharCodeType>(CharCodeType.UTF8);

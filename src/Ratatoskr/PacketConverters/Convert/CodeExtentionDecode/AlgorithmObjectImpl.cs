@@ -90,6 +90,8 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
             this.Num_ExtCode.Size = new System.Drawing.Size(50, 19);
             this.Num_ExtCode.TabIndex = 12;
             this.Num_ExtCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_ExtCode.ValueChanged += new System.EventHandler(this.Num_ValueChanged);
+            this.Num_ExtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Num_KeyDown);
             // 
             // label5
             // 
@@ -127,6 +129,8 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
             this.Num_ExtMask.Size = new System.Drawing.Size(50, 19);
             this.Num_ExtMask.TabIndex = 15;
             this.Num_ExtMask.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_ExtMask.ValueChanged += new System.EventHandler(this.Num_ValueChanged);
+            this.Num_ExtMask.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Num_KeyDown);
             // 
             // AlgorithmObjectImpl
             // 

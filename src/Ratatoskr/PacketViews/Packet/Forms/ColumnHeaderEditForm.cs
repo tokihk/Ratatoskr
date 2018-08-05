@@ -26,6 +26,7 @@ namespace Ratatoskr.PacketViews.Packet.Forms
             public override string ToString()
             {
                 switch (Type) {
+                    case ColumnType.Class:              return (ConfigManager.Language.PacketView.Packet.Column_Class.Value);
                     case ColumnType.Alias:              return (ConfigManager.Language.PacketView.Packet.Column_Alias.Value);
                     case ColumnType.Datetime_UTC:       return (ConfigManager.Language.PacketView.Packet.Column_Datetime_UTC.Value);
                     case ColumnType.Datetime_Local:     return (ConfigManager.Language.PacketView.Packet.Column_Datetime_Local.Value);

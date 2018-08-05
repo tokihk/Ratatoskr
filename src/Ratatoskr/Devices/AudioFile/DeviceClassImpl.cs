@@ -22,6 +22,11 @@ namespace Ratatoskr.Devices.AudioFile
             get { return (Name); }
         }
 
+        public override string DescID
+        {
+            get { return ("AudioFile"); }
+        }
+
         public override Type GetPropertyType()
         {
             return (typeof(DevicePropertyImpl));
