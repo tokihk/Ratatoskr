@@ -1,8 +1,6 @@
 <link href="../params.css" rel="stylesheet" />
 
-# Packet Converter
-
-## Filter
+# Packet Converter - Filter
 
 条件に一致するパケットのみを通過させます。<br>
 
@@ -64,14 +62,4 @@
 | :--- | :--- |
 | `IsData && HexText == /02.*03/` | 02～03で囲まれているデータパケット |
 
-----
-
-## Grouping
-
-指定した条件でパケットを結合/分割します。<br>
-
-----
-
-## Convert
-
-パケットの属性およびデータ内容を改変します。
+<br><br>

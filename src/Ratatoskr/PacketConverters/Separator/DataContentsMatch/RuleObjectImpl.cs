@@ -52,8 +52,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
         private PacketObject        packet_last_ = null;
 
         private PatternMatchObject[] match_objs_ = null;
-
-        private TextBox TBox_Value;
+        private Forms.Controls.RoundTextBox TBox_Value;
 
         public RuleObjectImpl()
         {
@@ -71,11 +70,12 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
 
         private void InitializeComponent()
         {
-            this.TBox_Value = new System.Windows.Forms.TextBox();
+            this.TBox_Value = new Ratatoskr.Forms.Controls.RoundTextBox();
             this.SuspendLayout();
             // 
             // TBox_Value
             // 
+            this.TBox_Value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.TBox_Value.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TBox_Value.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.TBox_Value.Location = new System.Drawing.Point(0, 0);

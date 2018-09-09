@@ -91,7 +91,7 @@ namespace Ratatoskr.PacketConverters.Separator
         {
             this.components = new System.ComponentModel.Container();
             this.Btn_Option = new System.Windows.Forms.Button();
-            this.CBox_TargetList = new System.Windows.Forms.ComboBox();
+            this.CBox_TargetList = new Ratatoskr.Forms.Controls.RoundComboBox();
             this.Panel_Sub = new System.Windows.Forms.Panel();
             this.CMenu_Option = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.CMenu_EventDetectDivide = new System.Windows.Forms.ToolStripMenuItem();
@@ -113,6 +113,7 @@ namespace Ratatoskr.PacketConverters.Separator
             // CBox_TargetList
             // 
             this.CBox_TargetList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_TargetList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CBox_TargetList.FormattingEnabled = true;
             this.CBox_TargetList.Location = new System.Drawing.Point(84, 3);
             this.CBox_TargetList.Name = "CBox_TargetList";
@@ -137,19 +138,19 @@ namespace Ratatoskr.PacketConverters.Separator
             this.CMenu_EventDetectDivide,
             this.CMenu_DirChangeDivide});
             this.CMenu_Option.Name = "contextMenuStrip1";
-            this.CMenu_Option.Size = new System.Drawing.Size(305, 70);
+            this.CMenu_Option.Size = new System.Drawing.Size(292, 48);
             // 
             // CMenu_EventDetectDivide
             // 
             this.CMenu_EventDetectDivide.Name = "CMenu_EventDetectDivide";
-            this.CMenu_EventDetectDivide.Size = new System.Drawing.Size(304, 22);
+            this.CMenu_EventDetectDivide.Size = new System.Drawing.Size(291, 22);
             this.CMenu_EventDetectDivide.Text = "Forced split at event";
             this.CMenu_EventDetectDivide.Click += new System.EventHandler(this.OptionMenu_Click);
             // 
             // CMenu_DirChangeDivide
             // 
             this.CMenu_DirChangeDivide.Name = "CMenu_DirChangeDivide";
-            this.CMenu_DirChangeDivide.Size = new System.Drawing.Size(304, 22);
+            this.CMenu_DirChangeDivide.Size = new System.Drawing.Size(291, 22);
             this.CMenu_DirChangeDivide.Text = "Forced output when data direction changes";
             this.CMenu_DirChangeDivide.Click += new System.EventHandler(this.OptionMenu_Click);
             // 

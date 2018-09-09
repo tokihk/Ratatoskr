@@ -261,12 +261,12 @@ namespace Ratatoskr.Forms
 
         private static void StatusPoll()
         {
-            /* ステータス値に変化がない場合は無視 */
-            if (ClassUtil.Compare(status_busy_, status_new_))return;
-
-            /* ステータス値をバックアップ */
             lock (status_sync_) {
-                status_busy_ = ClassUtil.Clone(status_new_);
+                /* ステータス値に変化がない場合は無視 */
+                if (status_busy_.Equals(status_new_))return;
+
+                /* ステータス値をバックアップ */
+                status_new_.CopyTo(status_busy_);
             }
 
             /* ステータス値を適用 */

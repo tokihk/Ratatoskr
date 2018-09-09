@@ -30,8 +30,8 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
         private Label label1;
         private Label label2;
         private Label label3;
-        private TextBox TBox_Target;
-        private TextBox TBox_Replace;
+        private Forms.Controls.RoundTextBox TBox_Target;
+        private Forms.Controls.RoundTextBox TBox_Replace;
 
         public AlgorithmObjectImpl()
         {
@@ -42,8 +42,8 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
         {
             InitializeComponent();
 
-            TBox_Target.Text = prop.DataChangeProperty.TargetPattern.Value;
-            TBox_Replace.Text = prop.DataChangeProperty.ReplacePattern.Value;
+            TBox_Target.Text = prop.DataChangeProperty.TargetPattern.Value.Trim();
+            TBox_Replace.Text = prop.DataChangeProperty.ReplacePattern.Value.Trim();
 
             Apply();
         }
@@ -52,10 +52,10 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
-            this.TBox_Target = new System.Windows.Forms.TextBox();
+            this.TBox_Target = new Ratatoskr.Forms.Controls.RoundTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.TBox_Replace = new System.Windows.Forms.TextBox();
+            this.TBox_Replace = new Ratatoskr.Forms.Controls.RoundTextBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,6 +86,8 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
             // 
             // TBox_Target
             // 
+            this.TBox_Target.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TBox_Target.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.TBox_Target.Location = new System.Drawing.Point(75, 3);
             this.TBox_Target.Name = "TBox_Target";
             this.TBox_Target.Size = new System.Drawing.Size(200, 19);
@@ -115,6 +117,8 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
             // 
             // TBox_Replace
             // 
+            this.TBox_Replace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TBox_Replace.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.TBox_Replace.Location = new System.Drawing.Point(369, 3);
             this.TBox_Replace.Name = "TBox_Replace";
             this.TBox_Replace.Size = new System.Drawing.Size(200, 19);

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>packet-view-packet.jpn.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	font-size: 14px;
+	padding: 0 12px;
+	line-height: 22px;
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+	font-size: inherit;
+	line-height: auto;
+}
+
+a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+.mac code {
+	font-size: 12px;
+	line-height: 18px;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+/** Theming */
+
+.vscode-light,
+.vscode-light pre code {
+	color: rgb(30, 30, 30);
+}
+
+.vscode-dark,
+.vscode-dark pre code {
+	color: #DDD;
+}
+
+.vscode-high-contrast,
+.vscode-high-contrast pre code {
+	color: white;
+}
+
+.vscode-light code {
+	color: #A31515;
+}
+
+.vscode-dark code {
+	color: #D7BA7D;
+}
+
+.vscode-light pre:not(.hljs),
+.vscode-light code > div {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre:not(.hljs),
+.vscode-dark code > div {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre:not(.hljs),
+.vscode-high-contrast code > div {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+.vscode-light blockquote,
+.vscode-dark blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.vscode-high-contrast blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family:  "Meiryo", "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+<link rel="stylesheet" href="file:///c%3A/root/home/github/Ratatoskr/docs/_lib/css/github-markdown.css" type="text/css">
+</head>
+<body>
+<link href="../params.css" rel="stylesheet" />
+<h1 id="packet-view---packet">Packet View - Packet</h1>
+<p><img src="../_images/ss-packet-view-packet.png" alt="image"></p>
+<p>パケット単位でデータを表示します。<br>
+もっとも詳細にデータを表示することができます。<br></p>
+<p>デバイス通信における通信タイミングや通信シーケンスを確認するのに適したビューです。</p>
+<h2 id="parameter">Parameter</h2>
+<h3 id="preview-size">Preview size</h3>
+<p>「Data Preview(Binary)」と「Data Preview(Text)」に表示するデータバイト数です。</p>
+<h3 id="character-code">Character code</h3>
+<p>「Data Preview(Text)」と詳細データウィンドウで使用する文字コードです。</p>
+<h3 id="custom-preview-format">Custom preview format</h3>
+<p>記述したテキストを「Data Preview(Custom)」に表示します。<br>
+データ内容を変数として参照でき、データ内容を自身で理解しやすいフォーマットに変換することができます。<br></p>
+<p>データ内容への参照は以下のように記述することができます。</p>
+<p><code>${表示形式:解析データタイプ:解析データオフセット:解析データサイズ}</code></p>
+<p>パケットのデータ部分を「解析データタイプ」で展開し、「解析データオフセット」と「解析データサイズ」で<br>
+変換元データを抽出し、抽出したデータを「表示形式」で出力します。</p>
+<p>パケットデータが<code>00 01 02 03 04 05</code>の場合の変換例を以下に提示します。</p>
+<table>
+<thead>
+<tr>
+<th>変数式</th>
+<th>表示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>${HEXTEXT:BYTE:1:2}</code></td>
+<td><code>0102</code></td>
+</tr>
+<tr>
+<td><code>${BINTEXT:BYTE:1:2}</code></td>
+<td><code>0000000100000010</code></td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>表示形式</strong></em></p>
+<table>
+<thead>
+<tr>
+<th>記述</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HEXTEXT</code></td>
+<td>16進数表記</td>
+</tr>
+<tr>
+<td><code>BITTEXT</code></td>
+<td>2進数表記</td>
+</tr>
+<tr>
+<td><code>ASCII</code></td>
+<td>ASCII文字列</td>
+</tr>
+<tr>
+<td><code>UTF8</code></td>
+<td>UTF8文字列</td>
+</tr>
+<tr>
+<td><code>UTF16BE</code></td>
+<td>UTF16(BigEndian)文字列</td>
+</tr>
+<tr>
+<td><code>UTF16LE</code></td>
+<td>UTF16(BigEndian)文字列</td>
+</tr>
+<tr>
+<td><code>SHIFTJIS</code></td>
+<td>Shift_JIS文字列</td>
+</tr>
+<tr>
+<td><code>EUCJP</code></td>
+<td>EucJp文字列</td>
+</tr>
+<tr>
+<td><code>INT8</code></td>
+<td>符号あり8ビット整数</td>
+</tr>
+<tr>
+<td><code>UINT8</code></td>
+<td>符号なし8ビット整数</td>
+</tr>
+<tr>
+<td><code>INT16LE</code></td>
+<td>符号あり16ビット整数(LittleEndian)</td>
+</tr>
+<tr>
+<td><code>INT32LE</code></td>
+<td>符号あり32ビット整数(LittleEndian)</td>
+</tr>
+<tr>
+<td><code>INT64LE</code></td>
+<td>符号あり64ビット整数(LittleEndian)</td>
+</tr>
+<tr>
+<td><code>UINT16LE</code></td>
+<td>符号なし16ビット整数(LittleEndian)</td>
+</tr>
+<tr>
+<td><code>UINT32LE</code></td>
+<td>符号なし32ビット整数(LittleEndian)</td>
+</tr>
+<tr>
+<td><code>UINT64LE</code></td>
+<td>符号なし64ビット整数(LittleEndian)</td>
+</tr>
+<tr>
+<td><code>INT16BE</code></td>
+<td>符号あり16ビット整数(BitEndian)</td>
+</tr>
+<tr>
+<td><code>INT32BE</code></td>
+<td>符号あり32ビット整数(BitEndian)</td>
+</tr>
+<tr>
+<td><code>INT64BE</code></td>
+<td>符号あり64ビット整数(BitEndian)</td>
+</tr>
+<tr>
+<td><code>UINT16BE</code></td>
+<td>符号なし16ビット整数(BitEndian)</td>
+</tr>
+<tr>
+<td><code>UINT32BE</code></td>
+<td>符号なし32ビット整数(BitEndian)</td>
+</tr>
+<tr>
+<td><code>UINT64BE</code></td>
+<td>符号なし64ビット整数(BitEndian)</td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>解析データタイプ</strong></em></p>
+<table>
+<thead>
+<tr>
+<th>記述</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BYTE</code></td>
+<td>バイト列で解析します</td>
+</tr>
+<tr>
+<td><code>BIT</code></td>
+<td>ビット列で解析します</td>
+</tr>
+<tr>
+<td><code>ASCII</code></td>
+<td>ASCII文字列で解析します</td>
+</tr>
+<tr>
+<td><code>UTF8</code></td>
+<td>UTF8文字列で解析します</td>
+</tr>
+<tr>
+<td><code>UTF16BE</code></td>
+<td>UTF16(BigEndian)文字列で解析します</td>
+</tr>
+<tr>
+<td><code>UTF16LE</code></td>
+<td>UTF16(LittleEndian)文字列で解析します</td>
+</tr>
+<tr>
+<td><code>SHIFTJIS</code></td>
+<td>Shift_JIS文字列で解析します</td>
+</tr>
+<tr>
+<td><code>EUCJP</code></td>
+<td>EucJp文字列で解析します</td>
+</tr>
+</tbody>
+</table>
+<p><br><br></p>
+
+</body>
+</html>

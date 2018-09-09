@@ -44,11 +44,11 @@ namespace Ratatoskr.PacketConverters.Convert.DataRemove
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
             this.Num_DataOffset = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.Num_DataLength = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_DataOffset)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_DataLength)).BeginInit();
@@ -83,6 +83,7 @@ namespace Ratatoskr.PacketConverters.Convert.DataRemove
             // 
             // Num_DataOffset
             // 
+            this.Num_DataOffset.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_DataOffset.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Num_DataOffset.Location = new System.Drawing.Point(89, 3);
             this.Num_DataOffset.Maximum = new decimal(new int[] {
@@ -107,6 +108,16 @@ namespace Ratatoskr.PacketConverters.Convert.DataRemove
             this.Num_DataOffset.ValueChanged += new System.EventHandler(this.Num_ValueChanged);
             this.Num_DataOffset.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Num_KeyDown);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(175, 0);
+            this.label5.Name = "label5";
+            this.label5.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.label5.Size = new System.Drawing.Size(149, 18);
+            this.label5.TabIndex = 17;
+            this.label5.Text = "(X < 0 : Count from the end)";
+            // 
             // label2
             // 
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -129,6 +140,7 @@ namespace Ratatoskr.PacketConverters.Convert.DataRemove
             // 
             // Num_DataLength
             // 
+            this.Num_DataLength.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_DataLength.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Num_DataLength.Location = new System.Drawing.Point(414, 3);
             this.Num_DataLength.Maximum = new decimal(new int[] {
@@ -157,16 +169,6 @@ namespace Ratatoskr.PacketConverters.Convert.DataRemove
             this.label4.Size = new System.Drawing.Size(33, 18);
             this.label4.TabIndex = 16;
             this.label4.Text = "bytes";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(175, 0);
-            this.label5.Name = "label5";
-            this.label5.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label5.Size = new System.Drawing.Size(149, 18);
-            this.label5.TabIndex = 17;
-            this.label5.Text = "(X < 0 : Count from the end)";
             // 
             // AlgorithmObjectImpl
             // 

@@ -30,7 +30,7 @@
             this.Panel_Contents = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.TBox_Filter = new System.Windows.Forms.TextBox();
+            this.TBox_Filter = new Ratatoskr.Forms.Controls.RoundTextBox();
             this.ChkBox_Filter = new System.Windows.Forms.CheckBox();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -68,6 +68,8 @@
             // 
             this.TBox_Filter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.TBox_Filter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TBox_Filter.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.TBox_Filter.Location = new System.Drawing.Point(60, 3);
             this.TBox_Filter.Name = "TBox_Filter";
             this.TBox_Filter.Size = new System.Drawing.Size(809, 19);
@@ -86,13 +88,13 @@
             this.ChkBox_Filter.UseVisualStyleBackColor = true;
             this.ChkBox_Filter.CheckedChanged += new System.EventHandler(this.ChkBox_Filter_CheckedChanged);
             // 
-            // MainFramePacketView
+            // ViewControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.Panel_Contents);
             this.Controls.Add(this.panel2);
-            this.Name = "MainFramePacketView";
+            this.Name = "ViewControl";
             this.Size = new System.Drawing.Size(872, 507);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
@@ -104,8 +106,8 @@
 
         private System.Windows.Forms.Panel Panel_Contents;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.TextBox TBox_Filter;
         private System.Windows.Forms.CheckBox ChkBox_Filter;
         private System.Windows.Forms.Panel panel1;
+        private Forms.Controls.RoundTextBox TBox_Filter;
     }
 }

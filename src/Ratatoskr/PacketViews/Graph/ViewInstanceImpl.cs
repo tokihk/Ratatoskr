@@ -53,15 +53,15 @@ namespace Ratatoskr.PacketViews.Graph
             this.Panel_Graph.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Panel_Graph.Location = new System.Drawing.Point(0, 0);
             this.Panel_Graph.Name = "Panel_Graph";
-            this.Panel_Graph.Size = new System.Drawing.Size(997, 576);
+            this.Panel_Graph.Size = new System.Drawing.Size(1037, 576);
             this.Panel_Graph.TabIndex = 2;
             // 
             // GCPanel_Main
             // 
             this.GCPanel_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.GCPanel_Main.Location = new System.Drawing.Point(424, 3);
+            this.GCPanel_Main.Location = new System.Drawing.Point(528, 3);
             this.GCPanel_Main.Name = "GCPanel_Main";
-            this.GCPanel_Main.Size = new System.Drawing.Size(570, 416);
+            this.GCPanel_Main.Size = new System.Drawing.Size(506, 416);
             this.GCPanel_Main.TabIndex = 1;
             this.GCPanel_Main.SamplingSettingUpdated += new System.EventHandler(this.GCPanel_Main_SamplingSettingUpdated);
             this.GCPanel_Main.DisplaySettingUpdated += new System.EventHandler(this.GCPanel_Main_DisplaySettingUpdated);
@@ -75,7 +75,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.panel1.Controls.Add(this.TBar_GraphOffset);
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(415, 570);
+            this.panel1.Size = new System.Drawing.Size(519, 570);
             this.panel1.TabIndex = 0;
             // 
             // PBox_GraphDetails
@@ -84,7 +84,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.PBox_GraphDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PBox_GraphDetails.Location = new System.Drawing.Point(0, 0);
             this.PBox_GraphDetails.Name = "PBox_GraphDetails";
-            this.PBox_GraphDetails.Size = new System.Drawing.Size(415, 528);
+            this.PBox_GraphDetails.Size = new System.Drawing.Size(519, 525);
             this.PBox_GraphDetails.TabIndex = 3;
             this.PBox_GraphDetails.TabStop = false;
             this.PBox_GraphDetails.Paint += new System.Windows.Forms.PaintEventHandler(this.PBox_GraphDetails_Paint);
@@ -93,10 +93,10 @@ namespace Ratatoskr.PacketViews.Graph
             // TBar_GraphOffset
             // 
             this.TBar_GraphOffset.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.TBar_GraphOffset.Location = new System.Drawing.Point(0, 528);
+            this.TBar_GraphOffset.Location = new System.Drawing.Point(0, 525);
             this.TBar_GraphOffset.Maximum = 100;
             this.TBar_GraphOffset.Name = "TBar_GraphOffset";
-            this.TBar_GraphOffset.Size = new System.Drawing.Size(415, 42);
+            this.TBar_GraphOffset.Size = new System.Drawing.Size(519, 45);
             this.TBar_GraphOffset.TabIndex = 2;
             this.TBar_GraphOffset.TickFrequency = 0;
             this.TBar_GraphOffset.Value = 50;
@@ -107,7 +107,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.Controls.Add(this.Panel_Graph);
             this.Name = "ViewInstanceImpl";
-            this.Size = new System.Drawing.Size(997, 576);
+            this.Size = new System.Drawing.Size(1037, 576);
             this.Panel_Graph.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

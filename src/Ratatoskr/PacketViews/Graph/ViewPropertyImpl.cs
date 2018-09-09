@@ -56,8 +56,8 @@ namespace Ratatoskr.PacketViews.Graph
         public IntegerConfig SamplingInterval { get; } = new IntegerConfig(0);
 
         public IntegerConfig DisplayPoint { get; } = new IntegerConfig(10000);
-        public IntegerConfig AxisY_ValueMin { get; } = new IntegerConfig(100000);
-        public IntegerConfig AxisY_ValueMax { get; } = new IntegerConfig(-100000);
+        public IntegerConfig AxisY_ValueMin { get; } = new IntegerConfig(-100000);
+        public IntegerConfig AxisY_ValueMax { get; } = new IntegerConfig(100000);
 
         public IntegerConfig     CurrentChannel { get; } = new IntegerConfig(0);
         public ChannelListConfig ChannelList    { get; } = new ChannelListConfig();

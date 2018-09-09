@@ -30,7 +30,7 @@
             this.GBox_Exp = new System.Windows.Forms.GroupBox();
             this.Btn_Send = new System.Windows.Forms.Button();
             this.ChkBox_Preview = new System.Windows.Forms.CheckBox();
-            this.CBox_ExpList = new System.Windows.Forms.ComboBox();
+            this.CBox_ExpList = new Ratatoskr.Forms.Controls.RoundComboBox();
             this.GBox_Exp.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -74,6 +74,8 @@
             // 
             this.CBox_ExpList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.CBox_ExpList.BackColor = System.Drawing.SystemColors.Window;
+            this.CBox_ExpList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CBox_ExpList.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.CBox_ExpList.FormattingEnabled = true;
             this.CBox_ExpList.Location = new System.Drawing.Point(3, 18);
@@ -85,12 +87,12 @@
             this.CBox_ExpList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CBox_Exp_KeyDown);
             this.CBox_ExpList.Leave += new System.EventHandler(this.CBox_ExpList_Leave);
             // 
-            // MainForm_SendDataPanel
+            // MainWindow_SendDataPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.GBox_Exp);
-            this.Name = "MainForm_SendDataPanel";
+            this.Name = "MainWindow_SendDataPanel";
             this.Size = new System.Drawing.Size(623, 44);
             this.GBox_Exp.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -99,8 +101,8 @@
 
         #endregion
         private System.Windows.Forms.GroupBox GBox_Exp;
-        private System.Windows.Forms.ComboBox CBox_ExpList;
         private System.Windows.Forms.CheckBox ChkBox_Preview;
         private System.Windows.Forms.Button Btn_Send;
+        private Controls.RoundComboBox CBox_ExpList;
     }
 }

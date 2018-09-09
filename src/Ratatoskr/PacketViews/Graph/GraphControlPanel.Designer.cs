@@ -54,7 +54,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.Num_SamplingInterval = new System.Windows.Forms.NumericUpDown();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
@@ -80,7 +79,6 @@
             this.groupBox16.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_SamplingInterval)).BeginInit();
             this.groupBox5.SuspendLayout();
-            this.groupBox6.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox15.SuspendLayout();
             this.groupBox18.SuspendLayout();
@@ -192,7 +190,7 @@
             this.groupBox7.Controls.Add(this.groupBox14);
             this.groupBox7.Controls.Add(this.groupBox13);
             this.groupBox7.Controls.Add(this.groupBox12);
-            this.groupBox7.Location = new System.Drawing.Point(89, 269);
+            this.groupBox7.Location = new System.Drawing.Point(89, 245);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(232, 140);
             this.groupBox7.TabIndex = 8;
@@ -284,7 +282,7 @@
             // groupBox11
             // 
             this.groupBox11.Controls.Add(this.CBox_ChSet_Channel);
-            this.groupBox11.Location = new System.Drawing.Point(3, 269);
+            this.groupBox11.Location = new System.Drawing.Point(3, 245);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Size = new System.Drawing.Size(80, 43);
             this.groupBox11.TabIndex = 15;
@@ -305,7 +303,7 @@
             // groupBox9
             // 
             this.groupBox9.Controls.Add(this.Num_SamplingPoint);
-            this.groupBox9.Location = new System.Drawing.Point(6, 18);
+            this.groupBox9.Location = new System.Drawing.Point(3, 99);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Size = new System.Drawing.Size(100, 42);
             this.groupBox9.TabIndex = 9;
@@ -393,7 +391,7 @@
             this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label2.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label2.Location = new System.Drawing.Point(3, 171);
+            this.label2.Location = new System.Drawing.Point(3, 147);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(497, 20);
             this.label2.TabIndex = 12;
@@ -404,7 +402,7 @@
             // 
             this.groupBox16.Controls.Add(this.label4);
             this.groupBox16.Controls.Add(this.Num_SamplingInterval);
-            this.groupBox16.Location = new System.Drawing.Point(112, 18);
+            this.groupBox16.Location = new System.Drawing.Point(109, 99);
             this.groupBox16.Name = "groupBox16";
             this.groupBox16.Size = new System.Drawing.Size(125, 42);
             this.groupBox16.TabIndex = 4;
@@ -453,21 +451,10 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Input Data";
             // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.groupBox9);
-            this.groupBox6.Controls.Add(this.groupBox16);
-            this.groupBox6.Location = new System.Drawing.Point(3, 99);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(246, 69);
-            this.groupBox6.TabIndex = 13;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Sampling Setting";
-            // 
             // groupBox8
             // 
             this.groupBox8.Controls.Add(this.groupBox10);
-            this.groupBox8.Location = new System.Drawing.Point(3, 196);
+            this.groupBox8.Location = new System.Drawing.Point(3, 172);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(116, 67);
             this.groupBox8.TabIndex = 14;
@@ -478,7 +465,7 @@
             // 
             this.groupBox15.Controls.Add(this.groupBox18);
             this.groupBox15.Controls.Add(this.groupBox17);
-            this.groupBox15.Location = new System.Drawing.Point(125, 196);
+            this.groupBox15.Location = new System.Drawing.Point(125, 172);
             this.groupBox15.Name = "groupBox15";
             this.groupBox15.Size = new System.Drawing.Size(222, 67);
             this.groupBox15.TabIndex = 15;
@@ -514,7 +501,7 @@
             this.Num_AxisY_ValueMax.TabIndex = 0;
             this.Num_AxisY_ValueMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.Num_AxisY_ValueMax.Value = new decimal(new int[] {
-            1000,
+            100000,
             0,
             0,
             0});
@@ -549,26 +536,27 @@
             this.Num_AxisY_ValueMin.TabIndex = 0;
             this.Num_AxisY_ValueMin.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.Num_AxisY_ValueMin.Value = new decimal(new int[] {
-            1000,
+            100000,
             0,
             0,
-            0});
+            -2147483648});
             this.Num_AxisY_ValueMin.ValueChanged += new System.EventHandler(this.OnDisplaySettingUpdated);
             // 
             // GraphControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox16);
+            this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.groupBox15);
             this.Controls.Add(this.groupBox8);
-            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox11);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox5);
             this.Name = "GraphControlPanel";
-            this.Size = new System.Drawing.Size(503, 415);
+            this.Size = new System.Drawing.Size(503, 391);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
@@ -590,7 +578,6 @@
             this.groupBox16.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_SamplingInterval)).EndInit();
             this.groupBox5.ResumeLayout(false);
-            this.groupBox6.ResumeLayout(false);
             this.groupBox8.ResumeLayout(false);
             this.groupBox15.ResumeLayout(false);
             this.groupBox18.ResumeLayout(false);
@@ -630,7 +617,6 @@
         private System.Windows.Forms.NumericUpDown Num_SamplingInterval;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.NumericUpDown Num_ChSet_ValueMag;
-        private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.GroupBox groupBox15;
         private System.Windows.Forms.GroupBox groupBox18;

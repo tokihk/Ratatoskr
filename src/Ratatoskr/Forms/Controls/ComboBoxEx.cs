@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Ratatoskr.Forms.Controls
 {
-    internal class ComboBoxEx : ComboBox
+    internal class ComboBoxEx : RoundComboBox
     {
         public class ItemGroup
         {

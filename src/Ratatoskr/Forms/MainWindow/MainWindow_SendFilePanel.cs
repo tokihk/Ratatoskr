@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Api;
 using Ratatoskr.Configs;
+using Ratatoskr.Resources;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -82,8 +83,8 @@ namespace Ratatoskr.Forms.MainWindow
 
             if (file_path.Length > 0) {
                 CBox_FileList.BackColor = (File.Exists(file_path))
-                                        ? (Color.LightSkyBlue)
-                                        : (Color.LightPink);
+                                        ? (AppColors.PATTERN_OK)
+                                        : (AppColors.PATTERN_NG);
             } else {
                 CBox_FileList.BackColor = Color.White;
             }

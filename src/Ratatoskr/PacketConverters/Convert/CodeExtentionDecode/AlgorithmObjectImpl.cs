@@ -41,10 +41,10 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
-            this.Num_ExtCode = new System.Windows.Forms.NumericUpDown();
+            this.Num_ExtCode = new Ratatoskr.Forms.Controls.HexNumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.Num_ExtMask = new System.Windows.Forms.NumericUpDown();
+            this.Num_ExtMask = new Ratatoskr.Forms.Controls.HexNumericUpDown();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_ExtCode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_ExtMask)).BeginInit();
@@ -77,6 +77,7 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
             // 
             // Num_ExtCode
             // 
+            this.Num_ExtCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_ExtCode.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Num_ExtCode.Hexadecimal = true;
             this.Num_ExtCode.Location = new System.Drawing.Point(56, 3);
@@ -116,6 +117,7 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
             // 
             // Num_ExtMask
             // 
+            this.Num_ExtMask.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_ExtMask.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Num_ExtMask.Hexadecimal = true;
             this.Num_ExtMask.Location = new System.Drawing.Point(194, 3);

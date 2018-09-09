@@ -69,7 +69,7 @@ namespace Ratatoskr.PacketConverters.Transfer
 
         private void InitializeComponent()
         {
-            this.CBox_AlgorithmList = new System.Windows.Forms.ComboBox();
+            this.CBox_AlgorithmList = new Ratatoskr.Forms.Controls.RoundComboBox();
             this.Panel_Sub = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 

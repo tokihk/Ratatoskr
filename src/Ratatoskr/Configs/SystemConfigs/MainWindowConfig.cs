@@ -67,6 +67,7 @@ namespace Ratatoskr.Configs.SystemConfigs
 
         public KeyConfig<MainWindowActionId> ShortcutKey { get; } = new KeyConfig<MainWindowActionId>();
 
+        public BoolConfig GatePanelDetailsMode   { get; } = new BoolConfig(true);
         public BoolConfig PacketConverterVisible { get; } = new BoolConfig(true);
 
         public MainWindowConfig()

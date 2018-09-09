@@ -70,14 +70,12 @@
   	</script>
 </head>
 <body>
-	<!--
 	<div id="mode" align="right">
 		<select id="language_mode" onchange="reloadContents();">
 			<option value="jpn">Japanese</option>
 			<option value="eng">English</option>
 		</select>
 	</div>
-	-->
 	<h2>Menu</h2>
 	<div id="navigation">
 		<ul>
@@ -85,8 +83,16 @@
 			<li data-jstree='{"icon":"glyphicon glyphicon-leaf"}'><a href="./pages/basic-operation.{lng}.html">Basic Operation</a></li>
 			<li data-jstree='{"icon":"glyphicon glyphicon-send"}'><a href="./pages/send-mode.{lng}.html">Send Mode</a></li>
 			<li data-jstree='{"icon":"glyphicon glyphicon-phone"}'><a href="./pages/gate-device.{lng}.html">Gate Device</a></li>
-			<li data-jstree='{"icon":"glyphicon glyphicon-random"}'><a href="./pages/packet-converter.{lng}.html">Packet Converter</a></li>
-			<li data-jstree='{"icon":"glyphicon glyphicon-picture"}'><a href="./pages/packet-view.{lng}.html">Packet View</a></li>
+			<li class="jstree-open" data-jstree='{"icon":"glyphicon glyphicon-random"}'>Packet Converter<ul>
+				<li data-jstree='{"icon":"glyphicon glyphicon-random"}'><a href="./pages/packet-converter-filter.{lng}.html">Filter</a></li>
+				<li data-jstree='{"icon":"glyphicon glyphicon-random"}'><a href="./pages/packet-converter-grouping.{lng}.html">Grouping</a></li>
+				<li data-jstree='{"icon":"glyphicon glyphicon-random"}'><a href="./pages/packet-converter-convert.{lng}.html">Convert</a></li>
+			</ul></li>
+			<li class="jstree-open" data-jstree='{"icon":"glyphicon glyphicon-picture"}'>Packet View<ul>
+				<li data-jstree='{"icon":"glyphicon glyphicon-picture"}'><a href="./pages/packet-view-packet.{lng}.html">Packet</a></li>
+				<li data-jstree='{"icon":"glyphicon glyphicon-picture"}'><a href="./pages/packet-view-sequential.{lng}.html">Sequential</a></li>
+				<li data-jstree='{"icon":"glyphicon glyphicon-picture"}'><a href="./pages/packet-view-graph.{lng}.html">Graph</a></li>
+			</ul></li>
 			<li data-jstree='{"icon":"glyphicon glyphicon-console"}'><a href="./pages/script-codestyle.{lng}.html">Script - Code Style</a></li>
 			<li data-jstree='{"icon":"glyphicon glyphicon-console"}'><a href="./pages/script-api.{lng}.html">Script - API</a></li>
 		</ul>

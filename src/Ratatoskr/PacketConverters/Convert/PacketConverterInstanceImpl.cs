@@ -79,16 +79,17 @@ namespace Ratatoskr.PacketConverters.Convert
 
         private void InitializeComponent()
         {
-            this.CBox_AlgorithmList = new System.Windows.Forms.ComboBox();
+            this.CBox_AlgorithmList = new Ratatoskr.Forms.Controls.RoundComboBox();
             this.Panel_Sub = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // CBox_AlgorithmList
             // 
             this.CBox_AlgorithmList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_AlgorithmList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CBox_AlgorithmList.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.CBox_AlgorithmList.FormattingEnabled = true;
-            this.CBox_AlgorithmList.Location = new System.Drawing.Point(3, 2);
+            this.CBox_AlgorithmList.Location = new System.Drawing.Point(3, 3);
             this.CBox_AlgorithmList.Name = "CBox_AlgorithmList";
             this.CBox_AlgorithmList.Size = new System.Drawing.Size(160, 20);
             this.CBox_AlgorithmList.TabIndex = 1;

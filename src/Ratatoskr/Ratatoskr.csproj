@@ -279,7 +279,6 @@
     <Compile Include="Devices\UsbMonitor\UsbPcapDeviceObject.cs" />
     <Compile Include="Devices\UsbMonitor\UsbPcapManager.cs" />
     <Compile Include="Devices\UsbMonitor\UsbPcapRecordParser.cs" />
-    <Compile Include="Docs\DocumentManager.cs" />
     <Compile Include="Drivers\SerialPort\SerialPortController.cs" />
     <Compile Include="Drivers\SerialPort\SerialPortInfo.cs" />
     <Compile Include="Drivers\SerialPort\SerialPortManager.cs" />
@@ -363,6 +362,9 @@
     <Compile Include="Forms\Controls\FileExplorerEx.Designer.cs">
       <DependentUpon>FileExplorerEx.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Controls\HexNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\Controls\ListViewEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -377,6 +379,12 @@
     </Compile>
     <Compile Include="Forms\Controls\PreviewLabel.Designer.cs">
       <DependentUpon>PreviewLabel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Controls\RoundComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\Controls\RoundTextBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\Controls\SplashScreen.cs">
       <SubType>Form</SubType>
@@ -463,6 +471,9 @@
     </Compile>
     <Compile Include="Forms\MainWindow\MainWindow_Gate.Designer.cs">
       <DependentUpon>MainWindow_Gate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_GateButton.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\MainWindow\MainWindow_GatePanel.cs">
       <SubType>UserControl</SubType>
@@ -727,6 +738,7 @@
     <Compile Include="Plugin\PluginManager.cs" />
     <Compile Include="Protocol\ProtocolDecoderInfo.cs" />
     <Compile Include="Protocol\ProtocolManager.cs" />
+    <Compile Include="Resources\AppColors.cs" />
     <Compile Include="Scripts\PacketFilterExp\Terms\Term_Status.cs" />
     <Compile Include="Scripts\ScriptController.cs" />
     <Compile Include="Scripts\ScriptEngines\IScriptRunner.cs" />
@@ -1298,6 +1310,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Scripts\Sample.txt" />
     <None Include="Resources\Icons\file_config_24x24.png" />
     <None Include="Resources\Icons\file_16x16.png" />
     <None Include="Resources\Icons\folder_16x16.png" />
@@ -1314,7 +1327,6 @@
   <ItemGroup>
     <Folder Include="PacketViews\DeviceEmurator\DeviceConfig\LCD-Driver\" />
     <Folder Include="PacketViews\DeviceEmurator\DeviceConfig\LCD-Panel\" />
-    <Folder Include="Test\" />
   </ItemGroup>
   <ItemGroup Label="PacketFilterExp-Ratatoskr-Scripts-PacketFilterExp-ParserFiles">
     <Compile Include="Scripts\PacketFilterExp\Parser\PacketFilterExp.Parser.Generated.cs">

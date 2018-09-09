@@ -29,10 +29,10 @@
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Btn_Send = new System.Windows.Forms.Button();
-            this.CBox_LogList = new System.Windows.Forms.ComboBox();
+            this.CBox_LogList = new Ratatoskr.Forms.Controls.RoundComboBox();
             this.Btn_FileSelect = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.CBox_PlayDataType = new System.Windows.Forms.ComboBox();
+            this.CBox_PlayDataType = new Ratatoskr.Forms.Controls.RoundComboBox();
             this.Label_FileSize = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -75,6 +75,7 @@
             this.CBox_LogList.AllowDrop = true;
             this.CBox_LogList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.CBox_LogList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CBox_LogList.FormattingEnabled = true;
             this.CBox_LogList.Location = new System.Drawing.Point(6, 16);
             this.CBox_LogList.Name = "CBox_LogList";
@@ -111,6 +112,7 @@
             // CBox_PlayDataType
             // 
             this.CBox_PlayDataType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_PlayDataType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CBox_PlayDataType.FormattingEnabled = true;
             this.CBox_PlayDataType.Location = new System.Drawing.Point(6, 17);
             this.CBox_PlayDataType.Name = "CBox_PlayDataType";
@@ -195,11 +197,11 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label Label_FileSize;
-        private System.Windows.Forms.ComboBox CBox_LogList;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ProgressBar PBar_Progress;
         private System.Windows.Forms.Label Label_TransSize;
-        private System.Windows.Forms.ComboBox CBox_PlayDataType;
         private System.Windows.Forms.Button Btn_Send;
+        private Controls.RoundComboBox CBox_LogList;
+        private Controls.RoundComboBox CBox_PlayDataType;
     }
 }

@@ -47,6 +47,11 @@ namespace Ratatoskr.Generic
             return (obj1_data.SequenceEqual(obj2_data));
         }
 
+        public static T[] CloneCopy<T>(T[] objs)
+        {
+            return (CloneCopy(objs, 0, objs.Length));
+        }
+
         public static T[] CloneCopy<T>(T[] objs, int count)
         {
             return (CloneCopy(objs, 0, count));

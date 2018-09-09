@@ -29,7 +29,7 @@
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Btn_Send = new System.Windows.Forms.Button();
-            this.CBox_FileList = new System.Windows.Forms.ComboBox();
+            this.CBox_FileList = new Ratatoskr.Forms.Controls.RoundComboBox();
             this.Btn_FileSelect = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -82,6 +82,7 @@
             this.CBox_FileList.AllowDrop = true;
             this.CBox_FileList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.CBox_FileList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CBox_FileList.FormattingEnabled = true;
             this.CBox_FileList.Location = new System.Drawing.Point(6, 16);
             this.CBox_FileList.Name = "CBox_FileList";
@@ -127,6 +128,7 @@
             // 
             // Num_SendBlockSize
             // 
+            this.Num_SendBlockSize.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_SendBlockSize.Location = new System.Drawing.Point(6, 17);
             this.Num_SendBlockSize.Maximum = new decimal(new int[] {
             524288,
@@ -221,6 +223,7 @@
             // 
             // Num_SendDelay
             // 
+            this.Num_SendDelay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_SendDelay.Location = new System.Drawing.Point(6, 17);
             this.Num_SendDelay.Maximum = new decimal(new int[] {
             180000,
@@ -269,7 +272,6 @@
         private System.Windows.Forms.NumericUpDown Num_SendBlockSize;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label Label_FileSize;
-        private System.Windows.Forms.ComboBox CBox_FileList;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ProgressBar PBar_Progress;
         private System.Windows.Forms.Label Label_TransSize;
@@ -278,5 +280,6 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown Num_SendDelay;
+        private Controls.RoundComboBox CBox_FileList;
     }
 }

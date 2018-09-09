@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Ratatoskr"
-#define MyAppVersion "0.4.0"
+#define MyAppVersion "0.5.0"
 #define MyAppPublisher "Toki.H.K"
 #define MyAppCopyright "Copyright © 2018 H.Kouno"
 #define MyAppURL "https://github.com/tokihk/Ratatoskr"

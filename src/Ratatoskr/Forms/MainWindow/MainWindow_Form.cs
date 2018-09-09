@@ -410,16 +410,6 @@ namespace Ratatoskr.Forms.MainWindow
             PBar_Status.Value = Math.Min((int)now, PBar_Status.Maximum);
         }
 
-        protected override void WndProc(ref Message m)
-        {
-            base.WndProc(ref m);
-
-            switch ((WindowMessage)m.Msg) {
-                case WindowMessage.WM_DEVICECHANGE:
-                    break;
-            }
-        }
-
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);

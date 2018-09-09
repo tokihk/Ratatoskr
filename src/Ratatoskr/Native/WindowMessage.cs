@@ -8,6 +8,8 @@ namespace Ratatoskr.Native
 {
     internal enum WindowMessage : UInt32
     {
+        WM_PAINT = 0x000F,
+
         WM_DEVICECHANGE = 0x0219,
 
         LVM_FIRST =              0x1000,      // ListView messages

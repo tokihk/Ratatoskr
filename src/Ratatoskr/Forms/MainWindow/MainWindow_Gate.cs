@@ -17,15 +17,8 @@ namespace Ratatoskr.Forms.MainWindow
     internal partial class MainWindow_Gate : UserControl
     {
         private const int MOUSE_HOLD_TIMER = 1000;
-        private const int DRAW_IMAGE_SPACE = 2;
-        private const int DRAW_TEXT_ALIAS_TOP = 0;
-        private const int DRAW_TEXT_TYPE_TOP  = 16;
-        private const int DRAW_TEXT_TYPE_LEFT = 10;
 
         private readonly Padding DATA_RATE_GRAPH_MARGIN = new Padding(5, 2, 5, 4);
-
-        private readonly Font GATE_ALIAS_FONT  = new Font("Courier New", 9);
-        private readonly Font DEVICE_TYPE_FONT = new Font("Arial", 7);
 
         private readonly Font  DATA_RATE_FONT = new Font("MS Gothic", 8);
         private readonly Brush DATA_RATE_FONT_BRUSH = Brushes.Gray;
@@ -44,6 +37,8 @@ namespace Ratatoskr.Forms.MainWindow
         private ulong[] data_rate_buffer_ = null;
         private int     data_rate_in_ = 0;
         private ulong   data_rate_latest_ = 0;
+
+        private bool details_mode_ = false;
 
 
         public MainWindow_Gate()
@@ -96,6 +91,15 @@ namespace Ratatoskr.Forms.MainWindow
 
                 UpdateView();
                 UpdateDeviceControlPanel();
+            }
+        }
+
+        public bool DetailsMode
+        {
+            get { return (details_mode_); }
+            set
+            {
+                details_mode_ = value;
             }
         }
 
@@ -279,62 +283,6 @@ namespace Ratatoskr.Forms.MainWindow
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             Btn_Main.Refresh();
-        }
-
-        private void Btn_Main_Paint(object sender, PaintEventArgs e)
-        {
-            var region_rect = (sender as Control).ClientRectangle;
-            var image = Properties.Resources.connect_off;
-            var image_rect = new Rectangle();
-
-            var text_brush = Brushes.Gray;
-
-            var text_alias = "";
-            var text_alias_rect = new Rectangle();
-
-            var text_type = "";
-            var text_type_rect = new Rectangle();
-
-            image_rect.Height = region_rect.Height - DRAW_IMAGE_SPACE * 2;
-            image_rect.Width = image_rect.Height;
-            image_rect.X = DRAW_IMAGE_SPACE;
-            image_rect.Y = DRAW_IMAGE_SPACE;
-
-            text_alias_rect.X = image_rect.Right + DRAW_IMAGE_SPACE;
-            text_alias_rect.Y = DRAW_TEXT_ALIAS_TOP;
-            text_alias_rect.Width = region_rect.Width - text_alias_rect.X;
-            text_alias_rect.Height = region_rect.Height;
-
-            text_type_rect.X = image_rect.Right + DRAW_IMAGE_SPACE + DRAW_TEXT_TYPE_LEFT;
-            text_type_rect.Y = DRAW_TEXT_TYPE_TOP;
-            text_type_rect.Width = region_rect.Width - text_type_rect.X;
-            text_type_rect.Height = region_rect.Height;
-
-            if (gate_ != null) {
-                text_alias = gate_.Alias;
-                text_type = "(Empty)";
-
-                if (gate_.IsDeviceSetup) {
-                    text_type = gate_.DeviceClassName;
-                    text_brush = Brushes.Black;
-
-                    /* 状態アイコン設定 */
-                    switch (gate_.ConnectStatus) {
-                        case ConnectState.Connected:    image = Properties.Resources.connect_on;    break;
-                        case ConnectState.Disconnected: image = Properties.Resources.connect_off;   break;
-                        default:                        image = Properties.Resources.connect_busy;  break;
-                    }
-                }
-            }
-
-            /* アイコン描画 */
-            e.Graphics.DrawImage(image, image_rect);
-
-            /* エイリアス表示 */
-            e.Graphics.DrawString(text_alias, GATE_ALIAS_FONT, text_brush, text_alias_rect);
-
-            /* デバイスタイプ表示 */
-            e.Graphics.DrawString(text_type, DEVICE_TYPE_FONT, text_brush, text_type_rect);
         }
 
         private void PBox_DataRate_Paint(object sender, PaintEventArgs e)

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
+using Ratatoskr.Generic;
 
 namespace Ratatoskr.Devices.AudioDevice
 {
@@ -100,7 +101,7 @@ namespace Ratatoskr.Devices.AudioDevice
 
         private void OnWaveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
-            NotifyRecvComplete("", "", "", e.Buffer);
+            NotifyRecvComplete("", "", "", ClassUtil.CloneCopy(e.Buffer));
         }
 
         private void OutputPoll()

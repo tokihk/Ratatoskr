@@ -45,6 +45,7 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromPrevPacket
             // 
             // Num_Value
             // 
+            this.Num_Value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_Value.Location = new System.Drawing.Point(0, 0);
             this.Num_Value.Maximum = new decimal(new int[] {
             3600000,

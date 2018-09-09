@@ -88,6 +88,8 @@ namespace Ratatoskr.PacketViews.Graph.DisplayModules
 
             if (   (graph_rect.Width > 0)
                 && (graph_rect.Height > 0)
+                && (disp_param.AxisX_Min < disp_param.AxisX_Max)
+                && (disp_param.AxisY_Min < disp_param.AxisY_Max)
             ) {
                 /* レイヤー描画 */
                 {
@@ -217,8 +219,8 @@ namespace Ratatoskr.PacketViews.Graph.DisplayModules
             var value_x_canvas = 0;
             var value_x_canvas_last = 0;
 
-            var value_x_step  = (decimal)graphics_rect.Width / Math.Max(1, (axis_x_max - axis_x_min));
-            var value_y_mag = (decimal)graphics_rect.Height / Math.Max(1, (axis_y_max - axis_y_min));
+            var value_x_step  = (decimal)graphics_rect.Width / (axis_x_max - axis_x_min);
+            var value_y_mag = (decimal)graphics_rect.Height / (axis_y_max - axis_y_min);
 
             var draw_pen = new Pen(layer_param.ForeColor);
             var draw_points = new List<Point>();

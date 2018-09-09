@@ -18,7 +18,7 @@ namespace Ratatoskr.PacketConverters.Convert.ChangeAlias
 
         private FlowLayoutPanel flowLayoutPanel1;
         private Label label1;
-        private TextBox TBox_Value;
+        private Forms.Controls.RoundTextBox TBox_Value;
 
         public AlgorithmObjectImpl()
         {
@@ -38,7 +38,7 @@ namespace Ratatoskr.PacketConverters.Convert.ChangeAlias
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.TBox_Value = new System.Windows.Forms.TextBox();
+            this.TBox_Value = new Ratatoskr.Forms.Controls.RoundTextBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,6 +66,8 @@ namespace Ratatoskr.PacketConverters.Convert.ChangeAlias
             // 
             // TBox_Value
             // 
+            this.TBox_Value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TBox_Value.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.TBox_Value.Location = new System.Drawing.Point(89, 3);
             this.TBox_Value.Name = "TBox_Value";
             this.TBox_Value.Size = new System.Drawing.Size(200, 19);

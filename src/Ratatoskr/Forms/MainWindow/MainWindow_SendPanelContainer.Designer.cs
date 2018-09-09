@@ -103,11 +103,11 @@
             // 
             // CBox_TargetList
             // 
-            this.CBox_TargetList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CBox_TargetList.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.CBox_TargetList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CBox_TargetList.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.CBox_TargetList.FormattingEnabled = true;
-            this.CBox_TargetList.Location = new System.Drawing.Point(3, 15);
+            this.CBox_TargetList.Location = new System.Drawing.Point(3, 17);
             this.CBox_TargetList.Name = "CBox_TargetList";
             this.CBox_TargetList.Size = new System.Drawing.Size(151, 20);
             this.CBox_TargetList.TabIndex = 0;
@@ -115,7 +115,7 @@
             this.CBox_TargetList.TextChanged += new System.EventHandler(this.CBox_TargetList_TextChanged);
             this.CBox_TargetList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CBox_TargetList_KeyDown);
             // 
-            // MainFrameSendPanelContainer
+            // MainWindow_SendPanelContainer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -126,7 +126,7 @@
             this.Controls.Add(this.GBox_Target);
             this.MaximumSize = new System.Drawing.Size(4096, 44);
             this.MinimumSize = new System.Drawing.Size(0, 44);
-            this.Name = "MainFrameSendPanelContainer";
+            this.Name = "MainWindow_SendPanelContainer";
             this.Size = new System.Drawing.Size(773, 44);
             this.GBox_Target.ResumeLayout(false);
             this.ResumeLayout(false);

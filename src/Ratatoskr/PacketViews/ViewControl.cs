@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Packet;
+using Ratatoskr.Resources;
 using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
 
@@ -44,7 +45,7 @@ namespace Ratatoskr.PacketViews
             ChkBox_Filter.Checked = Instance.Property.TargetFilterEnable.Value;
             TBox_Filter.Text = Instance.Property.TargetFilterValue.Value.Trim();
 
-            UpdateView();
+            Apply(false);
         }
 
         public void BackupProperty()
@@ -55,7 +56,7 @@ namespace Ratatoskr.PacketViews
             Instance.BackupProperty();
         }
 
-        private void Apply()
+        private void Apply(bool redraw_req = true)
         {
             filter_exp_busy_ = filter_exp_new_;
             filter_obj_busy_ = filter_obj_new_;
@@ -74,13 +75,17 @@ namespace Ratatoskr.PacketViews
 
             /* 表示更新 */
             if (filter_exp_new_.Length > 0) {
-                TBox_Filter.BackColor = (filter_obj_new_ != null) ? (Color.LightSkyBlue) : (Color.LightPink);
+                TBox_Filter.BackColor = (filter_obj_new_ != null)
+                                      ? (AppColors.PATTERN_OK)
+                                      : (AppColors.PATTERN_NG);
             } else {
                 TBox_Filter.BackColor = Color.White;
             }
 
             /* 変更状態確認 */
-            TBox_Filter.ForeColor = (filter_exp_busy_ != filter_exp_new_) ? (Color.Gray) : (Color.Black);
+            TBox_Filter.ForeColor = (filter_exp_busy_ != filter_exp_new_)
+                                  ? (Color.Gray)
+                                  : (Color.Black);
         }
 
         internal void Idle()

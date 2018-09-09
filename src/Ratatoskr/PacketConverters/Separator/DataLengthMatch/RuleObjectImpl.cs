@@ -44,6 +44,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
             // 
             // Num_Value
             // 
+            this.Num_Value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_Value.Location = new System.Drawing.Point(0, 0);
             this.Num_Value.Margin = new System.Windows.Forms.Padding(0);
             this.Num_Value.Maximum = new decimal(new int[] {

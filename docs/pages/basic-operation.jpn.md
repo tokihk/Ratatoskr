@@ -76,3 +76,5 @@
 言語仕様およびサンプルは[Script - Code Style](script-codestyle.jpn.html)を参照してください。
 
 APIインターフェースは[Script - API](script-api.jpn.html)を参照してください。
+
+<br><br>

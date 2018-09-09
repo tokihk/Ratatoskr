@@ -620,7 +620,7 @@ namespace Ratatoskr.Packet
             var blocks = pattern.Split(':');
 
             /* 引数取得 */
-            var format = "HEX";
+            var format = "HEXTEXT";
             var type   = "BYTE";
             var offset = 0;
             var size   = int.MaxValue;

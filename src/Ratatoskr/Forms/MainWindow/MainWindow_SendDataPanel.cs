@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms.Controls;
+using Ratatoskr.Resources;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.Forms.MainWindow
@@ -116,8 +117,8 @@ namespace Ratatoskr.Forms.MainWindow
                 send_data_bin_ = HexTextEncoder.ToByteArray(send_data_exp_);
 
                 CBox_ExpList.BackColor = (send_data_bin_ != null)
-                                       ? (Color.LightSkyBlue)
-                                       : (Color.LightPink);
+                                       ? (AppColors.PATTERN_OK)
+                                       : (AppColors.PATTERN_NG);
             } else {
                 send_data_bin_ = null;
 

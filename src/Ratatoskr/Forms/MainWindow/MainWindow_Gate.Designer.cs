@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Btn_Main = new Ratatoskr.Forms.Controls.ButtonEx();
+            this.Btn_Main = new Ratatoskr.Forms.MainWindow.MainWindow_GateButton();
             this.PBox_DataRate = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.PBox_DataRate)).BeginInit();
             this.SuspendLayout();
@@ -49,7 +49,6 @@
             this.Btn_Main.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.Btn_Main.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.Btn_Main.UseVisualStyleBackColor = true;
-            this.Btn_Main.Paint += new System.Windows.Forms.PaintEventHandler(this.Btn_Main_Paint);
             this.Btn_Main.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnMouseDown);
             this.Btn_Main.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnMouseUp);
             // 
@@ -79,7 +78,7 @@
         }
 
         #endregion
-        private Ratatoskr.Forms.Controls.ButtonEx Btn_Main;
+        private Ratatoskr.Forms.MainWindow.MainWindow_GateButton Btn_Main;
         private System.Windows.Forms.PictureBox PBox_DataRate;
     }
 }

@@ -145,7 +145,7 @@ namespace Ratatoskr.Gate
 
             /* いずれかの状態が変化したらデバイスを再構築 */
             if (   (devi_ == null)
-                || (!ClassUtil.Compare(devconf_, devconf))
+                || (!devconf_.Equals(devconf))
                 || (devc_id != devi_.Class.ID)
                 || (!ClassUtil.Compare(devi_.Property, devp))
             ) {

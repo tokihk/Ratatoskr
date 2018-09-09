@@ -11,19 +11,23 @@ namespace Ratatoskr.Forms.Controls
 {
     internal class ButtonEx : Button
     {
-        private Padding         shadow_size_ = new Padding();
         private Padding         corner_size_ = new Padding();
 
         private GraphicsPath    gpath_surface_;
-        private GraphicsPath    gpath_surface_h_;
-        private GraphicsPath    gpath_shadow_;
+
+        private Color           back_color_;
+        private Brush           back_color_brush_;
+        private Brush           back_color_s_brush_;
 
 //        private Brush shadow_b
 
 
         public ButtonEx()
         {
-//            UpdateDrawPath();
+            back_color_ = BackColor;
+            back_color_brush_ = new SolidBrush(back_color_);
+
+            Corner = new Padding(10);
         }
 
         public bool Selectable
@@ -35,16 +39,6 @@ namespace Ratatoskr.Forms.Controls
             set
             {
                 SetStyle(ControlStyles.Selectable, false);
-            }
-        }
-
-        public Padding ShadowRect
-        {
-            get { return (shadow_size_); }
-            set
-            {
-                shadow_size_ = value;
-                UpdateDrawPath();
             }
         }
 
@@ -61,42 +55,17 @@ namespace Ratatoskr.Forms.Controls
         private GraphicsPath GetDrawPath_Surface()
         {
             var gpath = new GraphicsPath();
-            var csize = new Size(Width - corner_size_.Horizontal, Height - corner_size_.Vertical);
+            var csize = new Size(Width, Height);
 
-            gpath.AddArc(shadow_size_.Left,                shadow_size_.Top,                   corner_size_.Left,  corner_size_.Top,    180, 90);
-            gpath.AddArc(csize.Width - shadow_size_.Right, shadow_size_.Top,                   corner_size_.Right, corner_size_.Top,    270, 90);
-            gpath.AddArc(csize.Width - shadow_size_.Right, csize.Height - shadow_size_.Bottom, corner_size_.Right, corner_size_.Bottom, 0,   90);
-            gpath.AddArc(shadow_size_.Left,                csize.Height - shadow_size_.Bottom, corner_size_.Left,  corner_size_.Bottom, 90,  90);
-            gpath.CloseFigure();
-
-            return (gpath);
-        }
-
-        private GraphicsPath GetDrawPath_SurfaceHighlignt()
-        {
-            var gpath = new GraphicsPath();
-            var wsize = Size;
-            var csize = new Size(wsize.Width - corner_size_.Horizontal, wsize.Height - corner_size_.Vertical);
-            var shadow_rect = new Padding(shadow_size_.Left - 1, shadow_size_.Top - 1, shadow_size_.Right - 1, shadow_size_.Bottom - 1);
-
-            gpath.AddArc(shadow_size_.Left,                shadow_size_.Top,                   corner_size_.Left,  corner_size_.Top,    180, 90);
-            gpath.AddArc(csize.Width - shadow_size_.Right, shadow_size_.Top,                   corner_size_.Right, corner_size_.Top,    270, 90);
-//            gpath.AddLine(wsize.Width - shadow_rect.Left, )
-
-            gpath.CloseFigure();
-
-            return (gpath);
-        }
-
-        private GraphicsPath GetDrawPath_Shadow()
-        {
-            var gpath = new GraphicsPath();
-            var csize = new Size(Width - corner_size_.Horizontal, Height - corner_size_.Vertical);
+            if (corner_size_.Left == 0) { corner_size_.Left = 1; }
+            if (corner_size_.Top == 0) { corner_size_.Top = 1; }
+            if (corner_size_.Right == 0) { corner_size_.Right = 1; }
+            if (corner_size_.Bottom == 0) { corner_size_.Bottom = 1; }
 
             gpath.AddArc(0,           0,            corner_size_.Left,  corner_size_.Top,    180, 90);
-            gpath.AddArc(csize.Width, 0,            corner_size_.Right, corner_size_.Top,    270, 90);
-            gpath.AddArc(csize.Width, csize.Height, corner_size_.Right, corner_size_.Bottom, 0,   90);
-            gpath.AddArc(0,           csize.Height, corner_size_.Left,  corner_size_.Bottom, 90,  90);
+            gpath.AddArc(csize.Width - corner_size_.Right, 0,            corner_size_.Left, corner_size_.Top,    270, 90);
+            gpath.AddArc(csize.Width - corner_size_.Right, csize.Height - corner_size_.Bottom, corner_size_.Left, corner_size_.Bottom, 0,   90);
+            gpath.AddArc(0,           csize.Height - corner_size_.Bottom, corner_size_.Left,  corner_size_.Bottom, 90,  90);
             gpath.CloseFigure();
 
             return (gpath);
@@ -105,27 +74,55 @@ namespace Ratatoskr.Forms.Controls
         private void UpdateDrawPath()
         {
             gpath_surface_ = GetDrawPath_Surface();
-            gpath_surface_h_ = GetDrawPath_SurfaceHighlignt();
-            gpath_shadow_ = GetDrawPath_Shadow();
+        }
+
+        private void UpdateDrawBrush()
+        {
+            if (back_color_ == BackColor)return;
+
+            back_color_ = BackColor;
+
+            back_color_brush_?.Dispose();
+            back_color_brush_ = new SolidBrush(back_color_);
+
+            back_color_s_brush_?.Dispose();
+            back_color_s_brush_ = new SolidBrush(
+                Color.FromArgb(
+                    Math.Min(back_color_.A + 10, 255),
+                    Math.Min(back_color_.R + 10, 255),
+                    Math.Min(back_color_.G + 10, 255),
+                    Math.Min(back_color_.B + 10, 255)));
         }
 
         protected override void OnResize(EventArgs e)
         {
-//            UpdateDrawPath();
+            UpdateDrawPath();
 
             base.OnResize(e);
         }
 
         protected override void OnPaint(PaintEventArgs pevent)
         {
+            UpdateDrawBrush();
+
             var g = pevent.Graphics;
+            var rect_image = Rectangle.Empty;
+            var rect_text = Rectangle.Empty;
 
             /* 描画品質設定 */
             g.SmoothingMode = SmoothingMode.HighQuality;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
+            /* 背景初期化 */
+            g.FillRectangle(SystemBrushes.Control, DisplayRectangle);
 
-            base.OnPaint(pevent);
+            /* 背景色で塗りつぶし */
+            g.FillPath(back_color_brush_, gpath_surface_);
+
+            /* 枠を描画 */
+            g.DrawPath(SystemPens.Highlight, gpath_surface_);
+
+//            base.OnPaint(pevent);
         }
     }
 }

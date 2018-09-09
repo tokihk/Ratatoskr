@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Forms;
+using Ratatoskr.Forms.Controls;
 using Ratatoskr.Generic;
 using Ratatoskr.Packet;
 
@@ -50,15 +50,15 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.Num_ExtTarget_Min = new System.Windows.Forms.NumericUpDown();
+            this.Num_ExtTarget_Min = new Ratatoskr.Forms.Controls.HexNumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
-            this.Num_ExtTarget_Max = new System.Windows.Forms.NumericUpDown();
+            this.Num_ExtTarget_Max = new Ratatoskr.Forms.Controls.HexNumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.Num_ExtCode = new System.Windows.Forms.NumericUpDown();
+            this.Num_ExtCode = new Ratatoskr.Forms.Controls.HexNumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.Num_ExtMask = new System.Windows.Forms.NumericUpDown();
+            this.Num_ExtMask = new Ratatoskr.Forms.Controls.HexNumericUpDown();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_ExtTarget_Min)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Num_ExtTarget_Max)).BeginInit();
@@ -98,6 +98,7 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
             // 
             // Num_ExtTarget_Min
             // 
+            this.Num_ExtTarget_Min.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_ExtTarget_Min.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Num_ExtTarget_Min.Hexadecimal = true;
             this.Num_ExtTarget_Min.Location = new System.Drawing.Point(104, 3);
@@ -126,6 +127,7 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
             // 
             // Num_ExtTarget_Max
             // 
+            this.Num_ExtTarget_Max.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_ExtTarget_Max.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Num_ExtTarget_Max.Hexadecimal = true;
             this.Num_ExtTarget_Max.Location = new System.Drawing.Point(172, 3);
@@ -165,6 +167,7 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
             // 
             // Num_ExtCode
             // 
+            this.Num_ExtCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_ExtCode.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Num_ExtCode.Hexadecimal = true;
             this.Num_ExtCode.Location = new System.Drawing.Point(325, 3);
@@ -204,6 +207,7 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
             // 
             // Num_ExtMask
             // 
+            this.Num_ExtMask.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_ExtMask.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Num_ExtMask.Hexadecimal = true;
             this.Num_ExtMask.Location = new System.Drawing.Point(459, 3);

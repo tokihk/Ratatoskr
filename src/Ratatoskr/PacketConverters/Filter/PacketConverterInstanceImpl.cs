@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms.Controls;
+using Ratatoskr.Resources;
 using Ratatoskr.Scripts.PacketFilterExp.Parser;
 using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Packet;
@@ -54,7 +55,7 @@ namespace Ratatoskr.PacketConverters.Filter
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.CBox_Exp = new System.Windows.Forms.ComboBox();
+            this.CBox_Exp = new Ratatoskr.Forms.Controls.RoundComboBox();
             this.TTip_Filter = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
@@ -62,12 +63,13 @@ namespace Ratatoskr.PacketConverters.Filter
             // 
             this.CBox_Exp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.CBox_Exp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CBox_Exp.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.CBox_Exp.FormattingEnabled = true;
-            this.CBox_Exp.Location = new System.Drawing.Point(0, 3);
+            this.CBox_Exp.Location = new System.Drawing.Point(3, 3);
             this.CBox_Exp.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.CBox_Exp.Name = "CBox_Exp";
-            this.CBox_Exp.Size = new System.Drawing.Size(604, 20);
+            this.CBox_Exp.Size = new System.Drawing.Size(601, 20);
             this.CBox_Exp.TabIndex = 1;
             this.CBox_Exp.TextChanged += new System.EventHandler(this.CBox_Exp_TextChanged);
             this.CBox_Exp.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CBox_Exp_KeyDown);
@@ -128,13 +130,17 @@ namespace Ratatoskr.PacketConverters.Filter
 
             /* 表示更新 */
             if (filter_exp_new_.Length > 0) {
-                CBox_Exp.BackColor = (filter_obj_new_ != null) ? (Color.LightSkyBlue) : (Color.LightPink);
+                CBox_Exp.BackColor = (filter_obj_new_ != null)
+                                   ? (AppColors.PATTERN_OK)
+                                   : (AppColors.PATTERN_NG);
             } else {
                 CBox_Exp.BackColor = Color.White;
             }
 
             /* 変更状態確認 */
-            CBox_Exp.ForeColor = (filter_exp_busy_ != filter_exp_new_) ? (Color.Gray) : (Color.Black);
+            CBox_Exp.ForeColor = (filter_exp_busy_ != filter_exp_new_)
+                               ? (Color.Gray)
+                               : (Color.Black);
         }
 
         private void AddExpLog(string exp)

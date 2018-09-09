@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -57,6 +58,83 @@ namespace Ratatoskr.Native
         public const UInt32 WM_QUEUESYNC        = 0x0023;
 
         public const UInt32 WM_GETMINMAXINFO    = 0x0024;
+
+        public const UInt32 WM_USER             = 0x0400;
+
+        public const UInt32 EM_GETSEL               = 0x00B0;
+        public const UInt32 EM_SETSEL               = 0x00B1;
+        public const UInt32 EM_GETRECT              = 0x00B2;
+        public const UInt32 EM_SETRECT              = 0x00B3;
+        public const UInt32 EM_SETRECTNP            = 0x00B4;
+        public const UInt32 EM_SCROLL               = 0x00B5;
+        public const UInt32 EM_LINESCROLL           = 0x00B6;
+        public const UInt32 EM_SCROLLCARET          = 0x00B7;
+        public const UInt32 EM_GETMODIFY            = 0x00B8;
+        public const UInt32 EM_SETMODIFY            = 0x00B9;
+        public const UInt32 EM_GETLINECOUNT         = 0x00BA;
+        public const UInt32 EM_LINEINDEX            = 0x00BB;
+        public const UInt32 EM_SETHANDLE            = 0x00BC;
+        public const UInt32 EM_GETHANDLE            = 0x00BD;
+        public const UInt32 EM_GETTHUMB             = 0x00BE;
+        public const UInt32 EM_LINELENGTH           = 0x00C1;
+        public const UInt32 EM_REPLACESEL           = 0x00C2;
+        public const UInt32 EM_GETLINE              = 0x00C4;
+        public const UInt32 EM_LIMITTEXT            = 0x00C5;
+        public const UInt32 EM_CANUNDO              = 0x00C6;
+        public const UInt32 EM_UNDO                 = 0x00C7;
+        public const UInt32 EM_FMTLINES             = 0x00C8;
+        public const UInt32 EM_LINEFROMCHAR         = 0x00C9;
+        public const UInt32 EM_SETTABSTOPS          = 0x00CB;
+        public const UInt32 EM_SETPASSWORDCHAR      = 0x00CC;
+        public const UInt32 EM_EMPTYUNDOBUFFER      = 0x00CD;
+        public const UInt32 EM_GETFIRSTVISIBLELINE  = 0x00CE;
+        public const UInt32 EM_SETREADONLY          = 0x00CF;
+        public const UInt32 EM_SETWORDBREAKPROC     = 0x00D0;
+        public const UInt32 EM_GETWORDBREAKPROC     = 0x00D1;
+        public const UInt32 EM_GETPASSWORDCHAR      = 0x00D2;
+        public const UInt32 EM_SETMARGINS           = 0x00D3;
+        public const UInt32 EM_GETMARGINS           = 0x00D4;
+        public const UInt32 EM_SETLIMITTEXT         = EM_LIMITTEXT;   /* ;win40 Name change */
+        public const UInt32 EM_GETLIMITTEXT         = 0x00D5;
+        public const UInt32 EM_POSFROMCHAR          = 0x00D6;
+        public const UInt32 EM_CHARFROMPOS          = 0x00D7;
+        public const UInt32 EM_SETIMESTATUS         = 0x00D8;
+        public const UInt32 EM_GETIMESTATUS         = 0x00D9;
+
+        // Outline mode message
+        public const UInt32 EM_OUTLINE              = (WM_USER + 220);
+        // Message for getting and restoring scroll pos
+        public const UInt32 EM_GETSCROLLPOS         = (WM_USER + 221);
+        public const UInt32 EM_SETSCROLLPOS         = (WM_USER + 222);
+        // Change fontsize in current selection by wParam
+        public const UInt32 EM_SETFONTSIZE          = (WM_USER + 223);
+        public const UInt32 EM_GETZOOM				= (WM_USER + 224);
+        public const UInt32 EM_SETZOOM				= (WM_USER + 225);
+        public const UInt32 EM_GETVIEWKIND			= (WM_USER + 226);
+        public const UInt32 EM_SETVIEWKIND			= (WM_USER + 227);
+
+        // RichEdit 4.0 messages
+        public const UInt32 EM_GETPAGE				= (WM_USER + 228);
+        public const UInt32 EM_SETPAGE				= (WM_USER + 229);
+        public const UInt32 EM_GETHYPHENATEINFO		= (WM_USER + 230);
+        public const UInt32 EM_SETHYPHENATEINFO		= (WM_USER + 231);
+        public const UInt32 EM_GETPAGEROTATE		= (WM_USER + 235);
+        public const UInt32 EM_SETPAGEROTATE		= (WM_USER + 236);
+        public const UInt32 EM_GETCTFMODEBIAS		= (WM_USER + 237);
+        public const UInt32 EM_SETCTFMODEBIAS		= (WM_USER + 238);
+        public const UInt32 EM_GETCTFOPENSTATUS		= (WM_USER + 240);
+        public const UInt32 EM_SETCTFOPENSTATUS		= (WM_USER + 241);
+        public const UInt32 EM_GETIMECOMPTEXT		= (WM_USER + 242);
+        public const UInt32 EM_ISIME				= (WM_USER + 243);
+        public const UInt32 EM_GETIMEPROPERTY		= (WM_USER + 244);
+
+        // These messages control what rich edit does when it comes accross
+        // OLE objects during RTF stream in.  Normally rich edit queries the client
+        // application only after OleLoad has been called.  With these messages it is possible to
+        // set the rich edit control to a mode where it will query the client application before
+        // OleLoad is called
+        public const UInt32 EM_GETQUERYRTFOBJ		= (WM_USER + 269);
+        public const UInt32 EM_SETQUERYRTFOBJ		= (WM_USER + 270);
 
         public const Int32 WS_EX_DLGMODALFRAME  = 0x00000001;
         public const Int32 WS_EX_NOPARENTNOTIFY = 0x00000004;
@@ -936,6 +1014,21 @@ namespace Ratatoskr.Native
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public extern static IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public extern unsafe static IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, int *wParam, int *lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public extern static IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, Int32 wParam, Int32 lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public extern static IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, ref Int32 wParam, ref Int32 lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public extern static IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public extern static IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, int wParam, ref Point lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public extern static IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, ref LVITEM lParam);

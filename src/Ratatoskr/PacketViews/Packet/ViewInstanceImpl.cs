@@ -272,6 +272,7 @@ namespace Ratatoskr.PacketViews.Packet
             // 
             // TBox_CustomFormat
             // 
+            this.TBox_CustomFormat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.TBox_CustomFormat.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TBox_CustomFormat.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.TBox_CustomFormat.Location = new System.Drawing.Point(3, 15);
@@ -295,6 +296,7 @@ namespace Ratatoskr.PacketViews.Packet
             // 
             this.CBox_CharCode.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CBox_CharCode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_CharCode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CBox_CharCode.FormattingEnabled = true;
             this.CBox_CharCode.Location = new System.Drawing.Point(3, 15);
             this.CBox_CharCode.Name = "CBox_CharCode";
@@ -324,6 +326,7 @@ namespace Ratatoskr.PacketViews.Packet
             // 
             // Num_PreviewDataSize
             // 
+            this.Num_PreviewDataSize.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_PreviewDataSize.Location = new System.Drawing.Point(3, 15);
             this.Num_PreviewDataSize.Maximum = new decimal(new int[] {
             2000,
@@ -465,48 +468,48 @@ namespace Ratatoskr.PacketViews.Packet
             this.Menu_ExtView.Image = ((System.Drawing.Image)(resources.GetObject("Menu_ExtView.Image")));
             this.Menu_ExtView.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Menu_ExtView.Name = "Menu_ExtView";
-            this.Menu_ExtView.Size = new System.Drawing.Size(117, 22);
+            this.Menu_ExtView.Size = new System.Drawing.Size(132, 22);
             this.Menu_ExtView.Text = "Display item select";
             // 
             // Menu_ExtView_SelectPacketCount
             // 
             this.Menu_ExtView_SelectPacketCount.Name = "Menu_ExtView_SelectPacketCount";
-            this.Menu_ExtView_SelectPacketCount.Size = new System.Drawing.Size(333, 22);
+            this.Menu_ExtView_SelectPacketCount.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_SelectPacketCount.Text = "Select packet count";
             this.Menu_ExtView_SelectPacketCount.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_SelectTotalSize
             // 
             this.Menu_ExtView_SelectTotalSize.Name = "Menu_ExtView_SelectTotalSize";
-            this.Menu_ExtView_SelectTotalSize.Size = new System.Drawing.Size(333, 22);
+            this.Menu_ExtView_SelectTotalSize.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_SelectTotalSize.Text = "Select packet total size";
             this.Menu_ExtView_SelectTotalSize.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_FirstPacketInfo
             // 
             this.Menu_ExtView_FirstPacketInfo.Name = "Menu_ExtView_FirstPacketInfo";
-            this.Menu_ExtView_FirstPacketInfo.Size = new System.Drawing.Size(333, 22);
+            this.Menu_ExtView_FirstPacketInfo.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_FirstPacketInfo.Text = "Information on selected packet (first)";
             this.Menu_ExtView_FirstPacketInfo.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_LastPacketInfo
             // 
             this.Menu_ExtView_LastPacketInfo.Name = "Menu_ExtView_LastPacketInfo";
-            this.Menu_ExtView_LastPacketInfo.Size = new System.Drawing.Size(333, 22);
+            this.Menu_ExtView_LastPacketInfo.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_LastPacketInfo.Text = "Information on selected packet (last)";
             this.Menu_ExtView_LastPacketInfo.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_SelectDelta
             // 
             this.Menu_ExtView_SelectDelta.Name = "Menu_ExtView_SelectDelta";
-            this.Menu_ExtView_SelectDelta.Size = new System.Drawing.Size(333, 22);
+            this.Menu_ExtView_SelectDelta.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_SelectDelta.Text = "Time difference of selection packet (last-first)";
             this.Menu_ExtView_SelectDelta.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // Menu_ExtView_SelectRate
             // 
             this.Menu_ExtView_SelectRate.Name = "Menu_ExtView_SelectRate";
-            this.Menu_ExtView_SelectRate.Size = new System.Drawing.Size(333, 22);
+            this.Menu_ExtView_SelectRate.Size = new System.Drawing.Size(373, 22);
             this.Menu_ExtView_SelectRate.Text = "Communication rate of Selection packet (last-first)";
             this.Menu_ExtView_SelectRate.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
@@ -515,7 +518,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CMenu_Packet_Copy});
             this.CMenu_Packet.Name = "CMenu_Data";
-            this.CMenu_Packet.Size = new System.Drawing.Size(97, 26);
+            this.CMenu_Packet.Size = new System.Drawing.Size(106, 26);
             // 
             // CMenu_Packet_Copy
             // 
@@ -532,30 +535,30 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_Copy_DataLF,
             this.CMenu_Packet_Copy_Data});
             this.CMenu_Packet_Copy.Name = "CMenu_Packet_Copy";
-            this.CMenu_Packet_Copy.Size = new System.Drawing.Size(96, 22);
+            this.CMenu_Packet_Copy.Size = new System.Drawing.Size(105, 22);
             this.CMenu_Packet_Copy.Text = "Copy";
             // 
             // CMenu_Packet_Copy_AllInfo_Csv
             // 
             this.CMenu_Packet_Copy_AllInfo_Csv.Name = "CMenu_Packet_Copy_AllInfo_Csv";
-            this.CMenu_Packet_Copy_AllInfo_Csv.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_AllInfo_Csv.Size = new System.Drawing.Size(243, 22);
             this.CMenu_Packet_Copy_AllInfo_Csv.Text = "All information (CSV format)";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(214, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(240, 6);
             // 
             // CMenu_Packet_Copy_Class
             // 
             this.CMenu_Packet_Copy_Class.Name = "CMenu_Packet_Copy_Class";
-            this.CMenu_Packet_Copy_Class.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Class.Size = new System.Drawing.Size(243, 22);
             this.CMenu_Packet_Copy_Class.Text = "Class";
             // 
             // CMenu_Packet_Copy_Alias
             // 
             this.CMenu_Packet_Copy_Alias.Name = "CMenu_Packet_Copy_Alias";
-            this.CMenu_Packet_Copy_Alias.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Alias.Size = new System.Drawing.Size(243, 22);
             this.CMenu_Packet_Copy_Alias.Text = "Alias";
             // 
             // CMenu_Packet_Copy_DateTime
@@ -567,60 +570,60 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_Copy_DateTime_Local_ISO8601,
             this.CMenu_Packet_Copy_DateTime_Local_Display});
             this.CMenu_Packet_Copy_DateTime.Name = "CMenu_Packet_Copy_DateTime";
-            this.CMenu_Packet_Copy_DateTime.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_DateTime.Size = new System.Drawing.Size(243, 22);
             this.CMenu_Packet_Copy_DateTime.Text = "DateTime";
             // 
             // CMenu_Packet_Copy_DateTime_UTC_ISO8601
             // 
             this.CMenu_Packet_Copy_DateTime_UTC_ISO8601.Name = "CMenu_Packet_Copy_DateTime_UTC_ISO8601";
-            this.CMenu_Packet_Copy_DateTime_UTC_ISO8601.Size = new System.Drawing.Size(182, 22);
+            this.CMenu_Packet_Copy_DateTime_UTC_ISO8601.Size = new System.Drawing.Size(209, 22);
             this.CMenu_Packet_Copy_DateTime_UTC_ISO8601.Text = "UTC: ISO8601 format";
             // 
             // CMenu_Packet_Copy_DateTime_UTC_Display
             // 
             this.CMenu_Packet_Copy_DateTime_UTC_Display.Name = "CMenu_Packet_Copy_DateTime_UTC_Display";
-            this.CMenu_Packet_Copy_DateTime_UTC_Display.Size = new System.Drawing.Size(182, 22);
+            this.CMenu_Packet_Copy_DateTime_UTC_Display.Size = new System.Drawing.Size(209, 22);
             this.CMenu_Packet_Copy_DateTime_UTC_Display.Text = "UTC: Display";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(179, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(206, 6);
             // 
             // CMenu_Packet_Copy_DateTime_Local_ISO8601
             // 
             this.CMenu_Packet_Copy_DateTime_Local_ISO8601.Name = "CMenu_Packet_Copy_DateTime_Local_ISO8601";
-            this.CMenu_Packet_Copy_DateTime_Local_ISO8601.Size = new System.Drawing.Size(182, 22);
+            this.CMenu_Packet_Copy_DateTime_Local_ISO8601.Size = new System.Drawing.Size(209, 22);
             this.CMenu_Packet_Copy_DateTime_Local_ISO8601.Text = "Local: ISO8601 format";
             // 
             // CMenu_Packet_Copy_DateTime_Local_Display
             // 
             this.CMenu_Packet_Copy_DateTime_Local_Display.Name = "CMenu_Packet_Copy_DateTime_Local_Display";
-            this.CMenu_Packet_Copy_DateTime_Local_Display.Size = new System.Drawing.Size(182, 22);
+            this.CMenu_Packet_Copy_DateTime_Local_Display.Size = new System.Drawing.Size(209, 22);
             this.CMenu_Packet_Copy_DateTime_Local_Display.Text = "Local: Display";
             // 
             // CMenu_Packet_Copy_Information
             // 
             this.CMenu_Packet_Copy_Information.Name = "CMenu_Packet_Copy_Information";
-            this.CMenu_Packet_Copy_Information.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Information.Size = new System.Drawing.Size(243, 22);
             this.CMenu_Packet_Copy_Information.Text = "Information";
             // 
             // CMenu_Packet_Copy_Source
             // 
             this.CMenu_Packet_Copy_Source.Name = "CMenu_Packet_Copy_Source";
-            this.CMenu_Packet_Copy_Source.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Source.Size = new System.Drawing.Size(243, 22);
             this.CMenu_Packet_Copy_Source.Text = "Source";
             // 
             // CMenu_Packet_Copy_Destination
             // 
             this.CMenu_Packet_Copy_Destination.Name = "CMenu_Packet_Copy_Destination";
-            this.CMenu_Packet_Copy_Destination.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Destination.Size = new System.Drawing.Size(243, 22);
             this.CMenu_Packet_Copy_Destination.Text = "Destination";
             // 
             // CMenu_Packet_Copy_Message
             // 
             this.CMenu_Packet_Copy_Message.Name = "CMenu_Packet_Copy_Message";
-            this.CMenu_Packet_Copy_Message.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Message.Size = new System.Drawing.Size(243, 22);
             this.CMenu_Packet_Copy_Message.Text = "Message";
             // 
             // CMenu_Packet_Copy_DataLF
@@ -639,76 +642,76 @@ namespace Ratatoskr.PacketViews.Packet
             this.toolStripSeparator8,
             this.CMenu_Packet_Copy_DataLF_Custom});
             this.CMenu_Packet_Copy_DataLF.Name = "CMenu_Packet_Copy_DataLF";
-            this.CMenu_Packet_Copy_DataLF.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_DataLF.Size = new System.Drawing.Size(243, 22);
             this.CMenu_Packet_Copy_DataLF.Text = "Data (with Line Feed)";
             // 
             // CMenu_Packet_Copy_DataLF_BitString
             // 
             this.CMenu_Packet_Copy_DataLF_BitString.Name = "CMenu_Packet_Copy_DataLF_BitString";
-            this.CMenu_Packet_Copy_DataLF_BitString.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_BitString.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_DataLF_BitString.Text = "BIN string";
             // 
             // CMenu_Packet_Copy_DataLF_HexString
             // 
             this.CMenu_Packet_Copy_DataLF_HexString.Name = "CMenu_Packet_Copy_DataLF_HexString";
-            this.CMenu_Packet_Copy_DataLF_HexString.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_HexString.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_DataLF_HexString.Text = "HEX string";
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(186, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(212, 6);
             // 
             // CMenu_Packet_Copy_DataLF_AsciiText
             // 
             this.CMenu_Packet_Copy_DataLF_AsciiText.Name = "CMenu_Packet_Copy_DataLF_AsciiText";
-            this.CMenu_Packet_Copy_DataLF_AsciiText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_AsciiText.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_DataLF_AsciiText.Text = "ASCII text";
             // 
             // CMenu_Packet_Copy_DataLF_Utf8Text
             // 
             this.CMenu_Packet_Copy_DataLF_Utf8Text.Name = "CMenu_Packet_Copy_DataLF_Utf8Text";
-            this.CMenu_Packet_Copy_DataLF_Utf8Text.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_Utf8Text.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_DataLF_Utf8Text.Text = "UTF-8 text";
             // 
             // CMenu_Packet_Copy_DataLF_Utf16BeText
             // 
             this.CMenu_Packet_Copy_DataLF_Utf16BeText.Name = "CMenu_Packet_Copy_DataLF_Utf16BeText";
-            this.CMenu_Packet_Copy_DataLF_Utf16BeText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_Utf16BeText.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_DataLF_Utf16BeText.Text = "UTF-16BE text";
             // 
             // CMenu_Packet_Copy_DataLF_Utf16LeText
             // 
             this.CMenu_Packet_Copy_DataLF_Utf16LeText.Name = "CMenu_Packet_Copy_DataLF_Utf16LeText";
-            this.CMenu_Packet_Copy_DataLF_Utf16LeText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_Utf16LeText.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_DataLF_Utf16LeText.Text = "UTF-16LE text";
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(186, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(212, 6);
             // 
             // CMenu_Packet_Copy_DataLF_ShiftJisText
             // 
             this.CMenu_Packet_Copy_DataLF_ShiftJisText.Name = "CMenu_Packet_Copy_DataLF_ShiftJisText";
-            this.CMenu_Packet_Copy_DataLF_ShiftJisText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_ShiftJisText.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_DataLF_ShiftJisText.Text = "Shift_JIS text";
             // 
             // CMenu_Packet_Copy_DataLF_EucJpText
             // 
             this.CMenu_Packet_Copy_DataLF_EucJpText.Name = "CMenu_Packet_Copy_DataLF_EucJpText";
-            this.CMenu_Packet_Copy_DataLF_EucJpText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_EucJpText.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_DataLF_EucJpText.Text = "EUC-JP text";
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(186, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(212, 6);
             // 
             // CMenu_Packet_Copy_DataLF_Custom
             // 
             this.CMenu_Packet_Copy_DataLF_Custom.Name = "CMenu_Packet_Copy_DataLF_Custom";
-            this.CMenu_Packet_Copy_DataLF_Custom.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_DataLF_Custom.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_DataLF_Custom.Text = "Custom preview format";
             // 
             // CMenu_Packet_Copy_Data
@@ -727,76 +730,76 @@ namespace Ratatoskr.PacketViews.Packet
             this.toolStripSeparator4,
             this.CMenu_Packet_Copy_Data_Custom});
             this.CMenu_Packet_Copy_Data.Name = "CMenu_Packet_Copy_Data";
-            this.CMenu_Packet_Copy_Data.Size = new System.Drawing.Size(217, 22);
+            this.CMenu_Packet_Copy_Data.Size = new System.Drawing.Size(243, 22);
             this.CMenu_Packet_Copy_Data.Text = "Data (without Line Feed)";
             // 
             // CMenu_Packet_Copy_Data_BitString
             // 
             this.CMenu_Packet_Copy_Data_BitString.Name = "CMenu_Packet_Copy_Data_BitString";
-            this.CMenu_Packet_Copy_Data_BitString.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_BitString.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_Data_BitString.Text = "BIN string";
             // 
             // CMenu_Packet_Copy_Data_HexString
             // 
             this.CMenu_Packet_Copy_Data_HexString.Name = "CMenu_Packet_Copy_Data_HexString";
-            this.CMenu_Packet_Copy_Data_HexString.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_HexString.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_Data_HexString.Text = "HEX string";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(186, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(212, 6);
             // 
             // CMenu_Packet_Copy_Data_AsciiText
             // 
             this.CMenu_Packet_Copy_Data_AsciiText.Name = "CMenu_Packet_Copy_Data_AsciiText";
-            this.CMenu_Packet_Copy_Data_AsciiText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_AsciiText.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_Data_AsciiText.Text = "ASCII text";
             // 
             // CMenu_Packet_Copy_Data_Utf8Text
             // 
             this.CMenu_Packet_Copy_Data_Utf8Text.Name = "CMenu_Packet_Copy_Data_Utf8Text";
-            this.CMenu_Packet_Copy_Data_Utf8Text.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_Utf8Text.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_Data_Utf8Text.Text = "UTF-8 text";
             // 
             // CMenu_Packet_Copy_Data_Utf16BeText
             // 
             this.CMenu_Packet_Copy_Data_Utf16BeText.Name = "CMenu_Packet_Copy_Data_Utf16BeText";
-            this.CMenu_Packet_Copy_Data_Utf16BeText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_Utf16BeText.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_Data_Utf16BeText.Text = "UTF-16BE text";
             // 
             // CMenu_Packet_Copy_Data_Utf16LeText
             // 
             this.CMenu_Packet_Copy_Data_Utf16LeText.Name = "CMenu_Packet_Copy_Data_Utf16LeText";
-            this.CMenu_Packet_Copy_Data_Utf16LeText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_Utf16LeText.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_Data_Utf16LeText.Text = "UTF-16LE text";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(186, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(212, 6);
             // 
             // CMenu_Packet_Copy_Data_ShiftJisText
             // 
             this.CMenu_Packet_Copy_Data_ShiftJisText.Name = "CMenu_Packet_Copy_Data_ShiftJisText";
-            this.CMenu_Packet_Copy_Data_ShiftJisText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_ShiftJisText.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_Data_ShiftJisText.Text = "Shift_JIS text";
             // 
             // CMenu_Packet_Copy_Data_EucJpText
             // 
             this.CMenu_Packet_Copy_Data_EucJpText.Name = "CMenu_Packet_Copy_Data_EucJpText";
-            this.CMenu_Packet_Copy_Data_EucJpText.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_EucJpText.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_Data_EucJpText.Text = "EUC-JP text";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(186, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(212, 6);
             // 
             // CMenu_Packet_Copy_Data_Custom
             // 
             this.CMenu_Packet_Copy_Data_Custom.Name = "CMenu_Packet_Copy_Data_Custom";
-            this.CMenu_Packet_Copy_Data_Custom.Size = new System.Drawing.Size(189, 22);
+            this.CMenu_Packet_Copy_Data_Custom.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_Data_Custom.Text = "Custom preview format";
             // 
             // ViewInstanceImpl

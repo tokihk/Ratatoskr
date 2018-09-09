@@ -56,3 +56,5 @@
 設定ファイルは以下の場所に存在します。
 
 <code>%APPDATA%&#92;<span class="app-name" /></code>
+
+<br><br>
