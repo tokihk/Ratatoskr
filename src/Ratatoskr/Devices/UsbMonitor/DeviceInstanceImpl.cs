@@ -43,7 +43,7 @@ namespace Ratatoskr.Devices.UsbMonitor
         {
             handle_ = UsbPcapManager.OpenDevice(prop_.DeviceName.Value);
 
-            return ((handle_ != NativeMethods.INVALID_HANDLE_VALUE) ? (EventResult.Success) : (EventResult.Busy));
+            return ((handle_ != WinAPI.INVALID_HANDLE_VALUE) ? (EventResult.Success) : (EventResult.Busy));
         }
 
         protected override void OnConnected()
@@ -54,28 +54,28 @@ namespace Ratatoskr.Devices.UsbMonitor
             recv_buffer_ = new byte[RECV_BUFFER_SIZE];
             recv_parser_ = new UsbPcapRecordParser();
 
-            task_exit_event_ = NativeMethods.CreateEvent(IntPtr.Zero, true, false, null);
-            task_recv_event_ = NativeMethods.CreateEvent(IntPtr.Zero, true, false, null);
+            task_exit_event_ = WinAPI.CreateEvent(IntPtr.Zero, true, false, null);
+            task_recv_event_ = WinAPI.CreateEvent(IntPtr.Zero, true, false, null);
 
             task_ar_ = (new TaskDelegate(Task)).BeginInvoke(null, null);
         }
 
         protected override void OnDisconnectStart()
         {
-            NativeMethods.SetEvent(task_exit_event_);
+            WinAPI.SetEvent(task_exit_event_);
 
             while ((task_ar_ != null) && (!task_ar_.IsCompleted)) {
                 Thread.Sleep(1);
             }
 
-            NativeMethods.CloseHandle(task_exit_event_);
+            WinAPI.CloseHandle(task_exit_event_);
             task_exit_event_ = IntPtr.Zero;
 
-            NativeMethods.CloseHandle(task_recv_event_);
+            WinAPI.CloseHandle(task_recv_event_);
             task_recv_event_ = IntPtr.Zero;
 
             UsbPcapManager.CloseDevice(handle_);
-            handle_ = NativeMethods.INVALID_HANDLE_VALUE;
+            handle_ = WinAPI.INVALID_HANDLE_VALUE;
         }
 
         protected override PollState OnPoll()
@@ -97,24 +97,24 @@ namespace Ratatoskr.Devices.UsbMonitor
                 var recv_size = (uint)0;
                 var result = (int)0;
 
-                NativeMethods.ReadFile(handle_, recv_buff, (uint)recv_buffer_.Length, out recv_size, ref recv_overlapped);
+                WinAPI.ReadFile(handle_, recv_buff, (uint)recv_buffer_.Length, out recv_size, ref recv_overlapped);
 
                 while (!task_exit) {
-                    result = NativeMethods.WaitForMultipleObjects((uint)event_list.Length, event_list, false, NativeMethods.INFINITE);
+                    result = WinAPI.WaitForMultipleObjects((uint)event_list.Length, event_list, false, WinAPI.INFINITE);
 
                     switch ((uint)result) {
                         /* スレッド停止イベント */
-                        case NativeMethods.WAIT_OBJECT_0:
+                        case WinAPI.WAIT_OBJECT_0:
                         {
                             task_exit = true;
                         }
                             break;
 
                         /* 受信イベント */
-                        case NativeMethods.WAIT_OBJECT_0 + 1:
+                        case WinAPI.WAIT_OBJECT_0 + 1:
                         {
-                            NativeMethods.GetOverlappedResult(handle_, ref recv_overlapped, out recv_size, true);
-                            NativeMethods.ResetEvent(recv_overlapped.EventHandle);
+                            WinAPI.GetOverlappedResult(handle_, ref recv_overlapped, out recv_size, true);
+                            WinAPI.ResetEvent(recv_overlapped.EventHandle);
 
                             if (recv_size > 0) {
 #if true
@@ -128,7 +128,7 @@ namespace Ratatoskr.Devices.UsbMonitor
 #endif
                             }
 
-                            NativeMethods.ReadFile(handle_, recv_buff, (uint)recv_buffer_.Length, out recv_size, ref recv_overlapped);
+                            WinAPI.ReadFile(handle_, recv_buff, (uint)recv_buffer_.Length, out recv_size, ref recv_overlapped);
                         }
                             break;
                     }
@@ -220,8 +220,8 @@ namespace Ratatoskr.Devices.UsbMonitor
                 var recv_size = (uint)0;
 
                 while (num > 0) {
-                    NativeMethods.ReadFile(handle_, recv_buff, (uint)recv_buffer_core.Length, out recv_size, ref recv_overlapped);
-                    NativeMethods.GetOverlappedResult(handle_, ref recv_overlapped, out recv_size, true);
+                    WinAPI.ReadFile(handle_, recv_buff, (uint)recv_buffer_core.Length, out recv_size, ref recv_overlapped);
+                    WinAPI.GetOverlappedResult(handle_, ref recv_overlapped, out recv_size, true);
                     num--;
                 }
             }

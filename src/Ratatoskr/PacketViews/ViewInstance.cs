@@ -67,9 +67,9 @@ namespace Ratatoskr.PacketViews
             OnDrawPacketBegin(auto_scroll);
         }
 
-        internal void EndDrawPacket(bool auto_scroll)
+        internal void EndDrawPacket(bool auto_scroll, bool next_packet_exist)
         {
-            OnDrawPacketEnd(auto_scroll);
+            OnDrawPacketEnd(auto_scroll, next_packet_exist);
         }
 
         internal void DrawPacket(PacketObject packet)
@@ -81,7 +81,7 @@ namespace Ratatoskr.PacketViews
         protected virtual void OnIdle() { }
         protected virtual void OnClearPacket() { }
         protected virtual void OnDrawPacketBegin(bool auto_scroll) { }
-        protected virtual void OnDrawPacketEnd(bool auto_scroll) { }
+        protected virtual void OnDrawPacketEnd(bool auto_scroll, bool next_packet_exist) { }
         protected virtual void OnDrawPacket(PacketObject packet) { }
     }
 }

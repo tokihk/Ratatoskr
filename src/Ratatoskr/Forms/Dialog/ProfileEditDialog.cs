@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.Resources;
 
 namespace Ratatoskr.Forms.Dialog
 {
@@ -52,7 +53,9 @@ namespace Ratatoskr.Forms.Dialog
                 }
             }
 
-            TBox_ProfileName.BackColor = (name_ok) ? (Color.LightSkyBlue) : (Color.LightPink);
+            TBox_ProfileName.BackColor = (name_ok)
+                                       ? (AppColors.PATTERN_OK)
+                                       : (AppColors.PATTERN_NG);
             Btn_Ok.Enabled = name_ok;
         }
 

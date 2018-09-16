@@ -30,13 +30,13 @@ namespace Ratatoskr.PacketViews
         private List<ViewClass>   viewd_list_ = new List<ViewClass>();
         private List<ViewControl> viewc_list_ = new List<ViewControl>();
 
-        private Stopwatch draw_timer_ = new Stopwatch();
-        private int       draw_timer_ival_ = DRAW_IVAL_MIN;
-        private object    draw_sync_ = new object();
+        private Stopwatch       draw_timer_ = new Stopwatch();
+        private int             draw_timer_ival_ = DRAW_IVAL_MIN;
+        private readonly object draw_sync_ = new object();
 
         private Queue<IEnumerable<PacketObject>> draw_packets_ = new Queue<IEnumerable<PacketObject>>();
         private ulong                            draw_packets_count_ = 0;
-        private object                           draw_packets_sync_ = new object();
+        private readonly object                  draw_packets_sync_ = new object();
 
         private bool hispeed_mode_ = false;
         private bool hispeed_auto_stop_ = false;
@@ -324,7 +324,7 @@ namespace Ratatoskr.PacketViews
                     }
 
                     /* 描画終了 */
-                    viewc_list_.ForEach(viewi => viewi.EndDrawPacket(AutoScroll));
+                    viewc_list_.ForEach(viewi => viewi.EndDrawPacket(AutoScroll, draw_packets_.Count > 0));
                 }
             }
 

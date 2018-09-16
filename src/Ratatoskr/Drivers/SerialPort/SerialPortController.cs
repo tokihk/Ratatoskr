@@ -45,38 +45,38 @@ namespace Ratatoskr.Drivers.SerialPort
     [Flags]
     internal enum ModemStatus
     {
-        CTS_ON      = (int)NativeMethods.MS_CTS_ON,
-        DSR_ON      = (int)NativeMethods.MS_DSR_ON,
-        RING_ON     = (int)NativeMethods.MS_RING_ON,
-        RLSD_ON     = (int)NativeMethods.MS_RLSD_ON,
+        CTS_ON      = (int)WinAPI.MS_CTS_ON,
+        DSR_ON      = (int)WinAPI.MS_DSR_ON,
+        RING_ON     = (int)WinAPI.MS_RING_ON,
+        RLSD_ON     = (int)WinAPI.MS_RLSD_ON,
     }
 
     [Flags]
     internal enum ErrorStatus
     {
-        BREAK    = (int)NativeMethods.CE_BREAK,
-        DNS      = (int)NativeMethods.CE_DNS,
-        FRAME    = (int)NativeMethods.CE_FRAME,
-        IOE      = (int)NativeMethods.CE_IOE,
-        MODE     = (int)NativeMethods.CE_MODE,
-        OOP      = (int)NativeMethods.CE_OOP,
-        OVERRUN  = (int)NativeMethods.CE_OVERRUN,
-        PTO      = (int)NativeMethods.CE_PTO,
-        RXOVER   = (int)NativeMethods.CE_RXOVER,
-        RXPARITY = (int)NativeMethods.CE_RXPARITY,
-        TXFULL   = (int)NativeMethods.CE_TXFULL,
+        BREAK    = (int)WinAPI.CE_BREAK,
+        DNS      = (int)WinAPI.CE_DNS,
+        FRAME    = (int)WinAPI.CE_FRAME,
+        IOE      = (int)WinAPI.CE_IOE,
+        MODE     = (int)WinAPI.CE_MODE,
+        OOP      = (int)WinAPI.CE_OOP,
+        OVERRUN  = (int)WinAPI.CE_OVERRUN,
+        PTO      = (int)WinAPI.CE_PTO,
+        RXOVER   = (int)WinAPI.CE_RXOVER,
+        RXPARITY = (int)WinAPI.CE_RXPARITY,
+        TXFULL   = (int)WinAPI.CE_TXFULL,
     }
 
     [Flags]
     internal enum CommStatus
     {
-        CTS_HOLD    = 1 << NativeMethods.COMSTAT.FlagsParamOffset.CtsHold,
-        DSR_HOLD    = 1 << NativeMethods.COMSTAT.FlagsParamOffset.DsrHold,
-        RLSD_HOLD   = 1 << NativeMethods.COMSTAT.FlagsParamOffset.RlsHold,
-        XOFF_HOLD   = 1 << NativeMethods.COMSTAT.FlagsParamOffset.XoffHold,
-        XOFF_SENT   = 1 << NativeMethods.COMSTAT.FlagsParamOffset.XoffSent,
-        EOF         = 1 << NativeMethods.COMSTAT.FlagsParamOffset.Eof,
-        TXIM        = 1 << NativeMethods.COMSTAT.FlagsParamOffset.Txim,
+        CTS_HOLD    = 1 << WinAPI.COMSTAT.FlagsParamOffset.CtsHold,
+        DSR_HOLD    = 1 << WinAPI.COMSTAT.FlagsParamOffset.DsrHold,
+        RLSD_HOLD   = 1 << WinAPI.COMSTAT.FlagsParamOffset.RlsHold,
+        XOFF_HOLD   = 1 << WinAPI.COMSTAT.FlagsParamOffset.XoffHold,
+        XOFF_SENT   = 1 << WinAPI.COMSTAT.FlagsParamOffset.XoffSent,
+        EOF         = 1 << WinAPI.COMSTAT.FlagsParamOffset.Eof,
+        TXIM        = 1 << WinAPI.COMSTAT.FlagsParamOffset.Txim,
     }
 
     internal class SerialPortController : IDisposable
@@ -97,13 +97,13 @@ namespace Ratatoskr.Drivers.SerialPort
         }
 
 
-        private IntPtr handle_ = NativeMethods.INVALID_HANDLE_VALUE;
+        private IntPtr handle_ = WinAPI.INVALID_HANDLE_VALUE;
         private object handle_sync_ = new object();
 
         private uint error_stat_ = 0;
 
-        private NativeMethods.COMSTAT comstat_ = new NativeMethods.COMSTAT();
-        private NativeMethods.COMSTAT comstat_temp_ = new NativeMethods.COMSTAT();
+        private WinAPI.COMSTAT comstat_ = new WinAPI.COMSTAT();
+        private WinAPI.COMSTAT comstat_temp_ = new WinAPI.COMSTAT();
 
 
         public delegate void CommStatusUpdatedEvent(object sender, CommStatusUpdatedEventArgs e);
@@ -161,55 +161,55 @@ namespace Ratatoskr.Drivers.SerialPort
                 NativeMethods.FILE_FLAG_OVERLAPPED,
                 NativeMethods.Null);
 #else
-            handle_ = NativeMethods.CreateFile(
+            handle_ = WinAPI.CreateFile(
                 "\\\\.\\" + PortName,
-                NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE,
+                WinAPI.GENERIC_READ | WinAPI.GENERIC_WRITE,
                 0,
-                NativeMethods.Null,
-                NativeMethods.OPEN_EXISTING,
+                WinAPI.Null,
+                WinAPI.OPEN_EXISTING,
                 0,
-                NativeMethods.Null);
+                WinAPI.Null);
 #endif
 
-            var error = NativeMethods.GetLastError();
+            var error = WinAPI.GetLastError();
 
-            return (handle_ != NativeMethods.INVALID_HANDLE_VALUE);
+            return (handle_ != WinAPI.INVALID_HANDLE_VALUE);
         }
 
         public void Close()
         {
-            if (handle_ == NativeMethods.INVALID_HANDLE_VALUE)return;
+            if (handle_ == WinAPI.INVALID_HANDLE_VALUE)return;
 
             /* ポートクローズ */
-            if (handle_ != NativeMethods.INVALID_HANDLE_VALUE) {
-                NativeMethods.CloseHandle(handle_);
-                handle_ = NativeMethods.INVALID_HANDLE_VALUE;
+            if (handle_ != WinAPI.INVALID_HANDLE_VALUE) {
+                WinAPI.CloseHandle(handle_);
+                handle_ = WinAPI.INVALID_HANDLE_VALUE;
             }
 
             error_stat_ = 0;
-            comstat_ = new NativeMethods.COMSTAT();
+            comstat_ = new WinAPI.COMSTAT();
         }
 
         public bool Setup()
         {
-            if (handle_ == NativeMethods.INVALID_HANDLE_VALUE)return (false);
+            if (handle_ == WinAPI.INVALID_HANDLE_VALUE)return (false);
 
             /* === COMポート設定読み込み === */
-            var dcb = new NativeMethods.DCB();
+            var dcb = new WinAPI.DCB();
 
-            NativeMethods.GetCommState(handle_, out dcb);
+            WinAPI.GetCommState(handle_, out dcb);
 
             /* Baudrate */
             dcb.BaudRate = BaudRate;
 
             /* Parity */
             switch (Parity) {
-                case SerialPortParity.None:   dcb.Parity = NativeMethods.NOPARITY;       break;
-                case SerialPortParity.Odd:    dcb.Parity = NativeMethods.ODDPARITY;      break;
-                case SerialPortParity.Even:   dcb.Parity = NativeMethods.EVENPARITY;     break;
-                case SerialPortParity.Mark:   dcb.Parity = NativeMethods.MASKPARITY;     break;
-                case SerialPortParity.Space:  dcb.Parity = NativeMethods.SPACEPARITY;    break;
-                default:                      dcb.Parity = NativeMethods.NOPARITY;       break;
+                case SerialPortParity.None:   dcb.Parity = WinAPI.NOPARITY;       break;
+                case SerialPortParity.Odd:    dcb.Parity = WinAPI.ODDPARITY;      break;
+                case SerialPortParity.Even:   dcb.Parity = WinAPI.EVENPARITY;     break;
+                case SerialPortParity.Mark:   dcb.Parity = WinAPI.MASKPARITY;     break;
+                case SerialPortParity.Space:  dcb.Parity = WinAPI.SPACEPARITY;    break;
+                default:                      dcb.Parity = WinAPI.NOPARITY;       break;
             }
 
             /* BitSize */
@@ -217,10 +217,10 @@ namespace Ratatoskr.Drivers.SerialPort
 
             /* StopBits */
             switch (StopBits) {
-                case SerialPortStopBits.One:          dcb.StopBits = NativeMethods.ONESTOPBIT;   break;
-                case SerialPortStopBits.OnePointFive: dcb.StopBits = NativeMethods.ONE5STOPBITS; break;
-                case SerialPortStopBits.Two:          dcb.StopBits = NativeMethods.TWOSTOPBIT;   break;
-                default:                              dcb.StopBits = NativeMethods.ONESTOPBIT;   break;
+                case SerialPortStopBits.One:          dcb.StopBits = WinAPI.ONESTOPBIT;   break;
+                case SerialPortStopBits.OnePointFive: dcb.StopBits = WinAPI.ONE5STOPBITS; break;
+                case SerialPortStopBits.Two:          dcb.StopBits = WinAPI.TWOSTOPBIT;   break;
+                default:                              dcb.StopBits = WinAPI.ONESTOPBIT;   break;
             }
 
             /* バイナリモード */
@@ -234,16 +234,16 @@ namespace Ratatoskr.Drivers.SerialPort
             dcb.fInX = (fInX) ? (1U) : (0U);
 
             switch (fDtrControl) {
-                case fDtrControlType.DTR_CONTROL_DISABLE:   dcb.fDtrControl = NativeMethods.DTR_CONTROL_DISABLE;   break;
-                case fDtrControlType.DTR_CONTROL_ENABLE:    dcb.fDtrControl = NativeMethods.DTR_CONTROL_ENABLE;    break;
-                case fDtrControlType.DTR_CONTROL_HANDSHAKE: dcb.fDtrControl = NativeMethods.DTR_CONTROL_HANDSHAKE; break;
+                case fDtrControlType.DTR_CONTROL_DISABLE:   dcb.fDtrControl = WinAPI.DTR_CONTROL_DISABLE;   break;
+                case fDtrControlType.DTR_CONTROL_ENABLE:    dcb.fDtrControl = WinAPI.DTR_CONTROL_ENABLE;    break;
+                case fDtrControlType.DTR_CONTROL_HANDSHAKE: dcb.fDtrControl = WinAPI.DTR_CONTROL_HANDSHAKE; break;
             }
 
             switch (fRtsControl) {
-                case fRtsControlType.RTS_CONTROL_DISABLE:   dcb.fRtsControl = NativeMethods.RTS_CONTROL_DISABLE;   break;
-                case fRtsControlType.RTS_CONTROL_ENABLE:    dcb.fRtsControl = NativeMethods.RTS_CONTROL_ENABLE;    break;
-                case fRtsControlType.RTS_CONTROL_HANDSHAKE: dcb.fRtsControl = NativeMethods.RTS_CONTROL_HANDSHAKE; break;
-                case fRtsControlType.RTS_CONTROL_TOGGLE:    dcb.fRtsControl = NativeMethods.RTS_CONTROL_TOGGLE;    break;
+                case fRtsControlType.RTS_CONTROL_DISABLE:   dcb.fRtsControl = WinAPI.RTS_CONTROL_DISABLE;   break;
+                case fRtsControlType.RTS_CONTROL_ENABLE:    dcb.fRtsControl = WinAPI.RTS_CONTROL_ENABLE;    break;
+                case fRtsControlType.RTS_CONTROL_HANDSHAKE: dcb.fRtsControl = WinAPI.RTS_CONTROL_HANDSHAKE; break;
+                case fRtsControlType.RTS_CONTROL_TOGGLE:    dcb.fRtsControl = WinAPI.RTS_CONTROL_TOGGLE;    break;
             }
 
             dcb.XonLim = XonLim;
@@ -252,26 +252,26 @@ namespace Ratatoskr.Drivers.SerialPort
             dcb.XoffChar = XoffChar;
 
             /* === COMポート設定更新 === */
-            if (!NativeMethods.SetCommState(handle_, ref dcb)) {
+            if (!WinAPI.SetCommState(handle_, ref dcb)) {
                 return (false);
             }
 
-            if (!NativeMethods.SetupComm(handle_, (uint)InQueue, (uint)OutQueue)) {
+            if (!WinAPI.SetupComm(handle_, (uint)InQueue, (uint)OutQueue)) {
                 return (false);
             }
 
             /* === タイムアウト設定 === */
-            var timeout = new NativeMethods.COMMTIMEOUTS();
+            var timeout = new WinAPI.COMMTIMEOUTS();
 
             timeout.ReadIntervalTimeout = 0;
             timeout.ReadTotalTimeoutMultiplier = 0;
             timeout.ReadTotalTimeoutConstant = 10;
             timeout.WriteTotalTimeoutConstant = 100;
 
-            NativeMethods.SetCommTimeouts(handle_, ref timeout);
+            WinAPI.SetCommTimeouts(handle_, ref timeout);
 
             /* === イベント設定 === */
-            if (!NativeMethods.SetCommMask(
+            if (!WinAPI.SetCommMask(
                 handle_,
 //                  NativeMethods.EV_BREAK
 //                | NativeMethods.EV_CTS
@@ -279,7 +279,7 @@ namespace Ratatoskr.Drivers.SerialPort
 //                | NativeMethods.EV_ERR
 //                | NativeMethods.EV_RING
 //                | NativeMethods.EV_RLSD
-                  NativeMethods.EV_RXCHAR
+                  WinAPI.EV_RXCHAR
 //                | NativeMethods.EV_RXFLAG
 //                | NativeMethods.EV_TXEMPTY
                 )
@@ -288,31 +288,31 @@ namespace Ratatoskr.Drivers.SerialPort
             }
 
             error_stat_ = 0;
-            comstat_ = new NativeMethods.COMSTAT();
+            comstat_ = new WinAPI.COMSTAT();
 
             return (true);
         }
 
         public void Purge()
         {
-            if (handle_ == NativeMethods.INVALID_HANDLE_VALUE)return;
+            if (handle_ == WinAPI.INVALID_HANDLE_VALUE)return;
 
             /* 処理中の操作を全てキャンセル */
-            if (!NativeMethods.PurgeComm(
+            if (!WinAPI.PurgeComm(
                     handle_,
-                      NativeMethods.PURGE_RXABORT
-                    | NativeMethods.PURGE_RXCLEAR
-                    | NativeMethods.PURGE_TXABORT
-                    | NativeMethods.PURGE_TXCLEAR)
+                      WinAPI.PURGE_RXABORT
+                    | WinAPI.PURGE_RXCLEAR
+                    | WinAPI.PURGE_TXABORT
+                    | WinAPI.PURGE_TXCLEAR)
             ) {
 //                throw new Win32Exception();
             }
 
-            if (!NativeMethods.EscapeCommFunction(handle_, NativeMethods.CLRDTR)) {
+            if (!WinAPI.EscapeCommFunction(handle_, WinAPI.CLRDTR)) {
 //                throw new Win32Exception();
             }
 
-            if (!NativeMethods.SetCommMask(handle_, 0)) {
+            if (!WinAPI.SetCommMask(handle_, 0)) {
 //                throw new Win32Exception();
             }
         }
@@ -320,7 +320,7 @@ namespace Ratatoskr.Drivers.SerialPort
         public void UpdateCommStatus()
         {
             lock (handle_sync_) {
-                if (!NativeMethods.ClearCommError(handle_, out error_stat_, out comstat_temp_)) {
+                if (!WinAPI.ClearCommError(handle_, out error_stat_, out comstat_temp_)) {
                     error_stat_ = 0;
                     comstat_temp_.Flags = 0;
                     comstat_temp_.cbInQue = 0;
@@ -346,7 +346,7 @@ namespace Ratatoskr.Drivers.SerialPort
 
         public bool IsOpened
         {
-            get { return (handle_ != NativeMethods.INVALID_HANDLE_VALUE); }
+            get { return (handle_ != WinAPI.INVALID_HANDLE_VALUE); }
         }
 
         public bool IsWriteBusy
@@ -363,7 +363,7 @@ namespace Ratatoskr.Drivers.SerialPort
         {
             var status = (uint)0;
 
-            if (!NativeMethods.GetCommModemStatus(handle_, out status)) {
+            if (!WinAPI.GetCommModemStatus(handle_, out status)) {
                 status = 0;
             }
 
@@ -376,23 +376,23 @@ namespace Ratatoskr.Drivers.SerialPort
 
             bool error_state = false;
 
-            var handle_temp = NativeMethods.CreateFile(
+            var handle_temp = WinAPI.CreateFile(
                 "\\\\.\\" + PortName,
-                NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE,
+                WinAPI.GENERIC_READ | WinAPI.GENERIC_WRITE,
                 0,
-                NativeMethods.Null,
-                NativeMethods.OPEN_EXISTING,
+                WinAPI.Null,
+                WinAPI.OPEN_EXISTING,
                 0,
-                NativeMethods.Null);
+                WinAPI.Null);
 
-            if (handle_temp == NativeMethods.INVALID_HANDLE_VALUE) {
+            if (handle_temp == WinAPI.INVALID_HANDLE_VALUE) {
                 switch ((WinErrorCode)Marshal.GetLastWin32Error()) {
                     case WinErrorCode.ERROR_FILE_NOT_FOUND:
                         error_state = true;
                         break;
                 }
             } else {
-                NativeMethods.CloseHandle(handle_temp);
+                WinAPI.CloseHandle(handle_temp);
             }
 
             return (error_state);
@@ -403,7 +403,7 @@ namespace Ratatoskr.Drivers.SerialPort
             uint send_size_result = 0;
             uint send_size = Math.Min((uint)data.Length, OutQueue);
 
-            if (!NativeMethods.WriteFile(handle_, data, send_size, out send_size_result, NativeMethods.Null)) {
+            if (!WinAPI.WriteFile(handle_, data, send_size, out send_size_result, WinAPI.Null)) {
                 var error_code = Marshal.GetLastWin32Error();
 
                 return (0);
@@ -428,7 +428,7 @@ namespace Ratatoskr.Drivers.SerialPort
 
             fixed (byte *buff = buffer)
             {
-                if (!NativeMethods.ReadFile(handle_, buff, (uint)buffer.Length, out read_size, NativeMethods.Null)) {
+                if (!WinAPI.ReadFile(handle_, buff, (uint)buffer.Length, out read_size, WinAPI.Null)) {
                     return (0);
                 }
             }

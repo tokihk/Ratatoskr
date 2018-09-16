@@ -57,47 +57,47 @@ namespace Ratatoskr.Devices.UsbMonitor
             }
         }
 
-        public static readonly uint IOCTL_USBPCAP_SETUP_BUFFER_1007 = NativeMethods.CTL_CODE(
-            NativeMethods.FILE_DEVICE_UNKNOWN, 0x800, NativeMethods.METHOD_BUFFERED, NativeMethods.FILE_ANY_ACCESS);
-        public static readonly uint IOCTL_USBPCAP_START_FILTERING_1007 = NativeMethods.CTL_CODE(
-            NativeMethods.FILE_DEVICE_UNKNOWN, 0x801, NativeMethods.METHOD_BUFFERED, NativeMethods.FILE_WRITE_ACCESS);
-        public static readonly uint IOCTL_USBPCAP_STOP_FILTERING_1007 = NativeMethods.CTL_CODE(
-            NativeMethods.FILE_DEVICE_UNKNOWN, 0x802, NativeMethods.METHOD_BUFFERED, NativeMethods.FILE_WRITE_ACCESS);
-        public static readonly uint IOCTL_USBPCAP_GET_HUB_SYMLINK_1007 = NativeMethods.CTL_CODE(
-            NativeMethods.FILE_DEVICE_UNKNOWN, 0x803, NativeMethods.METHOD_BUFFERED, NativeMethods.FILE_ANY_ACCESS);
-        public static readonly uint IOCTL_USBPCAP_SET_SNAPLEN_SIZE_1007 = NativeMethods.CTL_CODE(
-            NativeMethods.FILE_DEVICE_UNKNOWN, 0x804, NativeMethods.METHOD_BUFFERED, NativeMethods.FILE_ANY_ACCESS);
+        public static readonly uint IOCTL_USBPCAP_SETUP_BUFFER_1007 = WinAPI.CTL_CODE(
+            WinAPI.FILE_DEVICE_UNKNOWN, 0x800, WinAPI.METHOD_BUFFERED, WinAPI.FILE_ANY_ACCESS);
+        public static readonly uint IOCTL_USBPCAP_START_FILTERING_1007 = WinAPI.CTL_CODE(
+            WinAPI.FILE_DEVICE_UNKNOWN, 0x801, WinAPI.METHOD_BUFFERED, WinAPI.FILE_WRITE_ACCESS);
+        public static readonly uint IOCTL_USBPCAP_STOP_FILTERING_1007 = WinAPI.CTL_CODE(
+            WinAPI.FILE_DEVICE_UNKNOWN, 0x802, WinAPI.METHOD_BUFFERED, WinAPI.FILE_WRITE_ACCESS);
+        public static readonly uint IOCTL_USBPCAP_GET_HUB_SYMLINK_1007 = WinAPI.CTL_CODE(
+            WinAPI.FILE_DEVICE_UNKNOWN, 0x803, WinAPI.METHOD_BUFFERED, WinAPI.FILE_ANY_ACCESS);
+        public static readonly uint IOCTL_USBPCAP_SET_SNAPLEN_SIZE_1007 = WinAPI.CTL_CODE(
+            WinAPI.FILE_DEVICE_UNKNOWN, 0x804, WinAPI.METHOD_BUFFERED, WinAPI.FILE_ANY_ACCESS);
 
-        public static readonly uint IOCTL_USBPCAP_SETUP_BUFFER_1100 = NativeMethods.CTL_CODE(
-            NativeMethods.FILE_DEVICE_UNKNOWN, 0x800, NativeMethods.METHOD_BUFFERED, NativeMethods.FILE_READ_ACCESS);
-        public static readonly uint IOCTL_USBPCAP_START_FILTERING_1100 = NativeMethods.CTL_CODE(
-            NativeMethods.FILE_DEVICE_UNKNOWN, 0x801, NativeMethods.METHOD_BUFFERED, NativeMethods.FILE_READ_ACCESS | NativeMethods.FILE_WRITE_ACCESS);
-        public static readonly uint IOCTL_USBPCAP_STOP_FILTERING_1100 = NativeMethods.CTL_CODE(
-            NativeMethods.FILE_DEVICE_UNKNOWN, 0x802, NativeMethods.METHOD_BUFFERED, NativeMethods.FILE_READ_ACCESS | NativeMethods.FILE_WRITE_ACCESS);
-        public static readonly uint IOCTL_USBPCAP_GET_HUB_SYMLINK_1100 = NativeMethods.CTL_CODE(
-            NativeMethods.FILE_DEVICE_UNKNOWN, 0x803, NativeMethods.METHOD_BUFFERED, NativeMethods.FILE_ANY_ACCESS);
-        public static readonly uint IOCTL_USBPCAP_SET_SNAPLEN_SIZE_1100 = NativeMethods.CTL_CODE(
-            NativeMethods.FILE_DEVICE_UNKNOWN, 0x804, NativeMethods.METHOD_BUFFERED, NativeMethods.FILE_READ_ACCESS);
+        public static readonly uint IOCTL_USBPCAP_SETUP_BUFFER_1100 = WinAPI.CTL_CODE(
+            WinAPI.FILE_DEVICE_UNKNOWN, 0x800, WinAPI.METHOD_BUFFERED, WinAPI.FILE_READ_ACCESS);
+        public static readonly uint IOCTL_USBPCAP_START_FILTERING_1100 = WinAPI.CTL_CODE(
+            WinAPI.FILE_DEVICE_UNKNOWN, 0x801, WinAPI.METHOD_BUFFERED, WinAPI.FILE_READ_ACCESS | WinAPI.FILE_WRITE_ACCESS);
+        public static readonly uint IOCTL_USBPCAP_STOP_FILTERING_1100 = WinAPI.CTL_CODE(
+            WinAPI.FILE_DEVICE_UNKNOWN, 0x802, WinAPI.METHOD_BUFFERED, WinAPI.FILE_READ_ACCESS | WinAPI.FILE_WRITE_ACCESS);
+        public static readonly uint IOCTL_USBPCAP_GET_HUB_SYMLINK_1100 = WinAPI.CTL_CODE(
+            WinAPI.FILE_DEVICE_UNKNOWN, 0x803, WinAPI.METHOD_BUFFERED, WinAPI.FILE_ANY_ACCESS);
+        public static readonly uint IOCTL_USBPCAP_SET_SNAPLEN_SIZE_1100 = WinAPI.CTL_CODE(
+            WinAPI.FILE_DEVICE_UNKNOWN, 0x804, WinAPI.METHOD_BUFFERED, WinAPI.FILE_READ_ACCESS);
         
 
         public static IEnumerable<UsbPcapDeviceObject> GetDeviceList()
         {
             var devices = new List<UsbPcapDeviceObject>();
             var handle = (SafeFileHandle)null;
-            var attr = new NativeMethods.OBJECT_ATTRIBUTES("\\Device", 0);
+            var attr = new WinAPI.OBJECT_ATTRIBUTES("\\Device", 0);
             var result = 0;
 
-            result = NativeMethods.NtOpenDirectoryObject(out handle, NativeMethods.DIRECTORY_QUERY, ref attr);
+            result = WinAPI.NtOpenDirectoryObject(out handle, WinAPI.DIRECTORY_QUERY, ref attr);
             if (result == 0) {
                 var buff = Marshal.AllocHGlobal(GLOBAL_BUFF_SIZE);
                 var read_index = (uint)0;
                 var read_size = (uint)0;
 
-                result = NativeMethods.NtQueryDirectoryObject(handle, buff, GLOBAL_BUFF_SIZE, true, true, ref read_index, out read_size);
+                result = WinAPI.NtQueryDirectoryObject(handle, buff, GLOBAL_BUFF_SIZE, true, true, ref read_index, out read_size);
                 if (result == 0) {
 
-                    while (NativeMethods.NtQueryDirectoryObject(handle, buff, GLOBAL_BUFF_SIZE, true, false, ref read_index, out read_size) == 0) {
-                        var odi = (NativeMethods.OBJECT_DIRECTORY_INFORMATION)Marshal.PtrToStructure(buff, typeof(NativeMethods.OBJECT_DIRECTORY_INFORMATION));
+                    while (WinAPI.NtQueryDirectoryObject(handle, buff, GLOBAL_BUFF_SIZE, true, false, ref read_index, out read_size) == 0) {
+                        var odi = (WinAPI.OBJECT_DIRECTORY_INFORMATION)Marshal.PtrToStructure(buff, typeof(WinAPI.OBJECT_DIRECTORY_INFORMATION));
                         var name = odi.Name.ToString();
 
                         if (name.Substring(0, Math.Min(name.Length, DEVICE_KEY.Length)) == DEVICE_KEY) {
@@ -126,13 +126,13 @@ namespace Ratatoskr.Devices.UsbMonitor
         public static string GetCaptureHardwareID_1007(string devname)
         {
             var hid = (string)null;
-            var handle = NativeMethods.CreateFile(devname, 0, 0, IntPtr.Zero, NativeMethods.OPEN_EXISTING, 0, IntPtr.Zero);
+            var handle = WinAPI.CreateFile(devname, 0, 0, IntPtr.Zero, WinAPI.OPEN_EXISTING, 0, IntPtr.Zero);
 
-            if (handle != NativeMethods.INVALID_HANDLE_VALUE) {
+            if (handle != WinAPI.INVALID_HANDLE_VALUE) {
                 var read_buff = Marshal.AllocHGlobal(DEVICE_IO_BUFFER);
                 var read_size = (uint)0;
 
-                if (NativeMethods.DeviceIoControl(
+                if (WinAPI.DeviceIoControl(
                             handle,
                             UsbPcapManager.IOCTL_USBPCAP_GET_HUB_SYMLINK_1007,
                             IntPtr.Zero,
@@ -149,7 +149,7 @@ namespace Ratatoskr.Devices.UsbMonitor
 
                 Marshal.FreeHGlobal(read_buff);
 
-                NativeMethods.CloseHandle(handle);
+                WinAPI.CloseHandle(handle);
             }
 
             return (hid);
@@ -158,13 +158,13 @@ namespace Ratatoskr.Devices.UsbMonitor
         public static string GetCaptureHardwareID_1100(string devname)
         {
             var hid = (string)null;
-            var handle = NativeMethods.CreateFile(devname, 0, 0, IntPtr.Zero, NativeMethods.OPEN_EXISTING, 0, IntPtr.Zero);
+            var handle = WinAPI.CreateFile(devname, 0, 0, IntPtr.Zero, WinAPI.OPEN_EXISTING, 0, IntPtr.Zero);
 
-            if (handle != NativeMethods.INVALID_HANDLE_VALUE) {
+            if (handle != WinAPI.INVALID_HANDLE_VALUE) {
                 var read_buff = Marshal.AllocHGlobal(DEVICE_IO_BUFFER);
                 var read_size = (uint)0;
 
-                if (NativeMethods.DeviceIoControl(
+                if (WinAPI.DeviceIoControl(
                             handle,
                             UsbPcapManager.IOCTL_USBPCAP_GET_HUB_SYMLINK_1100,
                             IntPtr.Zero,
@@ -181,7 +181,7 @@ namespace Ratatoskr.Devices.UsbMonitor
 
                 Marshal.FreeHGlobal(read_buff);
 
-                NativeMethods.CloseHandle(handle);
+                WinAPI.CloseHandle(handle);
             }
 
             return (hid);
@@ -204,16 +204,16 @@ namespace Ratatoskr.Devices.UsbMonitor
 
         public static IntPtr OpenDevice(string devname)
         {
-            var handle = NativeMethods.CreateFile(
+            var handle = WinAPI.CreateFile(
                                     devname,
-                                    NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE,
+                                    WinAPI.GENERIC_READ | WinAPI.GENERIC_WRITE,
                                     0,
                                     IntPtr.Zero,
-                                    NativeMethods.OPEN_EXISTING,
-                                    NativeMethods.FILE_FLAG_OVERLAPPED,
+                                    WinAPI.OPEN_EXISTING,
+                                    WinAPI.FILE_FLAG_OVERLAPPED,
                                     IntPtr.Zero);
 
-            if (handle != NativeMethods.INVALID_HANDLE_VALUE) {
+            if (handle != WinAPI.INVALID_HANDLE_VALUE) {
                 SetDeviceSnapLength(handle, 65535);
                 SetDeviceBufferSize(handle, 4096);
                 StartDeviceCapture(handle);
@@ -225,7 +225,7 @@ namespace Ratatoskr.Devices.UsbMonitor
         public static void CloseDevice(IntPtr handle)
         {
             StopDeviceCapture(handle);
-            NativeMethods.CloseHandle(handle);
+            WinAPI.CloseHandle(handle);
         }
 
         public static bool SetDeviceSnapLength(IntPtr handle, uint size)
@@ -236,11 +236,11 @@ namespace Ratatoskr.Devices.UsbMonitor
             ioctl_size.size = size;
 
             if (!set_ok) {
-                set_ok = NativeMethods.DeviceIoControl(handle, IOCTL_USBPCAP_SET_SNAPLEN_SIZE_1100, ioctl_size, null, true);
+                set_ok = WinAPI.DeviceIoControl(handle, IOCTL_USBPCAP_SET_SNAPLEN_SIZE_1100, ioctl_size, null, true);
             }
 
             if (!set_ok) {
-                set_ok = NativeMethods.DeviceIoControl(handle, IOCTL_USBPCAP_SET_SNAPLEN_SIZE_1007, ioctl_size, null, true);
+                set_ok = WinAPI.DeviceIoControl(handle, IOCTL_USBPCAP_SET_SNAPLEN_SIZE_1007, ioctl_size, null, true);
             }
 
             return (set_ok);
@@ -254,11 +254,11 @@ namespace Ratatoskr.Devices.UsbMonitor
             ioctl_size.size = size;
 
             if (!set_ok) {
-                set_ok = NativeMethods.DeviceIoControl(handle, IOCTL_USBPCAP_SETUP_BUFFER_1100, ioctl_size, null, true);
+                set_ok = WinAPI.DeviceIoControl(handle, IOCTL_USBPCAP_SETUP_BUFFER_1100, ioctl_size, null, true);
             }
 
             if (!set_ok) {
-                set_ok = NativeMethods.DeviceIoControl(handle, IOCTL_USBPCAP_SETUP_BUFFER_1007, ioctl_size, null, true);
+                set_ok = WinAPI.DeviceIoControl(handle, IOCTL_USBPCAP_SETUP_BUFFER_1007, ioctl_size, null, true);
             }
 
             return (set_ok);
@@ -275,11 +275,11 @@ namespace Ratatoskr.Devices.UsbMonitor
 //            ioctl_data.SetAddress(4, true);
 
             if (!start_ok) {
-                start_ok = NativeMethods.DeviceIoControl(handle, IOCTL_USBPCAP_START_FILTERING_1100, ioctl_data, null, true);
+                start_ok = WinAPI.DeviceIoControl(handle, IOCTL_USBPCAP_START_FILTERING_1100, ioctl_data, null, true);
             }
 
             if (!start_ok) {
-                start_ok = NativeMethods.DeviceIoControl(handle, IOCTL_USBPCAP_START_FILTERING_1007, ioctl_data, null, true);
+                start_ok = WinAPI.DeviceIoControl(handle, IOCTL_USBPCAP_START_FILTERING_1007, ioctl_data, null, true);
             }
 
             return (start_ok);
@@ -290,11 +290,11 @@ namespace Ratatoskr.Devices.UsbMonitor
             var stop_ok = false;
 
             if (!stop_ok) {
-                stop_ok = NativeMethods.DeviceIoControl(handle, IOCTL_USBPCAP_STOP_FILTERING_1100, null, null, true);
+                stop_ok = WinAPI.DeviceIoControl(handle, IOCTL_USBPCAP_STOP_FILTERING_1100, null, null, true);
             }
 
             if (!stop_ok) {
-                stop_ok = NativeMethods.DeviceIoControl(handle, IOCTL_USBPCAP_STOP_FILTERING_1007, null, null, true);
+                stop_ok = WinAPI.DeviceIoControl(handle, IOCTL_USBPCAP_STOP_FILTERING_1007, null, null, true);
             }
         }
     }

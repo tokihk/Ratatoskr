@@ -140,7 +140,6 @@ namespace Ratatoskr.Forms
 #if DEBUG
             viewm_.AddView(new PacketViews.Protocol.ViewClassImpl());
 #endif
-//            viewm_.AddView(new PacketViews.DeviceEmurator.ViewClassImpl());
         }
 
         public static IEnumerable<ViewClass> GetPacketViewClasses()

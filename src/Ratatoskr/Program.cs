@@ -29,7 +29,7 @@ namespace Ratatoskr
         static void Main(string[] args)
         {
             /* タイマー分解能変更 */
-            NativeMethods.timeBeginPeriod(1);
+            WinAPI.timeBeginPeriod(1);
 
             /* システムUI設定 */
             Application.EnableVisualStyles();
@@ -56,7 +56,7 @@ namespace Ratatoskr
             System.Diagnostics.Debug.WriteLine("ExitThread2");
 
             /* タイマー分解能差し戻し */
-            NativeMethods.timeBeginPeriod(1);
+            WinAPI.timeBeginPeriod(1);
         }
 
         private static void ExceptionInfoOutput(Exception exp)

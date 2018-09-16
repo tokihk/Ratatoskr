@@ -11,7 +11,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Ratatoskr.Native
 {
-    internal static class NativeMethods
+    internal static class WinAPI
     {
         public static readonly IntPtr Null = IntPtr.Zero;
 
@@ -58,6 +58,10 @@ namespace Ratatoskr.Native
         public const UInt32 WM_QUEUESYNC        = 0x0023;
 
         public const UInt32 WM_GETMINMAXINFO    = 0x0024;
+
+        public const UInt32 WM_TIMER            = 0x0113;
+        public const UInt32 WM_HSCROLL          = 0x0114;
+        public const UInt32 WM_VSCROLL          = 0x0115;
 
         public const UInt32 WM_USER             = 0x0400;
 
@@ -1334,7 +1338,7 @@ namespace Ratatoskr.Native
         {
             var ctrl_ok = false;
 
-            if (handle != NativeMethods.INVALID_HANDLE_VALUE) {
+            if (handle != WinAPI.INVALID_HANDLE_VALUE) {
                 var write_buff = IntPtr.Zero;
                 var write_size = (uint)0;
                 var read_buff = IntPtr.Zero;
@@ -1353,7 +1357,7 @@ namespace Ratatoskr.Native
 
                 if (!async) {
                     /* --- 同期実行 --- */
-                    ctrl_ok = NativeMethods.DeviceIoControl(
+                    ctrl_ok = WinAPI.DeviceIoControl(
                                 handle,
                                 ctrl_code,
                                 write_buff,
@@ -1364,12 +1368,12 @@ namespace Ratatoskr.Native
                                 IntPtr.Zero);
                 } else {
                     /* --- 非同期実行 --- */
-                    var evh = NativeMethods.CreateEvent(IntPtr.Zero, true, false, null);
+                    var evh = WinAPI.CreateEvent(IntPtr.Zero, true, false, null);
                     var ovl = new NativeOverlapped();
 
                     ovl.EventHandle = evh;
 
-                    ctrl_ok = NativeMethods.DeviceIoControl(
+                    ctrl_ok = WinAPI.DeviceIoControl(
                                 handle,
                                 ctrl_code,
                                 write_buff,
@@ -1406,36 +1410,36 @@ namespace Ratatoskr.Native
         public static bool DeviceIoControl(string devname, uint ctrl_code, object obj_write, object obj_read, bool async)
         {
             var ctrl_ok = false;
-            var handle = NativeMethods.INVALID_HANDLE_VALUE;
+            var handle = WinAPI.INVALID_HANDLE_VALUE;
 
             if (!async) {
                 /* 同期実行 */
-                handle = NativeMethods.CreateFile(
+                handle = WinAPI.CreateFile(
                                     devname,
                                     0,
                                     0,
                                     IntPtr.Zero,
-                                    NativeMethods.OPEN_EXISTING,
+                                    WinAPI.OPEN_EXISTING,
                                     0,
                                     IntPtr.Zero);
 
             } else {
                 /* 非同期実行 */
-                handle = NativeMethods.CreateFile(
+                handle = WinAPI.CreateFile(
                                     devname,
                                     0,
                                     0,
                                     IntPtr.Zero,
-                                    NativeMethods.OPEN_EXISTING,
+                                    WinAPI.OPEN_EXISTING,
                                     FILE_FLAG_OVERLAPPED,
                                     IntPtr.Zero);
 
             }
 
-            if (handle != NativeMethods.INVALID_HANDLE_VALUE) {
+            if (handle != WinAPI.INVALID_HANDLE_VALUE) {
                 ctrl_ok = DeviceIoControl(handle, ctrl_code, obj_write, obj_read, async);
 
-                NativeMethods.CloseHandle(handle);
+                WinAPI.CloseHandle(handle);
             }
 
             return (ctrl_ok);

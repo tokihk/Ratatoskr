@@ -528,21 +528,23 @@ namespace Ratatoskr.PacketViews.Protocol
                 LView_DataList.Columns.Clear();
 
                 /* メインヘッダー */
-                var column_main = new ColumnHeader();
-
-                column_main.Text = "No.";
-                column_main.Width = 50;
-
-                LView_DataList.Columns.Add(column_main);
+                LView_DataList.Columns.Add(
+                    new ColumnHeader()
+                    {
+                        Text = "No.",
+                        Width = 50,
+                    }
+                );
 
                 foreach (var config in prop_.FrameListColumn.Value) {
-                    var column_sub = new ColumnHeader();
-
-                    column_sub.Text = GetDataListViewHeaderName(config.Type);
-                    column_sub.Width = (int)config.Width;
-                    column_sub.Tag = config.Type;
-
-                    LView_DataList.Columns.Add(column_sub);
+                    LView_DataList.Columns.Add(
+                        new ColumnHeader()
+                        {
+                            Text = GetDataListViewHeaderName(config.Type),
+                            Width = (int)config.Width,
+                            Tag = config.Type,
+                        }
+                    );
                 }
             }
             LView_DataList.EndUpdate();
@@ -634,7 +636,7 @@ namespace Ratatoskr.PacketViews.Protocol
 
             /* 背景色 */
             switch (decode_data.Data.ErrorStatus) {
-                case ProtocolDataErrorLevel.NoError:    item.BackColor = Color.LightSkyBlue;    break;
+                case ProtocolDataErrorLevel.NoError:    item.BackColor = Color.LightGreen;      break;
                 case ProtocolDataErrorLevel.LevelLow:   item.BackColor = Color.LightYellow;     break;
                 default:                                item.BackColor = Color.LightPink;       break;
             }
@@ -814,7 +816,7 @@ namespace Ratatoskr.PacketViews.Protocol
             LView_DataList.BeginUpdate();
         }
 
-        protected override void OnDrawPacketEnd(bool auto_scroll)
+        protected override void OnDrawPacketEnd(bool auto_scroll, bool next_packet_exist)
         {
             /* 一時リストをリストビューに追加 */
             LView_DataList.ItemAddRange(list_items_temp_);
@@ -843,11 +845,9 @@ namespace Ratatoskr.PacketViews.Protocol
 
         private void LView_DataList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var decode_data = LView_DataList.FocusedItem.Tag as ProtocolDecodeData;
-
-            if (decode_data == null)return;
-
-            SetDataDetails(decode_data);
+            if (LView_DataList.FocusedItem.Tag is ProtocolDecodeData decode_data) {
+                SetDataDetails(decode_data);
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
 using Ratatoskr.Packet;
+using Ratatoskr.Resources;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.PacketConverters.Convert.DataChange
@@ -162,13 +163,17 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
 
             /* 表示更新 */
             if (target_codes_exp_new_.Length > 0) {
-                TBox_Target.BackColor = (target_codes_obj_new_ != null) ? (Color.LightSkyBlue) : (Color.LightPink);
+                TBox_Target.BackColor = (target_codes_obj_new_ != null)
+                                      ? (AppColors.PATTERN_OK)
+                                      : (AppColors.PATTERN_NG);
             } else {
                 TBox_Target.BackColor = Color.White;
             }
 
             if (replace_code_exp_new_.Length > 0) {
-                TBox_Replace.BackColor = (replace_code_obj_new_ != null) ? (Color.LightSkyBlue) : (Color.LightPink);
+                TBox_Replace.BackColor = (replace_code_obj_new_ != null)
+                                       ? (AppColors.PATTERN_OK)
+                                       : (AppColors.PATTERN_NG);
             } else {
                 TBox_Replace.BackColor = Color.White;
             }

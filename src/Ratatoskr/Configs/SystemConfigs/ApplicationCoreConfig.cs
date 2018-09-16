@@ -19,9 +19,10 @@ namespace Ratatoskr.Configs.SystemConfigs
 
         public IntegerConfig Packet_ViewPacketCountLimit     { get; } = new IntegerConfig(999999);
 
-        public IntegerConfig Sequential_ViewPacketCountLimit { get; } = new IntegerConfig(9999999);
-        public BoolConfig    Sequential_LineNoVisible        { get; } = new BoolConfig(false);
-//        public BoolConfig    Sequential_WinApiMode           { get; } = new BoolConfig(false);
+        public BoolConfig    Sequential_WinApiMode               { get; } = new BoolConfig(true);
+        public BoolConfig    Sequential_ViewCharCountLimitEnable { get; } = new BoolConfig(true);
+        public IntegerConfig Sequential_ViewCharCountLimit       { get; } = new IntegerConfig(9999999);
+        public BoolConfig    Sequential_LineNoVisible            { get; } = new BoolConfig(true);
 
         public IntegerConfig AutoHighSpeedDrawLimit { get; } = new IntegerConfig(999999);
 

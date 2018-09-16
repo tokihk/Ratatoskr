@@ -28,6 +28,11 @@ namespace Ratatoskr.Forms.OptionEditForm
         public decimal RawPacketCountLimit;
         public decimal Packet_ViewPacketCountLimit;
 
+        public bool    Sequential_WinApiMode;
+        public bool    Sequential_ViewCharCountLimitEnable;
+        public decimal Sequential_ViewCharCountLimit;
+        public bool    Sequential_LineNoVisible;
+
         public List<MailConfig> MailList = new List<MailConfig>();
 
 
@@ -51,7 +56,13 @@ namespace Ratatoskr.Forms.OptionEditForm
             AutoSaveValue_PacketCount = sys_conf.AutoPacketSave.SaveValue_PacketCount.Value;
 
             RawPacketCountLimit = sys_conf.ApplicationCore.RawPacketCountLimit.Value;
+
             Packet_ViewPacketCountLimit = sys_conf.ApplicationCore.Packet_ViewPacketCountLimit.Value;
+
+            Sequential_WinApiMode = sys_conf.ApplicationCore.Sequential_WinApiMode.Value;
+            Sequential_ViewCharCountLimitEnable = sys_conf.ApplicationCore.Sequential_ViewCharCountLimitEnable.Value;
+            Sequential_ViewCharCountLimit = sys_conf.ApplicationCore.Sequential_ViewCharCountLimit.Value;
+            Sequential_LineNoVisible = sys_conf.ApplicationCore.Sequential_LineNoVisible.Value;
 
             MailList.Clear();
             foreach (var config in sys_conf.MailList.Value) {
@@ -74,7 +85,13 @@ namespace Ratatoskr.Forms.OptionEditForm
             sys_conf.AutoPacketSave.SaveValue_PacketCount.Value = AutoSaveValue_PacketCount;
 
             sys_conf.ApplicationCore.RawPacketCountLimit.Value = RawPacketCountLimit;
+
             sys_conf.ApplicationCore.Packet_ViewPacketCountLimit.Value = Packet_ViewPacketCountLimit;
+
+            sys_conf.ApplicationCore.Sequential_WinApiMode.Value = Sequential_WinApiMode;
+            sys_conf.ApplicationCore.Sequential_ViewCharCountLimitEnable.Value = Sequential_ViewCharCountLimitEnable;
+            sys_conf.ApplicationCore.Sequential_ViewCharCountLimit.Value = Sequential_ViewCharCountLimit;
+            sys_conf.ApplicationCore.Sequential_LineNoVisible.Value = Sequential_LineNoVisible;
 
             sys_conf.MailList.Value.Clear();
             foreach (var config in MailList) {

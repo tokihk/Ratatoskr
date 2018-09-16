@@ -1054,13 +1054,11 @@ namespace Ratatoskr.PacketViews.Packet
 
         private void UpdateBinEditBox()
         {
-            var item = LView_Main.FocusedItem as ListViewItem;
+            var item = LView_Main.FocusedItem;
             var packet = (PacketObject)null;
 
             if (item != null) {
-                var item_i = item.Tag as PacketListViewItem;
-
-                if (item_i != null) {
+                if (item.Tag is PacketListViewItem item_i) {
                     packet = item_i.Packet;
                 }
             }
@@ -1191,21 +1189,23 @@ namespace Ratatoskr.PacketViews.Packet
                 LView_Main.Columns.Clear();
 
                 /* メインヘッダー */
-                var column_main = new ColumnHeader();
-
-                column_main.Text = "No.";
-                column_main.Width = 50;
-
-                LView_Main.Columns.Add(column_main);
+                LView_Main.Columns.Add(
+                    new ColumnHeader()
+                    {
+                        Text = "No.",
+                        Width = 50,
+                    }
+                );
 
                 foreach (var config in prop_.ColumnList.Value) {
-                    var column_sub = new ColumnHeader();
-
-                    column_sub.Text = GetListViewHeaderName(config.Type);
-                    column_sub.Width = (int)config.Width;
-                    column_sub.Tag = config.Type;
-
-                    LView_Main.Columns.Add(column_sub);
+                    LView_Main.Columns.Add(
+                        new ColumnHeader()
+                        {
+                            Text = GetListViewHeaderName(config.Type),
+                            Width = (int)config.Width,
+                            Tag = config.Type,
+                        }
+                    );
                 }
             }
             LView_Main.EndUpdate();
@@ -1328,11 +1328,12 @@ namespace Ratatoskr.PacketViews.Packet
 
         private ListViewItem ItemInfoToListViewItem(PacketListViewItem item_i)
         {
-            var item = new ListViewItem();
-
             /* メインアイテム */
-            item.Text = item_i.No.ToString();
-            item.Tag = item_i;
+            var item = new ListViewItem()
+            {
+                Text = item_i.No.ToString(),
+                Tag = item_i,
+            };
 
             /* サブサイテム */
             PacketToListViewItem_SubUpdate(item, item_i.Packet);
@@ -1575,7 +1576,7 @@ namespace Ratatoskr.PacketViews.Packet
             LView_Main.BeginUpdate();
         }
 
-        protected override void OnDrawPacketEnd(bool auto_scroll)
+        protected override void OnDrawPacketEnd(bool auto_scroll, bool next_packet_exist)
         {
             /* 一時リストをリストビューに追加 */
             LView_Main.ItemAddRange(list_items_temp_);
@@ -1636,13 +1637,11 @@ namespace Ratatoskr.PacketViews.Packet
 
         private void Menu_ExtView_Click(object sender, EventArgs e)
         {
-            var menu = sender as ToolStripMenuItem;
+            if (sender is ToolStripMenuItem menu) {
+                menu.Checked = !menu.Checked;
 
-            if (menu == null)return;
-
-            menu.Checked = !menu.Checked;
-
-            BuildExtView();
+                BuildExtView();
+            }
         }
 
         private void Num_PreviewDataSize_ValueChanged(object sender, EventArgs e)
@@ -1682,182 +1681,180 @@ namespace Ratatoskr.PacketViews.Packet
 
         private void OnMenuClick(object sender, EventArgs e)
         {
-            var menu = sender as ToolStripMenuItem;
+            if (sender is ToolStripMenuItem menu) {
+                try {
+                    switch ((MenuActionId)Enum.ToObject(typeof(MenuActionId), menu.Tag)) {
+                        case MenuActionId.Copy_Packet_AllInfo_Csv:
+                        {
+                            Clipboard.SetText(GetPacketInfoCsvFromSelectPackets(), TextDataFormat.Text);
+                        }
+                            break;
 
-            if (menu == null)return;
+                        case MenuActionId.Copy_Packet_Alias:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Alias, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
 
-            try {
-                switch ((MenuActionId)Enum.ToObject(typeof(MenuActionId), menu.Tag)) {
-                    case MenuActionId.Copy_Packet_AllInfo_Csv:
-                    {
-                        Clipboard.SetText(GetPacketInfoCsvFromSelectPackets(), TextDataFormat.Text);
+                        case MenuActionId.Copy_Packet_DateTime_UTC_ISO8601:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_UTC_ISO8601, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_DateTime_UTC_Display:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_UTC_Display, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_DateTime_Local_ISO8601:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_Local_ISO8601, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_DateTime_Local_Display:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_Local_Display, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Information:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Information, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Source:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Source, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Destination:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Destination, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Message:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Message, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_BitString:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_BitString, ""), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_HexString:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_HexString, ""), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_AsciiText:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextAscii, ""), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_Utf8Text:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF8, ""), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_Utf16BeText:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16BE, ""), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_Utf16LeText:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16LE, ""), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_ShiftJisText:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextShiftJIS, ""), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_EucJpText:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextEucJp, ""), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_Custom:
+                        {
+                            Clipboard.SetText(GetPacketInfoCustomFromSelectPackets(""), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_LF_BitString:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_BitString, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_LF_HexString:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_HexString, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_LF_AsciiText:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextAscii, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_LF_Utf8Text:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF8, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_LF_Utf16BeText:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16BE, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_LF_Utf16LeText:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16LE, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_LF_ShiftJisText:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextShiftJIS, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_LF_EucJpText:
+                        {
+                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextEucJp, Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Copy_Packet_Data_LF_Custom:
+                        {
+                            Clipboard.SetText(GetPacketInfoCustomFromSelectPackets(Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
                     }
-                        break;
 
-                    case MenuActionId.Copy_Packet_Alias:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Alias, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_DateTime_UTC_ISO8601:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_UTC_ISO8601, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_DateTime_UTC_Display:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_UTC_Display, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_DateTime_Local_ISO8601:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_Local_ISO8601, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_DateTime_Local_Display:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_Local_Display, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Information:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Information, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Source:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Source, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Destination:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Destination, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Message:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Message, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_BitString:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_BitString, ""), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_HexString:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_HexString, ""), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_AsciiText:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextAscii, ""), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_Utf8Text:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF8, ""), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_Utf16BeText:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16BE, ""), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_Utf16LeText:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16LE, ""), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_ShiftJisText:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextShiftJIS, ""), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_EucJpText:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextEucJp, ""), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_Custom:
-                    {
-                        Clipboard.SetText(GetPacketInfoCustomFromSelectPackets(""), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_LF_BitString:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_BitString, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_LF_HexString:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_HexString, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_LF_AsciiText:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextAscii, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_LF_Utf8Text:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF8, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_LF_Utf16BeText:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16BE, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_LF_Utf16LeText:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16LE, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_LF_ShiftJisText:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextShiftJIS, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_LF_EucJpText:
-                    {
-                        Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextEucJp, Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
-
-                    case MenuActionId.Copy_Packet_Data_LF_Custom:
-                    {
-                        Clipboard.SetText(GetPacketInfoCustomFromSelectPackets(Environment.NewLine), TextDataFormat.Text);
-                    }
-                        break;
+                } catch {
                 }
-
-            } catch {
             }
         }
 

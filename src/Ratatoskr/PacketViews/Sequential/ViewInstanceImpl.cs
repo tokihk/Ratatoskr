@@ -1,5 +1,6 @@
-﻿#define WINAPI_MODE
-//#define LINENO_VIEW
+﻿#define RICHTEXTBOX_MODE
+#define WINAPI_MODE
+#define LINENO_VIEW
 
 using System;
 using System.Collections.Generic;
@@ -17,18 +18,25 @@ namespace Ratatoskr.PacketViews.Sequential
 {
     internal sealed class ViewInstanceImpl : ViewInstance
     {
-        private const int LINE_NO_UPDATE_DELAY = 100;
+        private const int  VIEW_LINE_NUMBER_UPDATE_IVAL_MIN  = 50;
+        private const int  VIEW_LINE_NUMBER_UPDATE_IVAL_MAX  = 200;
+        private const int  VIEW_LINE_NUMBER_UPDATE_IVAL_STEP = 50;
+
+        private readonly bool WINAPI_MODE;
+        private readonly bool VIEW_DATA_LIMIT;
+        private readonly int  VIEW_DATA_LIMIT_SIZE;
+        private readonly bool VIEW_LINE_NUMBER_VISIBLE;
 
         private ViewPropertyImpl prop_;
 
         private Encoding text_encoder_;
 
-        private StringFormat line_no_format_;
-        private int line_no_max_ = 0;
-        private int line_no_scroll_;
-        private int line_no_char_index_;
-        private int line_no_pos_y_;
-        private int line_height_ = 0;
+        private StringFormat view_line_number_format_;
+        private int          view_line_number_scroll_;
+        private int          view_line_height_ = 0;
+        private Timer        view_line_update_timer_;
+        private int          view_line_update_timer_ival_ = VIEW_LINE_NUMBER_UPDATE_IVAL_MIN;
+        private bool         view_line_update_req_ = false;
 
         private bool select_busy_ = false;
         private int  select_pos_start_;
@@ -43,10 +51,8 @@ namespace Ratatoskr.PacketViews.Sequential
 
         private StringBuilder   draw_buffer_ = null;
 
-        private Timer line_no_update_timer_ = new Timer();
-
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.RichTextBox RTBox_Main;
+        private ViewTextBox TBox_Main;
         private System.Windows.Forms.GroupBox GBox_ShiftBit;
         private System.Windows.Forms.GroupBox GBox_EndLine;
         private System.Windows.Forms.TextBox TBox_LFCode;
@@ -71,7 +77,7 @@ namespace Ratatoskr.PacketViews.Sequential
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.GBox_ViewMode = new System.Windows.Forms.GroupBox();
@@ -84,7 +90,7 @@ namespace Ratatoskr.PacketViews.Sequential
             this.GBox_ShiftBit = new System.Windows.Forms.GroupBox();
             this.Num_ShiftBit = new System.Windows.Forms.NumericUpDown();
             this.ChkBox_EchoBack = new System.Windows.Forms.CheckBox();
-            this.RTBox_Main = new System.Windows.Forms.RichTextBox();
+            this.TBox_Main = new Ratatoskr.PacketViews.Sequential.ViewTextBox();
             this.Splitter_Main = new System.Windows.Forms.SplitContainer();
             this.PBox_LineNo = new System.Windows.Forms.PictureBox();
             this.Splitter_Compare = new System.Windows.Forms.SplitContainer();
@@ -244,26 +250,26 @@ namespace Ratatoskr.PacketViews.Sequential
             this.ChkBox_EchoBack.UseVisualStyleBackColor = true;
             this.ChkBox_EchoBack.CheckedChanged += new System.EventHandler(this.ChkBox_EchoBack_CheckedChanged);
             // 
-            // RTBox_Main
+            // TBox_Main
             // 
-            this.RTBox_Main.BackColor = System.Drawing.Color.White;
-            this.RTBox_Main.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RTBox_Main.DetectUrls = false;
-            this.RTBox_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.RTBox_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.RTBox_Main.HideSelection = false;
-            this.RTBox_Main.Location = new System.Drawing.Point(70, 0);
-            this.RTBox_Main.Name = "RTBox_Main";
-            this.RTBox_Main.ReadOnly = true;
-            this.RTBox_Main.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.RTBox_Main.Size = new System.Drawing.Size(237, 490);
-            this.RTBox_Main.TabIndex = 1;
-            this.RTBox_Main.Text = "";
-            this.RTBox_Main.VScroll += new System.EventHandler(this.RTBox_Main_VScroll);
-            this.RTBox_Main.TextChanged += new System.EventHandler(this.RTBox_Main_TextChanged);
-            this.RTBox_Main.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RTBox_Main_MouseDown);
-            this.RTBox_Main.MouseUp += new System.Windows.Forms.MouseEventHandler(this.RTBox_Main_MouseUp);
-            this.RTBox_Main.Resize += new System.EventHandler(this.RTBox_Main_Resize);
+            this.TBox_Main.BackColor = System.Drawing.Color.White;
+            this.TBox_Main.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TBox_Main.DetectUrls = false;
+            this.TBox_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TBox_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.TBox_Main.HideSelection = false;
+            this.TBox_Main.Location = new System.Drawing.Point(70, 0);
+            this.TBox_Main.Name = "TBox_Main";
+            this.TBox_Main.ReadOnly = true;
+            this.TBox_Main.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+            this.TBox_Main.Size = new System.Drawing.Size(237, 490);
+            this.TBox_Main.TabIndex = 1;
+            this.TBox_Main.Text = "";
+            this.TBox_Main.VScroll += new System.EventHandler(this.TBox_Main_VScroll);
+            this.TBox_Main.TextChanged += new System.EventHandler(this.TBox_Main_TextChanged);
+            this.TBox_Main.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TBox_Main_MouseDown);
+            this.TBox_Main.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TBox_Main_MouseUp);
+            this.TBox_Main.Resize += new System.EventHandler(this.TBox_Main_Resize);
             // 
             // Splitter_Main
             // 
@@ -274,7 +280,7 @@ namespace Ratatoskr.PacketViews.Sequential
             // 
             // Splitter_Main.Panel1
             // 
-            this.Splitter_Main.Panel1.Controls.Add(this.RTBox_Main);
+            this.Splitter_Main.Panel1.Controls.Add(this.TBox_Main);
             this.Splitter_Main.Panel1.Controls.Add(this.PBox_LineNo);
             // 
             // Splitter_Main.Panel2
@@ -349,11 +355,11 @@ namespace Ratatoskr.PacketViews.Sequential
             this.Chart_CompareRate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Chart_CompareRate.Location = new System.Drawing.Point(0, 68);
             this.Chart_CompareRate.Name = "Chart_CompareRate";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series1.Name = "Series_Rate";
-            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.UInt32;
-            series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.UInt32;
-            this.Chart_CompareRate.Series.Add(series1);
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series6.Name = "Series_Rate";
+            series6.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.UInt32;
+            series6.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.UInt32;
+            this.Chart_CompareRate.Series.Add(series6);
             this.Chart_CompareRate.Size = new System.Drawing.Size(611, 210);
             this.Chart_CompareRate.TabIndex = 0;
             this.Chart_CompareRate.Text = "chart1";
@@ -408,27 +414,14 @@ namespace Ratatoskr.PacketViews.Sequential
         public ViewInstanceImpl(ViewManager viewm, ViewClass viewd, ViewProperty viewp, Guid id) : base(viewm, viewd, viewp, id)
         {
             prop_ = Property as ViewPropertyImpl;
+            WINAPI_MODE = ConfigManager.System.ApplicationCore.Sequential_WinApiMode.Value;
+            VIEW_DATA_LIMIT = (WINAPI_MODE && ConfigManager.System.ApplicationCore.Sequential_ViewCharCountLimitEnable.Value);
+            VIEW_DATA_LIMIT_SIZE = (int)ConfigManager.System.ApplicationCore.Sequential_ViewCharCountLimit.Value;
+            VIEW_LINE_NUMBER_VISIBLE = (WINAPI_MODE && ConfigManager.System.ApplicationCore.Sequential_LineNoVisible.Value);
 
             InitializeComponent();
             InitializeDrawType();
-
-#if LINENO_VIEW
-            PBox_LineNo.Visible = ConfigManager.System.ApplicationCore.Sequential_LineNoVisible.Value;
-            PBox_LineNo.Visible = true;
-
-            if (PBox_LineNo.Visible) {
-                line_no_update_timer_.Interval = LINE_NO_UPDATE_DELAY;
-                line_no_update_timer_.Tick += UpdateTextLineNoExec;
-
-                line_no_format_ = new StringFormat();
-                line_no_format_.Alignment = StringAlignment.Far;
-                line_no_format_.LineAlignment = StringAlignment.Center;
-            } else {
-                PBox_LineNo.Visible = false;
-            }
-#else
-            PBox_LineNo.Visible = false;
-#endif
+            InitializeLineNumberPanel();
 
             Num_ShiftBit.Value = prop_.ShiftBit.Value;
             ChkBox_EchoBack.Checked = prop_.EchoBack.Value;
@@ -437,12 +430,27 @@ namespace Ratatoskr.PacketViews.Sequential
             TBox_BoundaryText.Text = prop_.BoundaryText.Value.TrimEnd(new char[] { '\r', '\n' });
             TBox_LFCode.Text = prop_.EndLinePattern.Value.Trim();
 
-            RTBox_Main.MaxLength = 0x7FFFFFFF;
-
             /* TODO: 未実装なので今は非表示 */
             Splitter_Main.Panel2Collapsed = true;
 
-            UpdateTextLineNo();
+            UpdateViewLineNumber();
+        }
+
+        private void InitializeLineNumberPanel()
+        {
+            PBox_LineNo.Visible = VIEW_LINE_NUMBER_VISIBLE;
+
+            if (PBox_LineNo.Visible) {
+                view_line_number_format_ = new StringFormat()
+                {
+                    Alignment = StringAlignment.Far,
+                    LineAlignment = StringAlignment.Center,
+                };
+
+                view_line_update_timer_ = new Timer();
+                view_line_update_timer_.Tick += OnViewLineNumberUpdateTimer;
+                view_line_update_timer_.Start();
+            }
         }
 
         private void InitializeDrawType()
@@ -469,32 +477,41 @@ namespace Ratatoskr.PacketViews.Sequential
             prop_.EndLinePattern.Value = TBox_LFCode.Text;
         }
 
-        private void UpdateTextLineNo()
+        private void UpdateViewLineNumber()
         {
-#if LINENO_VIEW
             if (PBox_LineNo.Visible) {
-                /* 行番号更新を開始 */
-                if (!line_no_update_timer_.Enabled) {
-  //                PBox_LineNo.Invalidate();
-                }
-
-                if (line_no_update_timer_.Enabled) {
-                    line_no_update_timer_.Stop();
-                }
-//                line_no_update_timer_.Start();
-
-                PBox_LineNo.Invalidate();
+                view_line_update_req_ = true;
             }
-#endif
         }
 
-        private void UpdateTextLineNoExec(object sender, EventArgs e)
+        private void OnViewLineNumberUpdateTimer(object sender, EventArgs e)
         {
-            if (line_no_update_timer_.Enabled) {
-                line_no_update_timer_.Stop();
+            var timer_ival = view_line_update_timer_ival_;
+
+            if (view_line_update_req_) {
+                view_line_update_req_ = false;
+
+                PBox_LineNo.Invalidate();
+
+                timer_ival += VIEW_LINE_NUMBER_UPDATE_IVAL_STEP;
+                if (timer_ival > VIEW_LINE_NUMBER_UPDATE_IVAL_MAX) {
+                    timer_ival = VIEW_LINE_NUMBER_UPDATE_IVAL_MAX;
+                }
+                
+            } else {
+                timer_ival -= VIEW_LINE_NUMBER_UPDATE_IVAL_STEP;
+                if (timer_ival < VIEW_LINE_NUMBER_UPDATE_IVAL_MIN) {
+                    timer_ival = VIEW_LINE_NUMBER_UPDATE_IVAL_MIN;
+                }
             }
 
-            PBox_LineNo.Invalidate();
+            if (view_line_update_timer_ival_ != timer_ival) {
+                view_line_update_timer_ival_ = timer_ival;
+
+                view_line_update_timer_.Stop();
+                view_line_update_timer_.Interval = view_line_update_timer_ival_;
+                view_line_update_timer_.Start();
+            }
         }
 
         private void DrawBufferReset()
@@ -506,7 +523,7 @@ namespace Ratatoskr.PacketViews.Sequential
         {
             /* データタイプが変化した場合は現在溜まっているバッファを出力 */
             if (draw_data_type_ != type) {
-                if (RTBox_Main.TextLength > 0) {
+                if (TBox_Main.TextLength > 0) {
                     DrawBufferPushEndLine();
                 }
 
@@ -544,15 +561,17 @@ namespace Ratatoskr.PacketViews.Sequential
             }
 
             /* エディターの最後にキャレットを移動 */
-            RTBox_Main.SelectionStart = RTBox_Main.TextLength;
-            RTBox_Main.SelectionColor = color_fore;
+            TBox_Main.SelectionStart = TBox_Main.TextLength;
 
-#if WINAPI_MODE
-//            NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_REPLACESEL, 0, draw_buffer_.ToString());
-            RTBox_Main.AppendText(draw_buffer_.ToString());
-#else
-            RTBox_Main.AppendText(draw_buffer_.ToString());
-#endif
+            /* 入力色設定 */
+            TBox_Main.SelectionColor = color_fore;
+
+            /* テキスト追加 */
+            if (WINAPI_MODE) {
+                WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_REPLACESEL, 0, draw_buffer_.ToString());
+            } else {
+                TBox_Main.AppendText(draw_buffer_.ToString());
+            }
 
             DrawBufferReset();
         }
@@ -760,7 +779,7 @@ namespace Ratatoskr.PacketViews.Sequential
 
         protected override void OnClearPacket()
         {
-            RTBox_Main.Clear();
+            TBox_Main.Clear();
         }
 
         protected unsafe override void OnDrawPacketBegin(bool auto_scroll)
@@ -770,32 +789,28 @@ namespace Ratatoskr.PacketViews.Sequential
             text_encoder_ = LoadTextEncoder((DrawDataType)CBox_DrawType.SelectedItem);
 
             /* スクロール位置をバックアップ */
-#if WINAPI_MODE
-            line_no_scroll_ = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32();
-#else
-            line_no_scroll_ = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32();
-#endif
+            view_line_number_scroll_ = WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32();
 
             /* 選択状態をバックアップ */
-#if WINAPI_MODE
-            fixed (int *select_pos_start_p = &select_pos_start_) {
-                fixed (int *select_pos_end_p = &select_pos_end_) {
-                    NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETSEL, select_pos_start_p, select_pos_end_p);
+            if (WINAPI_MODE) {
+                fixed (int *select_pos_start_p = &select_pos_start_) {
+                    fixed (int *select_pos_end_p = &select_pos_end_) {
+                        WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_GETSEL, select_pos_start_p, select_pos_end_p);
+                    }
                 }
+            } else {
+                select_pos_start_ = TBox_Main.SelectionStart;
+                select_pos_end_ = select_pos_start_ + TBox_Main.SelectionLength;
             }
-#else
-            select_pos_start_ = RTBox_Main.SelectionStart;
-            select_pos_end_ = select_pos_start_ + RTBox_Main.SelectionLength;
-#endif
 
             /* 出力バッファ初期化 */
             DrawBufferReset();
 
             /* 描画を一時停止 */
-            NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.WM_SETREDRAW, 0, 0);
+            WinAPI.SendMessage(TBox_Main.Handle, WinAPI.WM_SETREDRAW, 0, 0);
         }
 
-        protected unsafe override void OnDrawPacketEnd(bool auto_scroll)
+        protected unsafe override void OnDrawPacketEnd(bool auto_scroll, bool next_packet_exist)
         {
             /* 未出力データを表示 */
             DrawBufferFlush();
@@ -804,74 +819,51 @@ namespace Ratatoskr.PacketViews.Sequential
              * テキストが追加されていれば、この時点でスクロール位置は
              * 終端になっている */
             if (auto_scroll) {
-                line_no_scroll_ = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32();
+                view_line_number_scroll_ = WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32();
             }
 
             /* 選択状態を復元 */
-#if WINAPI_MODE
-            NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_SETSEL, select_pos_start_, select_pos_end_);
-#else
-            RTBox_Main.SelectionStart = select_pos_start_;
-            RTBox_Main.SelectionLength = select_pos_end_ - select_pos_start_;
-#endif
-
-            /* スクロール位置を補正 */
-#if WINAPI_MODE
-            NativeMethods.SendMessage(
-                RTBox_Main.Handle,
-                NativeMethods.EM_LINESCROLL,
-                0,
-                line_no_scroll_ - NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32());
-#else
-            NativeMethods.SendMessage(
-                RTBox_Main.Handle,
-                NativeMethods.EM_LINESCROLL,
-                0,
-                line_no_scroll_ - NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32());
-#endif
-
-            /* 表示量を制限 */
-            var text_len = RTBox_Main.TextLength;
-            var text_len_max = (int)ConfigManager.System.ApplicationCore.Sequential_ViewPacketCountLimit.Value;
-
-            if (text_len > text_len_max) {
-#if WINAPI_MODE
-                fixed (int *select_pos_start_p = &select_pos_start_) {
-                    fixed (int *select_pos_end_p = &select_pos_end_) {
-                        /* 選択状態をバックアップ */
-                        NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETSEL, select_pos_start_p, select_pos_end_p);
-
-                        /* 削除対象を選択状態にする */
-                        NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_SETSEL, 0, text_len - text_len_max + text_len_max / 2);
-
-                        /* 削除実行 */
-                        NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_REPLACESEL, 0, "");
-
-                        /* 選択状態を戻す */
-                        NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_SETSEL, select_pos_start_, select_pos_end_);
-                    }
-                }
-#else
-                /* 選択状態をバックアップ */
-                NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETSEL, ref select_pos_start_, ref select_pos_end_);
-
-                /* 削除対象を選択状態にする */
-                NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_SETSEL, 0, text_len - text_len_max + text_len_max / 2);
-
-                /* 削除実行 */
-                NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_REPLACESEL, 0, "");
-
-                /* 選択状態を戻す */
-                NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_SETSEL, select_pos_start_, select_pos_end_);
-#endif
+            if (WINAPI_MODE) {
+                WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_SETSEL, select_pos_start_, select_pos_end_);
+            } else {
+                TBox_Main.SelectionStart = select_pos_start_;
+                TBox_Main.SelectionLength = select_pos_end_ - select_pos_start_;
             }
 
-            line_no_char_index_ = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_LINEINDEX, line_no_scroll_, 0).ToInt32();
-            line_no_pos_y_ = (int)((UInt32)NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_POSFROMCHAR, line_no_char_index_, 0).ToInt32() >> 16);
+            /* スクロール位置を補正 */
+            WinAPI.SendMessage(
+                TBox_Main.Handle,
+                WinAPI.EM_LINESCROLL,
+                0,
+                view_line_number_scroll_ - WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32());
+
+            /* 表示量を制限 */
+            if (VIEW_DATA_LIMIT) {
+                var text_len = TBox_Main.TextLength;
+                var text_len_max = VIEW_DATA_LIMIT_SIZE;
+
+                if (text_len > text_len_max) {
+                    fixed (int *select_pos_start_p = &select_pos_start_) {
+                        fixed (int *select_pos_end_p = &select_pos_end_) {
+                            /* 選択状態をバックアップ */
+                            WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_GETSEL, select_pos_start_p, select_pos_end_p);
+
+                            /* 削除対象を選択状態にする */
+                            WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_SETSEL, 0, text_len - text_len_max + text_len_max / 2);
+
+                            /* 削除実行 */
+                            WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_REPLACESEL, 0, "");
+
+                            /* 選択状態を戻す */
+                            WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_SETSEL, select_pos_start_, select_pos_end_);
+                        }
+                    }
+                }
+            }
 
             /* 描画を再開 */
-            NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.WM_SETREDRAW, 1, 0);
-            RTBox_Main.Invalidate();
+            WinAPI.SendMessage(TBox_Main.Handle, WinAPI.WM_SETREDRAW, 1, 0);
+            TBox_Main.Invalidate();
         }
 
         protected override void OnDrawPacket(PacketObject packet)
@@ -896,92 +888,60 @@ namespace Ratatoskr.PacketViews.Sequential
             BackupProperty();
         }
 
-        private void RTBox_Main_VScroll(object sender, EventArgs e)
+        private unsafe void TBox_Main_TextChanged(object sender, EventArgs e)
         {
-            UpdateTextLineNo();
+            UpdateViewLineNumber();
         }
 
-        private unsafe void RTBox_Main_TextChanged(object sender, EventArgs e)
+        private unsafe void TBox_Main_Resize(object sender, EventArgs e)
         {
-            /* 現在の最大行数をバックアップ */
-#if WINAPI_MODE
-            line_no_max_ = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETLINECOUNT, 0, 0).ToInt32();
-#else
-            line_no_max_ = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETLINECOUNT, 0, 0).ToInt32();
-#endif
-
-            UpdateTextLineNo();
+            UpdateViewLineNumber();
         }
 
-        private unsafe void RTBox_Main_Resize(object sender, EventArgs e)
-        {
-            /* 現在の最大行数をバックアップ */
-#if WINAPI_MODE
-            line_no_max_ = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETLINECOUNT, 0, 0).ToInt32();
-#else
-            line_no_max_ = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETLINECOUNT, 0, 0).ToInt32();
-#endif
-
-            UpdateTextLineNo();
-        }
-
-        private unsafe void PBox_LineNo_Paint(object sender, PaintEventArgs e)
-        {
-#if LINENO_VIEW
-            if (!line_no_update_timer_.Enabled) {
-#if WINAPI_MODE
-                var line_no = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32();
-                var line_no_char_index = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_LINEINDEX, line_no, 0).ToInt32();
-                var line_no_pos_y = (int)((UInt32)NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_POSFROMCHAR, line_no_char_index, 0).ToInt32() >> 16);
-
-//                var line_no = line_no_scroll_;
-//                var line_no_char_index = line_no_char_index_;
-//                var line_no_pos_y = line_no_pos_y_;
-#else
-                var line_no = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32();
-                var line_no_char_index = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_LINEINDEX, line_no, 0).ToInt32();
-                var line_no_pos_y = (int)((UInt32)NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_POSFROMCHAR, line_no_char_index, 0).ToInt32() >> 16);
-#endif
-
-                /* 1行の長さを計測 */
-                if ((line_height_ == 0) && (line_no_max_ > 1)) {
-#if WINAPI_MODE
-                    var line_no_char_index_2 = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_LINEINDEX, line_no + 1, 0).ToInt32();
-                    var line_no_pos_y_2 = (int)((UInt32)NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_POSFROMCHAR, line_no_char_index_2, 0).ToInt32() >> 16);
-#else
-                    var line_no_char_index_2 = NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_LINEINDEX, line_no + 1, 0).ToInt32();
-                    var line_no_pos_y_2 = (int)((UInt32)NativeMethods.SendMessage(RTBox_Main.Handle, NativeMethods.EM_POSFROMCHAR, line_no_char_index_2, 0).ToInt32() >> 16);
-#endif
-
-                    line_height_ = line_no_pos_y_2 - line_no_pos_y;
-                }
-
-                var draw_region = PBox_LineNo.ClientSize;
-                var draw_rect = new Rectangle(0, line_no_pos_y + 1, draw_region.Width - 10, line_height_);
-
-                /* 0ベースから1ベースに変更 */
-                line_no++;
-
-                while ((line_no <= line_no_max_) && (draw_rect.Y < draw_region.Height)) {
-                    e.Graphics.DrawString(line_no.ToString(), RTBox_Main.Font, Brushes.Gray, draw_rect, line_no_format_);
-
-                    line_no++;
-                    draw_rect.Y += line_height_;
-                }
-            }
-#endif
-        }
-
-        private void RTBox_Main_MouseDown(object sender, MouseEventArgs e)
+        private void TBox_Main_MouseDown(object sender, MouseEventArgs e)
         {
             select_busy_ = true;
             OperationBusy = select_busy_;
         }
 
-        private void RTBox_Main_MouseUp(object sender, MouseEventArgs e)
+        private void TBox_Main_MouseUp(object sender, MouseEventArgs e)
         {
             select_busy_ = false;
             OperationBusy = select_busy_;
+        }
+
+        private void TBox_Main_VScroll(object sender, EventArgs e)
+        {
+            UpdateViewLineNumber();
+        }
+
+        private unsafe void PBox_LineNo_Paint(object sender, PaintEventArgs e)
+        {
+            var line_no_max = WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_GETLINECOUNT, 0, 0).ToInt32();
+            var line_no = WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_GETFIRSTVISIBLELINE, 0, 0).ToInt32();
+            var line_no_char_index = WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_LINEINDEX, line_no, 0).ToInt32();
+            var line_no_pos_y = TBox_Main.GetPositionFromCharIndex(line_no_char_index).Y;
+
+            /* 1行の長さを計測 */
+            if ((view_line_height_ == 0) && (line_no_max > 1)) {
+                var line_no_char_index_2 = WinAPI.SendMessage(TBox_Main.Handle, WinAPI.EM_LINEINDEX, line_no + 1, 0).ToInt32();
+                var line_no_pos_y_2 = TBox_Main.GetPositionFromCharIndex(line_no_char_index_2).Y;
+
+                view_line_height_ = line_no_pos_y_2 - line_no_pos_y;
+            }
+
+            var draw_region = PBox_LineNo.ClientSize;
+            var draw_rect = new Rectangle(0, line_no_pos_y + 1, draw_region.Width - 10, view_line_height_);
+
+            /* 0ベースから1ベースに変更 */
+            line_no++;
+
+            while ((line_no <= line_no_max) && (draw_rect.Y < draw_region.Height)) {
+                e.Graphics.DrawString(line_no.ToString(), TBox_Main.Font, Brushes.Gray, draw_rect, view_line_number_format_);
+
+                line_no++;
+                draw_rect.Y += view_line_height_;
+            }
         }
     }
 }

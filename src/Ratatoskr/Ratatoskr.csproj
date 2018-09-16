@@ -402,6 +402,18 @@
     <Compile Include="Forms\Dialog\GateEditDialog.Designer.cs">
       <DependentUpon>GateEditDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Dialog\PacketLogMultiOpenDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialog\PacketLogMultiOpenDialog.Designer.cs">
+      <DependentUpon>PacketLogMultiOpenDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialog\PacketLogOpenDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialog\PacketLogOpenDialog.Designer.cs">
+      <DependentUpon>PacketLogOpenDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Dialog\ProfileEditDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -413,6 +425,12 @@
     </Compile>
     <Compile Include="Forms\Dialog\ProfileManagerDialog.Designer.cs">
       <DependentUpon>ProfileManagerDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dialog\ProgressDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialog\ProgressDialog.Designer.cs">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Dialog\WatchEventNotifyDialog.cs">
       <SubType>Form</SubType>
@@ -563,12 +581,6 @@
     <Compile Include="Forms\OptionEditForm\OptionEditPage_Language.Designer.cs">
       <DependentUpon>OptionEditPage_Language.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_Memory.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_Memory.Designer.cs">
-      <DependentUpon>OptionEditPage_Memory.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\OptionEditForm\OptionEditPage_NotifyMail.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -595,6 +607,12 @@
     </Compile>
     <Compile Include="Forms\AboutForm\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\OptionEditForm\OptionEditPage_System.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\OptionEditForm\OptionEditPage_System.Designer.cs">
+      <DependentUpon>OptionEditPage_System.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ScriptWindow\ScriptWindow_CodeEditor.cs">
       <SubType>Component</SubType>
@@ -719,6 +737,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PacketViews\Protocol\ViewPropertyImpl.cs" />
+    <Compile Include="PacketViews\Sequential\ViewTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PacketViews\ViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1120,11 +1141,20 @@
     <EmbeddedResource Include="Forms\Dialog\GateEditDialog.resx">
       <DependentUpon>GateEditDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialog\PacketLogMultiOpenDialog.resx">
+      <DependentUpon>PacketLogMultiOpenDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialog\PacketLogOpenDialog.resx">
+      <DependentUpon>PacketLogOpenDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialog\ProfileEditDialog.resx">
       <DependentUpon>ProfileEditDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialog\ProfileManagerDialog.resx">
       <DependentUpon>ProfileManagerDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialog\ProgressDialog.resx">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialog\WatchEventNotifyDialog.resx">
       <DependentUpon>WatchEventNotifyDialog.cs</DependentUpon>
@@ -1195,9 +1225,6 @@
     <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_Language.resx">
       <DependentUpon>OptionEditPage_Language.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_Memory.resx">
-      <DependentUpon>OptionEditPage_Memory.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_NotifyMail.resx">
       <DependentUpon>OptionEditPage_NotifyMail.cs</DependentUpon>
     </EmbeddedResource>
@@ -1209,6 +1236,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutForm\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_System.resx">
+      <DependentUpon>OptionEditPage_System.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScriptWindow\ScriptWindow_CodeEditor.resx">
       <DependentUpon>ScriptWindow_CodeEditor.cs</DependentUpon>

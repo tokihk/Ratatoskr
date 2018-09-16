@@ -103,9 +103,9 @@ namespace Ratatoskr.PacketViews
             Instance.BeginDrawPacket(auto_scroll);
         }
 
-        internal void EndDrawPacket(bool auto_scroll)
+        internal void EndDrawPacket(bool auto_scroll, bool next_packet_exist)
         {
-            Instance.EndDrawPacket(auto_scroll);
+            Instance.EndDrawPacket(auto_scroll, next_packet_exist);
         }
 
         internal void DrawPacket(IEnumerable<PacketObject> packets)

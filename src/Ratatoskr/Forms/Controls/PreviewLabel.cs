@@ -25,8 +25,8 @@ namespace Ratatoskr.Forms.Controls
             protected override void WndProc(ref Message m)
             {
                 switch ((uint)m.Msg) {
-                    case NativeMethods.WM_MOUSEACTIVATE:
-                        m.Result = new IntPtr(NativeMethods.MA_NOACTIVATE);
+                    case WinAPI.WM_MOUSEACTIVATE:
+                        m.Result = new IntPtr(WinAPI.MA_NOACTIVATE);
                         break;
                     default:
                         base.WndProc(ref m);
@@ -52,8 +52,8 @@ namespace Ratatoskr.Forms.Controls
         protected override void WndProc(ref Message m)
         {
             switch ((uint)m.Msg) {
-                case NativeMethods.WM_MOUSEACTIVATE:
-                    m.Result = new IntPtr(NativeMethods.MA_NOACTIVATE);
+                case WinAPI.WM_MOUSEACTIVATE:
+                    m.Result = new IntPtr(WinAPI.MA_NOACTIVATE);
                     break;
                 default:
                     base.WndProc(ref m);
@@ -75,7 +75,7 @@ namespace Ratatoskr.Forms.Controls
             {
                 var p = base.CreateParams;
 
-                p.ExStyle |= NativeMethods.WS_EX_TOPMOST | NativeMethods.WS_EX_NOACTIVATE;
+                p.ExStyle |= WinAPI.WS_EX_TOPMOST | WinAPI.WS_EX_NOACTIVATE;
 
                 return (p);
             }

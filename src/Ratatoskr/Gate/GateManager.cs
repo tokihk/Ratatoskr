@@ -53,7 +53,6 @@ namespace Ratatoskr.Gate
 
 #if DEBUG
             devm_.AddClass(new Devices.UsbComm.DeviceClassImpl());
-            devm_.AddClass(new Devices.Ncom.DeviceClassImpl());
 #endif
         }
 

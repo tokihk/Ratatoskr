@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Devices;
 using Ratatoskr.Gate;
+using Ratatoskr.Resources;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.Forms.Dialog
@@ -157,8 +158,8 @@ namespace Ratatoskr.Forms.Dialog
 
             if (exp.Length > 0) {
                 TBox_ConnectCommand.BackColor = (HexTextEncoder.ToByteArray(exp) != null)
-                                              ? (Color.LightSkyBlue)
-                                              : (Color.LightPink);
+                                              ? (AppColors.PATTERN_OK)
+                                              : (AppColors.PATTERN_NG);
             } else {
                 TBox_ConnectCommand.BackColor = Color.White;
             }

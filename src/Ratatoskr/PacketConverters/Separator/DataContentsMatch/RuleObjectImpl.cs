@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms;
 using Ratatoskr.Packet;
+using Ratatoskr.Resources;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
@@ -125,8 +126,8 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
 
             if (text.Length > 0) {
                 TBox_Value.BackColor = (HexTextEncoder.ToByteArray(TBox_Value.Text) != null)
-                                     ? (Color.LightSkyBlue)
-                                     : (Color.LightPink);
+                                     ? (AppColors.PATTERN_OK)
+                                     : (AppColors.PATTERN_NG);
             } else {
                 TBox_Value.BackColor = Color.White;
             }

@@ -11,10 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.Scripts;
-using Ratatoskr.Scripts.PacketFilterExp.Parser;
-using Ratatoskr.Scripts.PacketFilterExp;
 using Ratatoskr.Generic;
+using Ratatoskr.Resources;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.Forms.MainWindow
@@ -54,9 +52,9 @@ namespace Ratatoskr.Forms.MainWindow
             Busy,
         }
 
-        private readonly Color COLOR_BUSY_COMMAND      = Color.LightGreen;
-        private readonly Color COLOR_COMMAND_FORMAT_OK = Color.LightSkyBlue;
-        private readonly Color COLOR_COMMAND_FORMAT_NG = Color.LightPink;
+        private readonly Color COLOR_BUSY_COMMAND      = Color.LightSkyBlue;
+        private readonly Color COLOR_COMMAND_FORMAT_OK = AppColors.PATTERN_OK;
+        private readonly Color COLOR_COMMAND_FORMAT_NG = AppColors.PATTERN_NG;
 
 
         private PlayStatus     play_state_ = PlayStatus.Reset;

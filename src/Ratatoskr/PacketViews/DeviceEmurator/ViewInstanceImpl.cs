@@ -553,7 +553,7 @@ namespace Ratatoskr.PacketViews.DeviceEmurator
 //            NativeMethods.SendMessage(Handle, NativeMethods.WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
         }
 
-        protected override void OnDrawPacketEnd(bool auto_scroll)
+        protected override void OnDrawPacketEnd(bool auto_scroll, bool next_packet_exist)
         {
             /* 未出力データを表示 */
             DrawBufferFlush();

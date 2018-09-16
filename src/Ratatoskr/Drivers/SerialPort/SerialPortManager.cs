@@ -48,7 +48,7 @@ namespace Ratatoskr.Drivers.SerialPort
             if (ports == null)return;
 
             var buffer = new byte[0xFFFF];
-            var result = NativeMethods.QueryDosDevice(null, buffer, (UInt32)buffer.Length);
+            var result = WinAPI.QueryDosDevice(null, buffer, (UInt32)buffer.Length);
 
             if (result == 0)return;
 
@@ -82,13 +82,13 @@ namespace Ratatoskr.Drivers.SerialPort
             var guids = new Guid[1];
             var size = (UInt32)0;
 
-            if (NativeMethods.SetupDiClassGuidsFromName("PORTS", ref guids[0], (UInt32)guids.Length, out size)) {
-                var devinfo = NativeMethods.SetupDiGetClassDevs(ref guids[0], null, NativeMethods.Null, NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_PROFILE);
+            if (WinAPI.SetupDiClassGuidsFromName("PORTS", ref guids[0], (UInt32)guids.Length, out size)) {
+                var devinfo = WinAPI.SetupDiGetClassDevs(ref guids[0], null, WinAPI.Null, WinAPI.DIGCF_PRESENT | WinAPI.DIGCF_PROFILE);
 
-                if (devinfo != NativeMethods.Null) {
-                    var devdata = new NativeMethods.SP_DEVINFO_DATA();
-                    var frndname = new byte[NativeMethods.MAX_PATH];
-                    var portname = new byte[NativeMethods.MAX_PATH];
+                if (devinfo != WinAPI.Null) {
+                    var devdata = new WinAPI.SP_DEVINFO_DATA();
+                    var frndname = new byte[WinAPI.MAX_PATH];
+                    var portname = new byte[WinAPI.MAX_PATH];
                     var frndname_size = (UInt32)0;
                     var portname_size = (UInt32)0;
                     var type = (UInt32)0;
@@ -96,7 +96,7 @@ namespace Ratatoskr.Drivers.SerialPort
 
                     devdata.cbSize = (uint)Marshal.SizeOf(devdata.GetType());
 
-                    while (NativeMethods.SetupDiEnumDeviceInfo(
+                    while (WinAPI.SetupDiEnumDeviceInfo(
                                 devinfo,
                                 index++,
                                 out devdata)
@@ -104,28 +104,28 @@ namespace Ratatoskr.Drivers.SerialPort
                         frndname[0] = (byte)char.MinValue;
                         portname[0] = (byte)char.MinValue;
 
-                        NativeMethods.SetupDiGetDeviceRegistryProperty(
+                        WinAPI.SetupDiGetDeviceRegistryProperty(
                             devinfo,
                             ref devdata,
-                            NativeMethods.SPDRP_FRIENDLYNAME,
+                            WinAPI.SPDRP_FRIENDLYNAME,
                             out type,
                             frndname,
                             (UInt32)frndname.Length,
                             out frndname_size);
 
-                        var hkey = NativeMethods.SetupDiOpenDevRegKey(
+                        var hkey = WinAPI.SetupDiOpenDevRegKey(
                                         devinfo,
                                         ref devdata,
-                                        NativeMethods.DICS_FLAG_GLOBAL,
+                                        WinAPI.DICS_FLAG_GLOBAL,
                                         0,
-                                        NativeMethods.DIREG_DEV,
-                                        NativeMethods.KEY_READ);
+                                        WinAPI.DIREG_DEV,
+                                        WinAPI.KEY_READ);
 
-                        if (hkey != NativeMethods.Null) {
+                        if (hkey != WinAPI.Null) {
                             portname_size = (UInt32)portname.Length;
 
-                            NativeMethods.RegQueryValueEx(hkey, "PortName", NativeMethods.Null, out type, portname, ref portname_size);
-                            NativeMethods.RegCloseKey(hkey);
+                            WinAPI.RegQueryValueEx(hkey, "PortName", WinAPI.Null, out type, portname, ref portname_size);
+                            WinAPI.RegCloseKey(hkey);
                         }
 
                         var devname = Encoding.Unicode.GetString(portname, 0, (int)portname_size);
@@ -143,7 +143,7 @@ namespace Ratatoskr.Drivers.SerialPort
                         }
                     }
                 }
-                NativeMethods.SetupDiDestroyDeviceInfoList(devinfo);
+                WinAPI.SetupDiDestroyDeviceInfoList(devinfo);
             }
         }
     }

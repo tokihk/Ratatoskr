@@ -280,7 +280,7 @@ namespace Ratatoskr.PacketViews.Graph
         {
         }
 
-        protected override void OnDrawPacketEnd(bool auto_scroll)
+        protected override void OnDrawPacketEnd(bool auto_scroll, bool next_packet_exist)
         {
             PBox_GraphDetails.Refresh();
         }
