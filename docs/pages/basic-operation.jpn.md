@@ -37,7 +37,7 @@
 
 `[Menu Bar] -> [View] -> [Add packet view]`　から任意のパケットビューを追加できます。
 
-パケットビューについては[Packet View](packet-view.jpn.html)を参照してください。
+パケットビューについては[Packet View]を参照してください。
 
 ## 4. 受信する
 
@@ -53,7 +53,7 @@
 変換器は `[Menu Bar] -> [View] -> [Add converter]` から追加します。<br>
 追加した変換器はゲートボタンバーの下に追加されていきます。
 
-割り当て可能な変換器については[Packet Converter](packet-converter.jpn.html)を参照してください。
+割り当て可能な変換器については[Packet Converter]を参照してください。
 
 変換順序は上に配置されている変換器から順番に処理されます。<br>
 追加した変換器は左のバーをドラッグすることで順番を入れ替えることができます。

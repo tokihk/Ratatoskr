@@ -25,24 +25,46 @@
 
 ### Sampling Setting - Input Data - Collect Mode
 
-
+データ値の求め方を指定します。<br>
+Value    : 得た値をそのまま使用します。<br>
+ValueSum : 得た値をSampling Interval間隔で合算したものを使用します。<br>
+Count    : 得ることが出来たデータ数を使用します。<br>
 
 ### Sampling Setting - Sampling Point
 
+全データ数を指定します。
+
 ### Sampling Setting - Sampling Interval
+
+サンプリング間隔を指定します。<br>
+0を指定した場合は、データ入力毎にサンプリング判定を行います。
 
 ### Display Setting - Axis X Setting - Display Point
 
+一度に画面に表示するデータ数を指定します。
+
 ### Display Setting - Axis Y Setting - Min Value
+
+縦軸の最小値を指定します。
 
 ### Display Setting - Axis Y Setting - Max Value
 
+縦軸の最大値を指定します。
+
 ### Display Setting - Channel
+
+設定を行うCH番号を指定します。
 
 ### Display Setting - Channel Setting - Color
 
+設定中CHの表示色を指定します。
+
 ### Display Setting - Channel Setting - Magnification
 
+設定中CHの表示倍率を指定します。
+
 ### Display Setting - Channel Setting - Pos
+
+設定中CHの表示位置を指定します。
 
 <br><br>
