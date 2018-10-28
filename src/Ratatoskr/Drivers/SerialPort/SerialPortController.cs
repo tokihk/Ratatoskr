@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -81,6 +82,9 @@ namespace Ratatoskr.Drivers.SerialPort
 
     internal class SerialPortController : IDisposable
     {
+        private const int SIMPLEX_SEND_WAIT_TIME = 200;
+        private const int SIMPLEX_RECV_HOLD_TIME = 200;
+
         public class CommStatusUpdatedEventArgs : EventArgs
         {
             public CommStatusUpdatedEventArgs(ErrorStatus error_status, CommStatus comm_status, CommStatus comm_status_old)
@@ -105,9 +109,11 @@ namespace Ratatoskr.Drivers.SerialPort
         private WinAPI.COMSTAT comstat_ = new WinAPI.COMSTAT();
         private WinAPI.COMSTAT comstat_temp_ = new WinAPI.COMSTAT();
 
+        private bool      simplex_mode_ = false;
+        private uint      loop_data_size_ = 0;
+
 
         public delegate void CommStatusUpdatedEvent(object sender, CommStatusUpdatedEventArgs e);
-
 
 
         public SerialPortController()
@@ -139,6 +145,8 @@ namespace Ratatoskr.Drivers.SerialPort
 
         public ushort InQueue  { get; set; } = 2048;
         public ushort OutQueue { get; set; } = 2048;
+
+        public bool SimplexMode { get; set; } = false;
 
         public event CommStatusUpdatedEvent CommStatusUpdated;
 
@@ -222,6 +230,10 @@ namespace Ratatoskr.Drivers.SerialPort
                 case SerialPortStopBits.Two:          dcb.StopBits = WinAPI.TWOSTOPBIT;   break;
                 default:                              dcb.StopBits = WinAPI.ONESTOPBIT;   break;
             }
+
+            /* Simplex Mode */
+            simplex_mode_ = SimplexMode;
+            loop_data_size_ = 0;
 
             /* バイナリモード */
             dcb.fBinary = 1;
@@ -409,6 +421,10 @@ namespace Ratatoskr.Drivers.SerialPort
                 return (0);
             }
 
+            if (simplex_mode_) {
+                loop_data_size_ += send_size_result;
+            }
+
             return (send_size_result);
         }
 
@@ -430,6 +446,22 @@ namespace Ratatoskr.Drivers.SerialPort
             {
                 if (!WinAPI.ReadFile(handle_, buff, (uint)buffer.Length, out read_size, WinAPI.Null)) {
                     return (0);
+                }
+            }
+
+            if (read_size == 0)return (0);
+
+            if (simplex_mode_) {
+                if (loop_data_size_ > 0) {
+                    var skip_size = Math.Min(loop_data_size_, read_size);
+
+                    loop_data_size_ -= skip_size;
+
+                    if (loop_data_size_ > 0)return (0);
+
+                    Array.Copy(buffer, skip_size, buffer, 0, read_size - skip_size);
+
+                    read_size -= skip_size;
                 }
             }
 

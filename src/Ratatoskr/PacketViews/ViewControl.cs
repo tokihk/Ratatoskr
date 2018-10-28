@@ -117,7 +117,7 @@ namespace Ratatoskr.PacketViews
 
         internal void DrawPacket(PacketObject packet)
         {
-            if (   (filter_enable_)
+            if (   (!filter_enable_)
                 || (filter_obj_busy_ == null)
                 || (filter_obj_busy_.Input(packet))
             ) {

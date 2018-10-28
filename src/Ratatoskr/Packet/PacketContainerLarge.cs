@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define USE_DOTNET_SORTEDLIST
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,80 +16,113 @@ namespace Ratatoskr.Packet
         private const long PACKET_COUNT_TOTAL_MAX = 999999999999;
         private const long PACKET_COUNT_TOTAL_MIN = 99999;
 
-
-        private class PacketComparer : IComparer<PacketObject>
+        private class Layer1 : IEnumerable<PacketObject>
         {
-            public int Compare(PacketObject packet_1, PacketObject packet_2)
-            {
-                return (packet_1.MakeTime.CompareTo(packet_2.MakeTime));
-            }
-        }
+#if USE_DOTNET_SORTEDLIST
+            private SortedList<DateTime, List<PacketObject>> packets_ = new SortedList<DateTime, List<PacketObject>>();
+#else
+            private List<KeyValuePair<DateTime, List<PacketObject>>> packets_ = new List<KeyValuePair<DateTime, List<PacketObject>>>();
+#endif
 
-        private static readonly PacketComparer  PacketComparerObject = new PacketComparer();
+            private int packet_count_ = 0;
 
-
-        private class Page
-        {
-            private List<PacketObject> packets_ = new List<PacketObject>();
-
-            private DateTime           first_packet_time_ = DateTime.MinValue;
-            private DateTime           last_packet_time_ = DateTime.MinValue;
-
-            public IEnumerable<PacketObject> Packets
-            {
-                get
-                {
-                    return (packets_);
-                }
-            }
 
             public int PacketCount
             {
-                get { return (packets_.Count); }
+                get { return (packet_count_); }
             }
 
             public DateTime FirstPacketTime
             {
-                get { return ((packets_.Count > 0) ? (packets_.First().MakeTime) : (DateTime.MinValue)); }
+                get { return ((packets_.Count > 0) ? (packets_.First().Key) : (DateTime.MinValue)); }
             }
 
             public DateTime LastPacketTime
             {
-                get { return ((packets_.Count > 0) ? (packets_.Last().MakeTime) : (DateTime.MinValue)); }
+                get { return ((packets_.Count > 0) ? (packets_.Last().Key) : (DateTime.MinValue)); }
             }
 
-            public void Add(PacketObject packet)
+#if !USE_DOTNET_SORTEDLIST
+            private List<PacketObject> SearchInsertBlock(PacketObject packet)
             {
-                if (   (packets_.Count == 0)
-                    || (packet.MakeTime >= packets_.Last().MakeTime)
-                ) {
-                    packets_.Add(packet);
+                var index_first  = 0;
+                var index_last   = packets_.Count;
+                var list_index = 0;
+                var list_temp  = packets_.First();
 
-                } else if (packet.MakeTime < packets_.First().MakeTime) {
-                    packets_.Insert(0, packet);
+                /* バイナリサーチで挿入位置にあたりを付ける */
+                while (index_first < index_last) {
+                    list_index = index_first + (index_last - index_first) / 2;
+                    list_temp = packets_[list_index];
 
-                } else {
-                    var index = Math.Abs(packets_.BinarySearch(packet, PacketComparerObject));
-
-                    /* 同一時間のパケットがある場合は境界までシフト */
-                    while (index < packets_.Count) {
-                        if (packet.MakeTime != packets_[index].MakeTime)break;
-                        index++;
-                    }
-
-                    if (index < packets_.Count) {
-                        packets_.Insert(index, packet);
+                    if (list_temp.Key < packet.MakeTime) {
+                        index_first = list_index + 1;
                     } else {
-                        packets_.Add(packet);
+                        index_last = list_index;
                     }
                 }
 
-                last_packet_time_ = packets_.Last().MakeTime;
+                /* 検出リストの時間が一致しない場合は新規生成 */
+                if (list_temp.Key != packet.MakeTime) {
+                    list_temp = new KeyValuePair<DateTime, List<PacketObject>>(packet.MakeTime, new List<PacketObject>());
+                    packets_.Insert(index_first, list_temp);
+                } else {
+                    list_temp = packets_[index_first];
+                }
+
+                return (list_temp.Value);
+            }
+#endif
+
+            public void Add(PacketObject packet)
+            {
+#if USE_DOTNET_SORTEDLIST
+                var packet_list = (List<PacketObject>)null;
+
+                if (!packets_.TryGetValue(packet.MakeTime, out packet_list)) {
+                    packet_list = new List<PacketObject>();
+                    packets_.Add(packet.MakeTime, packet_list);
+                }
+
+                packet_list.Add(packet);
+                packet_count_++;
+#else
+                var packet_list = (List<PacketObject>)null;
+
+                /* 挿入ブロック取得 */
+                if ((packets_.Count == 0) || (packet.MakeTime > packets_.Last().Key)) {
+                    packet_list = new List<PacketObject>();
+                    packets_.Add(new KeyValuePair<DateTime, List<PacketObject>>(packet.MakeTime, packet_list));
+                } else if (packet.MakeTime < packets_.First().Key) {
+                    packet_list = new List<PacketObject>();
+                    packets_.Insert(0, new KeyValuePair<DateTime, List<PacketObject>>(packet.MakeTime, packet_list));
+                } else {
+                    packet_list = SearchInsertBlock(packet);
+                }
+
+                /* 挿入 */
+                packet_list.Add(packet);
+                packet_count_++;
+#endif
+            }
+
+            public IEnumerator<PacketObject> GetEnumerator()
+            {
+                foreach (var packet_list in packets_) {
+                    foreach (var packet in packet_list.Value) {
+                        yield return (packet);
+                    }
+                }
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return (this.GetEnumerator());
             }
         }
 
 
-        private List<Page> pages_ = new List<Page>();
+        private List<Layer1> pages_ = new List<Layer1>();
 
         private long packet_count_max_ = 0;
         private long packet_count_     = 0;
@@ -102,7 +137,7 @@ namespace Ratatoskr.Packet
             packet_count_max_ = Math.Min((long)packet_count_max, PACKET_COUNT_TOTAL_MAX);
             packet_count_max_ = Math.Max(packet_count_max_, PACKET_COUNT_TOTAL_MIN);
 
-            packet_count_page_max_ = (int)((packet_count_max_ + 9) / 10);
+            packet_count_page_max_ = (int)((packet_count_max_ + 999) / 1000);
         }
 
         public void Dispose()
@@ -119,7 +154,7 @@ namespace Ratatoskr.Packet
 
         public void Clear()
         {
-            pages_ = new List<Page>();
+            pages_ = new List<Layer1>();
 
             packet_count_ = 0;
 
@@ -131,11 +166,11 @@ namespace Ratatoskr.Packet
             if (packet == null)return;
 
             /* === 挿入先ページを取得 === */
-            var page = (Page)null;
+            var page = (Layer1)null;
 
             if (pages_.Count == 0) {
                 /* ページが存在しないときは新規ページに追加 */
-                page = new Page();
+                page = new Layer1();
                 pages_.Add(page);
 
             } else if (packet.MakeTime >= last_packet_time_) {
@@ -144,11 +179,11 @@ namespace Ratatoskr.Packet
 
                 /* 1ページあたりの最大パケット数に達しているときは新規ページに追加 */
                 if (page.PacketCount >= packet_count_page_max_) {
-                    page = new Page();
+                    page = new Layer1();
                     pages_.Add(page);
                 }
 
-            } else if ((packet.MakeTime >= pages_.Last().FirstPacketTime) && (packet.MakeTime <= pages_.Last().FirstPacketTime)) {
+            } else if (packet.MakeTime >= pages_.Last().FirstPacketTime) {
                 /* 最後のページの範囲なら最後のページに追加する */
                 page = pages_.Last();
 
@@ -156,7 +191,7 @@ namespace Ratatoskr.Packet
                 /* 挿入先ページを検索する */
                 page = pages_.First();
                 foreach (var page_tmp in pages_) {
-                    if (packet.MakeTime > page_tmp.LastPacketTime)continue;
+                    if (packet.MakeTime < page_tmp.FirstPacketTime)break;
                     page = page_tmp;
                 }
             }
@@ -164,6 +199,8 @@ namespace Ratatoskr.Packet
             page.Add(packet);
 
             packet_count_++;
+
+            last_packet_time_ = pages_.Last().LastPacketTime;
 
             /* パケット最大量をオーバーした場合は最初のページを削除 */
             if (packet_count_ > packet_count_max_) {
@@ -192,7 +229,7 @@ namespace Ratatoskr.Packet
         public IEnumerator<PacketObject> GetEnumerator()
         {
             foreach (var page in pages_) {
-                foreach (var packet in page.Packets) {
+                foreach (var packet in page) {
                     yield return (packet);
                 }
             }

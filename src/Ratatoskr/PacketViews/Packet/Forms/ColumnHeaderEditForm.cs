@@ -8,45 +8,75 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
+using Ratatoskr.PacketViews.Packet.Configs;
+using Ratatoskr.Scripts.PacketFilterExp;
 
 namespace Ratatoskr.PacketViews.Packet.Forms
 {
     internal partial class ColumnHeaderEditForm : Form
     {
-        private sealed class ColumnItemObject
+        private static string GetDefaultDisplayText(ColumnType type)
         {
-            public ColumnType Type { get; }
-
-
-            public ColumnItemObject(ColumnType type)
-            {
-                Type = type;
-            }
-
-            public override string ToString()
-            {
-                switch (Type) {
-                    case ColumnType.Class:              return (ConfigManager.Language.PacketView.Packet.Column_Class.Value);
-                    case ColumnType.Alias:              return (ConfigManager.Language.PacketView.Packet.Column_Alias.Value);
-                    case ColumnType.Datetime_UTC:       return (ConfigManager.Language.PacketView.Packet.Column_Datetime_UTC.Value);
-                    case ColumnType.Datetime_Local:     return (ConfigManager.Language.PacketView.Packet.Column_Datetime_Local.Value);
-                    case ColumnType.Information:        return (ConfigManager.Language.PacketView.Packet.Column_Information.Value);
-                    case ColumnType.Mark:               return (ConfigManager.Language.PacketView.Packet.Column_Mark.Value);
-                    case ColumnType.Source:             return (ConfigManager.Language.PacketView.Packet.Column_Source.Value);
-                    case ColumnType.Destination:        return (ConfigManager.Language.PacketView.Packet.Column_Destination.Value);
-                    case ColumnType.DataLength:         return (ConfigManager.Language.PacketView.Packet.Column_DataLength.Value);
-                    case ColumnType.DataPreviewBinary:  return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewBinary.Value);
-                    case ColumnType.DataPreviewText:    return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewText.Value);
-                    case ColumnType.DataPreviewCustom:  return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewCustom.Value);
-                    default:                            return (Type.ToString());
-                }
+            switch (type) {
+                case ColumnType.Class:              return (ConfigManager.Language.PacketView.Packet.Column_Class.Value);
+                case ColumnType.Alias:              return (ConfigManager.Language.PacketView.Packet.Column_Alias.Value);
+                case ColumnType.Datetime_UTC:       return (ConfigManager.Language.PacketView.Packet.Column_Datetime_UTC.Value);
+                case ColumnType.Datetime_Local:     return (ConfigManager.Language.PacketView.Packet.Column_Datetime_Local.Value);
+                case ColumnType.Information:        return (ConfigManager.Language.PacketView.Packet.Column_Information.Value);
+                case ColumnType.Mark:               return (ConfigManager.Language.PacketView.Packet.Column_Mark.Value);
+                case ColumnType.Source:             return (ConfigManager.Language.PacketView.Packet.Column_Source.Value);
+                case ColumnType.Destination:        return (ConfigManager.Language.PacketView.Packet.Column_Destination.Value);
+                case ColumnType.DataLength:         return (ConfigManager.Language.PacketView.Packet.Column_DataLength.Value);
+                case ColumnType.DataPreviewBinary:  return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewBinary.Value);
+                case ColumnType.DataPreviewText:    return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewText.Value);
+                case ColumnType.DataPreviewCustom:  return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewCustom.Value);
+                default:                            return (type.ToString());
             }
         }
 
 
-        private ColumnItemObject user_select_item_ = null;
+        private sealed class ColumnItemObject
+        {
+            public ColumnHeaderConfig Config { get; }
 
-        public IEnumerable<ColumnType> UserItems { get; private set; } = null;
+
+            public ColumnItemObject(ColumnHeaderConfig config)
+            {
+                Config = config;
+            }
+
+            public ColumnItemObject(ColumnType type)
+            {
+                Config = new ColumnHeaderConfig(type);
+            }
+
+            public override string ToString()
+            {
+                return (Config.Text);
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is ColumnType type) {
+                    return (type == Config.Type);
+                }
+
+                return base.Equals(obj);
+            }
+        }
+
+
+        private List<ColumnHeaderConfig> user_items_ = new List<ColumnHeaderConfig>();
+
+        private ColumnItemObject user_select_item_ = null;
+        private ColumnItemObject user_moving_item_ = null;
+
+        public IEnumerable<ColumnHeaderConfig> UserItems { get; private set; } = null;
 
 
         public ColumnHeaderEditForm()
@@ -54,7 +84,7 @@ namespace Ratatoskr.PacketViews.Packet.Forms
             InitializeComponent();
         }
 
-        public ColumnHeaderEditForm(IEnumerable<ColumnType> all_items, IEnumerable<ColumnType> user_items) : this()
+        public ColumnHeaderEditForm(IEnumerable<ColumnType> all_items, IEnumerable<ColumnHeaderConfig> user_items) : this()
         {
             InitializeAllItems(all_items);
             InitializeUserItems(user_items);
@@ -71,9 +101,19 @@ namespace Ratatoskr.PacketViews.Packet.Forms
                 }
             }
             LBox_AllItem.EndUpdate();
+
+            CBox_SelectItem_ItemType.BeginUpdate();
+            {
+                CBox_SelectItem_ItemType.Items.Clear();
+
+                foreach (var column in items) {
+                    CBox_SelectItem_ItemType.Items.Add(new ColumnItemObject(column));
+                }
+            }
+            CBox_SelectItem_ItemType.EndUpdate();
         }
 
-        private void InitializeUserItems(IEnumerable<ColumnType> items)
+        private void InitializeUserItems(IEnumerable<ColumnHeaderConfig> items)
         {
             LBox_UserItem.BeginUpdate();
             {
@@ -84,6 +124,34 @@ namespace Ratatoskr.PacketViews.Packet.Forms
                 }
             }
             LBox_UserItem.EndUpdate();
+        }
+
+        private void UpdateUserItemView(ColumnItemObject item)
+        {
+            var index = LBox_UserItem.Items.IndexOf(item);
+
+            if (index >= 0) {
+                LBox_UserItem.BeginUpdate();
+
+                LBox_UserItem.Items.Remove(item);
+                LBox_UserItem.Items.Insert(index, item);
+
+                LBox_UserItem.EndUpdate();
+            }
+        }
+
+        private void LoadSelectItemConfig(ColumnItemObject obj)
+        {
+            CBox_SelectItem_ItemType.SelectedItem = obj.Config.Type;
+            TBox_SelectItem_DisplayText.Text = obj.Config.Text;
+            TBox_SelectItem_PacketFilter.Text = obj.Config.PacketFilter;
+        }
+
+        private void SaveSelectItemConfig(ColumnItemObject obj)
+        {
+            obj.Config.Type = (CBox_SelectItem_ItemType.SelectedItem as ColumnItemObject).Config.Type;
+            obj.Config.Text = TBox_SelectItem_DisplayText.Text;
+            obj.Config.PacketFilter = TBox_SelectItem_PacketFilter.Text;
         }
 
         private int GetListBoxIndex(ListBox control, Point client_pos)
@@ -105,19 +173,35 @@ namespace Ratatoskr.PacketViews.Packet.Forms
             return (item_index);
         }
 
+        private void LBox_UserItem_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (user_select_item_ != null) {
+                SaveSelectItemConfig(user_select_item_);
+                UpdateUserItemView(user_select_item_);
+            }
+
+            user_select_item_ = LBox_UserItem.SelectedItem as ColumnItemObject;
+
+            if (user_select_item_ != null) {
+                LoadSelectItemConfig(user_select_item_);
+            }
+
+            LBox_UserItem.Update();
+        }
+
         private void LBox_UserItem_MouseDown(object sender, MouseEventArgs e)
         {
-            user_select_item_ = LBox_UserItem.SelectedItem as ColumnItemObject;
+            user_moving_item_ = LBox_UserItem.SelectedItem as ColumnItemObject;
         }
 
         private void LBox_UserItem_MouseMove(object sender, MouseEventArgs e)
         {
             if (   (e.Button == MouseButtons.Left)
-                && (user_select_item_ != null)
+                && (user_moving_item_ != null)
             ) {
                 /* 移動位置を取得 */
                 var index_new = GetListBoxIndex(LBox_UserItem, e.Location);
-                var index_now = LBox_UserItem.Items.IndexOf(user_select_item_);
+                var index_now = LBox_UserItem.Items.IndexOf(user_moving_item_);
 
                 if (index_now != index_new) {
                     var item = LBox_UserItem.SelectedItem;
@@ -126,7 +210,7 @@ namespace Ratatoskr.PacketViews.Packet.Forms
                     {
                         LBox_UserItem.Items.RemoveAt(index_now);
                         LBox_UserItem.Items.Insert(Math.Min(index_new, LBox_UserItem.Items.Count), item);
-                        LBox_UserItem.SelectedItem = user_select_item_;
+                        LBox_UserItem.SelectedItem = user_moving_item_;
                     }
                     LBox_UserItem.EndUpdate();
                 }
@@ -135,29 +219,30 @@ namespace Ratatoskr.PacketViews.Packet.Forms
 
         private void Btn_Add_Click(object sender, EventArgs e)
         {
-            var item_new = LBox_AllItem.SelectedItem as ColumnItemObject;
-
-            if (item_new == null)return;
-
-            LBox_UserItem.Items.Add(new ColumnItemObject(item_new.Type));
+            if (LBox_AllItem.SelectedItem is ColumnItemObject item_new) {
+                LBox_UserItem.Items.Add(new ColumnItemObject(item_new.Config.Type));
+            }
         }
 
         private void Btn_Remove_Click(object sender, EventArgs e)
         {
-            var item = LBox_UserItem.SelectedItem as ColumnItemObject;
-
-            if (item == null)return;
-
-            LBox_UserItem.Items.Remove(item);
+            if (LBox_UserItem.SelectedItem is ColumnItemObject item) {
+                LBox_UserItem.Items.Remove(item);
+            }
         }
 
         private void Btn_Ok_Click(object sender, EventArgs e)
         {
-            var items = new List<ColumnType>();
+            if (user_select_item_ != null) {
+                SaveSelectItemConfig(user_select_item_);
+            }
+
+            var items = new List<ColumnHeaderConfig>();
 
             foreach (ColumnItemObject item in LBox_UserItem.Items) {
-                items.Add(item.Type);
+                items.Add(item.Config);
             }
+
             UserItems = items;
 
             DialogResult = DialogResult.OK;
@@ -166,6 +251,19 @@ namespace Ratatoskr.PacketViews.Packet.Forms
         private void Btn_Cancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+        }
+
+        private void TBox_SelectItem_PacketFilter_TextChanged(object sender, EventArgs e)
+        {
+            var text = TBox_SelectItem_PacketFilter.Text;
+
+            if (text != "") {
+                TBox_SelectItem_PacketFilter.BackColor = (ExpressionCompiler.Compile(TBox_SelectItem_PacketFilter.Text) != null)
+                                                       ? (Resources.AppColors.PATTERN_OK)
+                                                       : (Resources.AppColors.PATTERN_NG);
+            } else {
+                TBox_SelectItem_PacketFilter.BackColor = Color.White;
+            }
         }
     }
 }

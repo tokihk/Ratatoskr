@@ -37,19 +37,39 @@ namespace Ratatoskr.PacketConverters.Separator
             Instance.UpdateConvertStatus();
         }
 
-        public virtual void OnInputStatusClear()
+        public void InputStatusClear()
+        {
+            OnInputStatusClear();
+        }
+
+        public void InputPacket(PacketObject input, ref List<PacketObject> output)
+        {
+            OnInputPacket(input, ref output);
+        }
+
+        public void InputBreak(ref List<PacketObject> output)
+        {
+            OnInputBreak(ref output);
+        }
+
+        public void InputPoll(ref List<PacketObject> output)
+        {
+            OnInputPoll(ref output);
+        }
+
+        protected virtual void OnInputStatusClear()
         {
         }
 
-        public virtual void OnInputPacket(PacketObject intput, ref List<PacketObject> output)
+        protected virtual void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
         }
 
-        public virtual void OnInputBreak(ref List<PacketObject> output)
+        protected virtual void OnInputBreak(ref List<PacketObject> output)
         {
         }
 
-        public virtual void OnInputPoll(ref List<PacketObject> output)
+        protected virtual void OnInputPoll(ref List<PacketObject> output)
         {
         }
     }

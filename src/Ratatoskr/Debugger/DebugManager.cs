@@ -37,6 +37,14 @@ namespace Ratatoskr.Debugger
         }
 
         [Conditional("DEBUG")]
+        public static void MessageOut(object obj, Channel channel = Channel.System)
+        {
+            if (obj == null)return;
+
+            debug_form_.AddMessage(obj.ToString());
+        }
+
+        [Conditional("DEBUG")]
         public static void StopWatchStart()
         {
             debug_timer_.Restart();

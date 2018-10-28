@@ -313,6 +313,8 @@ namespace Ratatoskr.Gate
 
             if (reader == null)return;
 
+            Debugger.DebugManager.MessageOut(string.Format("LoadPacketFile - Start [{0}]", Path.GetFileName(info.FilePath)));
+
             /* ファイルオープン */
             if (!reader.Open(info.Option, info.FilePath)) {
                 return;
@@ -325,6 +327,8 @@ namespace Ratatoskr.Gate
             }
 
             info.Reader.Close();
+
+            Debugger.DebugManager.MessageOut("LoadPacketFile - Complete");
         }
 
         public static void SavePacketFile(FileWriteTargetInfo info, IEnumerable<PacketConverterInstance> pcvt_list)

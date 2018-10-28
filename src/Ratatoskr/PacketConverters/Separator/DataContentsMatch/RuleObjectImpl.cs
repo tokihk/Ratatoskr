@@ -52,7 +52,9 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
         private DynamicPacketObject packet_busy_ = null;
         private PacketObject        packet_last_ = null;
 
+        private byte[][]             match_data_list_ = null;
         private PatternMatchObject[] match_objs_ = null;
+
         private Forms.Controls.RoundTextBox TBox_Value;
 
         public RuleObjectImpl()
@@ -155,7 +157,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
             Property.DataContentsMatchProperty.Pattern.Value = TBox_Value.Text;
         }
 
-        public override void OnInputStatusClear()
+        protected override void OnInputStatusClear()
         {
             /* マッチデータをリセット */
             if (match_objs_ != null) {
@@ -169,7 +171,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
             packet_last_ = null;
         }
 
-        public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
+        protected override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
             /* パターンが設定されていない場合はスルー */
             if ((match_objs_ == null) || (match_objs_.Length == 0)) {
@@ -225,7 +227,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
             }
         }
 
-        public override void OnInputBreak(ref List<PacketObject> output)
+        protected override void OnInputBreak(ref List<PacketObject> output)
         {
             if (packet_busy_ == null) {
                 return;

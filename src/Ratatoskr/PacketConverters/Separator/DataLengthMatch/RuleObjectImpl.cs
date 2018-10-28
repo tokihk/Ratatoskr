@@ -113,12 +113,12 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
             Property.DataLengthMatchProperty.Length.Value = Num_Value.Value;
         }
 
-        public override void OnInputStatusClear()
+        protected override void OnInputStatusClear()
         {
             packet_busy_ = null;
         }
 
-        public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
+        protected override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
             /* パターンが正しくない場合は無視 */
             if (match_length_ < 0) {
@@ -157,7 +157,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
             }
         }
 
-        public override void OnInputBreak(ref List<PacketObject> output)
+        protected override void OnInputBreak(ref List<PacketObject> output)
         {
             if (packet_busy_ == null) {
                 return;

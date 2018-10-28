@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Gate;
 using Ratatoskr.Packet;
-using Ratatoskr.Utility;
+using Ratatoskr.Scripts.BinaryCodeBuilder;
 
 namespace Ratatoskr.Api
 {
@@ -83,7 +83,7 @@ namespace Ratatoskr.Api
 
         public void API_SendData(string gate_alias, string bin_text)
         {
-            API_SendData(gate_alias, HexTextEncoder.ToByteArray(bin_text));
+            API_SendData(gate_alias, BinaryCodeCompiler.Run(bin_text));
         }
 
         public ApiTask_SendFile API_SendFileAsync(string gate_alias, string file_path, uint send_block_size = 1024, uint send_delay = 0)

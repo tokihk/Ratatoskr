@@ -47,5 +47,8 @@ namespace Ratatoskr.PacketViews.Packet
         public StringConfig CMenu_Packet_Copy_Data_ShiftJisText         { get; } = new StringConfig("Shift_JIS text");
         public StringConfig CMenu_Packet_Copy_Data_EucJpText            { get; } = new StringConfig("EUC-JP text");
         public StringConfig CMenu_Packet_Copy_Data_Custom               { get; } = new StringConfig("Custom preview format");
+
+        public StringConfig CMenu_Packet_Export                         { get; } = new StringConfig("Export to file");
+        public StringConfig CMenu_Packet_Export_Data                    { get; } = new StringConfig("Data");
     }
 }

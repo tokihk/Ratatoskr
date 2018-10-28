@@ -8,10 +8,14 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
+using Ratatoskr.Forms;
 using Ratatoskr.Forms.Controls;
 using Ratatoskr.Generic;
 using Ratatoskr.Packet;
 using Ratatoskr.Generic.Controls;
+using Ratatoskr.PacketViews.Packet.Configs;
+using Ratatoskr.Scripts.PacketFilterExp;
+using Ratatoskr.Scripts.PacketFilterExp.Parser;
 
 namespace Ratatoskr.PacketViews.Packet
 {
@@ -19,6 +23,39 @@ namespace Ratatoskr.PacketViews.Packet
     {
         private const ulong ITEM_NO_MIN = 1;
         private const ulong ITEM_NO_MAX = ulong.MaxValue;
+
+        private class PacketListColumnData
+        {
+            public ExpressionFilter     filter_obj_ = null;
+            public ExpressionCallStack  filter_cs_  = null;
+
+
+            public PacketListColumnData(ColumnHeaderConfig config)
+            {
+                Config = config;
+
+                filter_obj_ = ExpressionFilter.Build(config.PacketFilter);
+
+                Reset();
+            }
+
+            public ColumnHeaderConfig   Config { get; }
+
+            public void Reset()
+            {
+                if (filter_obj_ != null) {
+                    filter_cs_ = new ExpressionCallStack();
+                    filter_obj_.CallStack = filter_cs_;
+                }
+            }
+
+            public bool Input(PacketObject packet)
+            {
+                if (filter_obj_ == null)return (true);
+
+                return (filter_obj_.Input(packet));
+            }
+        }
 
         private class PacketListViewItem
         {
@@ -70,6 +107,7 @@ namespace Ratatoskr.PacketViews.Packet
             Copy_Packet_Data_LF_ShiftJisText,
             Copy_Packet_Data_LF_EucJpText,
             Copy_Packet_Data_LF_Custom,
+            Export_Packet_Data,
         }
 
         private ViewPropertyImpl prop_;
@@ -77,6 +115,8 @@ namespace Ratatoskr.PacketViews.Packet
 
         private readonly Regex format_regex_ = new Regex(@"\$\{(?<value>[^\}]*)\}", RegexOptions.Compiled);
         private PacketObject   format_packet_ = null;
+
+        private PacketListColumnData[] column_data_;
 
         private ulong next_item_no_ = 0;
 
@@ -158,6 +198,8 @@ namespace Ratatoskr.PacketViews.Packet
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripSeparator toolStripSeparator4;
         private ToolStripMenuItem CMenu_Packet_Copy_Class;
+        private ToolStripMenuItem CMenu_Packet_Export;
+        private ToolStripMenuItem CMenu_Packet_Export_Data;
         private TextBox TBox_CustomFormat;
 
 
@@ -230,6 +272,8 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_Copy_Data_EucJpText = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.CMenu_Packet_Copy_Data_Custom = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Export = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_Packet_Export_Data = new System.Windows.Forms.ToolStripMenuItem();
             this.Panel_ToolBar.SuspendLayout();
             this.GBox_CustomFormat.SuspendLayout();
             this.GBox_CharCode.SuspendLayout();
@@ -516,9 +560,10 @@ namespace Ratatoskr.PacketViews.Packet
             // CMenu_Packet
             // 
             this.CMenu_Packet.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CMenu_Packet_Copy});
+            this.CMenu_Packet_Copy,
+            this.CMenu_Packet_Export});
             this.CMenu_Packet.Name = "CMenu_Data";
-            this.CMenu_Packet.Size = new System.Drawing.Size(106, 26);
+            this.CMenu_Packet.Size = new System.Drawing.Size(155, 48);
             // 
             // CMenu_Packet_Copy
             // 
@@ -535,7 +580,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_Copy_DataLF,
             this.CMenu_Packet_Copy_Data});
             this.CMenu_Packet_Copy.Name = "CMenu_Packet_Copy";
-            this.CMenu_Packet_Copy.Size = new System.Drawing.Size(105, 22);
+            this.CMenu_Packet_Copy.Size = new System.Drawing.Size(154, 22);
             this.CMenu_Packet_Copy.Text = "Copy";
             // 
             // CMenu_Packet_Copy_AllInfo_Csv
@@ -802,6 +847,20 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_Copy_Data_Custom.Size = new System.Drawing.Size(215, 22);
             this.CMenu_Packet_Copy_Data_Custom.Text = "Custom preview format";
             // 
+            // CMenu_Packet_Export
+            // 
+            this.CMenu_Packet_Export.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CMenu_Packet_Export_Data});
+            this.CMenu_Packet_Export.Name = "CMenu_Packet_Export";
+            this.CMenu_Packet_Export.Size = new System.Drawing.Size(154, 22);
+            this.CMenu_Packet_Export.Text = "Export to File";
+            // 
+            // CMenu_Packet_Export_Data
+            // 
+            this.CMenu_Packet_Export_Data.Name = "CMenu_Packet_Export_Data";
+            this.CMenu_Packet_Export_Data.Size = new System.Drawing.Size(180, 22);
+            this.CMenu_Packet_Export_Data.Text = "Data";
+            // 
             // ViewInstanceImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -928,6 +987,7 @@ namespace Ratatoskr.PacketViews.Packet
             CMenu_Packet_Copy_DataLF_ShiftJisText.Text    = lang.CMenu_Packet_Copy_Data_ShiftJisText.Value;
             CMenu_Packet_Copy_DataLF_EucJpText.Text       = lang.CMenu_Packet_Copy_Data_EucJpText.Value;
             CMenu_Packet_Copy_DataLF_Custom.Text          = lang.CMenu_Packet_Copy_Data_Custom.Value;
+            CMenu_Packet_Export.Text                      = lang.CMenu_Packet_Export.Value;
 
             CMenu_Packet_Copy.Tag                        = null;
             CMenu_Packet_Copy_AllInfo_Csv.Tag            = MenuActionId.Copy_Packet_AllInfo_Csv;
@@ -961,6 +1021,7 @@ namespace Ratatoskr.PacketViews.Packet
             CMenu_Packet_Copy_DataLF_ShiftJisText.Tag    = MenuActionId.Copy_Packet_Data_LF_ShiftJisText;
             CMenu_Packet_Copy_DataLF_EucJpText.Tag       = MenuActionId.Copy_Packet_Data_LF_EucJpText;
             CMenu_Packet_Copy_DataLF_Custom.Tag          = MenuActionId.Copy_Packet_Data_LF_Custom;
+            CMenu_Packet_Export_Data.Tag                 = MenuActionId.Export_Packet_Data;
         }
 
         private void InitializePreviewDataSize(decimal size)
@@ -1197,18 +1258,21 @@ namespace Ratatoskr.PacketViews.Packet
                     }
                 );
 
-                foreach (var config in prop_.ColumnList.Value) {
+                /* 列要素をオブジェクト化 */
+                column_data_ = prop_.ColumnList.Value.Select(v => new PacketListColumnData(v)).ToArray();
+
+                foreach (var data in column_data_) {
                     LView_Main.Columns.Add(
                         new ColumnHeader()
                         {
-                            Text = GetListViewHeaderName(config.Type),
-                            Width = (int)config.Width,
-                            Tag = config.Type,
+                            Text = data.Config.Text,
+                            Width = (int)data.Config.Width,
                         }
                     );
                 }
             }
             LView_Main.EndUpdate();
+
         }
 
         private void BuildExtView()
@@ -1275,25 +1339,6 @@ namespace Ratatoskr.PacketViews.Packet
             LView_ExtInfo.EndUpdate();
 
             UpdateExtView();
-        }
-
-        private string GetListViewHeaderName(ColumnType type)
-        {
-            switch (type) {
-                case ColumnType.Class:                  return (ConfigManager.Language.PacketView.Packet.Column_Class.Value);
-                case ColumnType.Alias:                  return (ConfigManager.Language.PacketView.Packet.Column_Alias.Value);
-                case ColumnType.Datetime_UTC:           return (ConfigManager.Language.PacketView.Packet.Column_Datetime_UTC.Value);
-                case ColumnType.Datetime_Local:         return (ConfigManager.Language.PacketView.Packet.Column_Datetime_Local.Value);
-                case ColumnType.Mark:                   return (ConfigManager.Language.PacketView.Packet.Column_Mark.Value);
-                case ColumnType.Information:            return (ConfigManager.Language.PacketView.Packet.Column_Information.Value);
-                case ColumnType.Source:                 return (ConfigManager.Language.PacketView.Packet.Column_Source.Value);
-                case ColumnType.Destination:            return (ConfigManager.Language.PacketView.Packet.Column_Destination.Value);
-                case ColumnType.DataLength:             return (ConfigManager.Language.PacketView.Packet.Column_DataLength.Value);
-                case ColumnType.DataPreviewBinary:      return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewBinary.Value);
-                case ColumnType.DataPreviewText:        return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewText.Value);
-                case ColumnType.DataPreviewCustom:      return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewCustom.Value);
-                default:                                return ("Unknown");
-            }
         }
 
         private string DataPacketToCustomText(PacketObject packet)
@@ -1388,17 +1433,21 @@ namespace Ratatoskr.PacketViews.Packet
 
         private void PacketToListViewItem_Message(ListViewItem item, PacketObject packet)
         {
-            foreach (var config in prop_.ColumnList.Value) {
-                switch (config.Type) {
-                    case ColumnType.DataPreviewBinary:
-                    case ColumnType.DataPreviewText:
-                    case ColumnType.DataPreviewCustom:
-                        item.SubItems.Add(packet.Message);
-                        break;
+            foreach (var config in column_data_) {
+                if (config.Input(packet)) {
+                    switch (config.Config.Type) {
+                        case ColumnType.DataPreviewBinary:
+                        case ColumnType.DataPreviewText:
+                        case ColumnType.DataPreviewCustom:
+                            item.SubItems.Add(packet.Message);
+                            break;
 
-                    default:
-                        PacketToListViewItem_Common(config.Type, item, packet);
-                        break;
+                        default:
+                            PacketToListViewItem_Common(config.Config.Type, item, packet);
+                            break;
+                    }
+                } else {
+                    item.SubItems.Add("");
                 }
             }
 
@@ -1408,35 +1457,39 @@ namespace Ratatoskr.PacketViews.Packet
 
         private void PacketToListViewItem_Data(ListViewItem item, PacketObject packet)
         {
-            foreach (var config in prop_.ColumnList.Value) {
-                switch (config.Type) {
-                    case ColumnType.Source:
-                        item.SubItems.Add(packet.Source);
-                        break;
+            foreach (var config in column_data_) {
+                if (config.Input(packet)) {
+                    switch (config.Config.Type) {
+                        case ColumnType.Source:
+                            item.SubItems.Add(packet.Source);
+                            break;
 
-                    case ColumnType.Destination:
-                        item.SubItems.Add(packet.Destination);
-                        break;
+                        case ColumnType.Destination:
+                            item.SubItems.Add(packet.Destination);
+                            break;
 
-                    case ColumnType.DataLength:
-                        item.SubItems.Add(packet.DataLength.ToString());
-                        break;
+                        case ColumnType.DataLength:
+                            item.SubItems.Add(packet.DataLength.ToString());
+                            break;
 
-                    case ColumnType.DataPreviewBinary:
-                        item.SubItems.Add(packet.DataToHexString(0, (int)prop_.PreviewDataSize.Value, " "));
-                        break;
+                        case ColumnType.DataPreviewBinary:
+                            item.SubItems.Add(packet.DataToHexString(0, (int)prop_.PreviewDataSize.Value, " "));
+                            break;
 
-                    case ColumnType.DataPreviewText:
-                        item.SubItems.Add(encoder_.GetString(packet.GetBytes(0, (int)prop_.PreviewDataSize.Value).ToArray()));
-                        break;
+                        case ColumnType.DataPreviewText:
+                            item.SubItems.Add(encoder_.GetString(packet.GetBytes(0, (int)prop_.PreviewDataSize.Value).ToArray()));
+                            break;
 
-                    case ColumnType.DataPreviewCustom:
-                        item.SubItems.Add(DataPacketToCustomText(packet));
-                        break;
+                        case ColumnType.DataPreviewCustom:
+                            item.SubItems.Add(DataPacketToCustomText(packet));
+                            break;
 
-                    default:
-                        PacketToListViewItem_Common(config.Type, item, packet);
-                        break;
+                        default:
+                            PacketToListViewItem_Common(config.Config.Type, item, packet);
+                            break;
+                    }
+                } else {
+                    item.SubItems.Add("");
                 }
             }
 
@@ -1536,6 +1589,24 @@ namespace Ratatoskr.PacketViews.Packet
             return (str.ToString());
         }
 
+        private void ExportSelectPacketsData(string file_path)
+        {
+            if (file_path == null)return;
+
+            try {
+                using (var file = File.Open(file_path, FileMode.Create)) {
+                    var data = (byte[])null;
+
+                    foreach (var item_info in GetSelectItems()) {
+                        data = item_info.Packet.Data;
+
+                        file.Write(data, 0, data.Length);
+                    }
+                }
+            } catch {
+            }
+        }
+
         protected override void OnBackupProperty()
         {
             /* PreviewDataSize */
@@ -1565,6 +1636,11 @@ namespace Ratatoskr.PacketViews.Packet
             LView_Main.ItemCountMax = (int)ConfigManager.System.ApplicationCore.Packet_ViewPacketCountLimit.Value;
 
             next_item_no_ = 1;
+
+            /* 列毎のパケットフィルターの状態をリセット */
+            if (column_data_ != null) {
+                Array.ForEach(column_data_, data => data.Reset());
+            }
         }
 
         protected override void OnDrawPacketBegin(bool auto_scroll)
@@ -1606,7 +1682,7 @@ namespace Ratatoskr.PacketViews.Packet
             /* 項目編集画面を表示 */
             var dialog = new Forms.ColumnHeaderEditForm(
                                     (IEnumerable<ColumnType>)Enum.GetValues(typeof(ColumnType)),
-                                    prop_.ColumnList.Value.Select(obj => obj.Type));
+                                    prop_.ColumnList.Value);
 
             if (dialog.ShowDialog() != DialogResult.OK)return;
 
@@ -1849,6 +1925,12 @@ namespace Ratatoskr.PacketViews.Packet
                         case MenuActionId.Copy_Packet_Data_LF_Custom:
                         {
                             Clipboard.SetText(GetPacketInfoCustomFromSelectPackets(Environment.NewLine), TextDataFormat.Text);
+                        }
+                            break;
+
+                        case MenuActionId.Export_Packet_Data:
+                        {
+                            ExportSelectPacketsData(FormUiManager.AnyFileSave());
                         }
                             break;
                     }

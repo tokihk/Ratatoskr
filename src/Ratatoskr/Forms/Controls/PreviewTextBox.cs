@@ -11,7 +11,7 @@ using Ratatoskr.Native;
 
 namespace Ratatoskr.Forms.Controls
 {
-    internal partial class PreviewLabel : Form
+    internal partial class PreviewTextBox : Form
     {
         private class LabelEx : Label
         {
@@ -39,7 +39,7 @@ namespace Ratatoskr.Forms.Controls
         private LabelEx label_main_ = new LabelEx();
 
 
-        public PreviewLabel()
+        public PreviewTextBox()
         {
             InitializeComponent();
 
@@ -96,7 +96,7 @@ namespace Ratatoskr.Forms.Controls
         public string Label_Text
         {
             get { return (label_main_.Text); }
-            set { label_main_.Text = (value != null) ? (value) : ("");  }
+            set { label_main_.Text = value;  }
         }
     }
 }

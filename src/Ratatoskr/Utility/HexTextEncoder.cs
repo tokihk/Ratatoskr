@@ -66,7 +66,7 @@ namespace Ratatoskr.Utility
         
         private enum ParseMode { HexData, TextData, CharCode }
 
-        public static string ParseHexText(string text, bool parse_special_code)
+        public static string ParseCodeText(string text, bool parse_special_code)
         {
             const string CODELIST_DIG   = "0123456789ABCDEF";
             const char   CODELIST_SPACE = ' ';              // 
@@ -200,6 +200,120 @@ namespace Ratatoskr.Utility
             }
 
             return (collector.ToString());
+        }
+
+
+        private enum ToBinaryMode
+        {
+            Binary,
+            String,
+            StringCodeSelect,
+            Macro,
+        }
+
+        private class ToBinaryStatus
+        {
+            private string       parse_text_;
+            private int          parse_index_ = 0;
+            private ToBinaryMode parse_mode_ = ToBinaryMode.Binary;
+
+            private Queue<byte>  result_data_ = new Queue<byte>();
+
+
+            public ToBinaryStatus(string text)
+            {
+                parse_text_ = text;
+            }
+
+            public bool Error    { get; set; } = false;
+
+            public bool Complete
+            {
+                get { return ((Error) || (parse_index_ >= parse_text_.Length)); }
+            }
+
+            public ToBinaryMode Mode { get; set; } = ToBinaryMode.Binary;
+
+            public bool PopCode(ref char code)
+            {
+                if (parse_index_ >= parse_text_.Length)return (false);
+
+                code = parse_text_[parse_index_++];
+
+                return (true);
+            }
+
+            public void AddResultData(byte data)
+            {
+                result_data_.Enqueue(data);
+            }
+
+            public void AddResultData(IEnumerable<byte> data)
+            {
+                foreach (var data_one in data) {
+                    result_data_.Enqueue(data_one);
+                }
+            }
+
+            public byte[] GetResultData()
+            {
+                var result = result_data_.ToArray();
+
+                result_data_.Clear();
+
+                return (result);
+            }
+        }
+
+#if false
+        private static byte[] ToBinary(ToBinaryStatus status)
+        {
+
+        }
+
+        private static byte[] ToBinary(string text)
+        {
+            var status = new ToBinaryStatus(text);
+
+            for (cs.ParseIndex = 0; cs.ParseIndex < text.Length; cs.pa++) {
+
+            }
+        }
+
+        public static byte[][] ToBinaryMap(string text)
+        {
+
+        }
+#endif
+
+        public static byte[] ToBinary(string hex_string)
+        {
+            const string CODELIST_DIG = "0123456789ABCDEF";
+
+            var data = new byte[(hex_string.Length + 1) / 2];
+            var data_size = 0;
+
+            var hex_data_value = (byte)0;
+            var hex_data_exist = false;
+
+            hex_string = hex_string.ToUpper();
+
+            foreach (var code in hex_string) {
+                hex_data_value = (byte)((hex_data_value << 4) | CODELIST_DIG.IndexOf(code));
+
+                if (hex_data_exist) {
+                    data[data_size++] = hex_data_value;
+                    hex_data_value = 0;
+                }
+
+                hex_data_exist = !hex_data_exist;
+            }
+
+            if (hex_data_exist) {
+                data[data_size] = hex_data_value;
+            }
+
+            return (data);
         }
 
         public static byte[][] ToByteArrayMap(string text)

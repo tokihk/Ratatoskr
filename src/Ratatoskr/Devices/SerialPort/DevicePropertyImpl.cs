@@ -37,6 +37,11 @@ namespace Ratatoskr.Devices.SerialPort
         public IntegerConfig        XonChar  { get; } = new IntegerConfig(0x11);
         public IntegerConfig        XoffChar { get; } = new IntegerConfig(0x13);
 
+        public BoolConfig           SimplexMode         { get; } = new BoolConfig(false);
+        public IntegerConfig        SendByteWaitTimer   { get; } = new IntegerConfig(0);
+        public IntegerConfig        SendPacketWaitTimer { get; } = new IntegerConfig(0);
+        public IntegerConfig        RecvHoldTimer       { get; } = new IntegerConfig(0);
+
 
         public override DeviceProperty Clone()
         {

@@ -26,7 +26,7 @@ namespace Ratatoskr.Forms.OptionEditForm
             Num_Packet_ViewPacketCountLimit.Value = Math.Min(Math.Max(Config.Packet_ViewPacketCountLimit, Num_RawPacketCountLimit.Minimum), Num_RawPacketCountLimit.Maximum);
 
             ChkBox_Sequential_ViewCharCountLimit.Checked = Config.Sequential_ViewCharCountLimitEnable;
-            Num_Sequential_ViewCharCountLimit.Value = Math.Min(Math.Max(Config.Packet_ViewPacketCountLimit, Num_RawPacketCountLimit.Minimum), Num_RawPacketCountLimit.Maximum);
+            Num_Sequential_ViewCharCountLimit.Value = Math.Min(Math.Max(Config.Sequential_ViewCharCountLimit, Num_RawPacketCountLimit.Minimum), Num_RawPacketCountLimit.Maximum);
             ChkBox_Sequential_WinApiMode.Checked = Config.Sequential_WinApiMode;
             ChkBox_Sequential_LineNumberVisible.Checked = Config.Sequential_LineNoVisible;
 

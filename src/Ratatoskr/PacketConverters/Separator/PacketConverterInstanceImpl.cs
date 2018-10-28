@@ -244,7 +244,7 @@ namespace Ratatoskr.PacketConverters.Separator
 
             packet_last_ = null;
 
-            rule_obj_.OnInputStatusClear();
+            rule_obj_.InputStatusClear();
         }
 
         protected override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
@@ -259,7 +259,7 @@ namespace Ratatoskr.PacketConverters.Separator
             if (   (prop_.EventDetectDivide.Value)
                 && (input.Attribute == PacketAttribute.Message)
             ) {
-                rule_obj_.OnInputBreak(ref output);
+                rule_obj_.InputBreak(ref output);
             }
 
             /* データパケット以外はスルー */
@@ -273,11 +273,11 @@ namespace Ratatoskr.PacketConverters.Separator
                 && (packet_last_ != null)
                 && (packet_last_.Direction != input.Direction)
             ) {
-                rule_obj_.OnInputBreak(ref output);
+                rule_obj_.InputBreak(ref output);
             }
 
             /* ターゲットオブジェクトに変換を任せる */
-            rule_obj_.OnInputPacket(input, ref output);
+            rule_obj_.InputPacket(input, ref output);
 
             /* 最終処理パケットを記憶 */
             packet_last_ = input;
@@ -289,7 +289,7 @@ namespace Ratatoskr.PacketConverters.Separator
             if (rule_obj_ == null)return;
 
             /* ターゲットオブジェクトに変換を任せる */
-            rule_obj_.OnInputBreak(ref output);
+            rule_obj_.InputBreak(ref output);
         }
 
         protected override void OnInputPoll(ref List<PacketObject> output)
@@ -298,7 +298,7 @@ namespace Ratatoskr.PacketConverters.Separator
             if (rule_obj_ == null)return;
 
             /* ターゲットオブジェクトに変換を任せる */
-            rule_obj_.OnInputPoll(ref output);
+            rule_obj_.InputPoll(ref output);
         }
 
         private void CBox_TargetList_SelectedIndexChanged(object sender, EventArgs e)
@@ -323,9 +323,7 @@ namespace Ratatoskr.PacketConverters.Separator
 
         private void OptionMenu_Click(object sender, EventArgs e)
         {
-            var menu = sender as ToolStripMenuItem;
-
-            if (menu != null) {
+            if (sender is ToolStripMenuItem menu) {
                 menu.Checked = !menu.Checked;
 
                 BackupProperty();

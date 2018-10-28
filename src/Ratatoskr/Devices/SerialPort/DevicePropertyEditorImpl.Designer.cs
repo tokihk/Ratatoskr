@@ -36,14 +36,28 @@
             this.GBox_StopBits = new System.Windows.Forms.GroupBox();
             this.CBox_StopBits = new System.Windows.Forms.ComboBox();
             this.GBox_FlowControl = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.Num_ReceiveHoldTimer = new System.Windows.Forms.NumericUpDown();
+            this.Num_DataSendInterval_Packet = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
+            this.Num_DataSendInterval_Byte = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.GBox_XoffLim = new System.Windows.Forms.GroupBox();
             this.Num_XoffLim = new System.Windows.Forms.NumericUpDown();
             this.GBox_XonLim = new System.Windows.Forms.GroupBox();
             this.Num_XonLim = new System.Windows.Forms.NumericUpDown();
             this.GBox_XoffChar = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.Num_XoffChar = new System.Windows.Forms.NumericUpDown();
             this.ChkBox_fTXContinueOnXoff = new System.Windows.Forms.CheckBox();
             this.GBox_XonChar = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.Num_XonChar = new System.Windows.Forms.NumericUpDown();
             this.ChkBox_fInX = new System.Windows.Forms.CheckBox();
             this.ChkBox_fOutX = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -57,29 +71,30 @@
             this.ChkBox_fOutxCtsFlow = new System.Windows.Forms.CheckBox();
             this.GBox_PortList = new System.Windows.Forms.GroupBox();
             this.CBox_PortList = new System.Windows.Forms.ComboBox();
-            this.Num_XonChar = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.Num_XoffChar = new System.Windows.Forms.NumericUpDown();
+            this.ChkBox_SimplexMode = new System.Windows.Forms.CheckBox();
             this.GBox_BaudRate.SuspendLayout();
             this.GBox_Parity.SuspendLayout();
             this.GBox_DataBits.SuspendLayout();
             this.GBox_StopBits.SuspendLayout();
             this.GBox_FlowControl.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_ReceiveHoldTimer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_DataSendInterval_Packet)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_DataSendInterval_Byte)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.GBox_XoffLim.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_XoffLim)).BeginInit();
             this.GBox_XonLim.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_XonLim)).BeginInit();
             this.GBox_XoffChar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_XoffChar)).BeginInit();
             this.GBox_XonChar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_XonChar)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.GBox_fDtrControl.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GBox_fRtsControl.SuspendLayout();
             this.GBox_PortList.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Num_XonChar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Num_XoffChar)).BeginInit();
             this.SuspendLayout();
             // 
             // GBox_BaudRate
@@ -163,15 +178,143 @@
             // 
             // GBox_FlowControl
             // 
+            this.GBox_FlowControl.Controls.Add(this.groupBox4);
             this.GBox_FlowControl.Controls.Add(this.groupBox3);
             this.GBox_FlowControl.Controls.Add(this.groupBox2);
             this.GBox_FlowControl.Controls.Add(this.groupBox1);
             this.GBox_FlowControl.Location = new System.Drawing.Point(210, 52);
             this.GBox_FlowControl.Name = "GBox_FlowControl";
-            this.GBox_FlowControl.Size = new System.Drawing.Size(413, 245);
+            this.GBox_FlowControl.Size = new System.Drawing.Size(413, 373);
             this.GBox_FlowControl.TabIndex = 4;
             this.GBox_FlowControl.TabStop = false;
             this.GBox_FlowControl.Text = "Option";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.ChkBox_SimplexMode);
+            this.groupBox4.Controls.Add(this.label8);
+            this.groupBox4.Controls.Add(this.label7);
+            this.groupBox4.Controls.Add(this.Num_ReceiveHoldTimer);
+            this.groupBox4.Controls.Add(this.Num_DataSendInterval_Packet);
+            this.groupBox4.Controls.Add(this.label6);
+            this.groupBox4.Controls.Add(this.Num_DataSendInterval_Byte);
+            this.groupBox4.Controls.Add(this.label5);
+            this.groupBox4.Controls.Add(this.label4);
+            this.groupBox4.Controls.Add(this.label3);
+            this.groupBox4.Location = new System.Drawing.Point(13, 244);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(346, 122);
+            this.groupBox4.TabIndex = 15;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Others";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(295, 93);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(32, 12);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "msec";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(295, 69);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(32, 12);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "msec";
+            // 
+            // Num_ReceiveHoldTimer
+            // 
+            this.Num_ReceiveHoldTimer.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.Num_ReceiveHoldTimer.Location = new System.Drawing.Point(209, 90);
+            this.Num_ReceiveHoldTimer.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.Num_ReceiveHoldTimer.Name = "Num_ReceiveHoldTimer";
+            this.Num_ReceiveHoldTimer.Size = new System.Drawing.Size(80, 19);
+            this.Num_ReceiveHoldTimer.TabIndex = 6;
+            this.Num_ReceiveHoldTimer.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // Num_DataSendInterval_Packet
+            // 
+            this.Num_DataSendInterval_Packet.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.Num_DataSendInterval_Packet.Location = new System.Drawing.Point(209, 65);
+            this.Num_DataSendInterval_Packet.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.Num_DataSendInterval_Packet.Name = "Num_DataSendInterval_Packet";
+            this.Num_DataSendInterval_Packet.Size = new System.Drawing.Size(80, 19);
+            this.Num_DataSendInterval_Packet.TabIndex = 5;
+            this.Num_DataSendInterval_Packet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(295, 44);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(32, 12);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "msec";
+            // 
+            // Num_DataSendInterval_Byte
+            // 
+            this.Num_DataSendInterval_Byte.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.Num_DataSendInterval_Byte.Location = new System.Drawing.Point(209, 40);
+            this.Num_DataSendInterval_Byte.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.Num_DataSendInterval_Byte.Name = "Num_DataSendInterval_Byte";
+            this.Num_DataSendInterval_Byte.Size = new System.Drawing.Size(80, 19);
+            this.Num_DataSendInterval_Byte.TabIndex = 3;
+            this.Num_DataSendInterval_Byte.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(9, 93);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(153, 12);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "Receive Hold Timer (Packet)";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(9, 69);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(147, 12);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Data Send Interval (Packet)";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(9, 44);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(136, 12);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Data Send Interval (Byte)";
             // 
             // groupBox3
             // 
@@ -255,6 +398,36 @@
             this.GBox_XoffChar.TabStop = false;
             this.GBox_XoffChar.Text = "XoffChar";
             // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(7, 14);
+            this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(18, 18);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "0x";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Num_XoffChar
+            // 
+            this.Num_XoffChar.Hexadecimal = true;
+            this.Num_XoffChar.Location = new System.Drawing.Point(25, 15);
+            this.Num_XoffChar.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.Num_XoffChar.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.Num_XoffChar.Name = "Num_XoffChar";
+            this.Num_XoffChar.Size = new System.Drawing.Size(49, 19);
+            this.Num_XoffChar.TabIndex = 2;
+            this.Num_XoffChar.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_XoffChar.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            // 
             // ChkBox_fTXContinueOnXoff
             // 
             this.ChkBox_fTXContinueOnXoff.AutoSize = true;
@@ -275,6 +448,36 @@
             this.GBox_XonChar.TabIndex = 9;
             this.GBox_XonChar.TabStop = false;
             this.GBox_XonChar.Text = "XonChar";
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(7, 15);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(18, 18);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "0x";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Num_XonChar
+            // 
+            this.Num_XonChar.Hexadecimal = true;
+            this.Num_XonChar.Location = new System.Drawing.Point(25, 16);
+            this.Num_XonChar.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.Num_XonChar.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.Num_XonChar.Name = "Num_XonChar";
+            this.Num_XonChar.Size = new System.Drawing.Size(49, 19);
+            this.Num_XonChar.TabIndex = 0;
+            this.Num_XonChar.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Num_XonChar.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
             // 
             // ChkBox_fInX
             // 
@@ -409,65 +612,15 @@
             this.CBox_PortList.Size = new System.Drawing.Size(401, 20);
             this.CBox_PortList.TabIndex = 0;
             // 
-            // Num_XonChar
+            // ChkBox_SimplexMode
             // 
-            this.Num_XonChar.Hexadecimal = true;
-            this.Num_XonChar.Location = new System.Drawing.Point(25, 16);
-            this.Num_XonChar.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
-            this.Num_XonChar.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.Num_XonChar.Name = "Num_XonChar";
-            this.Num_XonChar.Size = new System.Drawing.Size(49, 19);
-            this.Num_XonChar.TabIndex = 0;
-            this.Num_XonChar.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Num_XonChar.Value = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(7, 15);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(18, 18);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "0x";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(7, 14);
-            this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(18, 18);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "0x";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // Num_XoffChar
-            // 
-            this.Num_XoffChar.Hexadecimal = true;
-            this.Num_XoffChar.Location = new System.Drawing.Point(25, 15);
-            this.Num_XoffChar.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
-            this.Num_XoffChar.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.Num_XoffChar.Name = "Num_XoffChar";
-            this.Num_XoffChar.Size = new System.Drawing.Size(49, 19);
-            this.Num_XoffChar.TabIndex = 2;
-            this.Num_XoffChar.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Num_XoffChar.Value = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+            this.ChkBox_SimplexMode.AutoSize = true;
+            this.ChkBox_SimplexMode.Location = new System.Drawing.Point(11, 18);
+            this.ChkBox_SimplexMode.Name = "ChkBox_SimplexMode";
+            this.ChkBox_SimplexMode.Size = new System.Drawing.Size(196, 16);
+            this.ChkBox_SimplexMode.TabIndex = 10;
+            this.ChkBox_SimplexMode.Text = "Simplex Mode (Loop back cancel)";
+            this.ChkBox_SimplexMode.UseVisualStyleBackColor = true;
             // 
             // DevicePropertyEditorImpl
             // 
@@ -480,12 +633,17 @@
             this.Controls.Add(this.GBox_Parity);
             this.Controls.Add(this.GBox_BaudRate);
             this.Name = "DevicePropertyEditorImpl";
-            this.Size = new System.Drawing.Size(632, 306);
+            this.Size = new System.Drawing.Size(632, 434);
             this.GBox_BaudRate.ResumeLayout(false);
             this.GBox_Parity.ResumeLayout(false);
             this.GBox_DataBits.ResumeLayout(false);
             this.GBox_StopBits.ResumeLayout(false);
             this.GBox_FlowControl.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_ReceiveHoldTimer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_DataSendInterval_Packet)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Num_DataSendInterval_Byte)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.GBox_XoffLim.ResumeLayout(false);
@@ -493,7 +651,9 @@
             this.GBox_XonLim.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Num_XonLim)).EndInit();
             this.GBox_XoffChar.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Num_XoffChar)).EndInit();
             this.GBox_XonChar.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Num_XonChar)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.GBox_fDtrControl.ResumeLayout(false);
@@ -501,8 +661,6 @@
             this.groupBox1.PerformLayout();
             this.GBox_fRtsControl.ResumeLayout(false);
             this.GBox_PortList.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Num_XonChar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Num_XoffChar)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -543,5 +701,16 @@
         private System.Windows.Forms.NumericUpDown Num_XonChar;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown Num_XoffChar;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.NumericUpDown Num_ReceiveHoldTimer;
+        private System.Windows.Forms.NumericUpDown Num_DataSendInterval_Packet;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown Num_DataSendInterval_Byte;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox ChkBox_SimplexMode;
     }
 }

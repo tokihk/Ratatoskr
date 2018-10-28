@@ -10,27 +10,7 @@ namespace Ratatoskr.PacketViews.Packet.Configs
 {
     internal sealed class ColumnHeaderConfig
     {
-        public ColumnType Type  { get; set; } = ColumnType.Alias;
-        public uint       Width { get; set; } = 0;
-
-
-        public ColumnHeaderConfig(ColumnType type, uint width)
-        {
-            Type = type;
-            Width = width;
-        }
-
-        public ColumnHeaderConfig(ColumnType type)
-        {
-            Type = type;
-            Width = GetInitWidth(type);
-        }
-
-        public ColumnHeaderConfig()
-        {
-        }
-
-        public static uint GetInitWidth(ColumnType type)
+        public static uint GetDefaultWidth(ColumnType type)
         {
             switch (type) {
                 case ColumnType.Class:                  return (80);
@@ -46,6 +26,58 @@ namespace Ratatoskr.PacketViews.Packet.Configs
                 case ColumnType.DataPreviewCustom:      return (320);
                 default:                                return (150);
             }
+        }
+
+        private static string GetDefaultDisplayText(ColumnType type)
+        {
+            switch (type) {
+                case ColumnType.Class:              return (ConfigManager.Language.PacketView.Packet.Column_Class.Value);
+                case ColumnType.Alias:              return (ConfigManager.Language.PacketView.Packet.Column_Alias.Value);
+                case ColumnType.Datetime_UTC:       return (ConfigManager.Language.PacketView.Packet.Column_Datetime_UTC.Value);
+                case ColumnType.Datetime_Local:     return (ConfigManager.Language.PacketView.Packet.Column_Datetime_Local.Value);
+                case ColumnType.Information:        return (ConfigManager.Language.PacketView.Packet.Column_Information.Value);
+                case ColumnType.Mark:               return (ConfigManager.Language.PacketView.Packet.Column_Mark.Value);
+                case ColumnType.Source:             return (ConfigManager.Language.PacketView.Packet.Column_Source.Value);
+                case ColumnType.Destination:        return (ConfigManager.Language.PacketView.Packet.Column_Destination.Value);
+                case ColumnType.DataLength:         return (ConfigManager.Language.PacketView.Packet.Column_DataLength.Value);
+                case ColumnType.DataPreviewBinary:  return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewBinary.Value);
+                case ColumnType.DataPreviewText:    return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewText.Value);
+                case ColumnType.DataPreviewCustom:  return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewCustom.Value);
+                default:                            return (type.ToString());
+            }
+        }
+
+
+        public ColumnType Type         { get; set; } = ColumnType.Alias;
+        public string     Text         { get; set; } = "";
+        public uint       Width        { get; set; } = 0;
+        public string     PacketFilter { get; set; } = "";
+
+
+        public ColumnHeaderConfig(ColumnHeaderConfig obj)
+        {
+            Type = obj.Type;
+            Text = obj.Text;
+            Width = obj.Width;
+            PacketFilter = obj.PacketFilter;
+        }
+
+        public ColumnHeaderConfig(ColumnType type, uint width)
+        {
+            Type = type;
+            Text = GetDefaultDisplayText(type);
+            Width = width;
+        }
+
+        public ColumnHeaderConfig(ColumnType type)
+        {
+            Type = type;
+            Text = GetDefaultDisplayText(type);
+            Width = GetDefaultWidth(type);
+        }
+
+        public ColumnHeaderConfig()
+        {
         }
     }
 
@@ -92,7 +124,18 @@ namespace Ratatoskr.PacketViews.Packet.Configs
 
             /* パラメータ読み込み */
             newobj.Type = (ColumnType)Enum.Parse(typeof(ColumnType), xml_node.GetAttribute("type"));
-            newobj.Width = uint.Parse(xml_node.GetAttribute("width"));
+
+            newobj.Width = (xml_node.HasAttribute("width"))
+                         ? (uint.Parse(xml_node.GetAttribute("width")))
+                         : (ColumnHeaderConfig.GetDefaultWidth(newobj.Type));
+
+            newobj.Text = (xml_node.HasAttribute("text"))
+                        ? (xml_node.GetAttribute("text"))
+                        : (newobj.Type.ToString());
+
+            newobj.PacketFilter = (xml_node.HasAttribute("packet-filter"))
+                                ? (xml_node.GetAttribute("packet-filter"))
+                                : ("");
 
             /* 設定リストへ追加 */
             Value.Add(newobj);
@@ -105,6 +148,8 @@ namespace Ratatoskr.PacketViews.Packet.Configs
 
                 xml_data.SetAttribute("type", info.Type.ToString());
                 xml_data.SetAttribute("width", info.Width.ToString());
+                xml_data.SetAttribute("text", info.Text);
+                xml_data.SetAttribute("packet-filter", info.PacketFilter);
 
                 xml_own.AppendChild(xml_data);
             }

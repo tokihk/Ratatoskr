@@ -16,9 +16,19 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
 
         public override Image    Icon          { get; } = null;
 
-        public override bool     CanRead       { get; } = false;
+        public override bool     CanRead       { get; } = true;
         public override bool     CanWrite      { get; } = true;
 
+
+        public override FileFormatOption CreateReaderOption()
+        {
+            return (new FileFormatReaderOptionImpl());
+        }
+
+        public override FileFormatReader CreateReader()
+        {
+            return (new FileFormatReaderImpl(this));
+        }
 
         public override FileFormatWriter CreateWriter()
         {

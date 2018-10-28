@@ -53,6 +53,11 @@ namespace Ratatoskr.Devices.SerialPort
             Num_XoffLim.Value = devp_.XoffLim.Value;
             Num_XonChar.Value = devp_.XonChar.Value;
             Num_XoffChar.Value = devp_.XoffChar.Value;
+
+            ChkBox_SimplexMode.Checked = devp_.SimplexMode.Value;
+            Num_DataSendInterval_Byte.Value = devp_.SendByteWaitTimer.Value;
+            Num_DataSendInterval_Packet.Value = devp_.SendPacketWaitTimer.Value;
+            Num_ReceiveHoldTimer.Value = devp_.RecvHoldTimer.Value;
         }
 
         private void InitializePortList()
@@ -186,6 +191,11 @@ namespace Ratatoskr.Devices.SerialPort
             devp_.XoffLim.Value = Num_XoffLim.Value;
             devp_.XonChar.Value = Num_XonChar.Value;
             devp_.XoffChar.Value = Num_XoffChar.Value;
+
+            devp_.SimplexMode.Value = ChkBox_SimplexMode.Checked;
+            devp_.SendByteWaitTimer.Value = Num_DataSendInterval_Byte.Value;
+            devp_.SendPacketWaitTimer.Value = Num_DataSendInterval_Packet.Value;
+            devp_.RecvHoldTimer.Value = Num_ReceiveHoldTimer.Value;
         }
     }
 }

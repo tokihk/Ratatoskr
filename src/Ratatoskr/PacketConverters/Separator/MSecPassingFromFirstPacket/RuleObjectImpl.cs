@@ -113,13 +113,13 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
             Property.MSecPassingFromFirstPacketProperty.Interval.Value = Num_Value.Value;
         }
 
-        public override void OnInputStatusClear()
+        protected override void OnInputStatusClear()
         {
             packet_busy_ = null;
             dt_base_ = DateTime.MaxValue;
         }
 
-        public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
+        protected override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
             /* パターンが正しくない場合はスルー */
             if (match_interval_ < 0) {
@@ -160,7 +160,7 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
             packet_busy_ = null;
         }
 
-        public override void OnInputBreak(ref List<PacketObject> output)
+        protected override void OnInputBreak(ref List<PacketObject> output)
         {
             if (packet_busy_ == null)return;
 
@@ -175,7 +175,7 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
             packet_busy_ = null;
         }
 
-        public override void OnInputPoll(ref List<PacketObject> output)
+        protected override void OnInputPoll(ref List<PacketObject> output)
         {
             if (packet_busy_ == null)return;
 

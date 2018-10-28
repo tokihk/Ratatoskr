@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define BINARY_CODE_PARSER
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -10,6 +12,7 @@ using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms.Controls;
 using Ratatoskr.Resources;
+using Ratatoskr.Scripts.BinaryCodeBuilder;
 using Ratatoskr.Utility;
 
 namespace Ratatoskr.Forms.MainWindow
@@ -114,7 +117,11 @@ namespace Ratatoskr.Forms.MainWindow
             send_data_exp_ = CBox_ExpList.Text;
 
             if (send_data_exp_.Length > 0) {
+#if BINARY_CODE_PARSER
+                send_data_bin_ = BinaryCodeCompiler.Run(send_data_exp_);
+#else
                 send_data_bin_ = HexTextEncoder.ToByteArray(send_data_exp_);
+#endif
 
                 CBox_ExpList.BackColor = (send_data_bin_ != null)
                                        ? (AppColors.PATTERN_OK)
@@ -138,7 +145,7 @@ namespace Ratatoskr.Forms.MainWindow
             }
 
             /* 送信実行 */
-            Program.API.API_SendData(target, send_data_exp_);
+            Program.API.API_SendData(target, send_data_bin_);
 
             SendExecComplete(true);
         }

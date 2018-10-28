@@ -42,6 +42,7 @@ namespace Ratatoskr.Packet
         System,
         View,
         Device,
+        External,
     }
 
     public enum PacketPriority : byte

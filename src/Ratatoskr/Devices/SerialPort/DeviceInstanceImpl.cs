@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -19,10 +20,17 @@ namespace Ratatoskr.Devices.SerialPort
         private const uint LOOP_CONTINUOUS_LIMIT = 10;
         private const uint RECV_BUFFER_SIZE = 8192;
 
+        private DevicePropertyImpl prop_;
+
         private SerialPortController port_ = new SerialPortController();
 
         private object  send_sync_ = new object();
         private byte[]  send_buffer_;
+
+        private Stopwatch send_wait_timer_       = new Stopwatch();
+        private uint      send_wait_time_        = 0;
+
+        private Stopwatch recv_hold_timer_ = new Stopwatch();
 
 #if ASYNC_MODE
         private enum DeviceTaskEventType
@@ -70,28 +78,30 @@ namespace Ratatoskr.Devices.SerialPort
 
         protected override EventResult OnConnectStart()
         {
-            var prop = Property as DevicePropertyImpl;
+            prop_ = Property as DevicePropertyImpl;
 
-            port_.PortName = prop.PortName.Value;
-            port_.BaudRate = (uint)prop.BaudRate.Value;
-            port_.Parity = prop.Parity.Value;
-            port_.DataBits = (byte)prop.DataBits.Value;
-            port_.StopBits = prop.StopBits.Value;
+            port_.PortName = prop_.PortName.Value;
+            port_.BaudRate = (uint)prop_.BaudRate.Value;
+            port_.Parity = prop_.Parity.Value;
+            port_.DataBits = (byte)prop_.DataBits.Value;
+            port_.StopBits = prop_.StopBits.Value;
 
-            port_.fOutxCtsFlow = prop.fOutxCtsFlow.Value;
-            port_.fOutxDsrFlow = prop.fOutxDsrFlow.Value;
-            port_.fDsrSensitivity = prop.fDsrSensitivity.Value;
-            port_.fTXContinueOnXoff = prop.fTXContinueOnXoff.Value;
-            port_.fOutX = prop.fOutX.Value;
-            port_.fInX = prop.fInX.Value;
+            port_.fOutxCtsFlow = prop_.fOutxCtsFlow.Value;
+            port_.fOutxDsrFlow = prop_.fOutxDsrFlow.Value;
+            port_.fDsrSensitivity = prop_.fDsrSensitivity.Value;
+            port_.fTXContinueOnXoff = prop_.fTXContinueOnXoff.Value;
+            port_.fOutX = prop_.fOutX.Value;
+            port_.fInX = prop_.fInX.Value;
 
-            port_.fDtrControl = prop.fDtrControl.Value;
-            port_.fRtsControl = prop.fRtsControl.Value;
+            port_.fDtrControl = prop_.fDtrControl.Value;
+            port_.fRtsControl = prop_.fRtsControl.Value;
 
-            port_.XonLim = (ushort)prop.XonLim.Value;
-            port_.XoffLim = (ushort)prop.XoffLim.Value;
-            port_.XonChar = (sbyte)prop.XonChar.Value;
-            port_.XoffChar = (sbyte)prop.XoffChar.Value;
+            port_.XonLim = (ushort)prop_.XonLim.Value;
+            port_.XoffLim = (ushort)prop_.XoffLim.Value;
+            port_.XonChar = (sbyte)prop_.XonChar.Value;
+            port_.XoffChar = (sbyte)prop_.XoffChar.Value;
+
+            port_.SimplexMode = prop_.SimplexMode.Value;
 
             return (EventResult.Success);
         }
@@ -418,8 +428,27 @@ namespace Ratatoskr.Devices.SerialPort
 
             lock (send_sync_)
             {
+                /* 送信遅延中であればスキップ */
+                if (send_wait_timer_.IsRunning) {
+                    if (send_wait_timer_.ElapsedMilliseconds >= send_wait_time_) {
+                        send_wait_timer_.Stop();
+                    }
+                }
+
+                /* 受信中であればスキップ */
+                if (recv_hold_timer_.IsRunning) {
+                    if (recv_hold_timer_.ElapsedMilliseconds >= prop_.RecvHoldTimer.Value) {
+                        recv_hold_timer_.Stop();
+                    }
+                }
+
                 /* 送信中であればスキップ */
-                if (port_.IsWriteBusy)return;
+                if (   (port_.IsWriteBusy)
+                    || (send_wait_timer_.IsRunning)
+                    || (recv_hold_timer_.IsRunning)
+                ) {
+                    return;
+                }
 
                 /* 送信データ読込 */
                 if (send_buffer_ == null) {
@@ -431,8 +460,15 @@ namespace Ratatoskr.Devices.SerialPort
                     return;
                 }
 
+                var send_data = send_buffer_;
+
+                /* バイト単位の送信遅延が設定されている場合は1バイトずつ */
+                if (prop_.SendByteWaitTimer.Value > 0) {
+                    send_data = new byte[1] { send_buffer_[0] };
+                }
+
                 /* 送信開始 */
-                var send_size = port_.Write(send_buffer_);
+                var send_size = port_.Write(send_data);
 
                 if (send_size == 0)return;
 
@@ -482,6 +518,15 @@ namespace Ratatoskr.Devices.SerialPort
 
             /* セットできたデータを削除 */
             send_buffer_ = next_data;
+
+            /* 送信遅延を設定 */
+            send_wait_time_ = (uint)((send_buffer_ != null)
+                            ? (prop_.SendByteWaitTimer.Value)
+                            : (prop_.SendPacketWaitTimer.Value));
+
+            if (send_wait_time_ > 0) {
+                send_wait_timer_.Restart();
+            }
         }
 
         private void RecvComplete(byte[] recv_data, uint recv_size)
@@ -493,6 +538,11 @@ namespace Ratatoskr.Devices.SerialPort
 
             /* 通知 */
             NotifyRecvComplete("", "", "", recv_data);
+
+            /* 受信ホールドタイマー */
+            if (prop_.RecvHoldTimer.Value > 0) {
+                recv_hold_timer_.Restart();
+            }
         }
 
         private void CommEventMessage(string msg)

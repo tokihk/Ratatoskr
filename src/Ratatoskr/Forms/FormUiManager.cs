@@ -555,6 +555,30 @@ namespace Ratatoskr.Forms
             return (dialog.FileName);
         }
 
+        private delegate string AnyFileSaveDelegate(string init_dir);
+        public static string AnyFileSave(string init_dir = null)
+        {
+            if (InvokeRequired) {
+                return (Invoke((AnyFileSaveDelegate)AnyFileSave, init_dir) as string);
+            }
+
+            var dialog = new SaveFileDialog();
+
+            if (   (init_dir != null)
+                && (Directory.Exists(init_dir))
+            ) {
+                dialog.InitialDirectory = init_dir;
+            } else {
+                dialog.InitialDirectory = ConfigManager.GetCurrentDirectory();
+            }
+
+            dialog.CheckPathExists = true;
+
+            if (dialog.ShowDialog() != DialogResult.OK)return (null);
+
+            return (dialog.FileName);
+        }
+
         private delegate void PacketSaveDelegate(bool overwrite, bool rule);
         public static void PacketSave(bool overwrite, bool rule)
         {
