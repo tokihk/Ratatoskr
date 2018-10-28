@@ -5,7 +5,7 @@ set DIR_TARGET=src
 set DIR_OUTPUT=output
 
 set APP_NAME=Ratatoskr
-set APP_VERSION=0.4.0.0
+set APP_VERSION=0.5.0.0
 set OUTPUT_NAME=%APP_NAME%_%APP_VERSION%
 
 set BIN_INNOSETUP=C:\Program Files (x86)\Inno Setup 5\ISCC.exe
