@@ -393,8 +393,19 @@ blockquote {
 16進数表現で入力し、Enterキーで送信します。<br>
 3文字目もしくはスペースで別データとして認識します。<br></p>
 <p><code>Preview</code> にチェックを入れると実際に送信するデータを確認できます。<br></p>
-<p><code>'...'</code> で囲むと囲まれた文字を現在の文字コードで変換します。<br>
-<code>&lt;...&gt;</code> で囲むと文字コードを変更できます。(デフォルトはutf-8)<br></p>
+<p><code>#1234</code> のように#で始めると10進数(BigEndian)で認識します。
+<code>'...'</code> で囲むと囲まれた文字を現在の文字コードで変換します。<br>
+<code>&lt;...&gt;</code> で囲むと文字コードを変更できます。(デフォルトはutf-8)<br>
+組込み関数を使用することができます。<br></p>
+<h3 id="%E7%B5%84%E8%BE%BC%E3%81%BF%E9%96%A2%E6%95%B0">組込み関数</h3>
+<h4 id="random-int-vmin-vmax">$(random-int v_min, v_max)</h4>
+<p>v_minからv_maxの範囲で乱数を返します。<br>
+生成した乱数のデータ長は値に応じて可変します。<br></p>
+<h4 id="random-hex-lenmin-lenmax">$(random-hex len_min, len_max)</h4>
+<p>len_minからlen_maxの範囲の長さ(byte)のデータを返します。<br></p>
+<h4 id="repeat-value-count">$(repeat value, count)</h4>
+<p>valueをcount回繰り返します<br></p>
+<h3 id="%E5%85%A5%E5%8A%9B%E4%BE%8B">入力例</h3>
 <table>
 <thead>
 <tr>
@@ -422,6 +433,14 @@ blockquote {
 <tr>
 <td style="text-align:left"><code>02&lt;shift-jis&gt;'あいうえお'03</code></td>
 <td style="text-align:left"><code>02 82 A0 82 A2 82 A4 82 A6 82 A8 03</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>02$(random-hex #1, #5)03</code></td>
+<td style="text-align:left"><code>02 (1～5バイトのランダムデータ) 03</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>02$(repeat 112233, #2)03</code></td>
+<td style="text-align:left"><code>02 11 22 33 11 22 33 03</code></td>
 </tr>
 </tbody>
 </table>

@@ -9,6 +9,12 @@
 
 デバイス通信における通信タイミングや通信シーケンスを確認するのに適したビューです。
 
+## 表示データの設定
+
+パケットビューのヘッダーをクリックすることで、パケットビューに表示するデータを設定できます。<br>
+
+![image](../_images/ss-packet-view-packet-column-setting.png)
+
 ## Parameter
 
 ### Preview size
