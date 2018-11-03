@@ -7,7 +7,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
+using RtsCore.Framework.Device;
+using RtsCore.Generic;
 using NAudio.Wave;
 
 namespace Ratatoskr.Devices.AudioFile

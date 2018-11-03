@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RtsCore.Framework.PacketView;
 
 namespace Ratatoskr.PacketViews.Packet
 {
-    internal sealed class ViewClassImpl : ViewClass
+    internal sealed class PacketViewClassImpl : PacketViewClass
     {
         public static readonly Guid ClassID = new Guid("1DFB59E7-C7A7-458A-8E27-6ECF4BE8B41D");
 
 
-        public ViewClassImpl() : base(ClassID)
+        public PacketViewClassImpl() : base(ClassID)
         {
         }
 
@@ -27,17 +28,17 @@ namespace Ratatoskr.PacketViews.Packet
 
         public override Type GetPropertyType()
         {
-            return (typeof(ViewPropertyImpl));
+            return (typeof(PacketViewPropertyImpl));
         }
 
-        public override ViewProperty CreateProperty()
+        public override PacketViewProperty CreateProperty()
         {
-            return (new ViewPropertyImpl());
+            return (new PacketViewPropertyImpl());
         }
 
-        protected override ViewInstance OnCreateInstance(ViewManager viewm, Guid obj_id, ViewProperty viewp)
+        protected override PacketViewInstance OnCreateInstance(PacketViewManager viewm, Guid obj_id, PacketViewProperty viewp)
         {
-            return (new ViewInstanceImpl(viewm, this, viewp, obj_id));
+            return (new PacketViewInstanceImpl(viewm, this, viewp, obj_id));
         }
     }
 }

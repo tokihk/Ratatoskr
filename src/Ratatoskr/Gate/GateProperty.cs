@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Devices;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Gate
 {

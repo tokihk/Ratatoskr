@@ -5,8 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Ratatoskr.Configs;
-using Ratatoskr.Devices;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Gate
 {

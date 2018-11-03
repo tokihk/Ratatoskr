@@ -8,8 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ratatoskr.Native;
-using Ratatoskr.Generic;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Devices.Null
 {

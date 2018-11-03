@@ -9,11 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.PacketConverters;
-using Ratatoskr.PacketViews;
+using RtsCore.Framework.PacketConverter;
+using RtsCore.Framework.PacketView;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -152,7 +151,7 @@ namespace Ratatoskr.Forms.MainWindow
             DockPanel_Main.ClearDockContents();
         }
 
-        private void AddPacketView(Guid class_id, Guid obj_id, ViewProperty viewp, bool init)
+        private void AddPacketView(Guid class_id, Guid obj_id, PacketViewProperty viewp, bool init)
         {
             var viewc = FormTaskManager.CreatePacketView(class_id, obj_id, viewp);
 
@@ -169,7 +168,7 @@ namespace Ratatoskr.Forms.MainWindow
                                 viewc);
         }
 
-        public void AddPacketView(Guid class_id, ViewProperty viewp)
+        public void AddPacketView(Guid class_id, PacketViewProperty viewp)
         {
             /* メニューからビュー追加を選んだときはすぐに初期化 */
             AddPacketView(class_id, Guid.NewGuid(), viewp, true);
@@ -182,7 +181,7 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void DockPanel_Main_DockContentClosed(object sender, Control control, FormClosedEventArgs e)
         {
-            var viewc = control as ViewControl;
+            var viewc = control as PacketViewControl;
 
             if (viewc == null)return;
 

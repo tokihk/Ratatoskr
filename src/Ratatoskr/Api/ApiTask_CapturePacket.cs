@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using Ratatoskr.Packet;
-using Ratatoskr.Scripts.PacketFilterExp;
+using RtsCore.Packet;
+using RtsCore.Framework.Packet.Filter;
 
 namespace Ratatoskr.Api
 {
@@ -15,7 +15,7 @@ namespace Ratatoskr.Api
         private bool run_state_ = false;
         private bool cancel_req_ = false;
 
-        private ExpressionFilter filter_obj_ = null;
+        private PacketFilterController filter_obj_ = null;
 
         public string                     CaptureFilter { get; }
         public ApiSandbox.WatchPacketType CaptureTarget { get; }
@@ -66,7 +66,7 @@ namespace Ratatoskr.Api
             DetectPacketCount = 0;
 
             /* フィルターモジュール生成 */
-            filter_obj_ = ExpressionFilter.Build(CaptureFilter);
+            filter_obj_ = PacketFilterController.Build(CaptureFilter);
 
             if (filter_obj_ == null)return;
 

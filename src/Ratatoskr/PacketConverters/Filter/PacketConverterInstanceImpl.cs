@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms.Controls;
-using Ratatoskr.Resources;
-using Ratatoskr.Scripts.PacketFilterExp.Parser;
-using Ratatoskr.Scripts.PacketFilterExp;
-using Ratatoskr.Packet;
+using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketConverter;
+using RtsCore.Packet;
 
 namespace Ratatoskr.PacketConverters.Filter
 {
@@ -21,10 +20,10 @@ namespace Ratatoskr.PacketConverters.Filter
         private PacketConverterPropertyImpl prop_;
 
         private string           filter_exp_busy_ = "";
-        private ExpressionFilter filter_obj_busy_ = null;
+        private PacketFilterController filter_obj_busy_ = null;
 
         private string           filter_exp_new_ = "";
-        private ExpressionFilter filter_obj_new_ = null;
+        private PacketFilterController filter_obj_new_ = null;
 
         private PreviewLabel help_window_ = new PreviewLabel();
 
@@ -126,13 +125,13 @@ namespace Ratatoskr.PacketConverters.Filter
         {
             /* 表示中のフィルター式をコンパイル */
             filter_exp_new_ = CBox_Exp.Text;
-            filter_obj_new_ = ExpressionFilter.Build(filter_exp_new_);
+            filter_obj_new_ = PacketFilterController.Build(filter_exp_new_);
 
             /* 表示更新 */
             if (filter_exp_new_.Length > 0) {
                 CBox_Exp.BackColor = (filter_obj_new_ != null)
-                                   ? (AppColors.PATTERN_OK)
-                                   : (AppColors.PATTERN_NG);
+                                   ? (RtsCore.Parameter.COLOR_OK)
+                                   : (RtsCore.Parameter.COLOR_NG);
             } else {
                 CBox_Exp.BackColor = Color.White;
             }
@@ -175,7 +174,7 @@ namespace Ratatoskr.PacketConverters.Filter
         protected override void OnInputStatusClear()
         {
             if (filter_obj_busy_ != null) {
-                filter_obj_busy_.CallStack = new ExpressionCallStack();
+                filter_obj_busy_.CallStack = new PacketFilterCallStack();
             }
         }
 

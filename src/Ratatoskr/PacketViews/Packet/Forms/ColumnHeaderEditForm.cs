@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.PacketViews.Packet.Configs;
-using Ratatoskr.Scripts.PacketFilterExp;
+using RtsCore.Framework.Packet.Filter;
 
 namespace Ratatoskr.PacketViews.Packet.Forms
 {
@@ -258,9 +258,9 @@ namespace Ratatoskr.PacketViews.Packet.Forms
             var text = TBox_SelectItem_PacketFilter.Text;
 
             if (text != "") {
-                TBox_SelectItem_PacketFilter.BackColor = (ExpressionCompiler.Compile(TBox_SelectItem_PacketFilter.Text) != null)
-                                                       ? (Resources.AppColors.PATTERN_OK)
-                                                       : (Resources.AppColors.PATTERN_NG);
+                TBox_SelectItem_PacketFilter.BackColor = (PacketFilterObject.Compile(TBox_SelectItem_PacketFilter.Text) != null)
+                                                       ? (RtsCore.Parameter.COLOR_OK)
+                                                       : (RtsCore.Parameter.COLOR_NG);
             } else {
                 TBox_SelectItem_PacketFilter.BackColor = Color.White;
             }

@@ -4,10 +4,9 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.Types;
-using Ratatoskr.Gate.AutoLogger;
-using Ratatoskr.Packet;
+using RtsCore.Config;
+using RtsCore.Config.Types;
+using RtsCore.Packet;
 
 
 namespace Ratatoskr.Configs.UserConfigs

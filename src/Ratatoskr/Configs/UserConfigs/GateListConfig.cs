@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Ratatoskr.Devices;
+using RtsCore.Config;
+using RtsCore.Framework.Device;
 using Ratatoskr.Gate;
-using Ratatoskr.Generic;
-using Ratatoskr.Configs;
 
 namespace Ratatoskr.Configs.UserConfigs
 {

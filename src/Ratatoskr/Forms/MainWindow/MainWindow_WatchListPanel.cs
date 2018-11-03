@@ -11,10 +11,9 @@ using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using Ratatoskr.Generic;
-using Ratatoskr.Packet;
-using Ratatoskr.Scripts.PacketFilterExp;
-using Ratatoskr.Scripts.PacketFilterExp.Parser;
+using RtsCore.Generic;
+using RtsCore.Packet;
+using RtsCore.Framework.Packet.Filter;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -55,12 +54,12 @@ namespace Ratatoskr.Forms.MainWindow
 
         private class WatchObject
         {
-            private ExpressionFilter filter_;
+            private PacketFilterController filter_;
             private bool ntf_event_;
             private bool ntf_dialog_;
             private bool ntf_mail_;
             
-            public WatchObject(WatchTargetType target, ExpressionFilter filter, bool ntf_event, bool ntf_dialog, bool ntf_mail)
+            public WatchObject(WatchTargetType target, PacketFilterController filter, bool ntf_event, bool ntf_dialog, bool ntf_mail)
             {
                 Target = target;
                 filter_ = filter;
@@ -314,7 +313,7 @@ namespace Ratatoskr.Forms.MainWindow
                     if (   (value_str != null)
                         && (value_str.Length > 0)
                     ) {
-                        if (ExpressionFilter.Build(value_str) != null) {
+                        if (PacketFilterController.Build(value_str) != null) {
                             cell.Style.BackColor = COLOR_COMMAND_FORMAT_OK;
                         } else {
                             cell.Style.BackColor = COLOR_COMMAND_FORMAT_NG;
@@ -412,7 +411,7 @@ namespace Ratatoskr.Forms.MainWindow
                 return (null);
             }
 
-            var filter = ExpressionFilter.Build(config.Expression);
+            var filter = PacketFilterController.Build(config.Expression);
 
             if (filter == null)return (null);
 
@@ -529,7 +528,7 @@ namespace Ratatoskr.Forms.MainWindow
 
             /* 表示更新 */
             if ((value != null) && (value.Length > 0)) {
-                control.BackColor = (ExpressionFilter.Build(value) != null) ? (COLOR_COMMAND_FORMAT_OK) : (COLOR_COMMAND_FORMAT_NG);
+                control.BackColor = (PacketFilterController.Build(value) != null) ? (COLOR_COMMAND_FORMAT_OK) : (COLOR_COMMAND_FORMAT_NG);
             } else {
                 control.BackColor = Color.White;
             }

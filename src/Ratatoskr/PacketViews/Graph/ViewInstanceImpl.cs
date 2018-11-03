@@ -5,18 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
-using Ratatoskr.Generic;
-using Ratatoskr.Packet;
 using Ratatoskr.PacketViews.Graph.DisplayModules;
 using Ratatoskr.PacketViews.Graph.DataCollectModules;
 using Ratatoskr.PacketViews.Graph.DataFormatModules;
+using RtsCore.Framework.PacketView;
+using RtsCore.Packet;
 
 namespace Ratatoskr.PacketViews.Graph
 {
-    internal sealed class ViewInstanceImpl : ViewInstance
+    internal sealed class PacketViewInstanceImpl : PacketViewInstance
     {
-        private ViewPropertyImpl prop_;
+        private PacketViewPropertyImpl prop_;
 
         private DisplayLayerParam[] layer_params_ = null;
 
@@ -102,7 +101,7 @@ namespace Ratatoskr.PacketViews.Graph
             this.TBar_GraphOffset.Value = 50;
             this.TBar_GraphOffset.Scroll += new System.EventHandler(this.TBar_GraphOffset_Scroll);
             // 
-            // ViewInstanceImpl
+            // PacketViewInstanceImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.Controls.Add(this.Panel_Graph);
@@ -117,14 +116,14 @@ namespace Ratatoskr.PacketViews.Graph
 
         }
 
-        public ViewInstanceImpl() : base()
+        public PacketViewInstanceImpl() : base()
         {
             InitializeComponent();
         }
 
-        public ViewInstanceImpl(ViewManager viewm, ViewClass viewd, ViewProperty viewp, Guid id) : base(viewm, viewd, viewp, id)
+        public PacketViewInstanceImpl(PacketViewManager viewm, PacketViewClass viewd, PacketViewProperty viewp, Guid id) : base(viewm, viewd, viewp, id)
         {
-            prop_ = viewp as ViewPropertyImpl;
+            prop_ = viewp as PacketViewPropertyImpl;
 
             InitializeComponent();
 
@@ -150,7 +149,7 @@ namespace Ratatoskr.PacketViews.Graph
 
         protected override void OnBackupProperty()
         {
-            var prop = Property as ViewPropertyImpl;
+            var prop = Property as PacketViewPropertyImpl;
 
             GCPanel_Main.BackupConfig();
         }

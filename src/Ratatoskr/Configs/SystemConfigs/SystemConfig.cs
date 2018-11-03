@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Configs.Types;
-using Ratatoskr.Generic.Container;
+using RtsCore.Config;
+using RtsCore.Config.Types;
 
 namespace Ratatoskr.Configs.SystemConfigs
 {

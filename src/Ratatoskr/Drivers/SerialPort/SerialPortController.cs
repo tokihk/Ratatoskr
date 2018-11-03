@@ -6,8 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Native;
-using Ratatoskr.Generic;
+using RtsCore.Framework.Native;
 
 namespace Ratatoskr.Drivers.SerialPort
 {

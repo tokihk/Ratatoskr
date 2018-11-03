@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NAudio.Wave;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Devices.AudioFile
 {

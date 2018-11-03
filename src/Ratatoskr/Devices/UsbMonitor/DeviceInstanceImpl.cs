@@ -7,8 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Native;
 using Ratatoskr.Drivers.USBPcap;
+using RtsCore.Framework.Device;
+using RtsCore.Framework.Native;
 
 namespace Ratatoskr.Devices.UsbMonitor
 {

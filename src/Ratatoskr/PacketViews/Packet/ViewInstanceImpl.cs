@@ -10,31 +10,30 @@ using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms;
 using Ratatoskr.Forms.Controls;
-using Ratatoskr.Generic;
-using Ratatoskr.Packet;
-using Ratatoskr.Generic.Controls;
 using Ratatoskr.PacketViews.Packet.Configs;
-using Ratatoskr.Scripts.PacketFilterExp;
-using Ratatoskr.Scripts.PacketFilterExp.Parser;
+using RtsCore.Packet;
+using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketView;
+using RtsCore.Utility;
 
 namespace Ratatoskr.PacketViews.Packet
 {
-    internal sealed class ViewInstanceImpl : ViewInstance
+    internal sealed class PacketViewInstanceImpl : PacketViewInstance
     {
         private const ulong ITEM_NO_MIN = 1;
         private const ulong ITEM_NO_MAX = ulong.MaxValue;
 
         private class PacketListColumnData
         {
-            public ExpressionFilter     filter_obj_ = null;
-            public ExpressionCallStack  filter_cs_  = null;
+            public PacketFilterController filter_obj_ = null;
+            public PacketFilterCallStack  filter_cs_  = null;
 
 
             public PacketListColumnData(ColumnHeaderConfig config)
             {
                 Config = config;
 
-                filter_obj_ = ExpressionFilter.Build(config.PacketFilter);
+                filter_obj_ = PacketFilterController.Build(config.PacketFilter);
 
                 Reset();
             }
@@ -44,7 +43,7 @@ namespace Ratatoskr.PacketViews.Packet
             public void Reset()
             {
                 if (filter_obj_ != null) {
-                    filter_cs_ = new ExpressionCallStack();
+                    filter_cs_ = new PacketFilterCallStack();
                     filter_obj_.CallStack = filter_cs_;
                 }
             }
@@ -110,7 +109,7 @@ namespace Ratatoskr.PacketViews.Packet
             Export_Packet_Data,
         }
 
-        private ViewPropertyImpl prop_;
+        private PacketViewPropertyImpl prop_;
         private Encoding encoder_;
 
         private readonly Regex format_regex_ = new Regex(@"\$\{(?<value>[^\}]*)\}", RegexOptions.Compiled);
@@ -121,6 +120,10 @@ namespace Ratatoskr.PacketViews.Packet
         private ulong next_item_no_ = 0;
 
         private List<PacketListViewItem> list_items_temp_;
+
+        private int preview_data_size_bin_ = 0;
+        private int preview_data_size_bin_wd_ = 0;
+        private int preview_data_size_text_ = 0;
 
         private ListViewItem ExtViewItem_SelectPacketCount = null;
         private ListViewItem ExtViewItem_SelectTotalSize = null;
@@ -206,7 +209,7 @@ namespace Ratatoskr.PacketViews.Packet
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewInstanceImpl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PacketViewInstanceImpl));
             this.Panel_ToolBar = new System.Windows.Forms.Panel();
             this.GBox_CustomFormat = new System.Windows.Forms.GroupBox();
             this.TBox_CustomFormat = new System.Windows.Forms.TextBox();
@@ -218,7 +221,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.Split_Main = new System.Windows.Forms.SplitContainer();
             this.LView_Main = new Ratatoskr.Forms.Controls.ListViewEx();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.BBox_Main = new Ratatoskr.Generic.Controls.BinEditBox();
+            this.BBox_Main = new Ratatoskr.Forms.Controls.BinEditBox();
             this.LView_ExtInfo = new System.Windows.Forms.ListView();
             this.LView_ExtInfoColumn_Name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.LView_ExtInfoColumn_Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -373,7 +376,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.Num_PreviewDataSize.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Num_PreviewDataSize.Location = new System.Drawing.Point(3, 15);
             this.Num_PreviewDataSize.Maximum = new decimal(new int[] {
-            2000,
+            200,
             0,
             0,
             0});
@@ -858,15 +861,15 @@ namespace Ratatoskr.PacketViews.Packet
             // CMenu_Packet_Export_Data
             // 
             this.CMenu_Packet_Export_Data.Name = "CMenu_Packet_Export_Data";
-            this.CMenu_Packet_Export_Data.Size = new System.Drawing.Size(180, 22);
+            this.CMenu_Packet_Export_Data.Size = new System.Drawing.Size(104, 22);
             this.CMenu_Packet_Export_Data.Text = "Data";
             // 
-            // ViewInstanceImpl
+            // PacketViewInstanceImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.Controls.Add(this.Split_Main);
             this.Controls.Add(this.Panel_ToolBar);
-            this.Name = "ViewInstanceImpl";
+            this.Name = "PacketViewInstanceImpl";
             this.Size = new System.Drawing.Size(957, 511);
             this.Panel_ToolBar.ResumeLayout(false);
             this.GBox_CustomFormat.ResumeLayout(false);
@@ -891,14 +894,14 @@ namespace Ratatoskr.PacketViews.Packet
 
         }
 
-        public ViewInstanceImpl() : base()
+        public PacketViewInstanceImpl() : base()
         {
             InitializeComponent();
         }
 
-        public ViewInstanceImpl(ViewManager viewm, ViewClass viewd, ViewProperty viewp, Guid id) : base(viewm, viewd, viewp, id)
+        public PacketViewInstanceImpl(PacketViewManager viewm, PacketViewClass viewd, PacketViewProperty viewp, Guid id) : base(viewm, viewd, viewp, id)
         {
-            prop_ = Property as ViewPropertyImpl;
+            prop_ = Property as PacketViewPropertyImpl;
 
             Disposed += OnDisposed;
 
@@ -1290,48 +1293,54 @@ namespace Ratatoskr.PacketViews.Packet
 
                 /* 選択パケット数 */
                 if (Menu_ExtView_SelectPacketCount.Checked) {
-                    ExtViewItem_SelectPacketCount = new ListViewItem();
-                    ExtViewItem_SelectPacketCount.Text = "Select packet count";
+                    ExtViewItem_SelectPacketCount = new ListViewItem() {
+                        Text = "Select packet count"
+                    };
                     ExtViewItem_SelectPacketCount.SubItems.Add("");
                     ExtViewItem_SelectPacketCount = LView_ExtInfo.Items.Add(ExtViewItem_SelectPacketCount);
                 }
 
                 /* 選択パケットサイズ */
                 if (Menu_ExtView_SelectTotalSize.Checked) {
-                    ExtViewItem_SelectTotalSize = new ListViewItem();
-                    ExtViewItem_SelectTotalSize.Text = "Select packet total size";
+                    ExtViewItem_SelectTotalSize = new ListViewItem() {
+                        Text = "Select packet total size"
+                    };
                     ExtViewItem_SelectTotalSize.SubItems.Add("");
                     ExtViewItem_SelectTotalSize = LView_ExtInfo.Items.Add(ExtViewItem_SelectTotalSize);
                 }
 
                 /* 選択パケット(最初)の情報 */
                 if (Menu_ExtView_FirstPacketInfo.Checked) {
-                    ExtViewItem_FirstPacketInfo = new ListViewItem();
-                    ExtViewItem_FirstPacketInfo.Text = "Information on selected packet (first)";
+                    ExtViewItem_FirstPacketInfo = new ListViewItem() {
+                        Text = "Information on selected packet (first)"
+                    };
                     ExtViewItem_FirstPacketInfo.SubItems.Add("");
                     ExtViewItem_FirstPacketInfo = LView_ExtInfo.Items.Add(ExtViewItem_FirstPacketInfo);
                 }
 
                 /* 選択パケット(最後)の情報 */
                 if (Menu_ExtView_LastPacketInfo.Checked) {
-                    ExtViewItem_LastPacketInfo = new ListViewItem();
-                    ExtViewItem_LastPacketInfo.Text = "Information on selected packet (last)";
+                    ExtViewItem_LastPacketInfo = new ListViewItem() {
+                        Text = "Information on selected packet (last)"
+                    };
                     ExtViewItem_LastPacketInfo.SubItems.Add("");
                     ExtViewItem_LastPacketInfo = LView_ExtInfo.Items.Add(ExtViewItem_LastPacketInfo);
                 }
 
                 /* 選択パケット(最後 - 最初)の差分時間 */
                 if (Menu_ExtView_SelectDelta.Checked) {
-                    ExtViewItem_SelectDelta = new ListViewItem();
-                    ExtViewItem_SelectDelta.Text = "Time difference of selection packet (last-first)";
+                    ExtViewItem_SelectDelta = new ListViewItem() {
+                        Text = "Time difference of selection packet (last-first)"
+                    };
                     ExtViewItem_SelectDelta.SubItems.Add("");
                     ExtViewItem_SelectDelta = LView_ExtInfo.Items.Add(ExtViewItem_SelectDelta);
                 }
 
                 /* 選択パケット(最後 - 最初)の通信レート */
                 if (Menu_ExtView_SelectRate.Checked) {
-                    ExtViewItem_SelectRate = new ListViewItem();
-                    ExtViewItem_SelectRate.Text = "Communication rate of selection packet (last-first)";
+                    ExtViewItem_SelectRate = new ListViewItem() {
+                        Text = "Communication rate of selection packet (last-first)"
+                    };
                     ExtViewItem_SelectRate.SubItems.Add("");
                     ExtViewItem_SelectRate = LView_ExtInfo.Items.Add(ExtViewItem_SelectRate);
                 }
@@ -1473,11 +1482,15 @@ namespace Ratatoskr.PacketViews.Packet
                             break;
 
                         case ColumnType.DataPreviewBinary:
-                            item.SubItems.Add(packet.DataToHexString(0, (int)prop_.PreviewDataSize.Value, " "));
+                            item.SubItems.Add(packet.DataToHexString(0, preview_data_size_bin_, " "));
+                            break;
+
+                        case ColumnType.DataPreviewBinaryWithoutDivider:
+                            item.SubItems.Add(packet.DataToHexString(0, preview_data_size_bin_wd_, ""));
                             break;
 
                         case ColumnType.DataPreviewText:
-                            item.SubItems.Add(encoder_.GetString(packet.GetBytes(0, (int)prop_.PreviewDataSize.Value).ToArray()));
+                            item.SubItems.Add(encoder_.GetString(packet.GetBytes(0, preview_data_size_text_).ToArray()));
                             break;
 
                         case ColumnType.DataPreviewCustom:
@@ -1645,6 +1658,11 @@ namespace Ratatoskr.PacketViews.Packet
 
         protected override void OnDrawPacketBegin(bool auto_scroll)
         {
+            /* 表示パラメータ更新 */
+            preview_data_size_bin_ = Math.Min((int)prop_.PreviewDataSize.Value, 260 / 3 - 1);
+            preview_data_size_bin_wd_ = Math.Min((int)prop_.PreviewDataSize.Value, 260 / 2 - 1);
+            preview_data_size_text_ = Math.Min((int)prop_.PreviewDataSize.Value, 260 * 6);
+
             /* ちらつき防止用の一時バッファ */
             list_items_temp_ = new List<PacketListViewItem>();
 

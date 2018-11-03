@@ -10,13 +10,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
-using Ratatoskr.Native;
-using Ratatoskr.Packet;
-using Ratatoskr.Utility;
+using RtsCore.Framework.Native;
+using RtsCore.Framework.PacketView;
+using RtsCore.Packet;
+using RtsCore.Utility;
 
 namespace Ratatoskr.PacketViews.Sequential
 {
-    internal sealed class ViewInstanceImpl : ViewInstance
+    internal sealed class PacketViewInstanceImpl : PacketViewInstance
     {
         private const int  VIEW_LINE_NUMBER_UPDATE_IVAL_MIN  = 50;
         private const int  VIEW_LINE_NUMBER_UPDATE_IVAL_MAX  = 200;
@@ -27,7 +28,7 @@ namespace Ratatoskr.PacketViews.Sequential
         private readonly int  VIEW_DATA_LIMIT_SIZE;
         private readonly bool VIEW_LINE_NUMBER_VISIBLE;
 
-        private ViewPropertyImpl prop_;
+        private PacketViewPropertyImpl prop_;
 
         private Encoding text_encoder_;
 
@@ -372,7 +373,7 @@ namespace Ratatoskr.PacketViews.Sequential
             this.Panel_CompareStatus.Size = new System.Drawing.Size(611, 68);
             this.Panel_CompareStatus.TabIndex = 1;
             // 
-            // ViewInstanceImpl
+            // PacketViewInstanceImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.Controls.Add(this.Splitter_Main);
@@ -406,14 +407,14 @@ namespace Ratatoskr.PacketViews.Sequential
 
         }
 
-        public ViewInstanceImpl() : base()
+        public PacketViewInstanceImpl() : base()
         {
             InitializeComponent();
         }
 
-        public ViewInstanceImpl(ViewManager viewm, ViewClass viewd, ViewProperty viewp, Guid id) : base(viewm, viewd, viewp, id)
+        public PacketViewInstanceImpl(PacketViewManager viewm, PacketViewClass viewd, PacketViewProperty viewp, Guid id) : base(viewm, viewd, viewp, id)
         {
-            prop_ = Property as ViewPropertyImpl;
+            prop_ = Property as PacketViewPropertyImpl;
             WINAPI_MODE = ConfigManager.System.ApplicationCore.Sequential_WinApiMode.Value;
             VIEW_DATA_LIMIT = (WINAPI_MODE && ConfigManager.System.ApplicationCore.Sequential_ViewCharCountLimitEnable.Value);
             VIEW_DATA_LIMIT_SIZE = (int)ConfigManager.System.ApplicationCore.Sequential_ViewCharCountLimit.Value;
@@ -467,7 +468,7 @@ namespace Ratatoskr.PacketViews.Sequential
 
         protected override void OnBackupProperty()
         {
-            prop_ = Property as ViewPropertyImpl;
+            prop_ = Property as PacketViewPropertyImpl;
 
             prop_.ShiftBit.Value = Num_ShiftBit.Value;
             prop_.EchoBack.Value = ChkBox_EchoBack.Checked;

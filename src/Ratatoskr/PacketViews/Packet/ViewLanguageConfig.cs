@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.Types;
+using RtsCore.Config;
+using RtsCore.Config.Types;
 
 namespace Ratatoskr.PacketViews.Packet
 {
@@ -18,8 +18,9 @@ namespace Ratatoskr.PacketViews.Packet
         public StringConfig Column_Mark                { get; } = new StringConfig("Mark");
         public StringConfig Column_Source              { get; } = new StringConfig("Source");
         public StringConfig Column_Destination         { get; } = new StringConfig("Destination");
-        public StringConfig Column_DataLength          { get; } = new StringConfig("Data Length");
+        public StringConfig Column_DataLength          { get; } = new StringConfig("Length");
         public StringConfig Column_DataPreviewBinary   { get; } = new StringConfig("Data Preview(Binary)");
+        public StringConfig Column_DataPreviewBinaryWithoutDivider  { get; } = new StringConfig("Data Preview(Binary without Divider)");
         public StringConfig Column_DataPreviewText     { get; } = new StringConfig("Data Preview(Text)");
         public StringConfig Column_DataPreviewCustom   { get; } = new StringConfig("Data Preview(Custom)");
 

@@ -7,8 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.PacketConverters;
-using Ratatoskr.Resources;
+using RtsCore.Framework.PacketConverter;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -81,8 +80,8 @@ namespace Ratatoskr.Forms.MainWindow
 
             if ((text != null) && (text.Length > 0)) {
                 TBox_FilterValue.BackColor = (filter_check)
-                                           ? (AppColors.PATTERN_OK)
-                                           : (AppColors.PATTERN_NG);
+                                           ? (RtsCore.Parameter.COLOR_OK)
+                                           : (RtsCore.Parameter.COLOR_NG);
             } else {
                 TBox_FilterValue.BackColor = Color.White;
             }

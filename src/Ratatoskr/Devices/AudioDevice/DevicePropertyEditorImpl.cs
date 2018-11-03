@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Devices.AudioDevice
 {

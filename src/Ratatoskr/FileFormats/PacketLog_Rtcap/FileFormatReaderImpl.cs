@@ -5,7 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Packet;
+using RtsCore.Packet;
 
 namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 {
@@ -92,20 +92,20 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
             size |= (uint)((uint)reader.ReadByte() <<  0);
 
             /* Data */
-            using (var stream_i = new MemoryStream(reader.ReadBytes((int)size))) {
-                using (var stream_c = new GZipStream(stream_i, CompressionMode.Decompress)) {
-                    /* 解凍データを出力用ストリームに書き込み */
-                    block_stream_?.Dispose();
-                    block_stream_ = new MemoryStream();
-                    stream_c.CopyTo(block_stream_);
+            using (var stream_i = new MemoryStream(reader.ReadBytes((int)size)))
+            using (var stream_c = new GZipStream(stream_i, CompressionMode.Decompress))
+            {
+                /* 解凍データを出力用ストリームに書き込み */
+                block_stream_?.Dispose();
+                block_stream_ = new MemoryStream();
+                stream_c.CopyTo(block_stream_);
 
-                    /* 書込みでファイルポインタが移動しているので読込位置を初期化 */
-                    block_stream_.Position = 0;
+                /* 書込みでファイルポインタが移動しているので読込位置を初期化 */
+                block_stream_.Position = 0;
 
-                    /* パケット読込用リーダー生成 */
-                    block_reader_?.Dispose();
-                    block_reader_ = new BinaryReader(block_stream_);
-                }
+                /* パケット読込用リーダー生成 */
+                block_reader_?.Dispose();
+                block_reader_ = new BinaryReader(block_stream_);
             }
 
             return (true);

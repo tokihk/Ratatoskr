@@ -4,15 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
-using Ratatoskr.Configs;
+using RtsCore.Generic;
 using Ratatoskr.Configs.FixedConfigs;
 using Ratatoskr.Configs.LanguageConfigs;
 using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Forms;
-using Ratatoskr.Native;
+using RtsCore.Framework.Native;
 
 namespace Ratatoskr.Configs
 {

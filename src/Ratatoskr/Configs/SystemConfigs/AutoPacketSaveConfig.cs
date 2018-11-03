@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using WeifenLuo.WinFormsUI.Docking;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.Types;
+using RtsCore.Config;
+using RtsCore.Config.Types;
 using Ratatoskr.Forms;
 
 namespace Ratatoskr.Configs.SystemConfigs

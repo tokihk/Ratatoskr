@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Packet;
+using RtsCore.Framework.PacketConverter;
+using RtsCore.Packet;
 
 namespace Ratatoskr.PacketConverters.Transfer
 {
@@ -159,10 +160,8 @@ namespace Ratatoskr.PacketConverters.Transfer
 
         protected override void OnBackupProperty()
         {
-            var obj_algorithm = CBox_AlgorithmList.SelectedItem as AlgorithmTypeObject;
-
-            if (obj_algorithm != null) {
-                prop_.Algorithm.Value = obj_algorithm.Value;
+            if (CBox_AlgorithmList.SelectedItem is AlgorithmTypeObject obj) {
+                prop_.Algorithm.Value = obj.Value;
             }
         }
 

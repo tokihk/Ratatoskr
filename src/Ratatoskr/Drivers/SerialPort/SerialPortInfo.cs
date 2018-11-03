@@ -6,7 +6,6 @@ using System.Management;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Native;
 
 namespace Ratatoskr.Drivers.SerialPort
 {

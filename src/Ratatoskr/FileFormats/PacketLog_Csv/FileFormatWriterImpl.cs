@@ -4,9 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
-using Ratatoskr.Packet;
-using Ratatoskr.Utility;
+using RtsCore.Packet;
+using RtsCore.Utility;
 
 namespace Ratatoskr.FileFormats.PacketLog_Csv
 {

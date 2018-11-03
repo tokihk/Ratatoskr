@@ -6,14 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms.Controls;
-using Ratatoskr.Packet;
 using Ratatoskr.PacketViews.Protocol.Configs;
 using Ratatoskr.Protocol;
+using RtsCore.Framework.PacketView;
+using RtsCore.Packet;
 using RtsCore.Protocol;
 
 namespace Ratatoskr.PacketViews.Protocol
 {
-    internal sealed class ViewInstanceImpl : ViewInstance
+    internal sealed class PacketViewInstanceImpl : PacketViewInstance
     {
         private const ulong ITEM_NO_MIN = 1;
         private const ulong ITEM_NO_MAX = ulong.MaxValue;
@@ -92,7 +93,7 @@ namespace Ratatoskr.PacketViews.Protocol
             }
         }
 
-        private ViewPropertyImpl prop_;
+        private PacketViewPropertyImpl prop_;
 
         private Guid            decoder_id_ = Guid.Empty;
         private ProtocolDecoder decoder_ = null;
@@ -447,7 +448,7 @@ namespace Ratatoskr.PacketViews.Protocol
             this.label2.Text = "Custom Text";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // ViewInstanceImpl
+            // PacketViewInstanceImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.Controls.Add(this.Splitter_Main);
@@ -481,14 +482,14 @@ namespace Ratatoskr.PacketViews.Protocol
 
         }
 
-        public ViewInstanceImpl() : base()
+        public PacketViewInstanceImpl() : base()
         {
             InitializeComponent();
         }
 
-        public ViewInstanceImpl(ViewManager viewm, ViewClass viewd, ViewProperty viewp, Guid id) : base(viewm, viewd, viewp, id)
+        public PacketViewInstanceImpl(PacketViewManager viewm, PacketViewClass viewd, PacketViewProperty viewp, Guid id) : base(viewm, viewd, viewp, id)
         {
-            prop_ = Property as ViewPropertyImpl;
+            prop_ = Property as PacketViewPropertyImpl;
 
             InitializeComponent();
             InitializeFrameDetailsColumn();
@@ -644,11 +645,10 @@ namespace Ratatoskr.PacketViews.Protocol
 
         private ListViewItem ProtocolDecodeDataToDataListViewItem(PacketObject packet, ProtocolDecodeData decode_data)
         {
-            var item = new ListViewItem();
-
-            /* メインアイテム */
-            item.Text = (next_item_no_).ToString();
-            item.Tag = decode_data;
+            var item = new ListViewItem() {
+                Text = (next_item_no_).ToString(),
+                Tag = decode_data,
+            };
 
             /* サブサイテム */
             ProtocolDecodeDataToDataListViewItem_Sub(item, packet, decode_data);
@@ -740,8 +740,9 @@ namespace Ratatoskr.PacketViews.Protocol
             /* 新規チャンネル情報を更新 */
             for (var index = 0; index < channel_data_new.Length; index++) {
                 if (channel_data_new[index] == null) {
-                    channel_data_new[index] = new DataChannelBuffer();
-                    channel_data_new[index].ChannelData = decoder_.GetChannelData((uint)index);
+                    channel_data_new[index] = new DataChannelBuffer() {
+                        ChannelData = decoder_.GetChannelData((uint)index),
+                    };
                 }
             }
 
@@ -792,7 +793,7 @@ namespace Ratatoskr.PacketViews.Protocol
 
         protected override void OnBackupProperty()
         {
-            prop_ = Property as ViewPropertyImpl;
+            prop_ = Property as PacketViewPropertyImpl;
 
         }
 

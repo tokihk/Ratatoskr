@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Packet;
+using RtsCore.Packet;
 
 namespace Ratatoskr.FileFormats.PacketLog_Csv
 {
@@ -35,6 +35,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
             ItemOrder.Add(PacketElementID.Destination);
             ItemOrder.Add(PacketElementID.Mark);
             ItemOrder.Add(PacketElementID.Data_HexString);
+            ItemOrder.Add(PacketElementID.Data_TextUTF8);
         }
 
         public override FileFormatOptionEditor GetEditor()

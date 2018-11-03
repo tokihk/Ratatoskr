@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Native;
+using RtsCore.Framework.Native;
 
 namespace Ratatoskr.Forms.Controls
 {
@@ -70,7 +70,7 @@ namespace Ratatoskr.Forms.Controls
         {
             base.WndProc(ref m);
 
-            if (m.Msg == (int)WindowMessage.WM_PAINT) {
+            if (m.Msg == (int)WinAPI.WM_PAINT) {
                 var graphics = Graphics.FromHwnd(m.HWnd);
 
                 OnPaintFrame(graphics);

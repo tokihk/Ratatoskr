@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Gate;
-using Ratatoskr.Packet;
-using Ratatoskr.Scripts.BinaryCodeBuilder;
+using RtsCore.Framework.Device;
+using RtsCore.Packet;
+using RtsCore.Framework.BinaryText;
 
 namespace Ratatoskr.Api
 {
@@ -44,7 +45,7 @@ namespace Ratatoskr.Api
             }
 
             /* 対象の全ゲートが接続されるのを待つ */
-            while (gate_objs.FirstOrDefault(obj => (obj.DeviceClassID != Guid.Empty) && (obj.ConnectStatus != Devices.ConnectState.Connected)) != null) {
+            while (gate_objs.FirstOrDefault(obj => (obj.DeviceClassID != Guid.Empty) && (obj.ConnectStatus != ConnectState.Connected)) != null) {
                 API_Sleep(10);
             }
         }
@@ -61,7 +62,7 @@ namespace Ratatoskr.Api
             }
 
             /* 対象の全ゲートが切断されるのを待つ */
-            while (gate_objs.FirstOrDefault(obj => (obj.DeviceClassID != Guid.Empty) && (obj.ConnectStatus != Devices.ConnectState.Disconnected)) != null) {
+            while (gate_objs.FirstOrDefault(obj => (obj.DeviceClassID != Guid.Empty) && (obj.ConnectStatus != ConnectState.Disconnected)) != null) {
                 API_Sleep(10);
             }
         }
@@ -83,7 +84,7 @@ namespace Ratatoskr.Api
 
         public void API_SendData(string gate_alias, string bin_text)
         {
-            API_SendData(gate_alias, BinaryCodeCompiler.Run(bin_text));
+            API_SendData(gate_alias, BinaryTextCompiler.Build(bin_text));
         }
 
         public ApiTask_SendFile API_SendFileAsync(string gate_alias, string file_path, uint send_block_size = 1024, uint send_delay = 0)

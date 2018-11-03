@@ -11,9 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.Generic;
-using Ratatoskr.Resources;
-using Ratatoskr.Utility;
+using RtsCore.Utility;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -53,8 +51,8 @@ namespace Ratatoskr.Forms.MainWindow
         }
 
         private readonly Color COLOR_BUSY_COMMAND      = Color.LightSkyBlue;
-        private readonly Color COLOR_COMMAND_FORMAT_OK = AppColors.PATTERN_OK;
-        private readonly Color COLOR_COMMAND_FORMAT_NG = AppColors.PATTERN_NG;
+        private readonly Color COLOR_COMMAND_FORMAT_OK = RtsCore.Parameter.COLOR_OK;
+        private readonly Color COLOR_COMMAND_FORMAT_NG = RtsCore.Parameter.COLOR_NG;
 
 
         private PlayStatus     play_state_ = PlayStatus.Reset;
@@ -506,16 +504,14 @@ namespace Ratatoskr.Forms.MainWindow
             switch ((ColumnId)cell.OwningColumn.Index) {
                 case ColumnId.Command:
                 {
-                    var value_str = cell.Value as string;
-
-                    if (   (value_str != null)
-                        && (value_str.Length > 0)
-                    ) {
-                        if (HexTextEncoder.ToByteArray(value_str) != null) {
-                            cell.Style.BackColor = COLOR_COMMAND_FORMAT_OK;
-                        } else {
-                            cell.Style.BackColor = COLOR_COMMAND_FORMAT_NG;
-                            error_text = "Command incorrect";
+                    if (cell.Value is string value_str) {
+                        if (value_str.Length > 0) {
+                            if (HexTextEncoder.ToByteArray(value_str) != null) {
+                                cell.Style.BackColor = COLOR_COMMAND_FORMAT_OK;
+                            } else {
+                                cell.Style.BackColor = COLOR_COMMAND_FORMAT_NG;
+                                error_text = "Command incorrect";
+                            }
                         }
                     }
                 }
@@ -564,23 +560,19 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void ImportCsv(string path)
         {
-            try {
-                using (var file = new FileStream(path, FileMode.Open)) {
-                    using (var reader = new StreamReader(file)) {
-                        /* ヘッダー情報を読み込み */
-                        var columns = ImportCsvHeader(reader);
+            using (var reader = new StreamReader(new FileStream(path, FileMode.Open)))
+            {
+                /* ヘッダー情報を読み込み */
+                var columns = ImportCsvHeader(reader);
 
-                        /* データ情報を読み込み */
-                        var configs = ImportCsvData(reader, columns);
+                /* データ情報を読み込み */
+                var configs = ImportCsvData(reader, columns);
 
-                        /* 適用 */
-                        GView_CmdList.Rows.Clear();
-                        foreach (var config in configs) {
-                            AddSendDataConfig(config);
-                        }
-                    }
+                /* 適用 */
+                GView_CmdList.Rows.Clear();
+                foreach (var config in configs) {
+                    AddSendDataConfig(config);
                 }
-            } catch {
             }
         }
 
@@ -632,17 +624,13 @@ namespace Ratatoskr.Forms.MainWindow
         {
             BackupConfig();
 
-            try {
-                using (var file = new FileStream(path, FileMode.Create)) {
-                    using (var writer = new StreamWriter(file)) {
-                        /* ヘッダー情報を書き込み */
-                        ExportCsvHeader(writer);
+            using (var writer = new StreamWriter(new FileStream(path, FileMode.Create)))
+            {
+                /* ヘッダー情報を書き込み */
+                ExportCsvHeader(writer);
 
-                        /* データ情報を書き込み */
-                        ExportCsvData(writer, ConfigManager.User.SendDataList.Value);
-                    }
-                }
-            } catch {
+                /* データ情報を書き込み */
+                ExportCsvData(writer, ConfigManager.User.SendDataList.Value);
             }
         }
 
@@ -690,17 +678,15 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void GView_CmdList_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            var gview = sender as DataGridView;
+            if (sender is DataGridView gview) {
+                var row_obj = gview.Rows[gview.CurrentCell.RowIndex];
+                var cell_obj = row_obj.Cells[gview.CurrentCell.ColumnIndex];
 
-            if (gview == null)return;
-
-            var row_obj = gview.Rows[gview.CurrentCell.RowIndex];
-            var cell_obj = row_obj.Cells[gview.CurrentCell.ColumnIndex];
-
-            switch ((ColumnId)gview.CurrentCell.ColumnIndex) {
-                case ColumnId.Command:
-                    GView_CmdList_EditCell_Command(gview.EditingControl as DataGridViewTextBoxEditingControl, row_obj, cell_obj);
-                    break;
+                switch ((ColumnId)gview.CurrentCell.ColumnIndex) {
+                    case ColumnId.Command:
+                        GView_CmdList_EditCell_Command(gview.EditingControl as DataGridViewTextBoxEditingControl, row_obj, cell_obj);
+                        break;
+                }
             }
         }
 
@@ -718,49 +704,43 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void GView_CmdList_EditCell_Command_TextChanged(object sender, EventArgs e)
         {
-            var control = sender as DataGridViewTextBoxEditingControl;
+            if (sender is DataGridViewTextBoxEditingControl control) {
+                var value = control.Text;
 
-            if (control == null)return;
-
-            var value = control.Text;
-
-            /* 表示更新 */
-            if ((value != null) && (value.Length > 0)) {
-                control.BackColor = (HexTextEncoder.ToByteArray(value) != null) ? (COLOR_COMMAND_FORMAT_OK) : (COLOR_COMMAND_FORMAT_NG);
-            } else {
-                control.BackColor = Color.White;
+                /* 表示更新 */
+                if ((value != null) && (value.Length > 0)) {
+                    control.BackColor = (HexTextEncoder.ToByteArray(value) != null) ? (COLOR_COMMAND_FORMAT_OK) : (COLOR_COMMAND_FORMAT_NG);
+                } else {
+                    control.BackColor = Color.White;
+                }
             }
         }
 
         private void GView_CmdList_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            var gview = sender as DataGridView;
+            if (sender is DataGridView gview) {
+                var row_obj = gview.Rows[e.RowIndex];
+                var cell_obj = row_obj.Cells[e.ColumnIndex];
 
-            if (gview == null)return;
-
-            var row_obj = gview.Rows[e.RowIndex];
-            var cell_obj = row_obj.Cells[e.ColumnIndex];
-
-            switch ((ColumnId)e.ColumnIndex) {
-                case ColumnId.Command:
-                {
-                    /* 編集開始時に背景色をクリア */
-                    cell_obj.Style.BackColor = Color.White;
+                switch ((ColumnId)e.ColumnIndex) {
+                    case ColumnId.Command:
+                    {
+                        /* 編集開始時に背景色をクリア */
+                        cell_obj.Style.BackColor = Color.White;
+                    }
+                        break;
                 }
-                    break;
             }
         }
 
         private void GView_CmdList_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            var gview = sender as DataGridView;
+            if (sender is DataGridView gview) {
+                var row_obj = gview.Rows[e.RowIndex];
 
-            if (gview == null)return;
-
-            var row_obj = gview.Rows[e.RowIndex];
-
-            /* エラー表示を更新 */
-            UpdateEditStatus(row_obj);
+                /* エラー表示を更新 */
+                UpdateEditStatus(row_obj);
+            }
         }
 
         private void GView_CmdList_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)

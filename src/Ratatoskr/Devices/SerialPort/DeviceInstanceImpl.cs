@@ -9,9 +9,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ratatoskr.Native;
-using Ratatoskr.Generic;
 using Ratatoskr.Drivers.SerialPort;
+using RtsCore.Framework.Device;
+using RtsCore.Generic;
+using RtsCore.Packet;
 
 namespace Ratatoskr.Devices.SerialPort
 {
@@ -205,7 +206,7 @@ namespace Ratatoskr.Devices.SerialPort
         protected override PollState OnPoll()
         {
             if (port_.GetDeviceDetachStatus()) {
-                NotifyMessage(Packet.PacketPriority.Alert, "Device Event", "Device has been disconnected.");
+                NotifyMessage(PacketPriority.Alert, "Device Event", "Device has been disconnected.");
                 ConnectReboot();
             }
 
@@ -548,7 +549,7 @@ namespace Ratatoskr.Devices.SerialPort
         private void CommEventMessage(string msg)
         {
             NotifyMessage(
-                Packet.PacketPriority.Notice,
+                PacketPriority.Notice,
                 "Comm Event",
                 msg);
         }
@@ -566,7 +567,7 @@ namespace Ratatoskr.Devices.SerialPort
         private void OnCommStatusUpdated(object sender, SerialPortController.CommStatusUpdatedEventArgs e)
         {
             if (e.ErrorStatus != 0) {
-                NotifyMessage(Packet.PacketPriority.Error, "Comm Error", e.ErrorStatus.ToString());
+                NotifyMessage(PacketPriority.Error, "Comm Error", e.ErrorStatus.ToString());
             }
 
             if (e.CommStatusMask != 0) {

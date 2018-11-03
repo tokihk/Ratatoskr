@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Devices.Ethernet;
-using Ratatoskr.Packet;
+using RtsCore.Packet;
 using Ratatoskr.Drivers.WinPcap;
 using SharpPcap.LibPcap;
 

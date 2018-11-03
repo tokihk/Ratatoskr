@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
-using Ratatoskr.Generic;
+using RtsCore.Utility;
 
 namespace Ratatoskr.Forms.AboutForm
 {

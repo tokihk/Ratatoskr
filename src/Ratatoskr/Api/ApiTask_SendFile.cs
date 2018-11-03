@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Gate;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Api
 {
@@ -68,7 +69,7 @@ namespace Ratatoskr.Api
             {
                 if (IsComplete)return;
 
-                if (gate_.ConnectStatus == Devices.ConnectState.Disconnected) {
+                if (gate_.ConnectStatus == ConnectState.Disconnected) {
                     /* 切断時はすぐに終端に移動 */
                     send_pos_ = file_.Length;
                     send_block_buffer_ = null;

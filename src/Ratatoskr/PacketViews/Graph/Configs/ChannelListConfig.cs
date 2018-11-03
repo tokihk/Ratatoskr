@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Ratatoskr.Configs;
+using RtsCore.Config;
 
 namespace Ratatoskr.PacketViews.Graph.Configs
 {

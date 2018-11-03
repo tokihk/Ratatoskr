@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.Packet;
+using RtsCore.Packet;
 
 namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
 {
@@ -84,8 +84,9 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
         private void WriteProfile(BinaryWriter writer)
         {
             using (var stream = new MemoryStream()) {
-                /* ディレクトリ内コンテンツを全て圧縮 */
-                using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, true)) {
+                using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, true))
+                {
+                    /* ディレクトリ内コンテンツを全て圧縮 */
                     foreach (var path in Directory.EnumerateFiles(ConfigManager.GetProfilePath(option_.TargetProfileID))) {
                         archive.CreateEntryFromFile(path, Path.GetFileName(path));
                     }

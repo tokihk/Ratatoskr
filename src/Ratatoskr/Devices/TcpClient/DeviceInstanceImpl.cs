@@ -7,8 +7,9 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
-using Ratatoskr.Packet;
+using RtsCore.Framework.Device;
+using RtsCore.Generic;
+using RtsCore.Packet;
 
 namespace Ratatoskr.Devices.TcpClient
 {

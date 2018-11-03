@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Ratatoskr.Configs;
-using Ratatoskr.Utility;
+using RtsCore.Config;
+using RtsCore.Utility;
 
 namespace Ratatoskr.Configs.UserConfigs
 {

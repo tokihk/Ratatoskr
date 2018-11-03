@@ -11,11 +11,10 @@ using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.Gate;
-using Ratatoskr.Generic;
-using Ratatoskr.Native;
-using Ratatoskr.Packet;
-using Ratatoskr.PacketConverters;
-using Ratatoskr.PacketViews;
+using RtsCore.Packet;
+using RtsCore.Framework.PacketConverter;
+using RtsCore.Framework.PacketView;
+using RtsCore.Utility;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -371,7 +370,7 @@ namespace Ratatoskr.Forms.MainWindow
             Panel_Center.ClearPacketView();
         }
 
-        public void AddPacketView(Guid class_id, ViewProperty viewp)
+        public void AddPacketView(Guid class_id, PacketViewProperty viewp)
         {
             Panel_Center.AddPacketView(class_id, viewp);
         }
@@ -453,41 +452,31 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void OnMenuClick(object sender, EventArgs e)
         {
-            var menu = sender as ToolStripMenuItem;
-
-            if (menu == null)return;
-            
-            if (menu.Tag is MainWindowActionId) {
-                FormKeyAction((MainWindowActionId)menu.Tag);
+            if (sender is ToolStripMenuItem menu) {
+                if (menu.Tag is MainWindowActionId) {
+                    FormKeyAction((MainWindowActionId)menu.Tag);
+                }
             }
         }
 
         private void OnMenuClick_PacketConverterAdd(object sender, EventArgs e)
         {
-            var menu = sender as ToolStripMenuItem;
-
-            if (menu == null)return;
-
-            var pcvtd = menu.Tag as PacketConverterClass;
-
-            if (pcvtd == null)return;
-
-            /* タグのクラスの変換器を追加 */
-            AddPacketConverter(pcvtd.ID, null);
+            if (sender is ToolStripMenuItem menu) {
+                if (menu.Tag is PacketConverterClass pcvtd) {
+                    /* タグのクラスの変換器を追加 */
+                    AddPacketConverter(pcvtd.ID, null);
+                }
+            }
         }
 
         private void OnMenuClick_PacketViewAdd(object sender, EventArgs e)
         {
-            var menu = sender as ToolStripMenuItem;
-
-            if (menu == null)return;
-
-            var viewd = menu.Tag as ViewClass;
-
-            if (viewd == null)return;
-
-            /* タグのクラスのビューを追加 */
-            AddPacketView(viewd.ID, null);
+            if (sender is ToolStripMenuItem menu) {
+                if (menu.Tag is PacketViewClass viewc) {
+                    /* タグのクラスのビューを追加 */
+                    AddPacketView(viewc.ID, null);
+                }
+            }
         }
 
         private void MainFrame_KeyDown(object sender, KeyEventArgs e)
@@ -513,11 +502,9 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void MainFrame_DragDrop(object sender, DragEventArgs e)
         {
-            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
-
-            if (files == null)return;
-
-            FormUiManager.FileOpen(files);
+            if (e.Data.GetData(DataFormats.FileDrop) is string[] file_paths) {
+                FormUiManager.FileOpen(file_paths);
+            }
         }
 
         private void Label_ViewDrawMode_DoubleClick(object sender, EventArgs e)
@@ -527,15 +514,13 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void OnDataRateTargetUpdate(object sender, EventArgs e)
         {
-            var menu = sender as ToolStripMenuItem;
+            if (sender is ToolStripMenuItem menu) {
+                /* 選択したメニューのチェック状態を反転 */
+                menu.Checked = !menu.Checked;
 
-            if (menu == null)return;
-
-            /* 選択したメニューのチェック状態を反転 */
-            menu.Checked = !menu.Checked;
-
-            /* 設定を適用 */
-            ApplyDataRateTarget();
+                /* 設定を適用 */
+                ApplyDataRateTarget();
+            }
         }
 
         private void MenuBar_Tool_ScriptIDE_Click(object sender, EventArgs e)
@@ -550,12 +535,10 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void MenuBar_ProfileList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var profile_next = MenuBar_ProfileList.SelectedItem as ConfigManager.ProfileInfo;
-
-            if (profile_next == null)return;
-
-            if (profile_next.ID != ConfigManager.GetCurrentProfileID()) {
-                Program.ChangeProfile(profile_next.ID);
+            if (MenuBar_ProfileList.SelectedItem is ConfigManager.ProfileInfo profile_next) {
+                if (profile_next.ID != ConfigManager.GetCurrentProfileID()) {
+                    Program.ChangeProfile(profile_next.ID);
+                }
             }
         }
 

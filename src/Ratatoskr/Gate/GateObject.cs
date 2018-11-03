@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Devices;
-using Ratatoskr.Generic;
-using Ratatoskr.Utility;
+using RtsCore.Generic;
+using RtsCore.Utility;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Gate
 {

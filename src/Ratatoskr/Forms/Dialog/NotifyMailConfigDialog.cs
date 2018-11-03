@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs.Types;
-using Ratatoskr.Generic;
+using RtsCore.Config.Types;
+using RtsCore.Generic;
 
 namespace Ratatoskr.Forms.Dialog
 {

@@ -7,7 +7,7 @@ using Ratatoskr.Configs;
 using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using Ratatoskr.Packet;
+using RtsCore.Packet;
 
 namespace Ratatoskr.Gate.AutoLogger
 {

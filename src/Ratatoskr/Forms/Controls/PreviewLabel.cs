@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Native;
+using RtsCore.Framework.Native;
 
 namespace Ratatoskr.Forms.Controls
 {

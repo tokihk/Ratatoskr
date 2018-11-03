@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
+using RtsCore.Generic;
 
 namespace Ratatoskr.Devices.UsbMonitor
 {
@@ -82,20 +82,16 @@ namespace Ratatoskr.Devices.UsbMonitor
             var info = (PacketInfo)null;
             var read_size = (long)0;
 
-            try {
-                using (var stream = new MemoryStream(data_buffer_, 0, data_size_)) {
-                    using (var reader = new BinaryReader(stream)) {
-                        while (reader.BaseStream.Position < reader.BaseStream.Length) {
+            using (var reader = new BinaryReader(new MemoryStream(data_buffer_, 0, data_size_)))
+            {
+                while (reader.BaseStream.Position < reader.BaseStream.Length) {
                             
-                            ParsePcapRecord(reader, info = new PacketInfo());
-                            infos.Enqueue(info);
+                    ParsePcapRecord(reader, info = new PacketInfo());
+                    infos.Enqueue(info);
 
-                            /* 読込が成功した位置を記憶 */
-                            read_size = reader.BaseStream.Position;
-                        }
-                    }
+                    /* 読込が成功した位置を記憶 */
+                    read_size = reader.BaseStream.Position;
                 }
-            } catch {
             }
 
             if (read_size > 0) {

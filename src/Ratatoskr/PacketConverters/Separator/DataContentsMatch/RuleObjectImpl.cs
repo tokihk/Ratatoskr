@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Forms;
-using Ratatoskr.Packet;
-using Ratatoskr.Resources;
-using Ratatoskr.Utility;
+using RtsCore.Framework.PacketConverter;
+using RtsCore.Packet;
+using RtsCore.Utility;
 
 namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
 {
@@ -128,8 +127,8 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
 
             if (text.Length > 0) {
                 TBox_Value.BackColor = (HexTextEncoder.ToByteArray(TBox_Value.Text) != null)
-                                     ? (AppColors.PATTERN_OK)
-                                     : (AppColors.PATTERN_NG);
+                                     ? (RtsCore.Parameter.COLOR_OK)
+                                     : (RtsCore.Parameter.COLOR_NG);
             } else {
                 TBox_Value.BackColor = Color.White;
             }

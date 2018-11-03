@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
-using Ratatoskr.Configs.Types;
 using Ratatoskr.PacketViews.Protocol.Configs;
+using RtsCore.Config.Types;
+using RtsCore.Framework.PacketView;
+using RtsCore.Generic;
 
 namespace Ratatoskr.PacketViews.Protocol
 {
-    internal class ViewPropertyImpl : ViewProperty
+    internal class PacketViewPropertyImpl : PacketViewProperty
     {
         public GuidConfig                ProtocolType    { get; } = new GuidConfig(Guid.Empty);
 
         public FrameListColumnListConfig FrameListColumn { get; } = new FrameListColumnListConfig();
 
 
-        public override ViewProperty Clone()
+        public override PacketViewProperty Clone()
         {
-            return (ClassUtil.Clone<ViewPropertyImpl>(this));
+            return (ClassUtil.Clone<PacketViewPropertyImpl>(this));
         }
     }
 }

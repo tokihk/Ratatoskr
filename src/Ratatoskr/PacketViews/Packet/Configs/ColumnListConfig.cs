@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using RtsCore.Config;
 using Ratatoskr.Configs;
 
 namespace Ratatoskr.PacketViews.Packet.Configs
@@ -22,6 +23,7 @@ namespace Ratatoskr.PacketViews.Packet.Configs
                 case ColumnType.Destination:            return (100);
                 case ColumnType.DataLength:             return (70);
                 case ColumnType.DataPreviewBinary:      return (320);
+                case ColumnType.DataPreviewBinaryWithoutDivider:  return (320);
                 case ColumnType.DataPreviewText:        return (180);
                 case ColumnType.DataPreviewCustom:      return (320);
                 default:                                return (150);
@@ -41,6 +43,7 @@ namespace Ratatoskr.PacketViews.Packet.Configs
                 case ColumnType.Destination:        return (ConfigManager.Language.PacketView.Packet.Column_Destination.Value);
                 case ColumnType.DataLength:         return (ConfigManager.Language.PacketView.Packet.Column_DataLength.Value);
                 case ColumnType.DataPreviewBinary:  return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewBinary.Value);
+                case ColumnType.DataPreviewBinaryWithoutDivider:  return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewBinaryWithoutDivider.Value);
                 case ColumnType.DataPreviewText:    return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewText.Value);
                 case ColumnType.DataPreviewCustom:  return (ConfigManager.Language.PacketView.Packet.Column_DataPreviewCustom.Value);
                 default:                            return (type.ToString());

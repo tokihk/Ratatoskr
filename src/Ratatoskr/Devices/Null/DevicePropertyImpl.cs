@@ -4,8 +4,8 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
-using Ratatoskr.Configs.Types;
+using RtsCore.Framework.Device;
+using RtsCore.Generic;
 
 namespace Ratatoskr.Devices.Null
 {

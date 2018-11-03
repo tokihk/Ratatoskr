@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
-using Ratatoskr.Native;
+using RtsCore.Framework.Native;
 
 namespace Ratatoskr.Devices.UsbMonitor
 {

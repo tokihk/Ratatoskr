@@ -53,7 +53,7 @@
             // Btn_Ok
             // 
             this.Btn_Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Btn_Ok.Location = new System.Drawing.Point(330, 420);
+            this.Btn_Ok.Location = new System.Drawing.Point(453, 420);
             this.Btn_Ok.Name = "Btn_Ok";
             this.Btn_Ok.Size = new System.Drawing.Size(75, 28);
             this.Btn_Ok.TabIndex = 3;
@@ -64,7 +64,7 @@
             // Btn_Cancel
             // 
             this.Btn_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Btn_Cancel.Location = new System.Drawing.Point(411, 420);
+            this.Btn_Cancel.Location = new System.Drawing.Point(534, 420);
             this.Btn_Cancel.Name = "Btn_Cancel";
             this.Btn_Cancel.Size = new System.Drawing.Size(75, 28);
             this.Btn_Cancel.TabIndex = 4;
@@ -79,7 +79,7 @@
             this.LBox_AllItem.ItemHeight = 12;
             this.LBox_AllItem.Location = new System.Drawing.Point(6, 18);
             this.LBox_AllItem.Name = "LBox_AllItem";
-            this.LBox_AllItem.Size = new System.Drawing.Size(168, 244);
+            this.LBox_AllItem.Size = new System.Drawing.Size(238, 244);
             this.LBox_AllItem.TabIndex = 0;
             // 
             // LBox_UserItem
@@ -89,7 +89,7 @@
             this.LBox_UserItem.ItemHeight = 12;
             this.LBox_UserItem.Location = new System.Drawing.Point(6, 18);
             this.LBox_UserItem.Name = "LBox_UserItem";
-            this.LBox_UserItem.Size = new System.Drawing.Size(195, 244);
+            this.LBox_UserItem.Size = new System.Drawing.Size(255, 244);
             this.LBox_UserItem.TabIndex = 5;
             this.LBox_UserItem.SelectedIndexChanged += new System.EventHandler(this.LBox_UserItem_SelectedIndexChanged);
             this.LBox_UserItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LBox_UserItem_MouseDown);
@@ -97,7 +97,7 @@
             // 
             // Btn_Remove
             // 
-            this.Btn_Remove.Location = new System.Drawing.Point(198, 158);
+            this.Btn_Remove.Location = new System.Drawing.Point(268, 159);
             this.Btn_Remove.Name = "Btn_Remove";
             this.Btn_Remove.Size = new System.Drawing.Size(69, 23);
             this.Btn_Remove.TabIndex = 8;
@@ -107,7 +107,7 @@
             // 
             // Btn_Add
             // 
-            this.Btn_Add.Location = new System.Drawing.Point(198, 129);
+            this.Btn_Add.Location = new System.Drawing.Point(268, 130);
             this.Btn_Add.Name = "Btn_Add";
             this.Btn_Add.Size = new System.Drawing.Size(69, 23);
             this.Btn_Add.TabIndex = 9;
@@ -120,7 +120,7 @@
             this.groupBox1.Controls.Add(this.LBox_AllItem);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(180, 274);
+            this.groupBox1.Size = new System.Drawing.Size(250, 274);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "All Display Item";
@@ -128,9 +128,9 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.LBox_UserItem);
-            this.groupBox2.Location = new System.Drawing.Point(273, 12);
+            this.groupBox2.Location = new System.Drawing.Point(343, 13);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(213, 274);
+            this.groupBox2.Size = new System.Drawing.Size(267, 274);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Current Display Item";
@@ -144,7 +144,7 @@
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Location = new System.Drawing.Point(12, 293);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(475, 119);
+            this.groupBox3.Size = new System.Drawing.Size(598, 119);
             this.groupBox3.TabIndex = 12;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Current Display Item - Select Item Setting";
@@ -177,7 +177,7 @@
             this.groupBox5.Controls.Add(this.TBox_SelectItem_PacketFilter);
             this.groupBox5.Location = new System.Drawing.Point(6, 67);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(459, 43);
+            this.groupBox5.Size = new System.Drawing.Size(582, 43);
             this.groupBox5.TabIndex = 1;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Packet Filter";
@@ -188,7 +188,7 @@
             this.TBox_SelectItem_PacketFilter.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.TBox_SelectItem_PacketFilter.Location = new System.Drawing.Point(3, 15);
             this.TBox_SelectItem_PacketFilter.Name = "TBox_SelectItem_PacketFilter";
-            this.TBox_SelectItem_PacketFilter.Size = new System.Drawing.Size(453, 19);
+            this.TBox_SelectItem_PacketFilter.Size = new System.Drawing.Size(576, 19);
             this.TBox_SelectItem_PacketFilter.TabIndex = 0;
             this.TBox_SelectItem_PacketFilter.TextChanged += new System.EventHandler(this.TBox_SelectItem_PacketFilter_TextChanged);
             // 
@@ -215,7 +215,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(501, 460);
+            this.ClientSize = new System.Drawing.Size(624, 460);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);

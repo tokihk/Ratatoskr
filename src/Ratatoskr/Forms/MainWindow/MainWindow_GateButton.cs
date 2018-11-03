@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Devices;
 using Ratatoskr.Gate;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Forms.MainWindow
 {

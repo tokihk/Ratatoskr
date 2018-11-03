@@ -9,11 +9,11 @@ using Ratatoskr.Configs;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
 using Ratatoskr.Gate.AutoLogger;
-using Ratatoskr.Generic;
-using Ratatoskr.Native;
 using Ratatoskr.Plugin;
 using Ratatoskr.Scripts;
 using Ratatoskr.Update;
+using RtsCore.Framework.Native;
+using RtsCore.Utility;
 
 namespace Ratatoskr
 {
@@ -175,14 +175,9 @@ namespace Ratatoskr
                 /* プロセス終了待ち */
                 case "-wait-pid-exit":
                 {
-                    var process = (System.Diagnostics.Process)null;
-
-                    try {
-                        process = System.Diagnostics.Process.GetProcessById(int.Parse(value));
+                    using (var process = System.Diagnostics.Process.GetProcessById(int.Parse(value)))
+                    {
                         process.WaitForExit(PROCESS_TIMEOUT);
-                    } finally {
-                        process.Close();
-                        process.Dispose();
                     }
                 }
                     break;
@@ -301,6 +296,9 @@ namespace Ratatoskr
 
             /* 設定ファイル読み込み */
             ConfigManager.LoadConfig(profile_id_load_);
+
+            /* パケットコンテナサイズ補正のため初期化 */
+            GatePacketManager.ClearPacket();
 
             /* アプリケーションタイマー再起動 */
             app_timer_.Stop();

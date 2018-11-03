@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
-using Ratatoskr.Configs.Types;
-using Ratatoskr.Generic.Controls;
+using Ratatoskr.Forms.Controls;
 using Ratatoskr.PacketViews.Packet.Configs;
+using RtsCore.Config.Types;
+using RtsCore.Framework.PacketView;
+using RtsCore.Generic;
 
 namespace Ratatoskr.PacketViews.Packet
 {
@@ -22,6 +23,7 @@ namespace Ratatoskr.PacketViews.Packet
         Destination,
         DataLength,
         DataPreviewBinary,
+        DataPreviewBinaryWithoutDivider,
         DataPreviewText,
         DataPreviewCustom,
     }
@@ -33,7 +35,7 @@ namespace Ratatoskr.PacketViews.Packet
         UTF8,
     }
 
-    internal class ViewPropertyImpl : ViewProperty
+    internal class PacketViewPropertyImpl : PacketViewProperty
     {
         public ColumnListConfig           ColumnList      { get; } = new ColumnListConfig();
         public IntegerConfig              PreviewDataSize { get; } = new IntegerConfig(16);
@@ -48,13 +50,13 @@ namespace Ratatoskr.PacketViews.Packet
         public BoolConfig ExtViewSelectRate        { get; } = new BoolConfig(true);
 
 
-        public ViewPropertyImpl()
+        public PacketViewPropertyImpl()
         {
         }
 
-        public override ViewProperty Clone()
+        public override PacketViewProperty Clone()
         {
-            return (ClassUtil.Clone<ViewPropertyImpl>(this));
+            return (ClassUtil.Clone<PacketViewPropertyImpl>(this));
         }
 
         public BinEditBox.CharCodeType ToBinEditBoxCharCode()

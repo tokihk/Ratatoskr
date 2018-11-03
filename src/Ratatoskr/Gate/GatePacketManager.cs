@@ -10,8 +10,9 @@ using Ratatoskr.Forms;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Gate.AutoTimeStamp;
 using Ratatoskr.Gate.AutoLogger;
-using Ratatoskr.PacketConverters;
-using Ratatoskr.Packet;
+using RtsCore.Framework.PacketConverter;
+using RtsCore.Framework.Native;
+using RtsCore.Packet;
 
 namespace Ratatoskr.Gate
 {
@@ -126,7 +127,7 @@ namespace Ratatoskr.Gate
                     process.Dispose();
                 } catch {
                     /* プロセスが存在しない場合はキャッシュを削除 */
-                    Native.Shell.rm(path);
+                    Shell.rm(path);
                 }
             }
         }
@@ -154,6 +155,7 @@ namespace Ratatoskr.Gate
 //            return (new PacketContainerHuge(work_dir, (ulong)999999));
 
             return (new PacketContainerLarge((ulong)ConfigManager.System.ApplicationCore.RawPacketCountLimit.Value));
+//            return (new PacketContainerLarge((ulong)ConfigManager.System.ApplicationCore.RawPacketCountLimit.Value));
 //            return (new PacketContainerNormal((ulong)ConfigManager.System.ApplicationCore.RawPacketCountLimit.Value));
         }
 
@@ -268,10 +270,11 @@ namespace Ratatoskr.Gate
                 FormUiManager.SetStatusText(
                     StatusTextID.SaveLoadEventFile,
                     String.Format(
-                        "{0} {1} / {2}",
+                        "{0} {1} / {2} ({3})",
                         ConfigManager.Language.MainMessage.EventFileLoading.Value,
                         index + 1,
-                        infos.Count()));
+                        infos.Count(),
+                        packets_new.Count));
                 
                 /* プログレスバーを初期化 */
                 FormUiManager.SetProgressBar(0, false);
@@ -309,26 +312,24 @@ namespace Ratatoskr.Gate
                 return;
             }
 
-            var reader = info.Reader as PacketLogReader;
+            if (info.Reader is PacketLogReader reader) {
+                Debugger.DebugManager.MessageOut(string.Format("LoadPacketFile - Start [{0}]", Path.GetFileName(info.FilePath)));
 
-            if (reader == null)return;
+                /* ファイルオープン */
+                if (!reader.Open(info.Option, info.FilePath)) {
+                    return;
+                }
 
-            Debugger.DebugManager.MessageOut(string.Format("LoadPacketFile - Start [{0}]", Path.GetFileName(info.FilePath)));
+                var packet = (PacketObject)null;
 
-            /* ファイルオープン */
-            if (!reader.Open(info.Option, info.FilePath)) {
-                return;
+                while ((packet = reader.ReadPacket()) != null) {
+                    packets.Add(packet);
+                }
+
+                info.Reader.Close();
+
+                Debugger.DebugManager.MessageOut("LoadPacketFile - Complete");
             }
-
-            var packet = (PacketObject)null;
-
-            while ((packet = reader.ReadPacket()) != null) {
-                packets.Add(packet);
-            }
-
-            info.Reader.Close();
-
-            Debugger.DebugManager.MessageOut("LoadPacketFile - Complete");
         }
 
         public static void SavePacketFile(FileWriteTargetInfo info, IEnumerable<PacketConverterInstance> pcvt_list)
@@ -347,83 +348,81 @@ namespace Ratatoskr.Gate
         private delegate void SavePacketFileTaskDelegate(FileWriteTargetInfo info, IEnumerable<PacketConverterInstance> pcvt_list);
         private static void SavePacketFileTask(FileWriteTargetInfo info, IEnumerable<PacketConverterInstance> pcvt_list)
         {
-            var writer = info.Writer as PacketLogWriter;
-
-            if (writer == null)return;
-
-            /* ファイルオープン */
-            if (!writer.Open(info.Option, info.FilePath, false)) {
-                return;
-            }
-
-            var progress_max = Math.Max(packets_.Count, 1);
-
-            /* ステータスバーを初期化 */
-            FormUiManager.SetStatusText(StatusTextID.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileSaving.Value);
-            FormUiManager.SetProgressBar(0, true);
-
-            var task_method = new SavePacketFileExecTaskDelegate(SavePacketFileExecTask);
-            var task_result = (IAsyncResult)null;
-
-            /* --- フィルタ適用有り --- */
-            if (pcvt_list != null) {
-                var count = (ulong)0;
-
-                /* 変換器リセット */
-                PacketConverterManager.InputStatusClear(pcvt_list);
-
-                var task_packets = (IEnumerable<PacketObject>)null;
-
-                foreach (var packet in packets_) {
-                    /* ベースパケットをパケット変換 */
-                    task_packets = PacketConverterManager.InputPacket(pcvt_list, packet);
-
-                    /* 直前の出力の完了待ち */
-                    if (task_result != null) {
-                        task_method.EndInvoke(task_result);
-                    }
-
-                    /* 変換後のパケットをファイル出力開始 */
-                    task_result = task_method.BeginInvoke(writer, task_packets, null, null);
-
-                    /* プログレスバー更新 */
-                    FormUiManager.SetProgressBar((byte)((double)(++count) / progress_max * 100), false);
+            if (info.Writer is PacketLogWriter writer) {
+                /* ファイルオープン */
+                if (!writer.Open(info.Option, info.FilePath, false)) {
+                    return;
                 }
 
-                /* 変換器内の残りパケットを処理 */
-                task_packets = PacketConverterManager.InputBreakOff(pcvt_list);
-                if (task_packets != null) {
+                var progress_max = Math.Max(packets_.Count, 1);
+
+                /* ステータスバーを初期化 */
+                FormUiManager.SetStatusText(StatusTextID.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileSaving.Value);
+                FormUiManager.SetProgressBar(0, true);
+
+                var task_method = new SavePacketFileExecTaskDelegate(SavePacketFileExecTask);
+                var task_result = (IAsyncResult)null;
+
+                /* --- フィルタ適用有り --- */
+                if (pcvt_list != null) {
+                    var count = (ulong)0;
+
+                    /* 変換器リセット */
+                    PacketConverterManager.InputStatusClear(pcvt_list);
+
+                    var task_packets = (IEnumerable<PacketObject>)null;
+
+                    foreach (var packet in packets_) {
+                        /* ベースパケットをパケット変換 */
+                        task_packets = PacketConverterManager.InputPacket(pcvt_list, packet);
+
+                        /* 直前の出力の完了待ち */
+                        if (task_result != null) {
+                            task_method.EndInvoke(task_result);
+                        }
+
+                        /* 変換後のパケットをファイル出力開始 */
+                        task_result = task_method.BeginInvoke(writer, task_packets, null, null);
+
+                        /* プログレスバー更新 */
+                        FormUiManager.SetProgressBar((byte)((double)(++count) / progress_max * 100), false);
+                    }
+
+                    /* 変換器内の残りパケットを処理 */
+                    task_packets = PacketConverterManager.InputBreakOff(pcvt_list);
+                    if (task_packets != null) {
+                        /* 書込みタスクの完了待ち */
+                        if (task_result != null) {
+                            task_method.EndInvoke(task_result);
+                        }
+
+                        /* 残りパケットを出力 */
+                        task_result = task_method.BeginInvoke(writer, task_packets, null, null);
+                    }
+
                     /* 書込みタスクの完了待ち */
                     if (task_result != null) {
                         task_method.EndInvoke(task_result);
                     }
 
-                    /* 残りパケットを出力 */
-                    task_result = task_method.BeginInvoke(writer, task_packets, null, null);
-                }
-
-                /* 書込みタスクの完了待ち */
-                if (task_result != null) {
-                    task_method.EndInvoke(task_result);
-                }
-
-            } else {
-                /* --- フィルタ適用無し --- */
-                task_result = task_method.BeginInvoke(writer, packets_, null, null);
+                } else {
+                    /* --- フィルタ適用無し --- */
+                    task_result = task_method.BeginInvoke(writer, packets_, null, null);
                 
-                /* 完了待ち */
-                while (!task_result.IsCompleted) {
-                    System.Threading.Thread.Sleep(100);
-                    FormUiManager.SetProgressBar((byte)(writer.ProgressNow / (Math.Max(writer.ProgressMax / 100, 1))), false);
+                    /* 完了待ち */
+                    while (!task_result.IsCompleted) {
+                        System.Threading.Thread.Sleep(100);
+                        FormUiManager.SetProgressBar((byte)(writer.ProgressNow / (Math.Max(writer.ProgressMax / 100, 1))), false);
+                    }
                 }
+
+                /* ステータスバーを終了 */
+                FormUiManager.SetStatusText(StatusTextID.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileSaveComplete.Value);
+                FormUiManager.SetProgressBar(100, true);
+
+                /* ファイルクローズ */
+                writer.Close();
             }
-
-            /* ステータスバーを終了 */
-            FormUiManager.SetStatusText(StatusTextID.SaveLoadEventFile, ConfigManager.Language.MainMessage.EventFileSaveComplete.Value);
-            FormUiManager.SetProgressBar(100, true);
-
-            /* ファイルクローズ */
-            writer.Close();
         }
 
         private delegate void SavePacketFileExecTaskDelegate(PacketLogWriter writer, IEnumerable<PacketObject> packets);

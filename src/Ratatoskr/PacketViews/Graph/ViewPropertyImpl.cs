@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms.DataVisualization.Charting;
-using Ratatoskr.Generic;
-using Ratatoskr.Configs.Types;
 using Ratatoskr.PacketViews.Graph.Configs;
+using RtsCore.Config.Types;
+using RtsCore.Framework.PacketView;
+using RtsCore.Generic;
 
 namespace Ratatoskr.PacketViews.Graph
 {
@@ -43,7 +43,7 @@ namespace Ratatoskr.PacketViews.Graph
         Count,
     }
 
-    internal class ViewPropertyImpl : ViewProperty
+    internal class PacketViewPropertyImpl : PacketViewProperty
     {
         public EnumConfig<DisplayModeType>     DisplayMode          { get; } = new EnumConfig<DisplayModeType>(DisplayModeType.Oscillo);
 
@@ -63,13 +63,13 @@ namespace Ratatoskr.PacketViews.Graph
         public ChannelListConfig ChannelList    { get; } = new ChannelListConfig();
 
 
-        public ViewPropertyImpl()
+        public PacketViewPropertyImpl()
         {
         }
 
-        public override ViewProperty Clone()
+        public override PacketViewProperty Clone()
         {
-            return (ClassUtil.Clone<ViewPropertyImpl>(this));
+            return (ClassUtil.Clone<PacketViewPropertyImpl>(this));
         }
     }
 }

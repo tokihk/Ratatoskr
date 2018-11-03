@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using RtsCore.Config;
+using RtsCore.Framework.PacketView;
 using Ratatoskr.Forms;
-using Ratatoskr.Gate;
-using Ratatoskr.Configs;
-using Ratatoskr.PacketViews;
 
 namespace Ratatoskr.Configs.UserConfigs
 {
@@ -15,16 +14,16 @@ namespace Ratatoskr.Configs.UserConfigs
     internal sealed class PacketViewObjectConfig
     {
         public PacketViewObjectConfig() { }
-        public PacketViewObjectConfig(Guid class_id, Guid obj_id, ViewProperty viewp)
+        public PacketViewObjectConfig(Guid class_id, Guid obj_id, PacketViewProperty viewp)
         {
             ViewClassID = class_id;
             ViewObjectID = obj_id;
             ViewProperty = viewp;
         }
 
-        public Guid         ViewClassID  { get; set; } = Guid.Empty;
-        public Guid         ViewObjectID { get; set; } = Guid.NewGuid();
-        public ViewProperty ViewProperty { get; set; } = null;
+        public Guid               ViewClassID  { get; set; } = Guid.Empty;
+        public Guid               ViewObjectID { get; set; } = Guid.NewGuid();
+        public PacketViewProperty ViewProperty { get; set; } = null;
     }
 
     [Serializable]
@@ -38,7 +37,7 @@ namespace Ratatoskr.Configs.UserConfigs
 
         public PacketViewConfig()
         {
-            Value.Add(new PacketViewObjectConfig(PacketViews.Packet.ViewClassImpl.ClassID, Guid.NewGuid(), null));
+            Value.Add(new PacketViewObjectConfig(PacketViews.Packet.PacketViewClassImpl.ClassID, Guid.NewGuid(), null));
         }
 
         public bool LoadConfigData(XmlElement xml_own)
@@ -83,12 +82,12 @@ namespace Ratatoskr.Configs.UserConfigs
             Value.Add(newobj);
         }
 
-        private ViewProperty LoadConfigPart_Property(XmlElement xml_node, Guid class_id)
+        private PacketViewProperty LoadConfigPart_Property(XmlElement xml_node, Guid class_id)
         {
             if (xml_node == null)return (null);
 
             /* クラスIDからプロパティを取得 */
-            var viewp = FormTaskManager.CreatePacketViewProperty(class_id);
+            var viewp = FormTaskManager.CreatePacketPacketViewProperty(class_id);
 
             if (viewp == null)return (null);
 

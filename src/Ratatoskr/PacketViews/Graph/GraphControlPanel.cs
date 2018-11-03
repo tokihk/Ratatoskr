@@ -43,7 +43,7 @@ namespace Ratatoskr.PacketViews.Graph
         }
 
 
-        private ViewPropertyImpl prop_;
+        private PacketViewPropertyImpl prop_;
 
         private bool ui_update_busy_ = false;
 
@@ -102,7 +102,7 @@ namespace Ratatoskr.PacketViews.Graph
             CBox_ChSet_Channel.EndUpdate();
         }
 
-        public void LoadConfig(ViewPropertyImpl prop)
+        public void LoadConfig(PacketViewPropertyImpl prop)
         {
             CBox_DataFormat.SelectedItem = prop.DataFormat.Value;
             CBox_DataEndian.SelectedItem = prop.DataEndian.Value;

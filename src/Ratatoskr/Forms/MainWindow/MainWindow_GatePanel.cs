@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.Devices;
 using Ratatoskr.Gate;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Forms.MainWindow
 {

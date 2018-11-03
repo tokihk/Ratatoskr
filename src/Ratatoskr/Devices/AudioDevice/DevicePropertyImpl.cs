@@ -4,8 +4,9 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
-using Ratatoskr.Configs.Types;
+using RtsCore.Config.Types;
+using RtsCore.Generic;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Devices.AudioDevice
 {

@@ -9,9 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
-using Ratatoskr.Generic;
-using Ratatoskr.Generic.Net;
-using Ratatoskr.Native;
+using RtsCore.Framework.Native;
+using RtsCore.Utility;
 
 namespace Ratatoskr.Update
 {

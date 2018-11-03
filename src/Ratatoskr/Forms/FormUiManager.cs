@@ -12,7 +12,7 @@ using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Forms.Dialog;
 using Ratatoskr.Gate;
-using Ratatoskr.Generic;
+using RtsCore.Generic;
 using Ratatoskr.Plugin;
 
 namespace Ratatoskr.Forms

@@ -11,10 +11,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.Scripts;
-using Ratatoskr.Scripts.PacketFilterExp.Parser;
-using Ratatoskr.Scripts.PacketFilterExp;
-using Ratatoskr.Generic;
 
 namespace Ratatoskr.Forms.MainWindow
 {

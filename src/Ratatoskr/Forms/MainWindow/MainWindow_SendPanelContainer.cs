@@ -12,10 +12,6 @@ using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Forms.Controls;
 using Ratatoskr.Gate;
-using Ratatoskr.Resources;
-using Ratatoskr.Scripts;
-using Ratatoskr.Scripts.PacketFilterExp.Parser;
-using Ratatoskr.Scripts.PacketFilterExp;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -154,9 +150,9 @@ namespace Ratatoskr.Forms.MainWindow
         {
             /* 表示更新 */
             if (CBox_TargetList.Text.Length > 0) {
-                CBox_TargetList.BackColor = AppColors.PATTERN_OK;
+                CBox_TargetList.BackColor = RtsCore.Parameter.COLOR_OK;
             } else {
-                CBox_TargetList.BackColor = AppColors.PATTERN_NG;
+                CBox_TargetList.BackColor = RtsCore.Parameter.COLOR_NG;
             }
         }
 

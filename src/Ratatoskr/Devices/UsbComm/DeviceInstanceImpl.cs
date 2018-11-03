@@ -8,14 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
-using Ratatoskr.Native;
-using Ratatoskr.Generic;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Devices.UsbComm
 {
     internal sealed class DeviceInstanceImpl : DeviceInstance
     {
-        private DevicePropertyImpl devp_;
+        private readonly DevicePropertyImpl devp_;
 
         private UsbDevice usb_device_;
 
@@ -61,9 +60,7 @@ namespace Ratatoskr.Devices.UsbComm
             }
 
             if (usb_device_.IsOpen) {
-                var usb_device_i = usb_device_ as IUsbDevice;
-
-                if (usb_device_i != null) {
+                if (usb_device_ is IUsbDevice usb_device_i) {
                     usb_device_i.ReleaseInterface(0);
                 }
 

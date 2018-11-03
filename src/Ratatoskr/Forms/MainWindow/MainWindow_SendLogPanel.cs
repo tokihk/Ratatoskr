@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using Ratatoskr.Api;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.Resources;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -95,8 +94,8 @@ namespace Ratatoskr.Forms.MainWindow
 
             if (file_path.Length > 0) {
                 CBox_LogList.BackColor = (File.Exists(file_path))
-                                        ? (AppColors.PATTERN_OK)
-                                        : (AppColors.PATTERN_NG);
+                                        ? (RtsCore.Parameter.COLOR_OK)
+                                        : (RtsCore.Parameter.COLOR_NG);
             } else {
                 CBox_LogList.BackColor = Color.White;
             }
@@ -255,13 +254,12 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void CBox_LogList_DragDrop(object sender, DragEventArgs e)
         {
-            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
-
-            if (files == null)return;
-            if (files.Length == 0)return;
-
-            /* ファイル転送コマンドに置き換え */
-            CBox_LogList.Text = files.First();
+            if (e.Data.GetData(DataFormats.FileDrop) is string[] file_paths) {
+                if (file_paths.Length > 0) {
+                    /* ファイル転送コマンドに置き換え */
+                    CBox_LogList.Text = file_paths.First();
+                }
+            }
         }
 
         private void Btn_FileSelect_Click(object sender, EventArgs e)

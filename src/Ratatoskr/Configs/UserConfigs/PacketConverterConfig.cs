@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using RtsCore.Config;
 using Ratatoskr.Forms;
-using Ratatoskr.PacketConverters;
-using Ratatoskr.Generic;
-using Ratatoskr.Configs;
+using RtsCore.Framework.PacketConverter;
 
 namespace Ratatoskr.Configs.UserConfigs
 {

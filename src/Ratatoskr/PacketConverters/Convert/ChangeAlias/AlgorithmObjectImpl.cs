@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Forms;
-using Ratatoskr.Generic;
-using Ratatoskr.Packet;
+using RtsCore.Framework.PacketConverter;
+using RtsCore.Generic;
+using RtsCore.Packet;
 
 namespace Ratatoskr.PacketConverters.Convert.ChangeAlias
 {

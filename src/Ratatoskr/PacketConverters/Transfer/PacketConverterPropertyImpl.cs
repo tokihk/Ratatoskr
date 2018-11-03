@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.Types;
+using RtsCore.Config.Types;
+using RtsCore.Framework.PacketConverter;
+using RtsCore.Generic;
 
 namespace Ratatoskr.PacketConverters.Transfer
 {

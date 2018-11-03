@@ -8,7 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
-using Ratatoskr.Generic;
+using RtsCore.Generic;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Devices.AudioDevice
 {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
-using Ratatoskr.Packet;
+using RtsCore.Packet;
 
 namespace Ratatoskr.Gate.AutoLogger
 {

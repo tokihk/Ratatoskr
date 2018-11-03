@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SharpPcap.LibPcap;
 using Ratatoskr.Drivers.WinPcap;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Devices.Ethernet
 {

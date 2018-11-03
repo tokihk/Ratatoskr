@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Packet;
+using RtsCore.Packet;
 
 namespace Ratatoskr.PacketViews.Graph.DataFormatModules
 {

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Gate;
-using Ratatoskr.PacketConverters;
-using Ratatoskr.PacketViews;
-using Ratatoskr.Packet;
+using RtsCore.Framework.PacketConverter;
+using RtsCore.Framework.PacketView;
+using RtsCore.Packet;
 
 namespace Ratatoskr.Forms
 {
@@ -36,7 +36,7 @@ namespace Ratatoskr.Forms
         }
 
 
-        private static ViewManager viewm_;
+        private static PacketViewManager viewm_;
         private static PacketConverterManager pcvtm_;
 
         private static ulong  packet_count_all_ = 0;
@@ -64,7 +64,7 @@ namespace Ratatoskr.Forms
         public static void Startup()
         {
             /* パケットビューマネージャー作成 */
-            viewm_ = new ViewManager(GatePacketManager.BasePacketManager);
+            viewm_ = new PacketViewManager(GatePacketManager.BasePacketManager);
             viewm_.InstanceUpdated += OnViewInstanceUpdated;
             viewm_.RedrawRequest += OnViewRedrawRequest;
             viewm_.StatusUpdated += OnViewStatusUpdated;
@@ -133,21 +133,22 @@ namespace Ratatoskr.Forms
 
         private static void InstallPacketView()
         {
-            viewm_.AddView(new PacketViews.Packet.ViewClassImpl());
-            viewm_.AddView(new PacketViews.Sequential.ViewClassImpl());
-            viewm_.AddView(new PacketViews.Graph.ViewClassImpl());
+            viewm_.AddView(new PacketViews.Packet.PacketViewClassImpl());
+            viewm_.AddView(new PacketViews.Sequential.PacketViewClassImpl());
+            viewm_.AddView(new PacketViews.Graph.PacketViewClassImpl());
 
 #if DEBUG
-            viewm_.AddView(new PacketViews.Protocol.ViewClassImpl());
+            viewm_.AddView(new PacketViews.Protocol.PacketViewClassImpl());
 #endif
+//            viewm_.AddView(new PacketViews.DeviceEmurator.PacketViewClassImpl());
         }
 
-        public static IEnumerable<ViewClass> GetPacketViewClasses()
+        public static IEnumerable<PacketViewClass> GetPacketViewClasses()
         {
             return (viewm_.GetClasses());
         }
 
-        public static IEnumerable<ViewControl> GetPacketViewControls()
+        public static IEnumerable<PacketViewControl> GetPacketViewControls()
         {
             return (viewm_.GetInstances());
         }
@@ -157,17 +158,17 @@ namespace Ratatoskr.Forms
             get { return (viewm_.GetInstances().Count() < PACKET_VIEW_LIMIT); }
         }
 
-        public static ViewControl CreatePacketView(Guid class_id, Guid obj_id, ViewProperty viewp)
+        public static PacketViewControl CreatePacketView(Guid class_id, Guid obj_id, PacketViewProperty viewp)
         {
             return (viewm_.CreateControl(class_id, obj_id, viewp));
         }
 
-        public static ViewControl CreatePacketView(Guid class_id, ViewProperty viewp)
+        public static PacketViewControl CreatePacketView(Guid class_id, PacketViewProperty viewp)
         {
             return (CreatePacketView(class_id, Guid.NewGuid(), viewp));
         }
 
-        public static void RemovePacketView(ViewControl viewi)
+        public static void RemovePacketView(PacketViewControl viewi)
         {
             viewm_.RemoveInstance(viewi);
         }
@@ -177,7 +178,7 @@ namespace Ratatoskr.Forms
             viewm_.ClearPacket();
         }
 
-        public static ViewProperty CreatePacketViewProperty(Guid class_id)
+        public static PacketViewProperty CreatePacketPacketViewProperty(Guid class_id)
         {
             return (viewm_.CreateProperty(class_id));
         }

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Forms;
-using Ratatoskr.Packet;
+using RtsCore.Packet;
 
 namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
 {
@@ -108,19 +108,18 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
                 var config = new UserConfig();
 
                 /* アーカイブ読込 */
-                using (var archive_s = new MemoryStream(archive_data)) {
-                    using (var archive = new ZipArchive(archive_s, ZipArchiveMode.Read, true)) {
-                        foreach (var entry in archive.Entries) {
-                            if (entry.Name == UserConfig.CONFIG_FILE_NAME) {
-                                /* === UserConfig === */
-                                using (var entry_s = entry.Open()) {
-                                    config.LoadXml(entry_s);
-                                }
-
-                            } else {
-                                /* === 不明なファイル === */
-                                /* 無視 */
+                using (var archive = new ZipArchive(new MemoryStream(archive_data), ZipArchiveMode.Read, false))
+                {
+                    foreach (var entry in archive.Entries) {
+                        if (entry.Name == UserConfig.CONFIG_FILE_NAME) {
+                            /* === UserConfig === */
+                            using (var entry_s = entry.Open()) {
+                                config.LoadXml(entry_s);
                             }
+
+                        } else {
+                            /* === 不明なファイル === */
+                            /* 無視 */
                         }
                     }
                 }

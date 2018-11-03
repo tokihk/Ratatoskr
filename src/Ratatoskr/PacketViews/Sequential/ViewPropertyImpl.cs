@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Generic;
-using Ratatoskr.Configs.Types;
+using RtsCore.Config.Types;
+using RtsCore.Framework.PacketView;
+using RtsCore.Generic;
 
 namespace Ratatoskr.PacketViews.Sequential
 {
@@ -17,7 +18,7 @@ namespace Ratatoskr.PacketViews.Sequential
         BIN,
     }
 
-    internal class ViewPropertyImpl : ViewProperty
+    internal class PacketViewPropertyImpl : PacketViewProperty
     {
         public IntegerConfig            ShiftBit       { get; } = new IntegerConfig(0);
         public StringConfig             EndLinePattern { get; } = new StringConfig("");
@@ -27,9 +28,9 @@ namespace Ratatoskr.PacketViews.Sequential
         public StringConfig             BoundaryText   { get; } = new StringConfig(" ");
 
 
-        public override ViewProperty Clone()
+        public override PacketViewProperty Clone()
         {
-            return (ClassUtil.Clone<ViewPropertyImpl>(this));
+            return (ClassUtil.Clone<PacketViewPropertyImpl>(this));
         }
     }
 }

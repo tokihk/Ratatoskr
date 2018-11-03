@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.PacketConverters;
+using RtsCore.Framework.PacketConverter;
 
 namespace Ratatoskr.Forms.MainWindow
 {

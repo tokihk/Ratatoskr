@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using Ratatoskr.Packet;
-using Ratatoskr.Scripts.PacketFilterExp;
+using RtsCore.Packet;
+using RtsCore.Framework.Packet.Filter;
 
 namespace Ratatoskr.Api
 {
@@ -68,7 +68,7 @@ namespace Ratatoskr.Api
             if (info.FilePath == null)return;
 
             /* フィルターモジュール生成 */
-            var filter_obj = ExpressionFilter.Build(Filter);
+            var filter_obj = PacketFilterController.Build(Filter);
 
             if (filter_obj == null)return;
 
@@ -113,15 +113,15 @@ namespace Ratatoskr.Api
             return (Success);
         }
 
-        private delegate void ExecTaskHandler(GateObject[] gates, ExpressionFilter filter, FileReadTargetInfo info);
-        private void ExecTask(GateObject[] gates, ExpressionFilter filter, FileReadTargetInfo info)
+        private delegate void ExecTaskHandler(GateObject[] gates, PacketFilterController filter, FileReadTargetInfo info);
+        private void ExecTask(GateObject[] gates, PacketFilterController filter, FileReadTargetInfo info)
         {
             PlayRecord(gates, filter, info);
 
             Success = (!cancel_req_);
         }
 
-        private void PlayRecord(GateObject[] gates, ExpressionFilter filter, FileReadTargetInfo info)
+        private void PlayRecord(GateObject[] gates, PacketFilterController filter, FileReadTargetInfo info)
         {
             var reader = info.Reader as PacketLogReader;
 
@@ -166,7 +166,7 @@ namespace Ratatoskr.Api
             reader.Close();
         }
 
-        private PacketObject LoadPlayPacket(PacketLogReader reader, ExpressionFilter filter)
+        private PacketObject LoadPlayPacket(PacketLogReader reader, PacketFilterController filter)
         {
             var packet = (PacketObject)null;
 

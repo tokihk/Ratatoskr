@@ -5,7 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Packet;
+using RtsCore.Packet;
 
 namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 {
@@ -80,8 +80,10 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 
         private void WriteContentsBlock(BinaryWriter writer, byte[] data)
         {
-            using (var stream_m = new MemoryStream()) {
-                using (var stream_c = new GZipStream(stream_m, CompressionMode.Compress, true)) {
+            using (var stream_m = new MemoryStream())
+            {
+                using (var stream_c = new GZipStream(stream_m, CompressionMode.Compress, true))
+                {
                     /* 圧縮 */
                     stream_c.Write(data, 0, data.Length);
                 }

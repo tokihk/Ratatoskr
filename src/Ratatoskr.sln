@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RtsCore.Protocol", "RtsCore
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RtsCore", "RtsCore\RtsCore.csproj", "{1432F3F6-7E7D-41EA-9EBD-7A861B7A1379}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtsCore.Framework", "RtsCore.Framework\RtsCore.Framework.csproj", "{772DB229-7D06-44AE-9CEB-FF65907AB10C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,18 @@ Global
 		{1432F3F6-7E7D-41EA-9EBD-7A861B7A1379}.Release|x64.Build.0 = Release|Any CPU
 		{1432F3F6-7E7D-41EA-9EBD-7A861B7A1379}.Release|x86.ActiveCfg = Release|Any CPU
 		{1432F3F6-7E7D-41EA-9EBD-7A861B7A1379}.Release|x86.Build.0 = Release|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Debug|x64.Build.0 = Debug|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Debug|x86.Build.0 = Debug|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Release|x64.ActiveCfg = Release|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Release|x64.Build.0 = Release|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Release|x86.ActiveCfg = Release|Any CPU
+		{772DB229-7D06-44AE-9CEB-FF65907AB10C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,8 +6,8 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Native;
-using Ratatoskr.Generic;
+using RtsCore.Framework.Device;
+using RtsCore.Generic;
 
 namespace Ratatoskr.Devices.UdpClient
 {

@@ -4,9 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.Types;
-using Ratatoskr.Generic.Container;
+using RtsCore.Config;
 
 namespace Ratatoskr.Configs.LanguageConfigs
 {

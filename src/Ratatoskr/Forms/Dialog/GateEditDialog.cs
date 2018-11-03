@@ -7,11 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.Devices;
+using RtsCore.Framework.Device;
+using RtsCore.Utility;
 using Ratatoskr.Gate;
-using Ratatoskr.Resources;
-using Ratatoskr.Utility;
 
 namespace Ratatoskr.Forms.Dialog
 {
@@ -158,8 +156,8 @@ namespace Ratatoskr.Forms.Dialog
 
             if (exp.Length > 0) {
                 TBox_ConnectCommand.BackColor = (HexTextEncoder.ToByteArray(exp) != null)
-                                              ? (AppColors.PATTERN_OK)
-                                              : (AppColors.PATTERN_NG);
+                                              ? (RtsCore.Parameter.COLOR_OK)
+                                              : (RtsCore.Parameter.COLOR_NG);
             } else {
                 TBox_ConnectCommand.BackColor = Color.White;
             }
@@ -167,17 +165,15 @@ namespace Ratatoskr.Forms.Dialog
 
         private void CBox_DeviceType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var devc = CBox_DeviceType.SelectedItem as DeviceClass;
+            if (CBox_DeviceType.SelectedItem is DeviceClass devc) {
+                devc_id_ = devc.ID;
 
-            if (devc == null)return;
+                Debugger.DebugManager.MessageOut("Gate Device Change Start");
 
-            devc_id_ = devc.ID;
+                UpdateDevice();
 
-            Debugger.DebugManager.MessageOut("Gate Device Change Start");
-
-            UpdateDevice();
-
-            Debugger.DebugManager.MessageOut("Gate Device Change End");
+                Debugger.DebugManager.MessageOut("Gate Device Change End");
+            }
         }
 
         private void OnClick_Ok(object sender, EventArgs e)

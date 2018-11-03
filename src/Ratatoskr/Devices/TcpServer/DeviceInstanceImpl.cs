@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Devices.TcpServer
 {
