@@ -176,7 +176,7 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionDecode
 
         public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
-            var packet_new = new DynamicPacketObject(input);
+            var packet_new = new PacketBuilder(input);
             var fxext = false;
 
             foreach (var data in input.Data) {

@@ -36,9 +36,9 @@
             // 
             this.DockPanel_Main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DockPanel_Main.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
-            this.DockPanel_Main.Location = new System.Drawing.Point(0, 54);
+            this.DockPanel_Main.Location = new System.Drawing.Point(0, 70);
             this.DockPanel_Main.Name = "DockPanel_Main";
-            this.DockPanel_Main.Size = new System.Drawing.Size(571, 353);
+            this.DockPanel_Main.Size = new System.Drawing.Size(571, 337);
             this.DockPanel_Main.TabIndex = 3;
             this.DockPanel_Main.DockContentClosed += new Ratatoskr.Forms.Controls.DockPanelEx.DockContentClosedHandler(this.DockPanel_Main_DockContentClosed);
             // 
@@ -48,7 +48,7 @@
             this.PacketConverter_Main.Dock = System.Windows.Forms.DockStyle.Top;
             this.PacketConverter_Main.Location = new System.Drawing.Point(0, 54);
             this.PacketConverter_Main.Name = "PacketConverter_Main";
-            this.PacketConverter_Main.Size = new System.Drawing.Size(571, 0);
+            this.PacketConverter_Main.Size = new System.Drawing.Size(571, 16);
             this.PacketConverter_Main.TabIndex = 2;
             // 
             // GatePanel_Main

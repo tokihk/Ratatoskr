@@ -573,6 +573,26 @@ namespace Ratatoskr.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap list_deails_24x24 {
+            get {
+                object obj = ResourceManager.GetObject("list_deails_24x24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap list_simple_24x24 {
+            get {
+                object obj = ResourceManager.GetObject("list_simple_24x24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap memo_32x32 {
             get {
                 object obj = ResourceManager.GetObject("memo_32x32", resourceCulture);
@@ -666,6 +686,46 @@ namespace Ratatoskr.Properties {
         internal static System.Drawing.Bitmap packet_rule {
             get {
                 object obj = ResourceManager.GetObject("packet_rule", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap packet_view_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("packet_view_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap packet_view_layout_0 {
+            get {
+                object obj = ResourceManager.GetObject("packet_view_layout_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap packet_view_layout_1 {
+            get {
+                object obj = ResourceManager.GetObject("packet_view_layout_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap packet_view_layout_2 {
+            get {
+                object obj = ResourceManager.GetObject("packet_view_layout_2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

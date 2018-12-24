@@ -112,7 +112,7 @@
             this.Btn_Ok.UseVisualStyleBackColor = true;
             this.Btn_Ok.Click += new System.EventHandler(this.Btn_Ok_Click);
             // 
-            // ProfileConfigDialog
+            // ProfileEditDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -124,10 +124,11 @@
             this.Controls.Add(this.GBox_ProfileName);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "ProfileConfigDialog";
+            this.Name = "ProfileEditDialog";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Profile config";
+            this.Load += new System.EventHandler(this.ProfileEditDialog_Load);
             this.GBox_ProfileName.ResumeLayout(false);
             this.GBox_ProfileName.PerformLayout();
             this.GBox_ProfileComment.ResumeLayout(false);

@@ -43,9 +43,9 @@ namespace Ratatoskr.PacketConverters.Separator
             OnInputStatusClear();
         }
 
-        public void InputPacket(PacketObject input, ref List<PacketObject> output)
+        public void InputPacket(uint input_ch, PacketObject input, ref List<PacketObject> output)
         {
-            OnInputPacket(input, ref output);
+            OnInputPacket(input_ch, input, ref output);
         }
 
         public void InputBreak(ref List<PacketObject> output)
@@ -62,7 +62,7 @@ namespace Ratatoskr.PacketConverters.Separator
         {
         }
 
-        protected virtual void OnInputPacket(PacketObject input, ref List<PacketObject> output)
+        protected virtual void OnInputPacket(uint input_ch, PacketObject input, ref List<PacketObject> output)
         {
         }
 

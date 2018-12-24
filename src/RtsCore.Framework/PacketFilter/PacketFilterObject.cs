@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RtsCore.Framework.Packet.Filter
+namespace RtsCore.Framework.PacketFilter
 {
     public sealed class PacketFilterObject
     {
@@ -48,11 +48,11 @@ namespace RtsCore.Framework.Packet.Filter
 
             foreach (var arg in args_) {
                 /* --- 項 --- */
-                if (arg is Terms.Term) {
-                    term_stack.Push(arg as Terms.Term);
+                if (arg is Terms.Term arg_term) {
+                    term_stack.Push(arg_term);
 
                 /* --- 演算子 --- */
-                } else if (   (arg is Tokens)
+                } else if (   (arg is Tokens arg_token)
                            && (term_stack.Count >= 1)    // 計算用パラメータが存在するかどうか
                 ) {
                     var term_left = (Terms.Term)null;
@@ -69,7 +69,7 @@ namespace RtsCore.Framework.Packet.Filter
                     }
 
                     /* 計算実行 */
-                    var term_result = term_left.Exec(cs, (Tokens)arg, term_right);
+                    var term_result = term_left.Exec(cs, arg_token, term_right);
 
                     /* 計算ができない場合は構文エラー */
                     if (term_result == null)return (false);

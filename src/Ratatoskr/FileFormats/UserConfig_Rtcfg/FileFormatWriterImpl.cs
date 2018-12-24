@@ -64,7 +64,10 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
         {
             try {
                 /* Format Version (4 Byte) */
-                writer.Write(FileFormatClassImpl.FORMATVERSION);
+                writer.Write((byte)((UInt32)FileFormatClassImpl.FORMATVERSION >> 24));
+                writer.Write((byte)((UInt32)FileFormatClassImpl.FORMATVERSION >> 16));
+                writer.Write((byte)((UInt32)FileFormatClassImpl.FORMATVERSION >>  8));
+                writer.Write((byte)((UInt32)FileFormatClassImpl.FORMATVERSION >>  0));
 
                 /* Profile ID (1 + xx Byte) */
                 var profile_id = option_.TargetProfileID.ToString("D");

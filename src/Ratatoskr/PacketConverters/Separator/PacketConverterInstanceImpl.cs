@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ratatoskr.Gate;
 using RtsCore.Framework.PacketConverter;
 using RtsCore.Packet;
 
@@ -57,14 +58,16 @@ namespace Ratatoskr.PacketConverters.Separator
 
         private PacketObject packet_last_ = null;
 
-        private ComboBox CBox_TargetList;
+        private List<string> alias_list_ = new List<string>();
+        private Forms.Controls.RoundComboBox CBox_TargetList;
         private Button Btn_Option;
         private Panel Panel_Sub;
 
         private ContextMenuStrip  CMenu_Option;
-        private ToolStripMenuItem CMenu_DirChangeDivide;
+        private ToolStripMenuItem CMenu_DirectionChangeDivide;
         private ToolStripMenuItem CMenu_EventDetectDivide;
-
+        private ToolStripMenuItem CMenu_EachAlias;
+        private ToolStripMenuItem CMenu_EachDirection;
         private System.ComponentModel.IContainer components;
 
 
@@ -82,7 +85,9 @@ namespace Ratatoskr.PacketConverters.Separator
             InitializeTargetList();
 
             CMenu_EventDetectDivide.Checked = prop_.EventDetectDivide.Value;
-            CMenu_DirChangeDivide.Checked = prop_.DirectionChangeDivide.Value;
+            CMenu_DirectionChangeDivide.Checked = prop_.DirectionChangeDivide.Value;
+            CMenu_EachAlias.Checked = prop_.EachAlias.Value;
+            CMenu_EachDirection.Checked = prop_.EachDirection.Value;
 
             SelectRule(prop_.Rule.Value);
         }
@@ -95,7 +100,9 @@ namespace Ratatoskr.PacketConverters.Separator
             this.Panel_Sub = new System.Windows.Forms.Panel();
             this.CMenu_Option = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.CMenu_EventDetectDivide = new System.Windows.Forms.ToolStripMenuItem();
-            this.CMenu_DirChangeDivide = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_DirectionChangeDivide = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_EachAlias = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu_EachDirection = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Option.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -136,23 +143,41 @@ namespace Ratatoskr.PacketConverters.Separator
             // 
             this.CMenu_Option.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CMenu_EventDetectDivide,
-            this.CMenu_DirChangeDivide});
+            this.CMenu_DirectionChangeDivide,
+            this.CMenu_EachAlias,
+            this.CMenu_EachDirection});
             this.CMenu_Option.Name = "contextMenuStrip1";
-            this.CMenu_Option.Size = new System.Drawing.Size(292, 48);
+            this.CMenu_Option.Size = new System.Drawing.Size(328, 114);
             // 
             // CMenu_EventDetectDivide
             // 
             this.CMenu_EventDetectDivide.Name = "CMenu_EventDetectDivide";
-            this.CMenu_EventDetectDivide.Size = new System.Drawing.Size(291, 22);
+            this.CMenu_EventDetectDivide.Size = new System.Drawing.Size(327, 22);
             this.CMenu_EventDetectDivide.Text = "Forced split at event";
             this.CMenu_EventDetectDivide.Click += new System.EventHandler(this.OptionMenu_Click);
             // 
-            // CMenu_DirChangeDivide
+            // CMenu_DirectionChangeDivide
             // 
-            this.CMenu_DirChangeDivide.Name = "CMenu_DirChangeDivide";
-            this.CMenu_DirChangeDivide.Size = new System.Drawing.Size(291, 22);
-            this.CMenu_DirChangeDivide.Text = "Forced output when data direction changes";
-            this.CMenu_DirChangeDivide.Click += new System.EventHandler(this.OptionMenu_Click);
+            this.CMenu_DirectionChangeDivide.Name = "CMenu_DirectionChangeDivide";
+            this.CMenu_DirectionChangeDivide.Size = new System.Drawing.Size(327, 22);
+            this.CMenu_DirectionChangeDivide.Text = "Forced output when data direction changes";
+            this.CMenu_DirectionChangeDivide.Click += new System.EventHandler(this.OptionMenu_Click);
+            // 
+            // CMenu_EachAlias
+            // 
+            this.CMenu_EachAlias.Name = "CMenu_EachAlias";
+            this.CMenu_EachAlias.Size = new System.Drawing.Size(327, 22);
+            this.CMenu_EachAlias.Text = "Process for each Alias";
+            this.CMenu_EachAlias.Visible = false;
+            this.CMenu_EachAlias.Click += new System.EventHandler(this.OptionMenu_Click);
+            // 
+            // CMenu_EachDirection
+            // 
+            this.CMenu_EachDirection.Name = "CMenu_EachDirection";
+            this.CMenu_EachDirection.Size = new System.Drawing.Size(327, 22);
+            this.CMenu_EachDirection.Text = "Process for each Direction";
+            this.CMenu_EachDirection.Visible = false;
+            this.CMenu_EachDirection.Click += new System.EventHandler(this.OptionMenu_Click);
             // 
             // PacketConverterInstanceImpl
             // 
@@ -232,10 +257,33 @@ namespace Ratatoskr.PacketConverters.Separator
             UpdateConvertStatus();
         }
 
+        private uint GetInputChannel(PacketObject packet)
+        {
+            var ch_index = 0;
+
+#if false
+            if (prop_.EachAlias.Value) {
+                ch_index = alias_list_.FindIndex(alias => alias == packet.Alias);
+                if (ch_index < 0) {
+                    ch_index = alias_list_.Count;
+                    alias_list_.Add(packet.Alias);
+                }
+            }
+
+            if (prop_.EachDirection.Value) {
+                ch_index = ch_index * 2 + (int)packet.Direction;
+            }
+#endif
+
+            return ((uint)ch_index);
+        }
+
         protected override void OnBackupProperty()
         {
             prop_.EventDetectDivide.Value = CMenu_EventDetectDivide.Checked;
-            prop_.DirectionChangeDivide.Value = CMenu_DirChangeDivide.Checked;
+            prop_.DirectionChangeDivide.Value = CMenu_DirectionChangeDivide.Checked;
+            prop_.EachAlias.Value = CMenu_EachAlias.Checked;
+            prop_.EachDirection.Value = CMenu_EachDirection.Checked;
         }
 
         protected override void OnInputStatusClear()
@@ -277,7 +325,7 @@ namespace Ratatoskr.PacketConverters.Separator
             }
 
             /* ターゲットオブジェクトに変換を任せる */
-            rule_obj_.InputPacket(input, ref output);
+            rule_obj_.InputPacket(GetInputChannel(input), input, ref output);
 
             /* 最終処理パケットを記憶 */
             packet_last_ = input;

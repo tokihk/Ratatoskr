@@ -77,7 +77,7 @@ namespace Ratatoskr.Forms.Dialog
             LView_ProfileList.EndUpdate();
         }
 
-        private ListViewItem ProfileToListViewItem(ConfigManager.ProfileInfo profile)
+        private ListViewItem ProfileToListViewItem(ConfigManager.ProfileData profile)
         {
             var item = new ListViewItem();
 
@@ -92,7 +92,7 @@ namespace Ratatoskr.Forms.Dialog
             return (item);
         }
 
-        private ListViewItem.ListViewSubItem ProfileToListViewSubItem(ProfileListSubColumnID column_id, ConfigManager.ProfileInfo profile)
+        private ListViewItem.ListViewSubItem ProfileToListViewSubItem(ProfileListSubColumnID column_id, ConfigManager.ProfileData profile)
         {
             var item = new ListViewItem.ListViewSubItem();
 

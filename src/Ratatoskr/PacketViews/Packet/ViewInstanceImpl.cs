@@ -12,7 +12,7 @@ using Ratatoskr.Forms;
 using Ratatoskr.Forms.Controls;
 using Ratatoskr.PacketViews.Packet.Configs;
 using RtsCore.Packet;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 using RtsCore.Framework.PacketView;
 using RtsCore.Utility;
 
@@ -140,7 +140,7 @@ namespace Ratatoskr.PacketViews.Packet
         private System.Windows.Forms.SplitContainer Split_Main;
         private ListViewEx LView_Main;
 
-        private SplitContainer splitContainer1;
+        private SplitContainer Split_Sub;
 
         private BinEditBox BBox_Main;
 
@@ -203,6 +203,10 @@ namespace Ratatoskr.PacketViews.Packet
         private ToolStripMenuItem CMenu_Packet_Copy_Class;
         private ToolStripMenuItem CMenu_Packet_Export;
         private ToolStripMenuItem CMenu_Packet_Export_Data;
+        private GroupBox groupBox1;
+        private RadioButton RBtn_Layout_2;
+        private RadioButton RBtn_Layout_1;
+        private RadioButton RBtn_Layout_0;
         private TextBox TBox_CustomFormat;
 
 
@@ -211,6 +215,10 @@ namespace Ratatoskr.PacketViews.Packet
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PacketViewInstanceImpl));
             this.Panel_ToolBar = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.RBtn_Layout_0 = new System.Windows.Forms.RadioButton();
+            this.RBtn_Layout_2 = new System.Windows.Forms.RadioButton();
+            this.RBtn_Layout_1 = new System.Windows.Forms.RadioButton();
             this.GBox_CustomFormat = new System.Windows.Forms.GroupBox();
             this.TBox_CustomFormat = new System.Windows.Forms.TextBox();
             this.GBox_CharCode = new System.Windows.Forms.GroupBox();
@@ -219,9 +227,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.label1 = new System.Windows.Forms.Label();
             this.Num_PreviewDataSize = new System.Windows.Forms.NumericUpDown();
             this.Split_Main = new System.Windows.Forms.SplitContainer();
-            this.LView_Main = new Ratatoskr.Forms.Controls.ListViewEx();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.BBox_Main = new Ratatoskr.Forms.Controls.BinEditBox();
+            this.Split_Sub = new System.Windows.Forms.SplitContainer();
             this.LView_ExtInfo = new System.Windows.Forms.ListView();
             this.LView_ExtInfoColumn_Name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.LView_ExtInfoColumn_Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -277,7 +283,10 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_Copy_Data_Custom = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Packet_Export = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Packet_Export_Data = new System.Windows.Forms.ToolStripMenuItem();
+            this.LView_Main = new Ratatoskr.Forms.Controls.ListViewEx();
+            this.BBox_Main = new Ratatoskr.Forms.Controls.BinEditBox();
             this.Panel_ToolBar.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.GBox_CustomFormat.SuspendLayout();
             this.GBox_CharCode.SuspendLayout();
             this.GBox_PreviewByteNum.SuspendLayout();
@@ -286,16 +295,17 @@ namespace Ratatoskr.PacketViews.Packet
             this.Split_Main.Panel1.SuspendLayout();
             this.Split_Main.Panel2.SuspendLayout();
             this.Split_Main.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Split_Sub)).BeginInit();
+            this.Split_Sub.Panel1.SuspendLayout();
+            this.Split_Sub.Panel2.SuspendLayout();
+            this.Split_Sub.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.CMenu_Packet.SuspendLayout();
             this.SuspendLayout();
             // 
             // Panel_ToolBar
             // 
+            this.Panel_ToolBar.Controls.Add(this.groupBox1);
             this.Panel_ToolBar.Controls.Add(this.GBox_CustomFormat);
             this.Panel_ToolBar.Controls.Add(this.GBox_CharCode);
             this.Panel_ToolBar.Controls.Add(this.GBox_PreviewByteNum);
@@ -305,14 +315,73 @@ namespace Ratatoskr.PacketViews.Packet
             this.Panel_ToolBar.Size = new System.Drawing.Size(957, 49);
             this.Panel_ToolBar.TabIndex = 0;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.RBtn_Layout_0);
+            this.groupBox1.Controls.Add(this.RBtn_Layout_2);
+            this.groupBox1.Controls.Add(this.RBtn_Layout_1);
+            this.groupBox1.Location = new System.Drawing.Point(4, 4);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(100, 40);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Layout";
+            // 
+            // RBtn_Layout_0
+            // 
+            this.RBtn_Layout_0.Appearance = System.Windows.Forms.Appearance.Button;
+            this.RBtn_Layout_0.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.RBtn_Layout_0.Cursor = System.Windows.Forms.Cursors.Default;
+            this.RBtn_Layout_0.FlatAppearance.BorderSize = 0;
+            this.RBtn_Layout_0.Image = ((System.Drawing.Image)(resources.GetObject("RBtn_Layout_0.Image")));
+            this.RBtn_Layout_0.Location = new System.Drawing.Point(6, 13);
+            this.RBtn_Layout_0.Name = "RBtn_Layout_0";
+            this.RBtn_Layout_0.Size = new System.Drawing.Size(24, 24);
+            this.RBtn_Layout_0.TabIndex = 3;
+            this.RBtn_Layout_0.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.RBtn_Layout_0.UseVisualStyleBackColor = true;
+            this.RBtn_Layout_0.CheckedChanged += new System.EventHandler(this.RBtn_Layout_0_CheckedChanged);
+            // 
+            // RBtn_Layout_2
+            // 
+            this.RBtn_Layout_2.Appearance = System.Windows.Forms.Appearance.Button;
+            this.RBtn_Layout_2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.RBtn_Layout_2.Cursor = System.Windows.Forms.Cursors.Default;
+            this.RBtn_Layout_2.FlatAppearance.BorderSize = 0;
+            this.RBtn_Layout_2.Image = ((System.Drawing.Image)(resources.GetObject("RBtn_Layout_2.Image")));
+            this.RBtn_Layout_2.Location = new System.Drawing.Point(66, 13);
+            this.RBtn_Layout_2.Name = "RBtn_Layout_2";
+            this.RBtn_Layout_2.Size = new System.Drawing.Size(24, 24);
+            this.RBtn_Layout_2.TabIndex = 2;
+            this.RBtn_Layout_2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.RBtn_Layout_2.UseVisualStyleBackColor = true;
+            this.RBtn_Layout_2.CheckedChanged += new System.EventHandler(this.RBtn_Layout_2_CheckedChanged);
+            // 
+            // RBtn_Layout_1
+            // 
+            this.RBtn_Layout_1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.RBtn_Layout_1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.RBtn_Layout_1.Checked = true;
+            this.RBtn_Layout_1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.RBtn_Layout_1.FlatAppearance.BorderSize = 0;
+            this.RBtn_Layout_1.Image = ((System.Drawing.Image)(resources.GetObject("RBtn_Layout_1.Image")));
+            this.RBtn_Layout_1.Location = new System.Drawing.Point(36, 13);
+            this.RBtn_Layout_1.Name = "RBtn_Layout_1";
+            this.RBtn_Layout_1.Size = new System.Drawing.Size(24, 24);
+            this.RBtn_Layout_1.TabIndex = 1;
+            this.RBtn_Layout_1.TabStop = true;
+            this.RBtn_Layout_1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.RBtn_Layout_1.UseVisualStyleBackColor = true;
+            this.RBtn_Layout_1.CheckedChanged += new System.EventHandler(this.RBtn_Layout_1_CheckedChanged);
+            // 
             // GBox_CustomFormat
             // 
             this.GBox_CustomFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.GBox_CustomFormat.Controls.Add(this.TBox_CustomFormat);
-            this.GBox_CustomFormat.Location = new System.Drawing.Point(275, 5);
+            this.GBox_CustomFormat.Location = new System.Drawing.Point(382, 5);
             this.GBox_CustomFormat.Name = "GBox_CustomFormat";
-            this.GBox_CustomFormat.Size = new System.Drawing.Size(679, 39);
+            this.GBox_CustomFormat.Size = new System.Drawing.Size(572, 39);
             this.GBox_CustomFormat.TabIndex = 2;
             this.GBox_CustomFormat.TabStop = false;
             this.GBox_CustomFormat.Text = "Custom preview format";
@@ -324,7 +393,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.TBox_CustomFormat.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.TBox_CustomFormat.Location = new System.Drawing.Point(3, 15);
             this.TBox_CustomFormat.Name = "TBox_CustomFormat";
-            this.TBox_CustomFormat.Size = new System.Drawing.Size(673, 19);
+            this.TBox_CustomFormat.Size = new System.Drawing.Size(566, 19);
             this.TBox_CustomFormat.TabIndex = 0;
             this.TBox_CustomFormat.TextChanged += new System.EventHandler(this.TBox_CustomFormat_TextChanged);
             this.TBox_CustomFormat.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TBox_CustomFormat_KeyDown);
@@ -332,7 +401,7 @@ namespace Ratatoskr.PacketViews.Packet
             // GBox_CharCode
             // 
             this.GBox_CharCode.Controls.Add(this.CBox_CharCode);
-            this.GBox_CharCode.Location = new System.Drawing.Point(149, 4);
+            this.GBox_CharCode.Location = new System.Drawing.Point(256, 4);
             this.GBox_CharCode.Name = "GBox_CharCode";
             this.GBox_CharCode.Size = new System.Drawing.Size(120, 40);
             this.GBox_CharCode.TabIndex = 1;
@@ -355,7 +424,7 @@ namespace Ratatoskr.PacketViews.Packet
             // 
             this.GBox_PreviewByteNum.Controls.Add(this.label1);
             this.GBox_PreviewByteNum.Controls.Add(this.Num_PreviewDataSize);
-            this.GBox_PreviewByteNum.Location = new System.Drawing.Point(3, 4);
+            this.GBox_PreviewByteNum.Location = new System.Drawing.Point(110, 4);
             this.GBox_PreviewByteNum.Name = "GBox_PreviewByteNum";
             this.GBox_PreviewByteNum.Size = new System.Drawing.Size(140, 40);
             this.GBox_PreviewByteNum.TabIndex = 0;
@@ -402,67 +471,30 @@ namespace Ratatoskr.PacketViews.Packet
             // 
             // Split_Main.Panel2
             // 
-            this.Split_Main.Panel2.Controls.Add(this.splitContainer1);
+            this.Split_Main.Panel2.Controls.Add(this.Split_Sub);
             this.Split_Main.Panel2MinSize = 150;
             this.Split_Main.Size = new System.Drawing.Size(957, 462);
             this.Split_Main.SplitterDistance = 258;
             this.Split_Main.TabIndex = 1;
             // 
-            // LView_Main
+            // Split_Sub
             // 
-            this.LView_Main.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.LView_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LView_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.LView_Main.FullRowSelect = true;
-            this.LView_Main.GridLines = true;
-            this.LView_Main.ItemCountMax = 999999;
-            this.LView_Main.Location = new System.Drawing.Point(0, 0);
-            this.LView_Main.Name = "LView_Main";
-            this.LView_Main.ReadOnly = true;
-            this.LView_Main.Size = new System.Drawing.Size(957, 258);
-            this.LView_Main.TabIndex = 0;
-            this.LView_Main.UseCompatibleStateImageBehavior = false;
-            this.LView_Main.View = System.Windows.Forms.View.Details;
-            this.LView_Main.VirtualMode = true;
-            this.LView_Main.ItemSelectBusyStatusChanged += new System.EventHandler(this.LView_Main_ItemSelectBusyStatusChanged);
-            this.LView_Main.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LView_Main_ColumnClick);
-            this.LView_Main.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.LView_Main_RetrieveVirtualItem);
-            this.LView_Main.SelectedIndexChanged += new System.EventHandler(this.LView_Main_SelectedIndexChanged);
-            this.LView_Main.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LView_Main_MouseClick);
+            this.Split_Sub.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Split_Sub.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.Split_Sub.Location = new System.Drawing.Point(0, 0);
+            this.Split_Sub.Name = "Split_Sub";
             // 
-            // splitContainer1
+            // Split_Sub.Panel1
             // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.IsSplitterFixed = true;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
+            this.Split_Sub.Panel1.Controls.Add(this.BBox_Main);
             // 
-            // splitContainer1.Panel1
+            // Split_Sub.Panel2
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.BBox_Main);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.LView_ExtInfo);
-            this.splitContainer1.Panel2.Controls.Add(this.toolStrip1);
-            this.splitContainer1.Size = new System.Drawing.Size(957, 200);
-            this.splitContainer1.SplitterDistance = 640;
-            this.splitContainer1.TabIndex = 0;
-            // 
-            // BBox_Main
-            // 
-            this.BBox_Main.AllowDrop = true;
-            this.BBox_Main.BackColor = System.Drawing.SystemColors.Window;
-            this.BBox_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BBox_Main.EditEnable = false;
-            this.BBox_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.BBox_Main.InsertEnable = false;
-            this.BBox_Main.Location = new System.Drawing.Point(0, 0);
-            this.BBox_Main.Name = "BBox_Main";
-            this.BBox_Main.Size = new System.Drawing.Size(640, 200);
-            this.BBox_Main.TabIndex = 1;
-            this.BBox_Main.TextViewEnable = true;
+            this.Split_Sub.Panel2.Controls.Add(this.LView_ExtInfo);
+            this.Split_Sub.Panel2.Controls.Add(this.toolStrip1);
+            this.Split_Sub.Size = new System.Drawing.Size(957, 200);
+            this.Split_Sub.SplitterDistance = 640;
+            this.Split_Sub.TabIndex = 0;
             // 
             // LView_ExtInfo
             // 
@@ -864,6 +896,42 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_Export_Data.Size = new System.Drawing.Size(104, 22);
             this.CMenu_Packet_Export_Data.Text = "Data";
             // 
+            // LView_Main
+            // 
+            this.LView_Main.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.LView_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LView_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LView_Main.FullRowSelect = true;
+            this.LView_Main.GridLines = true;
+            this.LView_Main.ItemCountMax = 999999;
+            this.LView_Main.Location = new System.Drawing.Point(0, 0);
+            this.LView_Main.Name = "LView_Main";
+            this.LView_Main.ReadOnly = true;
+            this.LView_Main.Size = new System.Drawing.Size(957, 258);
+            this.LView_Main.TabIndex = 0;
+            this.LView_Main.UseCompatibleStateImageBehavior = false;
+            this.LView_Main.View = System.Windows.Forms.View.Details;
+            this.LView_Main.VirtualMode = true;
+            this.LView_Main.ItemSelectBusyStatusChanged += new System.EventHandler(this.LView_Main_ItemSelectBusyStatusChanged);
+            this.LView_Main.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LView_Main_ColumnClick);
+            this.LView_Main.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.LView_Main_RetrieveVirtualItem);
+            this.LView_Main.SelectedIndexChanged += new System.EventHandler(this.LView_Main_SelectedIndexChanged);
+            this.LView_Main.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LView_Main_MouseClick);
+            // 
+            // BBox_Main
+            // 
+            this.BBox_Main.AllowDrop = true;
+            this.BBox_Main.BackColor = System.Drawing.SystemColors.Window;
+            this.BBox_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.BBox_Main.EditEnable = false;
+            this.BBox_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.BBox_Main.InsertEnable = false;
+            this.BBox_Main.Location = new System.Drawing.Point(0, 0);
+            this.BBox_Main.Name = "BBox_Main";
+            this.BBox_Main.Size = new System.Drawing.Size(640, 200);
+            this.BBox_Main.TabIndex = 1;
+            this.BBox_Main.TextViewEnable = true;
+            // 
             // PacketViewInstanceImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -872,6 +940,7 @@ namespace Ratatoskr.PacketViews.Packet
             this.Name = "PacketViewInstanceImpl";
             this.Size = new System.Drawing.Size(957, 511);
             this.Panel_ToolBar.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.GBox_CustomFormat.ResumeLayout(false);
             this.GBox_CustomFormat.PerformLayout();
             this.GBox_CharCode.ResumeLayout(false);
@@ -882,11 +951,11 @@ namespace Ratatoskr.PacketViews.Packet
             this.Split_Main.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Split_Main)).EndInit();
             this.Split_Main.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
+            this.Split_Sub.Panel1.ResumeLayout(false);
+            this.Split_Sub.Panel2.ResumeLayout(false);
+            this.Split_Sub.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Split_Sub)).EndInit();
+            this.Split_Sub.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.CMenu_Packet.ResumeLayout(false);
@@ -1966,6 +2035,32 @@ namespace Ratatoskr.PacketViews.Packet
         private void LView_Main_ItemSelectBusyStatusChanged(object sender, EventArgs e)
         {
             UpdateOperationBusyStatus();
+        }
+
+        private void RBtn_Layout_0_CheckedChanged(object sender, EventArgs e)
+        {
+            Split_Main.Orientation = Orientation.Vertical;
+            Split_Main.Panel2Collapsed = true;
+        }
+
+        private void RBtn_Layout_1_CheckedChanged(object sender, EventArgs e)
+        {
+            Split_Main.Orientation = Orientation.Horizontal;
+            Split_Main.Panel2Collapsed = false;
+
+            Split_Sub.Orientation = Orientation.Vertical;
+            Split_Sub.SplitterDistance = 640;
+            Split_Sub.FixedPanel = FixedPanel.Panel1;
+        }
+
+        private void RBtn_Layout_2_CheckedChanged(object sender, EventArgs e)
+        {
+            Split_Main.Orientation = Orientation.Vertical;
+            Split_Main.Panel2Collapsed = false;
+
+            Split_Sub.Orientation = Orientation.Horizontal;
+            Split_Sub.SplitterDistance = 320;
+            Split_Sub.FixedPanel = FixedPanel.None;
         }
     }
 }

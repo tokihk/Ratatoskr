@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 
-namespace RtsCore.Framework.Packet.Filter.Terms
+namespace RtsCore.Framework.PacketFilter.Terms
 {
     internal sealed class Term_DateTime : Term
     {
@@ -118,8 +118,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_ARMOP_ADD(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_DateTimeOffset === */
-            if (term_sub.GetType() == typeof(Term_DateTimeOffset)) {
-                return (new Term_DateTime(value_ + (term_sub as Term_DateTimeOffset).Value));
+            if (term_sub is Term_DateTimeOffset term_sub_dto) {
+                return (new Term_DateTime(value_ + term_sub_dto.Value));
             }
 
             return (null);
@@ -128,13 +128,13 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_ARMOP_SUB(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_DateTimeOffset === */
-            if (term_sub.GetType() == typeof(Term_DateTimeOffset)) {
-                return (new Term_DateTime(value_ - (term_sub as Term_DateTimeOffset).Value));
+            if (term_sub is Term_DateTimeOffset term_sub_dto) {
+                return (new Term_DateTime(value_ - term_sub_dto.Value));
             }
 
             /* === Term_DateTime === */
-            if (term_sub.GetType() == typeof(Term_DateTime)) {
-                return (new Term_DateTimeOffset(value_ - (term_sub as Term_DateTime).Value));
+            if (term_sub is Term_DateTime term_sub_dt) {
+                return (new Term_DateTimeOffset(value_ - term_sub_dt.Value));
             }
 
             return (null);
@@ -143,8 +143,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_EQUAL(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_DateTime === */
-            if (term_sub.GetType() == typeof(Term_DateTime)) {
-                return (new Term_Bool(value_ == (term_sub as Term_DateTime).Value));
+            if (term_sub is Term_DateTime term_sub_dt) {
+                return (new Term_Bool(value_ == term_sub_dt.Value));
             }
 
             return (null);
@@ -153,8 +153,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_GREATER(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_DateTime === */
-            if (term_sub.GetType() == typeof(Term_DateTime)) {
-                return (new Term_Bool(value_ > (term_sub as Term_DateTime).Value));
+            if (term_sub is Term_DateTime term_sub_dt) {
+                return (new Term_Bool(value_ > term_sub_dt.Value));
             }
 
             return (null);
@@ -163,8 +163,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_GREATEREQUAL(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_DateTime === */
-            if (term_sub.GetType() == typeof(Term_DateTime)) {
-                return (new Term_Bool(value_ >= (term_sub as Term_DateTime).Value));
+            if (term_sub is Term_DateTime term_sub_dt) {
+                return (new Term_Bool(value_ >= term_sub_dt.Value));
             }
 
             return (null);
@@ -173,8 +173,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_LESS(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_DateTime === */
-            if (term_sub.GetType() == typeof(Term_DateTime)) {
-                return (new Term_Bool(value_ < (term_sub as Term_DateTime).Value));
+            if (term_sub is Term_DateTime term_sub_dt) {
+                return (new Term_Bool(value_ < term_sub_dt.Value));
             }
 
             return (null);
@@ -183,8 +183,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_LESSEQUAL(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_DateTime === */
-            if (term_sub.GetType() == typeof(Term_DateTime)) {
-                return (new Term_Bool(value_ <= (term_sub as Term_DateTime).Value));
+            if (term_sub is Term_DateTime term_sub_dt) {
+                return (new Term_Bool(value_ <= term_sub_dt.Value));
             }
 
             return (null);

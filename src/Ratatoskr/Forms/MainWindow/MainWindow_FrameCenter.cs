@@ -18,16 +18,33 @@ namespace Ratatoskr.Forms.MainWindow
 {
     internal partial class MainWindow_FrameCenter : UserControl
     {
+        private class DockPanelTheme : VS2013LightTheme
+        {
+            public DockPanelTheme()
+            {
+            }
+        }
+
+
         private const string CONFIG_FILE_NAME = "setting-dock.xml";
 
+        private enum DockContentsGroup
+        {
+            Fixed,
+            PacketView,
+        }
 
-        private MainWindow_SendDataListPanel MFDC_CmdListPanel_Control;
+
+        private MainWindow_SendDataListPanel MFDC_SendDataListPanel_Control;
         private MainWindow_WatchListPanel    MFDC_WatchListPanel_Control;
 
 
         public MainWindow_FrameCenter()
         {
             InitializeComponent();
+
+            DockPanel_Main.Theme = new DockPanelTheme();
+            DockPanel_Main.ShowDocumentIcon = true;
         }
 
         public void LoadConfig()
@@ -45,24 +62,26 @@ namespace Ratatoskr.Forms.MainWindow
             DockPanel_Main.ClearDockContents();
 
             DockPanel_Main.AddDockContent(
-                "MFDC_CmdListPanel",
+                "MFDC_SendDataListPanel_Control",
                 ConfigManager.Language.MainUI.MCmdPanel_Title.Value,
+                (uint)DockContentsGroup.Fixed,
                 Icon.FromHandle(Properties.Resources.memo_32x32.GetHicon()),
-                DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
+                DockAreas.Document | DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottomAutoHide,
                 false,
-                MFDC_CmdListPanel_Control = new MainWindow_SendDataListPanel());
+                MFDC_SendDataListPanel_Control = new MainWindow_SendDataListPanel());
 
             DockPanel_Main.AddDockContent(
                 "MFDC_WatchListPanel",
                 ConfigManager.Language.MainUI.WLPanel_Title.Value,
+                (uint)DockContentsGroup.Fixed,
                 Icon.FromHandle(Properties.Resources.watch_32x32.GetHicon()),
-                DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
+                DockAreas.Document | DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottomAutoHide,
                 false,
                 MFDC_WatchListPanel_Control = new MainWindow_WatchListPanel());
 
-            MFDC_CmdListPanel_Control.LoadConfig();
+            MFDC_SendDataListPanel_Control.LoadConfig();
             MFDC_WatchListPanel_Control.LoadConfig();
         }
 
@@ -79,24 +98,18 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void LoadDockConfig()
         {
-            var config_dock = Program.GetWorkspaceDirectory(CONFIG_FILE_NAME);
-
             /* 設定ファイルから復元 */
-            if (   (config_dock != null)
-                && (File.Exists(config_dock))
-            ) {
-                try {
-                    DockPanel_Main.LoadFromXml(config_dock);
-                } catch (Exception) {
-                }
+            try {
+                DockPanel_Main.ShowContents(ConfigManager.GetCurrentProfileFilePath(CONFIG_FILE_NAME, true));
+            } catch (Exception) {
             }
 
             /* 設定ファイルから復元できなかったものはデフォルト値で初期化 */
-            foreach (var content in DockPanel_Main.GetDockContents()) {
-                if (content.DockState == DockState.Unknown) {
-                    content.Show(DockPanel_Main, content.DefaultDockState);
-                }
-            }
+//            foreach (var content in DockPanel_Main.GetDockContents()) {
+//                if (content.DockState == DockState.Unknown) {
+//                    content.Show(DockPanel_Main, content.DefaultDockState);
+//                }
+//            }
 
             /* --- 自前で初期化 --- */
 //            MFDC_CmdListPanel.Show(DockPanel_Main, DockState.DockBottomAutoHide);
@@ -108,6 +121,9 @@ namespace Ratatoskr.Forms.MainWindow
         {
             GatePanel_Main.BackupConfig();
             PacketConverter_Main.BackupConfig();
+            
+            MFDC_SendDataListPanel_Control.BackupConfig();
+            MFDC_WatchListPanel_Control.BackupConfig();
 
             BackupDockConfig();
             BackupPacketViewConfig();
@@ -115,7 +131,7 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void BackupDockConfig()
         {
-            var config_dock = Program.GetWorkspaceDirectory(CONFIG_FILE_NAME);
+            var config_dock = ConfigManager.GetCurrentProfileFilePath(CONFIG_FILE_NAME);
 
             if (config_dock != null) {
                 Directory.CreateDirectory(Path.GetDirectoryName(config_dock));
@@ -131,8 +147,12 @@ namespace Ratatoskr.Forms.MainWindow
             /* パケットビューのみをスキャン */
             foreach (var viewc in FormTaskManager.GetPacketViewControls()) {
                 viewc.BackupProperty();
+
                 ConfigManager.User.PacketView.Value.Add(
-                    new PacketViewObjectConfig(viewc.Instance.Class.ID, viewc.Instance.ID, viewc.Instance.Property));
+                    new PacketViewObjectConfig(
+                        viewc.Instance.Class.ID,
+                        viewc.Instance.ID,
+                        viewc.Instance.Property));
             }
         }
 
@@ -148,7 +168,7 @@ namespace Ratatoskr.Forms.MainWindow
 
         public void ClearPacketView()
         {
-            DockPanel_Main.ClearDockContents();
+            DockPanel_Main.RemoveDockContents((uint)DockContentsGroup.PacketView);
         }
 
         private void AddPacketView(Guid class_id, Guid obj_id, PacketViewProperty viewp, bool init)
@@ -159,9 +179,11 @@ namespace Ratatoskr.Forms.MainWindow
 
             /* Graphオブジェクトのレイアウトが何故か復元できないので、とりあえずパケットビューだけ復元対象から外す */
             DockPanel_Main.AddDockContent(
-                                viewc.Instance.ID.ToString() + (new Random()).Next(0, 99999).ToString(),
+                                viewc.Instance.ID.ToString(),
+//                                viewc.Instance.ID.ToString() + (new Random()).Next(0, 99999).ToString(),
                                 viewc.Instance.Class.Name,
-                                Icon.FromHandle(Properties.Resources.memo_32x32.GetHicon()),
+                                (uint)DockContentsGroup.PacketView,
+                                Icon.FromHandle(Properties.Resources.packet_view_16x16.GetHicon()),
                                 DockAreas.Document,
                                 DockState.Document,
                                 true,
@@ -170,8 +192,10 @@ namespace Ratatoskr.Forms.MainWindow
 
         public void AddPacketView(Guid class_id, PacketViewProperty viewp)
         {
+            var config = new PacketViewObjectConfig();
+
             /* メニューからビュー追加を選んだときはすぐに初期化 */
-            AddPacketView(class_id, Guid.NewGuid(), viewp, true);
+            AddPacketView(class_id, config.ViewObjectID, viewp, true);
         }
 
         public void ClearPacketConverter()

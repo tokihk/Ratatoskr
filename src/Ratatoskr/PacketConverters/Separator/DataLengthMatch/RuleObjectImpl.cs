@@ -13,7 +13,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
 {
     internal sealed class RuleObjectImpl : RuleObject
     {
-        private DynamicPacketObject packet_busy_ = null;
+        private PacketBuilder packet_busy_ = null;
         private PacketObject        packet_last_ = null;
 
         private int match_length_ = -1;
@@ -118,7 +118,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
             packet_busy_ = null;
         }
 
-        protected override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
+        protected override void OnInputPacket(uint input_ch, PacketObject input, ref List<PacketObject> output)
         {
             /* パターンが正しくない場合は無視 */
             if (match_length_ < 0) {
@@ -128,7 +128,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
 
             /* 収集開始 */
             if (packet_busy_ == null) {
-                packet_busy_ = new DynamicPacketObject(input);
+                packet_busy_ = new PacketBuilder(input);
             }
 
             /* 最終受信パケットを記憶 */
@@ -153,7 +153,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataLengthMatch
                 }
 
                 /* 新しいパケットの収集を開始 */
-                packet_busy_ = new DynamicPacketObject(input);
+                packet_busy_ = new PacketBuilder(input);
             }
         }
 

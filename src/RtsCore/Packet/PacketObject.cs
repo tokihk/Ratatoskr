@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define CONVERT_CACHE_ENABLE
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -70,13 +72,27 @@ namespace RtsCore.Packet
     [Serializable]
     public class PacketObject
     {
+#if CONVERT_CACHE_ENABLE
+        private class ConvCache
+        {
+            public string DataToHexString_NoDiv = null;
+        }
+#endif
+
         public const string DATETIME_FORMAT_UTC_DISPLAY   = "yyyy-MM-dd HH:mm:ss.fff";
         public const string DATETIME_FORMAT_LOCAL_DISPLAY = "yyyy-MM-dd HH:mm:ss.fff";
+
+        private const int CACHE_ENABLE_SIZE = 32;
 
         private static string StringDataNormalize(string value)
         {
             return (((value != null) && (value.Length > 0)) ? (value) : (null));
         }
+
+
+#if CONVERT_CACHE_ENABLE
+        private ConvCache cache_ = new ConvCache();
+#endif
 
         private string class_;
         private string alias_;
@@ -300,7 +316,7 @@ namespace RtsCore.Packet
             }
         }
 
-        public virtual byte[] Data
+        public byte[] Data
         {
             get
             {
@@ -312,7 +328,7 @@ namespace RtsCore.Packet
             }
         }
 
-        public virtual int DataLength
+        public int DataLength
         {
             get { return (Data.Length); }
         }
@@ -487,7 +503,25 @@ namespace RtsCore.Packet
 
             if (raw_data == null)return ("");
 
+#if CONVERT_CACHE_ENABLE
+            var raw_data_text = (string)null;
+
+            if ((separator.Length == 0) && (cache_ != null)) {
+                raw_data_text = cache_.DataToHexString_NoDiv;
+            }
+
+            if (raw_data_text == null) {
+                raw_data_text = HexTextEncoder.ToHexText(raw_data, 0, raw_data.Length, separator);
+            }
+
+            if ((separator.Length == 0) && (cache_ != null)) {
+                cache_.DataToHexString_NoDiv = raw_data_text;
+            }
+
+            return (raw_data_text);
+#else
             return (HexTextEncoder.ToHexText(raw_data, 0, raw_data.Length, separator));
+#endif
         }
 
         public string DataToHexString(int offset, int size, string separator = "")
@@ -496,7 +530,11 @@ namespace RtsCore.Packet
 
             if (raw_data == null)return ("");
 
-            return (HexTextEncoder.ToHexText(raw_data, offset, size, separator));
+            if ((offset == 0) && (size >= raw_data.Length)) {
+                return (DataToHexString());
+            } else {
+                return (HexTextEncoder.ToHexText(raw_data, offset, size, separator));
+            }
         }
 
         public string DataToText(Encoding enc)

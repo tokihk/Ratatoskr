@@ -3,11 +3,11 @@
 
 %using System.Diagnostics;
 %using RtsCore.Utility;
-%using RtsCore.Framework.Packet.Filter.Terms;
+%using RtsCore.Framework.PacketFilter.Terms;
 
 %visibility internal
 
-%namespace RtsCore.Framework.Packet.Filter
+%namespace RtsCore.Framework.PacketFilter
 
 %option noFiles
 
@@ -83,7 +83,13 @@ Tf  ([0-9]{3})
 
 // --- 時刻(オフセット) --------------------------
 <INITIAL>{Th}:{Tm}:{Ts}(\.{Tf}) {
-	yylval.term = new Terms.Term_DateTimeOffset(yytext);
+	yylval.term = new Terms.Term_DateTimeOffset(Term_DateTimeOffset.ParseMode.Details, yytext);
+	return (int)Tokens.VALUE_DATETIMEOFFSET;
+}
+
+// --- 時刻(オフセット - 単位指定) --------------------------
+<INITIAL>([0]|([1-9][0-9]{0,9}))(h|hour|m|min|s|sec|ms|msec) {
+	yylval.term = new Terms.Term_DateTimeOffset(Term_DateTimeOffset.ParseMode.Simple, yytext);
 	return (int)Tokens.VALUE_DATETIMEOFFSET;
 }
 
@@ -104,7 +110,7 @@ Tf  ([0-9]{3})
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.PacketCount);
 	return (int)Tokens.VALUE_STATUS;
 }
-<INITIAL>[Llast[Dd]elta {
+<INITIAL>[Ll]ast[Dd]elta {
 	yylval.term = new Terms.Term_Status(Terms.Term_Status.StatusType.LastPacketDelta);
 	return (int)Tokens.VALUE_STATUS;
 }

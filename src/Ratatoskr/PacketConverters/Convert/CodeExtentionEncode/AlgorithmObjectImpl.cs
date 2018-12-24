@@ -280,7 +280,7 @@ namespace Ratatoskr.PacketConverters.Convert.CodeExtentionEncode
 
         public override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
         {
-            var packet_new = new DynamicPacketObject(input);
+            var packet_new = new PacketBuilder(input);
 
             foreach (var data in input.Data) {
                 if ((data >= ext_target_min_) && (data <= ext_target_max_)) {

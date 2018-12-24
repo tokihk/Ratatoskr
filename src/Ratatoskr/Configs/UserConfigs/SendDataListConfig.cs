@@ -10,6 +10,7 @@ namespace Ratatoskr.Configs.UserConfigs
 {
     internal enum SendDataTargetType
     {
+        System,
         Common,
         Custom,
     }
@@ -17,21 +18,31 @@ namespace Ratatoskr.Configs.UserConfigs
     [Serializable]
     internal sealed class SendDataConfig
     {
-        public bool               Enable       { get; set; } = true;
-        public SendDataTargetType TargetType   { get; set; } = SendDataTargetType.Common;
-        public string             CustomTarget { get; set; } = "*";
-        public string             Command      { get; set; } = "";
-        public uint               DelayFixed   { get; set; } = 0;
-        public uint               DelayRandom  { get; set; } = 0;
+        public string             SendData         { get; set; } = "";
+        public bool               PlayListInclude  { get; set; } = true;
+        public SendDataTargetType SendTargetType   { get; set; } = SendDataTargetType.System;
+        public string             SendTargetCustom { get; set; } = "*";
+        public uint               DelayFixed       { get; set; } = 0;
+        public uint               DelayRandom      { get; set; } = 0;
 
         public SendDataConfig(bool enable, SendDataTargetType target_type, string target, string command, uint delay_fixed, uint delay_random)
         {
-            Enable = enable;
-            TargetType = target_type;
-            CustomTarget = target;
-            Command = command;
+            SendData = command;
+            PlayListInclude = enable;
+            SendTargetType = target_type;
+            SendTargetCustom = target;
             DelayFixed = delay_fixed;
             DelayRandom = delay_random;
+        }
+
+        public SendDataConfig(SendDataConfig obj)
+        {
+            SendData = string.Copy(obj.SendData);
+            PlayListInclude = obj.PlayListInclude;
+            SendTargetType = obj.SendTargetType;
+            SendTargetCustom = obj.SendTargetCustom;
+            DelayFixed = obj.DelayFixed;
+            DelayRandom = obj.DelayRandom;
         }
 
         public SendDataConfig() { }
@@ -75,17 +86,17 @@ namespace Ratatoskr.Configs.UserConfigs
             var newobj = new SendDataConfig();
 
             /* === パラメータ読み込み === */
-            /* enable */
-            newobj.Enable = bool.Parse(GetAttribute(xml_node, "enable", "false"));
+            /* send_data */
+            newobj.SendData = GetAttribute(xml_node, "send_data", "");
 
-            /* target_type */
-            newobj.TargetType = (SendDataTargetType)Enum.Parse(typeof(SendDataTargetType), GetAttribute(xml_node, "target_type", SendDataTargetType.Common.ToString()));
+            /* play_list_include */
+            newobj.PlayListInclude = bool.Parse(GetAttribute(xml_node, "play_list_include", "false"));
 
-            /* custom_target */
-            newobj.CustomTarget = GetAttribute(xml_node, "custom_target", "*");
+            /* send_target_type */
+            newobj.SendTargetType = (SendDataTargetType)Enum.Parse(typeof(SendDataTargetType), GetAttribute(xml_node, "send_target_type", SendDataTargetType.Common.ToString()));
 
-            /* command */
-            newobj.Command = GetAttribute(xml_node, "command", "");
+            /* send_target_custom */
+            newobj.SendTargetCustom = GetAttribute(xml_node, "send_target_custom", "*");
 
             /* delay_fixed */
             newobj.DelayFixed = uint.Parse(GetAttribute(xml_node, "delay_fixed", "0"));
@@ -103,17 +114,17 @@ namespace Ratatoskr.Configs.UserConfigs
                 var xml_data = xml_own.OwnerDocument.CreateElement(XML_NODE_DATA);
 
                 /* === パラメータ書き込み === */
-                /* enable */
-                xml_data.SetAttribute("enable", info.Enable.ToString());
+                /* send_data */
+                xml_data.SetAttribute("send_data", info.SendData);
 
-                /* target_type */
-                xml_data.SetAttribute("target_type", info.TargetType.ToString());
+                /* play_list_include */
+                xml_data.SetAttribute("play_list_include", info.PlayListInclude.ToString());
 
-                /* custom_target */
-                xml_data.SetAttribute("custom_target", info.CustomTarget.ToString());
+                /* send_target_type */
+                xml_data.SetAttribute("send_target_type", info.SendTargetType.ToString());
 
-                /* command */
-                xml_data.SetAttribute("command", info.Command);
+                /* send_target_custom */
+                xml_data.SetAttribute("send_target_custom", info.SendTargetCustom.ToString());
 
                 /* delay_fixed */
                 xml_data.SetAttribute("delay_fixed", info.DelayFixed.ToString());

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
 using RtsCore.Packet;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 
 namespace Ratatoskr.Api
 {

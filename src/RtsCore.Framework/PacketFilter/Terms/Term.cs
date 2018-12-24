@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 
-namespace RtsCore.Framework.Packet.Filter.Terms
+namespace RtsCore.Framework.PacketFilter.Terms
 {
     internal abstract class Term
     {

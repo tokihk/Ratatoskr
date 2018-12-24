@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 using RtsCore.Packet;
 
-namespace RtsCore.Framework.Packet.Filter.Terms
+namespace RtsCore.Framework.PacketFilter.Terms
 {
     internal sealed class Term_Status : Term
     {

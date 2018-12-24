@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 
-namespace RtsCore.Framework.Packet.Filter.Terms
+namespace RtsCore.Framework.PacketFilter.Terms
 {
     internal sealed class Term_Text : Term
     {
@@ -33,13 +33,13 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_EQUAL(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Text === */
-            if (term_sub.GetType() == typeof(Term_Text)) {
-                return (new Term_Bool(value_ == (term_sub as Term_Text).Value));
+            if (term_sub is Term_Text term_sub_text) {
+                return (new Term_Bool(value_ == term_sub_text.Value));
             }
 
             /* === Term_Regex === */
-            if (term_sub.GetType() == typeof(Term_Regex)) {
-                return ((term_sub as Term_Regex).Exec(cs, Tokens.RELOP_EQUAL, this));
+            if (term_sub is Term_Regex term_sub_reg) {
+                return (term_sub_reg.Exec(cs, Tokens.RELOP_EQUAL, this));
             }
 
             return (null);
@@ -48,8 +48,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_ARMOP_ADD(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Text === */
-            if (term_sub.GetType() == typeof(Term_Text)) {
-                return (new Term_Text(value_ + (term_sub as Term_Text).Value));
+            if (term_sub is Term_Text term_sub_text) {
+                return (new Term_Text(value_ + term_sub_text.Value));
             }
 
             return (null);

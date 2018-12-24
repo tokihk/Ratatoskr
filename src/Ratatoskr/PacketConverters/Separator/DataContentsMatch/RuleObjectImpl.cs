@@ -48,8 +48,8 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
         }
 
 
-        private DynamicPacketObject packet_busy_ = null;
-        private PacketObject        packet_last_ = null;
+        private PacketBuilder packet_busy_ = null;
+        private PacketObject  packet_last_ = null;
 
         private byte[][]             match_data_list_ = null;
         private PatternMatchObject[] match_objs_ = null;
@@ -170,7 +170,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
             packet_last_ = null;
         }
 
-        protected override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
+        protected override void OnInputPacket(uint input_ch, PacketObject input, ref List<PacketObject> output)
         {
             /* パターンが設定されていない場合はスルー */
             if ((match_objs_ == null) || (match_objs_.Length == 0)) {
@@ -180,7 +180,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
 
             /* 収集開始 */
             if (packet_busy_ == null) {
-                packet_busy_ = new DynamicPacketObject(input);
+                packet_busy_ = new PacketBuilder(input);
 
                 foreach (var obj in match_objs_) {
                     obj.Reset();
@@ -222,7 +222,7 @@ namespace Ratatoskr.PacketConverters.Separator.DataContentsMatch
                 }
 
                 /* 新しいパケットの収集を開始 */
-                packet_busy_ = new DynamicPacketObject(input);
+                packet_busy_ = new PacketBuilder(input);
             }
         }
 

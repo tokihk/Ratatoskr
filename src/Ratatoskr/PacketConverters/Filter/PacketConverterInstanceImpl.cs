@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms.Controls;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 using RtsCore.Framework.PacketConverter;
 using RtsCore.Packet;
 

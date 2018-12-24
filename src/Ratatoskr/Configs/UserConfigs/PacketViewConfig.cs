@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using WeifenLuo.WinFormsUI.Docking;
 using RtsCore.Config;
 using RtsCore.Framework.PacketView;
 using Ratatoskr.Forms;

@@ -14,29 +14,16 @@ namespace Ratatoskr.Forms.Dialog
 {
     internal partial class ProfileEditDialog : Form
     {
-        private UserConfig config_ = null;
-
-        private string[] ignore_names_ = null;
-
-
         public ProfileEditDialog()
         {
             InitializeComponent();
         }
 
-        public ProfileEditDialog(UserConfig config, params string[] ignore_names): this()
-        {
-            config_ = config;
-            ignore_names_ = ignore_names;
-
-            TBox_ProfileName.Text = config_.ProfileName.Value;
-            TBox_ProfileComment.Text = config_.ProfileComment.Value;
-            ChkBox_ReadOnly.Checked = config_.ReadOnly.Value;
-
-            if (config_.ReadOnlyLock.Value) {
-                ChkBox_ReadOnly.Enabled = false;
-            }
-        }
+        public string       ProfileName         { get; set; } = "";
+        public string       ProfileComment      { get; set; } = "";
+        public bool         ProfileReadOnly     { get; set; } = false;
+        public bool         ProfileReadOnlyLock { get; set; } = false;
+        public List<string> ProfileEnableNames  { get; } = new List<string>();
 
         private void UpdateProfileNameStatus()
         {
@@ -46,7 +33,7 @@ namespace Ratatoskr.Forms.Dialog
             /* 同名のプロファイルが存在する場合はエラー表示 */
             if (profile_name.Length > 0) {
                 if (   (!ConfigManager.ProfileIsExist(profile_name))
-                    || (ignore_names_.Contains(profile_name))
+                    || (ProfileEnableNames.Contains(profile_name))
                 ) {
                     name_ok = true;
                 }
@@ -58,11 +45,22 @@ namespace Ratatoskr.Forms.Dialog
             Btn_Ok.Enabled = name_ok;
         }
 
+        private void ProfileEditDialog_Load(object sender, EventArgs e)
+        {
+            TBox_ProfileName.Text = ProfileName;
+            TBox_ProfileComment.Text = ProfileComment;
+            ChkBox_ReadOnly.Checked = ProfileReadOnly;
+
+            if (ProfileReadOnlyLock) {
+                ChkBox_ReadOnly.Enabled = false;
+            }
+        }
+
         private void Btn_Ok_Click(object sender, EventArgs e)
         {
-            config_.ProfileName.Value = TBox_ProfileName.Text.Trim();
-            config_.ProfileComment.Value = TBox_ProfileComment.Text;
-            config_.ReadOnly.Value = ChkBox_ReadOnly.Checked;
+            ProfileName = TBox_ProfileName.Text.Trim();
+            ProfileComment = TBox_ProfileComment.Text;
+            ProfileReadOnly = ChkBox_ReadOnly.Checked;
 
             DialogResult = DialogResult.OK;
         }

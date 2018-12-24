@@ -117,6 +117,11 @@ namespace Ratatoskr.Forms.MainWindow
             }
         }
 
+        public string SendTarget
+        {
+            get { return (CBox_TargetList.Text); }
+        }
+
         private void UpdateTargetList()
         {
             CBox_TargetList.BeginUpdate();

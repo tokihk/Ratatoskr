@@ -4,7 +4,7 @@
 %using System.Diagnostics;
 %using RtsCore.Utility;
 
-%namespace RtsCore.Framework.Packet.Filter
+%namespace RtsCore.Framework.PacketFilter
 
 %visibility internal
 %parsertype PacketFilterParser
@@ -40,7 +40,7 @@ expression
 
 assignment_expression
 	: logical_expression
-	| logical_expression ARMOP_SET logical_expression
+	| logical_expression ARMOP_SET assignment_expression
 	{
 		exp_obj_.Add(Tokens.ARMOP_SET);
 	}
@@ -48,11 +48,11 @@ assignment_expression
 
 logical_expression
 	: equality_expression
-	| equality_expression LOGOP_OR equality_expression
+	| equality_expression LOGOP_OR logical_expression
 	{
 		exp_obj_.Add(Tokens.LOGOP_OR);
 	}
-	| equality_expression LOGOP_AND equality_expression
+	| equality_expression LOGOP_AND logical_expression
 	{
 		exp_obj_.Add(Tokens.LOGOP_AND);
 	}
@@ -60,11 +60,11 @@ logical_expression
 
 equality_expression
 	: relational_expression
-	| relational_expression RELOP_EQUAL relational_expression
+	| relational_expression RELOP_EQUAL equality_expression
 	{
 		exp_obj_.Add(Tokens.RELOP_EQUAL);
 	}
-	| relational_expression RELOP_UNEQUAL relational_expression
+	| relational_expression RELOP_UNEQUAL equality_expression
 	{
 		exp_obj_.Add(Tokens.RELOP_UNEQUAL);
 	}
@@ -72,19 +72,19 @@ equality_expression
 
 relational_expression
 	: additive_expression
-	| additive_expression RELOP_GREATEREQUAL additive_expression
+	| additive_expression RELOP_GREATEREQUAL relational_expression
 	{
 		exp_obj_.Add(Tokens.RELOP_GREATEREQUAL);
 	}
-	| relational_expression RELOP_LESSEQUAL additive_expression
+	| additive_expression RELOP_LESSEQUAL relational_expression
 	{
 		exp_obj_.Add(Tokens.RELOP_LESSEQUAL);
 	}
-	| relational_expression RELOP_GREATER additive_expression
+	| additive_expression RELOP_GREATER relational_expression
 	{
 		exp_obj_.Add(Tokens.RELOP_GREATER);
 	}
-	| relational_expression RELOP_LESS additive_expression
+	| additive_expression RELOP_LESS relational_expression
 	{
 		exp_obj_.Add(Tokens.RELOP_LESS);
 	}
@@ -92,11 +92,11 @@ relational_expression
 
 additive_expression
 	: multiplicative_expression
-	| multiplicative_expression ARMOP_ADD multiplicative_expression
+	| multiplicative_expression ARMOP_ADD additive_expression
 	{
 		exp_obj_.Add(Tokens.ARMOP_ADD);
 	}
-	| multiplicative_expression ARMOP_SUB multiplicative_expression
+	| multiplicative_expression ARMOP_SUB additive_expression
 	{
 		exp_obj_.Add(Tokens.ARMOP_SUB);
 	}
@@ -104,15 +104,15 @@ additive_expression
 
 multiplicative_expression
 	: negative_expression
-	| negative_expression ARMOP_MUL negative_expression
+	| negative_expression ARMOP_MUL multiplicative_expression
 	{
 		exp_obj_.Add(Tokens.ARMOP_MUL);
 	}
-	| negative_expression ARMOP_DIV negative_expression
+	| negative_expression ARMOP_DIV multiplicative_expression
 	{
 		exp_obj_.Add(Tokens.ARMOP_DIV);
 	}
-	| negative_expression ARMOP_REM negative_expression
+	| negative_expression ARMOP_REM multiplicative_expression
 	{
 		exp_obj_.Add(Tokens.ARMOP_REM);
 	}
@@ -120,7 +120,7 @@ multiplicative_expression
 
 negative_expression
 	: postfix_expression
-	| ARMOP_NEG postfix_expression
+	| ARMOP_NEG negative_expression
 	{
 		exp_obj_.Add(Tokens.ARMOP_NEG);
 	}

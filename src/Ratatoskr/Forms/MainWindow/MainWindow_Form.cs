@@ -156,6 +156,11 @@ namespace Ratatoskr.Forms.MainWindow
             }
         }
 
+        public string SendTarget
+        {
+            get { return (SingleCmdPanel_Main.SendTarget); }
+        }
+
         private void ApplyDataRateTarget()
         {
             var target = (PacketDataRateTarget)0;
@@ -293,7 +298,7 @@ namespace Ratatoskr.Forms.MainWindow
                     }
                     break;
                 case MainWindowActionId.ProfileExport:
-                    ConfigManager.SaveConfig();
+                    ConfigManager.SaveConfig(true);
                     ConfigManager.ExportProfile(ConfigManager.GetCurrentProfileID());
                     break;
 
@@ -535,7 +540,7 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void MenuBar_ProfileList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (MenuBar_ProfileList.SelectedItem is ConfigManager.ProfileInfo profile_next) {
+            if (MenuBar_ProfileList.SelectedItem is ConfigManager.ProfileData profile_next) {
                 if (profile_next.ID != ConfigManager.GetCurrentProfileID()) {
                     Program.ChangeProfile(profile_next.ID);
                 }

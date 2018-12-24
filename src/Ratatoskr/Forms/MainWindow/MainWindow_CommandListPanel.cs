@@ -190,10 +190,10 @@ namespace Ratatoskr.Forms.MainWindow
             var row_obj = GView_CmdList.Rows[row_index];
 
             /* 値を書き換え */
-            row_obj.Cells[(int)ColumnId.Enable].Value = config.Enable;
-            row_obj.Cells[(int)ColumnId.TargetType].Value = config.TargetType;
-            row_obj.Cells[(int)ColumnId.CustomTarget].Value = config.CustomTarget;
-            row_obj.Cells[(int)ColumnId.Command].Value = config.Command;
+            row_obj.Cells[(int)ColumnId.Enable].Value = config.PlayListInclude;
+            row_obj.Cells[(int)ColumnId.TargetType].Value = config.SendTargetType;
+            row_obj.Cells[(int)ColumnId.CustomTarget].Value = config.SendTargetCustom;
+            row_obj.Cells[(int)ColumnId.Command].Value = config.SendData;
             row_obj.Cells[(int)ColumnId.DelayFixed].Value = config.DelayFixed.ToString();
             row_obj.Cells[(int)ColumnId.DelayRandom].Value = config.DelayRandom.ToString();
         }

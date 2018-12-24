@@ -28,6 +28,11 @@ namespace RtsCore.Utility
             "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB", "FC", "FD", "FE", "FF"
         };
 
+        public static readonly char[] HexCode_4Bit =
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+        };
+
         public static readonly string[] BinCode =
         {
             "00000000", "00000001", "00000010", "00000011", "00000100", "00000101", "00000110", "00000111",
@@ -394,7 +399,7 @@ namespace RtsCore.Utility
         {
             var str = new StringBuilder(data.Count() * (3 + separator.Length));
             var end = Math.Min(data.Count(), offset + size);
-            
+
             while (offset < end) {
                 str.Append(HexCode[data.ElementAt(offset)]);
                 str.Append(separator);

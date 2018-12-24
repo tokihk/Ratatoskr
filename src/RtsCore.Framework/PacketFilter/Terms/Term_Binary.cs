@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 using RtsCore.Utility;
 
-namespace RtsCore.Framework.Packet.Filter.Terms
+namespace RtsCore.Framework.PacketFilter.Terms
 {
     internal sealed class Term_Binary : Term
     {
@@ -39,8 +39,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_EQUAL(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Binary === */
-            if (term_sub.GetType() == typeof(Term_Binary)) {
-                return (new Term_Bool(value_.SequenceEqual((term_sub as Term_Binary).Value)));
+            if (term_sub is Term_Binary term_sub_c) {
+                return (new Term_Bool(value_.SequenceEqual(term_sub_c.Value)));
             }
 
             return (null);

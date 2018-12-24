@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using RtsCore;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 using RtsCore.Packet;
 
 namespace RtsCore.Framework.PacketView

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using RtsCore.Packet;
 
-namespace RtsCore.Framework.Packet.Filter
+namespace RtsCore.Framework.PacketFilter
 {
     public sealed class PacketFilterController
     {

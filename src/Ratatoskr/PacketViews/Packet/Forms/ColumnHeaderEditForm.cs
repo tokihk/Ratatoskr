@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.PacketViews.Packet.Configs;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 
 namespace Ratatoskr.PacketViews.Packet.Forms
 {
@@ -204,12 +204,10 @@ namespace Ratatoskr.PacketViews.Packet.Forms
                 var index_now = LBox_UserItem.Items.IndexOf(user_moving_item_);
 
                 if (index_now != index_new) {
-                    var item = LBox_UserItem.SelectedItem;
-
                     LBox_UserItem.BeginUpdate();
                     {
                         LBox_UserItem.Items.RemoveAt(index_now);
-                        LBox_UserItem.Items.Insert(Math.Min(index_new, LBox_UserItem.Items.Count), item);
+                        LBox_UserItem.Items.Insert(Math.Min(index_new, LBox_UserItem.Items.Count), user_moving_item_);
                         LBox_UserItem.SelectedItem = user_moving_item_;
                     }
                     LBox_UserItem.EndUpdate();

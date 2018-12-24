@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RtsCore.Framework.Packet.Filter;
+using RtsCore.Framework.PacketFilter;
 
-namespace RtsCore.Framework.Packet.Filter.Terms
+namespace RtsCore.Framework.PacketFilter.Terms
 {
     internal sealed class Term_Number : Term
     {
@@ -38,8 +38,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_ARMOP_ADD(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Number === */
-            if (term_sub.GetType() == typeof(Term_Number)) {
-                return (new Term_Number(value_ + (term_sub as Term_Number).Value));
+            if (term_sub is Term_Number term_sub_num) {
+                return (new Term_Number(value_ + term_sub_num.Value));
             }
 
             return (null);
@@ -48,8 +48,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_ARMOP_SUB(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Number === */
-            if (term_sub.GetType() == typeof(Term_Number)) {
-                return (new Term_Number(value_ - (term_sub as Term_Number).Value));
+            if (term_sub is Term_Number term_sub_num) {
+                return (new Term_Number(value_ - term_sub_num.Value));
             }
 
             return (null);
@@ -58,8 +58,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_ARMOP_DIV(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Number === */
-            if (term_sub.GetType() == typeof(Term_Number)) {
-                return (new Term_Number(value_ / (term_sub as Term_Number).Value));
+            if (term_sub is Term_Number term_sub_num) {
+                return (new Term_Number(value_ / term_sub_num.Value));
             }
 
             return (null);
@@ -68,8 +68,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_ARMOP_MUL(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Number === */
-            if (term_sub.GetType() == typeof(Term_Number)) {
-                return (new Term_Number(value_ * (term_sub as Term_Number).Value));
+            if (term_sub is Term_Number term_sub_num) {
+                return (new Term_Number(value_ * term_sub_num.Value));
             }
 
             return (null);
@@ -78,8 +78,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_ARMOP_REM(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Number === */
-            if (term_sub.GetType() == typeof(Term_Number)) {
-                return (new Term_Number(value_ % (term_sub as Term_Number).Value));
+            if (term_sub is Term_Number term_sub_num) {
+                return (new Term_Number(value_ % term_sub_num.Value));
             }
 
             return (null);
@@ -88,8 +88,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_EQUAL(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Number === */
-            if (term_sub.GetType() == typeof(Term_Number)) {
-                return (new Term_Bool(value_ == (term_sub as Term_Number).Value));
+            if (term_sub is Term_Number term_sub_num) {
+                return (new Term_Bool(value_ == term_sub_num.Value));
             }
 
             return (null);
@@ -98,8 +98,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_GREATER(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Number === */
-            if (term_sub.GetType() == typeof(Term_Number)) {
-                return (new Term_Bool(value_ > (term_sub as Term_Number).Value));
+            if (term_sub is Term_Number term_sub_num) {
+                return (new Term_Bool(value_ > term_sub_num.Value));
             }
 
             return (null);
@@ -108,8 +108,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_GREATEREQUAL(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Number === */
-            if (term_sub.GetType() == typeof(Term_Number)) {
-                return (new Term_Bool(value_ >= (term_sub as Term_Number).Value));
+            if (term_sub is Term_Number term_sub_num) {
+                return (new Term_Bool(value_ >= term_sub_num.Value));
             }
 
             return (null);
@@ -118,8 +118,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_LESS(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Number === */
-            if (term_sub.GetType() == typeof(Term_Number)) {
-                return (new Term_Bool(value_ < (term_sub as Term_Number).Value));
+            if (term_sub is Term_Number term_sub_num) {
+                return (new Term_Bool(value_ < term_sub_num.Value));
             }
 
             return (null);
@@ -128,8 +128,8 @@ namespace RtsCore.Framework.Packet.Filter.Terms
         protected override Term Exec_RELOP_LESSEQUAL(PacketFilterCallStack cs, Term term_sub)
         {
             /* === Term_Number === */
-            if (term_sub.GetType() == typeof(Term_Number)) {
-                return (new Term_Bool(value_ <= (term_sub as Term_Number).Value));
+            if (term_sub is Term_Number term_sub_num) {
+                return (new Term_Bool(value_ <= term_sub_num.Value));
             }
 
             return (null);

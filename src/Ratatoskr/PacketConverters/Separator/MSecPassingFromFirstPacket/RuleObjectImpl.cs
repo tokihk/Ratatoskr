@@ -13,8 +13,8 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
 {
     internal sealed class RuleObjectImpl : RuleObject
     {
-        private DynamicPacketObject packet_busy_ = null;
-        private PacketObject            packet_last_ = null;
+        private PacketBuilder packet_busy_ = null;
+        private PacketObject  packet_last_ = null;
 
         private DateTime dt_base_ = DateTime.MaxValue;
         private int match_interval_ = -1;
@@ -119,7 +119,7 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
             dt_base_ = DateTime.MaxValue;
         }
 
-        protected override void OnInputPacket(PacketObject input, ref List<PacketObject> output)
+        protected override void OnInputPacket(uint input_ch, PacketObject input, ref List<PacketObject> output)
         {
             /* パターンが正しくない場合はスルー */
             if (match_interval_ < 0) {
@@ -128,7 +128,7 @@ namespace Ratatoskr.PacketConverters.Separator.MSecPassingFromFirstPacket
 
             /* 収集開始 */
             if (packet_busy_ == null) {
-                packet_busy_ = new DynamicPacketObject(input);
+                packet_busy_ = new PacketBuilder(input);
 
                 /* 受信開始時刻を記憶 */
                 dt_base_ = input.MakeTime;

@@ -4,10 +4,10 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using WeifenLuo.WinFormsUI.Docking;
 using RtsCore.Config;
 using RtsCore.Config.Types;
 using RtsCore.Packet;
-
 
 namespace Ratatoskr.Configs.UserConfigs
 {
@@ -23,6 +23,12 @@ namespace Ratatoskr.Configs.UserConfigs
         RecvOnly,
         SendOnly,
         RecvAndSend,
+    }
+
+    internal enum SendDataListMode
+    {
+        Simple,
+        Details,
     }
 
     [Serializable]
@@ -63,12 +69,13 @@ namespace Ratatoskr.Configs.UserConfigs
         public StringListConfig            SendPanel_Log_List         { get; } = new StringListConfig();
         public EnumConfig<SendLogDataType> SendPanel_Log_PlayDataType { get; } = new EnumConfig<SendLogDataType>(SendLogDataType.RecvOnly);
 
-        public SendDataListConfig SendDataList       { get; } = new SendDataListConfig();
-        public StringConfig       SendDataListTarget { get; } = new StringConfig("*");
-        public IntegerConfig      SendDataListLimit  { get; } = new IntegerConfig(200);
-        public IntegerConfig      SendDataListRepeat { get; } = new IntegerConfig(1);
+        public SendDataListConfig           SendDataList       { get; } = new SendDataListConfig();
+        public EnumConfig<SendDataListMode> SendDataListMode   { get; } = new EnumConfig<SendDataListMode>(UserConfigs.SendDataListMode.Details);
+        public StringConfig                 SendDataListTarget { get; } = new StringConfig("*");
+        public IntegerConfig                SendDataListLimit  { get; } = new IntegerConfig(200);
+        public IntegerConfig                SendDataListRepeat { get; } = new IntegerConfig(1);
 
-        public WatchDataListConfig WatchDataList { get; } = new WatchDataListConfig();
+        public WatchDataListConfig   WatchDataList          { get; } = new WatchDataListConfig();
 
         public PacketListConfig PacketList       { get; } = new PacketListConfig();
         public IntegerConfig    PacketListLimit  { get; } = new IntegerConfig(2000);

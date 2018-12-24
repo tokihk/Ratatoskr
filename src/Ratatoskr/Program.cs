@@ -110,6 +110,7 @@ namespace Ratatoskr
         private static bool restart_req_ = false;
 
         private static Guid profile_id_load_ = Guid.Empty;
+        private static bool profile_backup_ = false;
 
         private static List<(ScriptRunMode mode, string path)> startup_script_list_ = new List<(ScriptRunMode, string)>();
 
@@ -318,12 +319,12 @@ namespace Ratatoskr
             return (true);
         }
 
-        private static void Shutdown()
+        private static void Shutdown(bool profile_backup)
         {
             Debugger.DebugManager.MessageOut("Program.Shutdown - Start");
 
             /* 設定ファイル保存 */
-            ConfigManager.SaveConfig();
+            ConfigManager.SaveConfig(profile_backup);
 
             /* イベント処理停止 */
             GatePacketManager.Shutdown();
@@ -341,21 +342,23 @@ namespace Ratatoskr
             Debugger.DebugManager.MessageOut("Program.Shutdown - End");
         }
 
-        public static void ShutdownRequest()
+        public static void ShutdownRequest(bool profile_backup = true)
         {
             shutdown_req_ = true;
+            profile_backup_ = profile_backup;
         }
 
-        public static void RestartRequest()
+        public static void RestartRequest(bool profile_backup = true)
         {
             restart_req_ = true;
+            profile_backup_ = profile_backup;
         }
 
-        public static void ChangeProfile(Guid profile_id)
+        public static void ChangeProfile(Guid profile_id, bool profile_backup = true)
         {
             profile_id_load_ = profile_id;
 
-            RestartRequest();
+            RestartRequest(profile_backup);
         }
 
         private static void OnAppTimer(object sender, EventArgs e)
@@ -371,7 +374,7 @@ namespace Ratatoskr
             if (   (startup_state_)
                 && ((restart_req_ || shutdown_req_))
             ) {
-                Shutdown();
+                Shutdown(profile_backup_);
             }
 
             /* タスク処理 */

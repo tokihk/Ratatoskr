@@ -28,8 +28,10 @@ namespace Ratatoskr.PacketConverters.Separator
         public MSecPassingFromPrevPacket.RuleProperty  MSecPassingFromPrevPacketProperty  { get; } = new MSecPassingFromPrevPacket.RuleProperty();
         public MSecPassingFromFirstPacket.RuleProperty MSecPassingFromFirstPacketProperty { get; } = new MSecPassingFromFirstPacket.RuleProperty();
 
-        public BoolConfig EventDetectDivide     { get; } = new BoolConfig(true);
-        public BoolConfig DirectionChangeDivide { get; } = new BoolConfig(true);
+        public BoolConfig EventDetectDivide     { get; } = new BoolConfig(false);
+        public BoolConfig DirectionChangeDivide { get; } = new BoolConfig(false);
+        public BoolConfig EachAlias             { get; } = new BoolConfig(true);
+        public BoolConfig EachDirection         { get; } = new BoolConfig(true);
 
 
         public override PacketConverterProperty Clone()

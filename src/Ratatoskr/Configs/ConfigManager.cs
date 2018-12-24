@@ -17,26 +17,26 @@ namespace Ratatoskr.Configs
 {
     internal static class ConfigManager
     {
-        public class ProfileInfo
+        public class ProfileData
         {
             public Guid       ID     { get; } = Guid.Empty;
             public UserConfig Config { get; } = null;
 
 
-            private ProfileInfo(Guid profile_id, UserConfig config)
+            private ProfileData(Guid profile_id, UserConfig config)
             {
                 ID = profile_id;
                 Config = config;
             }
 
-            public static ProfileInfo Load(Guid profile_id)
+            public static ProfileData Load(Guid profile_id)
             {
                 var config = new UserConfig();
 
                 /* 読み込めないプロファイルは無視 */
                 if (!config.Load(GetProfilePath(profile_id)))return (null);
 
-                return (new ProfileInfo(profile_id, config));
+                return (new ProfileData(profile_id, config));
             }
 
             public override string ToString()
@@ -94,7 +94,7 @@ namespace Ratatoskr.Configs
             Language.Load();
         }
 
-        public static void SaveConfig()
+        public static void SaveConfig(bool profile_backup = true)
         {
             /* 現在の状態を設定データに反映 */
             FormUiManager.BackupConfig();
@@ -103,7 +103,9 @@ namespace Ratatoskr.Configs
             System.Save();
 
             /* 現在のプロファイルを保存 */
-            SaveCurrentProfile();
+            if (profile_backup) {
+                SaveCurrentProfile();
+            }
         }
 
         public static string GetCurrentDirectory()
@@ -131,16 +133,16 @@ namespace Ratatoskr.Configs
             return (Program.GetWorkspaceDirectory(System.Profile.ProfileDir.Value));
         }
 
-        public static IEnumerable<ProfileInfo> GetProfileList()
+        public static IEnumerable<ProfileData> GetProfileList()
         {
-            var profiles = new List<ProfileInfo>();
-            var profile = (ProfileInfo)null;
+            var profiles = new List<ProfileData>();
+            var profile = (ProfileData)null;
             var search_dir = GetProfileRootPath();
 
             if (Directory.Exists(search_dir)) {
                 foreach (var dir in Directory.EnumerateDirectories(GetProfileRootPath())) {
                     try {
-                        profile = ProfileInfo.Load(Guid.Parse(Path.GetFileName(dir)));
+                        profile = ProfileData.Load(Guid.Parse(Path.GetFileName(dir)));
 
                         if (profile == null)continue;
 
@@ -270,7 +272,7 @@ namespace Ratatoskr.Configs
 
             /* 重複する名前のプロファイルが存在する場合は編集 */
             if ((ProfileIsExist(config.ProfileName.Value)) || (force_edit_req)) {
-                if (!FormUiManager.ShowProfileEditDialog("Edit profile", config)) {
+                if (!FormUiManager.ShowProfileEditDialog("Edit Profile", config)) {
                     return (Guid.Empty);
                 }
             }
@@ -314,13 +316,19 @@ namespace Ratatoskr.Configs
                 }
 
                 /* 再起動 */
-                Program.ChangeProfile(profile_list.ElementAt(profile_index).ID);
+                Program.ChangeProfile(profile_list.ElementAt(profile_index).ID, false);
             }
         }
 
-        public static void ImportProfile(UserConfig config)
+        public static void ImportProfile(UserConfig config, Dictionary<string, byte[]> ext_data_list)
         {
-            CreateNewProfile(null, config);
+            var profile_id = CreateNewProfile(null, config);
+
+            if (profile_id == Guid.Empty)return;
+
+            foreach (var ext_data in ext_data_list) {
+                File.WriteAllBytes(GetProfileFilePath(profile_id, ext_data.Key), ext_data.Value);
+            }
         }
 
         public static void ExportProfile(Guid profile_id)

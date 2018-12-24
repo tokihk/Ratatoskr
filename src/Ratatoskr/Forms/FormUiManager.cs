@@ -360,6 +360,11 @@ namespace Ratatoskr.Forms
             }
         }
 
+        public static string SendTarget
+        {
+            get { return (MainFrame.SendTarget); }
+        }
+
         private delegate bool ConfirmMessageBoxDelegate(string message, string caption);
         public static bool ConfirmMessageBox(string message, string caption = null)
         {
@@ -383,12 +388,25 @@ namespace Ratatoskr.Forms
                 return ((bool)Invoke((ShowProfileEditDialogHandler)ShowProfileEditDialog, title, config, ignore_names));
             }
 
-            var dialog = new ProfileEditDialog(config, ignore_names)
+            var dialog = new ProfileEditDialog()
             {
-                Text = title
+                Text = title,
+                ProfileName = config.ProfileName.Value,
+                ProfileComment = config.ProfileComment.Value,
+                ProfileReadOnly = config.ReadOnly.Value,
+                ProfileReadOnlyLock = config.ReadOnlyLock.Value,
             };
 
-            return (dialog.ShowDialog() == DialogResult.OK);
+            dialog.ProfileEnableNames.AddRange(ignore_names);
+
+            if (dialog.ShowDialog() != DialogResult.OK)return (false);
+
+            config.ProfileName.Value = dialog.ProfileName;
+            config.ProfileComment.Value = dialog.ProfileComment;
+            config.ReadOnly.Value = dialog.ProfileReadOnly;
+            config.ReadOnlyLock.Value = dialog.ProfileReadOnlyLock;
+
+            return (true);
         }
 
         public static void ShowOptionDialog()
@@ -513,9 +531,9 @@ namespace Ratatoskr.Forms
 
             var config = reader.Load();
 
-            if (config.config != null) {
+            if (config != null) {
                 /* 新しいプロファイルとして読み込む */
-                ConfigManager.ImportProfile(config.config);
+                ConfigManager.ImportProfile(config.Config, config.ExtDataList);
             }
 
             reader.Close();
@@ -603,6 +621,8 @@ namespace Ratatoskr.Forms
             } else {
                 info = FileManager.PacketLogSave.SelectWriterTargetFromDialog(ConfigManager.GetCurrentDirectory());
             }
+
+            if (info == null)return;
 
             if (rule) {
                 GatePacketManager.SavePacketFile(info, FormTaskManager.GetPacketConverterClone());

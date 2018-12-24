@@ -87,6 +87,7 @@ namespace Ratatoskr.Forms.ScriptWindow
             Panel_DockMain.AddDockContent(
                 "DC_FileExplorer",
                 "File Explorer",
+                0,
                 Icon.FromHandle(Properties.Resources.memo_32x32.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockLeft,
@@ -101,6 +102,7 @@ namespace Ratatoskr.Forms.ScriptWindow
             Panel_DockMain.AddDockContent(
                 "DC_Console",
                 "Output",
+                0,
                 Icon.FromHandle(Properties.Resources.program_16x16.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottom,
@@ -117,6 +119,7 @@ namespace Ratatoskr.Forms.ScriptWindow
             Panel_DockMain.AddDockContent(
                 "DC_ScriptList",
                 "Running Script List",
+                0,
                 Icon.FromHandle(Properties.Resources.memo_32x32.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottom,
@@ -213,6 +216,7 @@ namespace Ratatoskr.Forms.ScriptWindow
             Panel_DockMain.AddDockContent(
                 "DC_CodeEditor",
                 (path != null) ? (Path.GetFileName(path)) : ("(Temp)"),
+                0,
                 Icon.FromHandle(Properties.Resources.memo_32x32.GetHicon()),
                 DockAreas.Document,
                 DockState.Document,

@@ -30,19 +30,20 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
             return (true);
         }
 
-        protected override (UserConfig config, Guid profile_id) OnLoad()
+        protected override UserConfigData OnLoad()
         {
-            /* ヘッダー情報読み込み */
-            var info = ReadHeader(reader_);
+            var config = new UserConfigData();
+            var version = (FileFormatClassImpl.FormatVersion)0;
 
-            if (info.version == FileFormatClassImpl.FormatVersion.Version_Unknown)return (null, Guid.Empty);
+            /* ヘッダー情報読み込み */
+            if (!ReadHeader(reader_, config, ref version))return (null);
+
+            if (version == FileFormatClassImpl.FormatVersion.Version_Unknown)return (null);
 
             /* 内容読み込み */
-            var config = ReadArchiveData(reader_);
+            if (!ReadArchiveData(reader_, config))return (null);
 
-            if (config == null)return (null, Guid.Empty);
-
-            return (config, info.profile_id);
+            return (config);
         }
 
         private bool ReadPatternCode(BinaryReader reader)
@@ -56,31 +57,34 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
             return (true);
         }
 
-        private (FileFormatClassImpl.FormatVersion version, Guid profile_id) ReadHeader(BinaryReader reader)
+        private bool ReadHeader(BinaryReader reader, UserConfigData config, ref FileFormatClassImpl.FormatVersion version)
         {
             try {
                 /* Format Version (4 Byte) */
-                var version = (UInt32)0;
+                var version_i = (UInt32)0;
                 
-                version |= (UInt32)((UInt32)reader.ReadByte() << 24);
-                version |= (UInt32)((UInt32)reader.ReadByte() << 16);
-                version |= (UInt32)((UInt32)reader.ReadByte() <<  8);
-                version |= (UInt32)((UInt32)reader.ReadByte() <<  0);
+                version_i |= (UInt32)((UInt32)reader.ReadByte() << 24);
+                version_i |= (UInt32)((UInt32)reader.ReadByte() << 16);
+                version_i |= (UInt32)((UInt32)reader.ReadByte() <<  8);
+                version_i |= (UInt32)((UInt32)reader.ReadByte() <<  0);
 
                 /* Profile ID (1 + xx Byte) */
                 var profile_id_len = reader.ReadByte();
                 var profile_id_str = Encoding.UTF8.GetString(reader.ReadBytes(profile_id_len));
                 
-                if (profile_id_str.Length == 0)return (0, Guid.Empty);
+                if (profile_id_str.Length == 0)return (false);
 
-                return ((FileFormatClassImpl.FormatVersion)version, Guid.Parse(profile_id_str));
+                version = (FileFormatClassImpl.FormatVersion)version_i;
+                config.ProfileID = Guid.Parse(profile_id_str);
+
+                return (true);
 
             } catch {
-                return (0, Guid.Empty);
+                return (false);
             }
         }
 
-        private UserConfig ReadArchiveData(BinaryReader reader)
+        private bool ReadArchiveData(BinaryReader reader, UserConfigData config)
         {
             try {
                 /* Archive Data Size (4 byte) */
@@ -94,40 +98,43 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
                 /* Archive Data (x byte) */
                 var archive_data = reader.ReadBytes((int)archive_data_size);
 
-                return (ExtractData(archive_data));
+                return (ExtractData(archive_data, config));
 
             } catch {
-                return (null);
+                return (false);
             }
         }
 
-        private UserConfig ExtractData(byte[] archive_data)
+        private bool ExtractData(byte[] archive_data, UserConfigData config)
         {
             try {
                 /* Archive Dataからデータを復元 */
-                var config = new UserConfig();
+                config.Config = new UserConfig();
 
                 /* アーカイブ読込 */
                 using (var archive = new ZipArchive(new MemoryStream(archive_data), ZipArchiveMode.Read, false))
                 {
                     foreach (var entry in archive.Entries) {
-                        if (entry.Name == UserConfig.CONFIG_FILE_NAME) {
-                            /* === UserConfig === */
-                            using (var entry_s = entry.Open()) {
-                                config.LoadXml(entry_s);
-                            }
+                        using (var entry_s = entry.Open()) {
+                            if (entry.Name == UserConfig.CONFIG_FILE_NAME) {
+                                /* === UserConfig === */
+                                config.Config.LoadXml(entry_s);
 
-                        } else {
-                            /* === 不明なファイル === */
-                            /* 無視 */
+                            } else {
+                                /* === 不明なファイル === */
+                                using (var reader = new BinaryReader(entry_s))
+                                {
+                                    config.ExtDataList.Add(entry.Name, reader.ReadBytes((int)entry.Length));
+                                }
+                            }
                         }
                     }
                 }
 
-                return (config);
+                return (true);
 
             } catch {
-                return (null);
+                return (false);
             }
         }
     }

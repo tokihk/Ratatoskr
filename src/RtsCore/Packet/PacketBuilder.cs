@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace RtsCore.Packet
 {
     [Serializable]
-    public sealed class DynamicPacketObject : PacketObject
+    public sealed class PacketBuilder
     {
         private const int TOTAL_BUFFER_SIZE = 0xFFFFFFF;
 
@@ -56,18 +56,19 @@ namespace RtsCore.Packet
             }
         }
 
-
+        private PacketObject packet_base_ = null;
         private Queue<DataBlock> blocks_ = new Queue<DataBlock>();
         private DataBlock block_last_ = null;
 
         private int data_size_ = 0;
 
 
-        public DynamicPacketObject(PacketObject packet) : base(packet)
+        public PacketBuilder(PacketObject packet)
         {
+            packet_base_ = packet;
         }
 
-        public override byte[] Data
+        public byte[] Data
         {
             get
             {
@@ -84,7 +85,7 @@ namespace RtsCore.Packet
             }
         }
 
-        public override int DataLength
+        public int DataLength
         {
             get { return (data_size_); }
         }
@@ -132,7 +133,7 @@ namespace RtsCore.Packet
         public PacketObject Compile(PacketObject packet = null)
         {
             if (packet == null) {
-                packet = this;
+                packet = packet_base_;
             }
 
             return (new PacketObject(

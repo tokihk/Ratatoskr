@@ -13,16 +13,16 @@ namespace Ratatoskr.FileFormats
         {
         }
 
-        public (UserConfig config, Guid profile_id) Load()
+        public UserConfigData Load()
         {
-            if (!IsOpen)return (null, Guid.Empty);
+            if (!IsOpen)return (null);
 
             return (OnLoad());
         }
 
-        protected virtual (UserConfig config, Guid profile_id) OnLoad()
+        protected virtual UserConfigData OnLoad()
         {
-            return (null, Guid.Empty);
+            return (null);
         }
     }
 }

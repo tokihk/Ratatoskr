@@ -11,36 +11,28 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
+using RtsCore.Framework.BinaryText;
 using RtsCore.Utility;
 
 namespace Ratatoskr.Forms.MainWindow
 {
     internal partial class MainWindow_SendDataListPanel : UserControl
     {
-        internal sealed class SendDataInfo
-        {
-            public string Target      { get; set; } = "";
-            public string Command     { get; set; } = "";
-            public uint   DelayFixed  { get; set; } = 0;
-            public uint   DelayRandom { get; set; } = 0;
-
-            public SendDataInfo(string target, string command, uint delay_fixed, uint delay_random)
-            {
-                Target = target;
-                Command = command;
-                DelayFixed = delay_fixed;
-                DelayRandom = delay_random;
-            }
-        }
-
         private enum ColumnId
         {
-            Enable,
-            TargetType,
-            CustomTarget,
-            Command,
+            SendButton,
+            SendData,
+            PlayListInclude,
+            SendTargetType,
+            SendTargetCustom,
             DelayFixed,
             DelayRandom,
+        }
+
+        private enum ColumnId_Simple
+        {
+            SendButton = ColumnId.SendButton,
+            SendData = ColumnId.SendData,
         }
 
         private enum PlayStatus
@@ -55,6 +47,8 @@ namespace Ratatoskr.Forms.MainWindow
         private readonly Color COLOR_COMMAND_FORMAT_NG = RtsCore.Parameter.COLOR_NG;
 
 
+        private bool           load_config_busy_ = false;
+
         private PlayStatus     play_state_ = PlayStatus.Reset;
         private Timer          play_timer_ = new Timer();
         private uint           play_next_delay_ = 0;
@@ -62,7 +56,7 @@ namespace Ratatoskr.Forms.MainWindow
         private int            play_data_index_busy_ = -1;
         private int            play_data_index_view_ = -1;
 
-        private SendDataInfo   play_data_info_ = null;
+        private SendDataConfig play_data_ = null;
 
         private uint  play_repeat_count_ = 0;
 
@@ -71,87 +65,122 @@ namespace Ratatoskr.Forms.MainWindow
         {
             InitializeComponent();
 
-            GView_CmdList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            GView_SendDataList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            play_timer_.Tick += OnPlayTimer;
+            play_timer_.Tick += OnListPlayTimer;
         }
 
         public void LoadConfig()
         {
+            load_config_busy_ = true;
+
             /* ターゲット */
             TBox_CommonTarget.Text = ConfigManager.User.SendDataListTarget.Value;
 
-            /* コマンドリスト */
-            LoadCommandListHeaderConfig();
-            LoadCommandListDataConfig();
+            /* モード */
+            switch (ConfigManager.User.SendDataListMode.Value) {
+                case SendDataListMode.Simple:   RBtn_Style_Simple.Checked = true;   break;
+                default:                        RBtn_Style_Details.Checked = true;  break;
+            }
 
             /* 繰り返し回数 */
             Num_RepeatCount.Value = ConfigManager.User.SendDataListRepeat.Value;
 
             UpdateOperationUI();
             UpdateStatusUI();
+
+            load_config_busy_ = false;
         }
 
-        private void LoadCommandListHeaderConfig()
+        private void LoadConfig_SendDataListHeader()
         {
-            GView_CmdList.Columns.Clear();
+            GView_SendDataList.Columns.Clear();
 
-            foreach (ColumnId id in Enum.GetValues(typeof(ColumnId))) {
+            var column_id_list = (Array)null;
+
+            switch (ConfigManager.User.SendDataListMode.Value) {
+                case SendDataListMode.Simple:   column_id_list = Enum.GetValues(typeof(ColumnId_Simple));   break;
+                default:                        column_id_list = Enum.GetValues(typeof(ColumnId));          break;
+            }
+
+            foreach (ColumnId id in column_id_list) {
                 switch (id) {
-                    case ColumnId.Enable:
+                    case ColumnId.SendButton:
+                    {
+                        var column = new DataGridViewButtonColumn();
+                        
+                        column.Tag = id;
+                        column.Width = 50;
+                        column.Resizable = DataGridViewTriState.False;
+                        column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                        column.DefaultCellStyle.Font = new Font("MS Gothic", 9);
+                        GView_SendDataList.Columns.Add(column);
+                    }
+                        break;
+
+                    case ColumnId.SendData:
+                    {
+                        var column = new DataGridViewTextBoxColumn();
+
+                        column.Tag = id;
+                        column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                        column.HeaderText = "Data";
+                        column.DefaultCellStyle.Font = new Font("MS Gothic", 9);
+                        column.Width = 200;
+                        if (ConfigManager.User.SendDataListMode.Value != SendDataListMode.Simple) {
+                            column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                        }
+                        GView_SendDataList.Columns.Add(column);
+                    }
+                        break;
+
+                    case ColumnId.PlayListInclude:
                     {
                         var column = new DataGridViewCheckBoxColumn();
 
-                        column.HeaderText = "";
+                        column.Tag = id;
+                        column.HeaderText = "Play";
                         column.Width = 40;
                         column.Resizable = DataGridViewTriState.False;
                         column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                         column.DefaultCellStyle.Font = new Font("MS Gothic", 9);
-                        GView_CmdList.Columns.Add(column);
+                        GView_SendDataList.Columns.Add(column);
                     }
                         break;
 
-                    case ColumnId.TargetType:
+                    case ColumnId.SendTargetType:
                     {
                         var column = new DataGridViewComboBoxColumn();
 
+                        column.Tag = id;
                         column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.HeaderText = "Target type";
-                        column.Width = 100;
+                        column.HeaderText = "Target Type";
+                        column.Width = 80;
                         column.Resizable = DataGridViewTriState.False;
                         column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                         column.DefaultCellStyle.Font = new Font("MS Gothic", 9);
+                        column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                         column.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox;
                         column.ValueType = typeof(SendDataTargetType);
                         foreach (var type in Enum.GetValues(typeof(SendDataTargetType))) {
                             column.Items.Add(type);
                         }
-                        GView_CmdList.Columns.Add(column);
+                        GView_SendDataList.Columns.Add(column);
                     }
                         break;
 
-                    case ColumnId.CustomTarget:
+                    case ColumnId.SendTargetCustom:
                     {
                         var column = new DataGridViewTextBoxColumn();
 
+                        column.Tag = id;
                         column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.HeaderText = "Custom target";
+                        column.HeaderText = "Target Name";
                         column.Width = 120;
                         column.Resizable = DataGridViewTriState.False;
                         column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                         column.DefaultCellStyle.Font = new Font("MS Gothic", 9);
-                        GView_CmdList.Columns.Add(column);
-                    }
-                        break;
-
-                    case ColumnId.Command:
-                    {
-                        var column = new DataGridViewTextBoxColumn();
-
-                        column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.HeaderText = "Command";
-                        column.DefaultCellStyle.Font = new Font("MS Gothic", 9);
-                        GView_CmdList.Columns.Add(column);
+                        GView_SendDataList.Columns.Add(column);
                     }
                         break;
 
@@ -159,13 +188,14 @@ namespace Ratatoskr.Forms.MainWindow
                     {
                         var column = new DataGridViewTextBoxColumn();
 
+                        column.Tag = id;
                         column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.HeaderText = "Fixed delay" + " [msec]";
+                        column.HeaderText = "Delay(Fixed)" + "[ms]";
                         column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.Width = 140;
+                        column.Width = 120;
                         column.Resizable = DataGridViewTriState.False;
                         column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                        GView_CmdList.Columns.Add(column);
+                        GView_SendDataList.Columns.Add(column);
                     }
                         break;
 
@@ -173,13 +203,14 @@ namespace Ratatoskr.Forms.MainWindow
                     {
                         var column = new DataGridViewTextBoxColumn();
 
+                        column.Tag = id;
                         column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.HeaderText = "Random delay" + " [msec]";
+                        column.HeaderText = "Delay(Random)" + "[ms]";
                         column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        column.Width = 140;
+                        column.Width = 120;
                         column.Resizable = DataGridViewTriState.False;
                         column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                        GView_CmdList.Columns.Add(column);
+                        GView_SendDataList.Columns.Add(column);
                     }
                         break;
 
@@ -187,19 +218,27 @@ namespace Ratatoskr.Forms.MainWindow
                     {
                         var column = new DataGridViewTextBoxColumn();
 
-                        GView_CmdList.Columns.Add(column);
+                        column.Tag = id;
+                        GView_SendDataList.Columns.Add(column);
                     }
                         break;
                 }
             }
         }
 
-        private void LoadCommandListDataConfig()
+        private void LoadConfig_SendDataListData()
         {
-            GView_CmdList.Rows.Clear();
+            GView_SendDataList.Rows.Clear();
+
             foreach (var config in ConfigManager.User.SendDataList.Value) {
-                AddSendDataConfig(config);
+                AddGridDataFromConfig(config);
             }
+        }
+
+        private void LoadConfig_SendDataList()
+        {
+            LoadConfig_SendDataListHeader();
+            LoadConfig_SendDataListData();
         }
 
         public void BackupConfig()
@@ -218,28 +257,18 @@ namespace Ratatoskr.Forms.MainWindow
         {
             ConfigManager.User.SendDataList.Value.Clear();
 
-            foreach (DataGridViewRow row in GView_CmdList.Rows) {
+            foreach (DataGridViewRow row in GView_SendDataList.Rows) {
                 if (row.IsNewRow)break;
 
-                try {
-                    ConfigManager.User.SendDataList.Value.Add(
-                        new SendDataConfig(
-                            (bool)row.Cells[(int)ColumnId.Enable].Value,
-                            (SendDataTargetType)row.Cells[(int)ColumnId.TargetType].Value,
-                            row.Cells[(int)ColumnId.CustomTarget].Value as string,
-                            row.Cells[(int)ColumnId.Command].Value as string,
-                            uint.Parse(row.Cells[(int)ColumnId.DelayFixed].Value as string),
-                            uint.Parse(row.Cells[(int)ColumnId.DelayRandom].Value as string)));
-                } catch {
-                    ConfigManager.User.SendDataList.Value.Add(
-                        new SendDataConfig(false, SendDataTargetType.Common, "*", "", 0, 0));
-                }
+                SetConfigFromGridData(row);
+
+                ConfigManager.User.SendDataList.Value.Add(row.Tag as SendDataConfig);
             }
         }
 
-        private void PlayReset()
+        private void ListPlayReset()
         {
-            PlayPause();
+            ListPlayPause();
 
             play_state_ = PlayStatus.Reset;
 
@@ -253,25 +282,25 @@ namespace Ratatoskr.Forms.MainWindow
             UpdateStatusUI();
         }
 
-        private void PlayStart()
+        private void ListPlayStart()
         {
-            PlayPause();
+            ListPlayPause();
 
             play_state_ = PlayStatus.Busy;
 
             /* 途中で編集されたときを考慮してコマンド番号を補正 */
-            if (play_data_index_busy_ >= GView_CmdList.RowCount) {
+            if (play_data_index_busy_ >= GView_SendDataList.RowCount) {
                 play_data_index_busy_ = -1;
             }
 
             /* 初回タイマーイベント */
-            OnPlayTimer(play_timer_, EventArgs.Empty);
+            OnListPlayTimer(play_timer_, EventArgs.Empty);
 
             UpdateOperationUI();
             UpdateStatusUI();
         }
 
-        private void PlayPause()
+        private void ListPlayPause()
         {
             play_state_ = PlayStatus.Pause;
 
@@ -284,19 +313,19 @@ namespace Ratatoskr.Forms.MainWindow
             UpdateStatusUI();
         }
 
-        private void PlayTimerSetup(uint ival_ms)
+        private void ListPlayTimerSetup(uint ival_ms)
         {
             play_timer_.Stop();
             play_timer_.Interval = (int)Math.Max(1, ival_ms);
             play_timer_.Start();
         }
 
-        private void PlayTimerRecall()
+        private void ListPlayTimerRecall()
         {
-            PlayTimerSetup(1);
+            ListPlayTimerSetup(1);
         }
 
-        private void OnPlayTimer(object sender, EventArgs e)
+        private void OnListPlayTimer(object sender, EventArgs e)
         {
             var timer = sender as Timer;
 
@@ -308,18 +337,18 @@ namespace Ratatoskr.Forms.MainWindow
             }
 
             /* コマンド情報取得 */
-            play_data_info_ = LoadNextDataInfo(ref play_data_index_busy_);
+            play_data_ = LoadNextPlaySendData(ref play_data_index_busy_);
 
-            if (play_data_info_ != null) {
+            if (play_data_ != null) {
                 /* --- コマンド情報取得成功 --- */
                 /* 次のコマンドまでの遅延時間 */
-                play_next_delay_ = play_data_info_.DelayFixed + (uint)((new Random()).Next((int)play_data_info_.DelayRandom));
+                play_next_delay_ = play_data_.DelayFixed + (uint)((new Random()).Next((int)play_data_.DelayRandom));
 
                 /* タイマー再起動 */
-                PlayTimerSetup(play_next_delay_);
+                ListPlayTimerSetup(play_next_delay_);
 
                 /* コマンド実行 */
-                SendExec(play_data_info_);
+                SendDataExec(play_data_);
 
             } else {
                 /* --- コマンド終端に到着 --- */
@@ -334,34 +363,132 @@ namespace Ratatoskr.Forms.MainWindow
                     && (play_repeat_count_ >= Num_RepeatCount.Value)
                 ) {
                     /* --- 繰り返し回数上限に達した --- */
-                    PlayReset();
+                    ListPlayReset();
 
                 } else {
                     /* --- 繰り返し実行 --- */
                     /* 再チェック */
-                    PlayTimerRecall();
+                    ListPlayTimerRecall();
                 }
             }
 
             UpdateStatusUI();
         }
 
-        private void AddSendDataConfig(SendDataConfig config)
+        private void SetConfigFromGridData(DataGridViewCell cell, SendDataConfig config)
+        {
+            switch ((ColumnId)cell.OwningColumn.Tag) {
+                case ColumnId.SendData:
+                    config.SendData = cell.Value as string;
+                    break;
+
+                case ColumnId.PlayListInclude:
+                    config.PlayListInclude = (bool)cell.Value;
+                    break;
+
+                case ColumnId.SendTargetType:
+                    config.SendTargetType = (SendDataTargetType)cell.Value;
+                    break;
+
+                case ColumnId.SendTargetCustom:
+                    config.SendTargetCustom = cell.Value as string;
+                    break;
+
+                case ColumnId.DelayFixed:
+                {
+                    var value = (uint)0;
+
+                    if (uint.TryParse(cell.Value as string, out value)) {
+                        config.DelayFixed = value;
+                    }
+                }
+                    break;
+
+                case ColumnId.DelayRandom:
+                {
+                    var value = (uint)0;
+
+                    if (uint.TryParse(cell.Value as string, out value)) {
+                        config.DelayRandom = value;
+                    }
+                }
+                    break;
+            }
+        }
+
+        private void SetConfigFromGridData(DataGridViewRow row_obj, SendDataConfig config)
+        {
+            if (config == null)return;
+
+            foreach (DataGridViewCell cell in row_obj.Cells) {
+                SetConfigFromGridData(cell, config);
+            }
+        }
+
+        private void SetConfigFromGridData(DataGridViewRow row_obj)
+        {
+            SetConfigFromGridData(row_obj, row_obj.Tag as SendDataConfig);
+        }
+
+        private void SetGridDataFromConfig(DataGridViewCell cell, SendDataConfig config)
+        {
+            switch ((ColumnId)cell.OwningColumn.Tag) {
+                case ColumnId.SendButton:
+                    cell.Value = "Send";
+                    break;
+                case ColumnId.SendData:
+                    cell.Value = config.SendData;
+                    break;
+
+                case ColumnId.PlayListInclude:
+                    cell.Value = config.PlayListInclude;
+                    break;
+
+                case ColumnId.SendTargetType:
+                    cell.Value = config.SendTargetType;
+                    break;
+
+                case ColumnId.SendTargetCustom:
+                    cell.Value = config.SendTargetCustom;
+                    break;
+
+                case ColumnId.DelayFixed:
+                    cell.Value = config.DelayFixed.ToString();
+                    break;
+
+                case ColumnId.DelayRandom:
+                    cell.Value = config.DelayRandom.ToString();
+                    break;
+            }
+        }
+
+        private void SetGridDataFromConfig(DataGridViewRow row_obj, SendDataConfig config)
+        {
+            if (config == null)return;
+
+            foreach (DataGridViewCell cell in row_obj.Cells) {
+                SetGridDataFromConfig(cell, config);
+            }
+        }
+
+        private void SetGridDataFromConfig(DataGridViewRow row_obj)
+        {
+            SetGridDataFromConfig(row_obj, row_obj.Tag as SendDataConfig);
+        }
+
+        private void AddGridDataFromConfig(SendDataConfig config)
         {
             /* 新規行を追加 */
-            var row_index = GView_CmdList.Rows.Add();
+            var row_index = GView_SendDataList.Rows.Add();
 
             if (row_index < 0)return;
 
-            var row_obj = GView_CmdList.Rows[row_index];
+            var row_obj = GView_SendDataList.Rows[row_index];
+
+            row_obj.Tag = new SendDataConfig(config);
 
             /* 値を書き換え */
-            row_obj.Cells[(int)ColumnId.Enable].Value = config.Enable;
-            row_obj.Cells[(int)ColumnId.TargetType].Value = config.TargetType;
-            row_obj.Cells[(int)ColumnId.CustomTarget].Value = config.CustomTarget;
-            row_obj.Cells[(int)ColumnId.Command].Value = config.Command;
-            row_obj.Cells[(int)ColumnId.DelayFixed].Value = config.DelayFixed.ToString();
-            row_obj.Cells[(int)ColumnId.DelayRandom].Value = config.DelayRandom.ToString();
+            SetGridDataFromConfig(row_obj);
 
             /* エラー表示を更新 */
             UpdateEditStatus(row_obj);
@@ -371,59 +498,68 @@ namespace Ratatoskr.Forms.MainWindow
         {
             try {
                 /* 範囲外 */
-                if ((index < 0) || (index >= GView_CmdList.RowCount))return (null);
+                if ((index < 0) || (index >= GView_SendDataList.RowCount))return (null);
 
-                var row_obj = GView_CmdList.Rows[(int)index];
+                var row_obj = GView_SendDataList.Rows[(int)index];
 
                 /* New行 */
                 if (row_obj.IsNewRow)return (null);
 
-                return (new SendDataConfig(
-                                    (bool)row_obj.Cells[(int)ColumnId.Enable].Value,
-                                    (SendDataTargetType)row_obj.Cells[(int)ColumnId.TargetType].Value,
-                                    row_obj.Cells[(int)ColumnId.CustomTarget].Value as string,
-                                    row_obj.Cells[(int)ColumnId.Command].Value as string,
-                                    uint.Parse(row_obj.Cells[(int)ColumnId.DelayFixed].Value as string),
-                                    uint.Parse(row_obj.Cells[(int)ColumnId.DelayRandom].Value as string)));
+                SetConfigFromGridData(row_obj);
+
+                return (row_obj.Tag as SendDataConfig);
             } catch {
                 return (null);
             }
         }
 
-        private SendDataInfo GetSendDataInfo(int index)
+        private SendDataConfig LoadNextPlaySendData(ref int index)
         {
-            var config = GetSendDataConfig(index);
+            for (; index < GView_SendDataList.RowCount; index++) {
+                var config = GetSendDataConfig(index);
 
-            if (   (config == null)
-                || (!config.Enable)
-            ) {
-                return (null);
-            }
+                if (   (config == null)
+                    || (!config.PlayListInclude)
+                ) {
+                    continue;
+                }
 
-            return (new SendDataInfo(
-                            (config.TargetType == SendDataTargetType.Common) ? (TBox_CommonTarget.Text) : (config.CustomTarget),
-                            config.Command,
-                            config.DelayFixed,
-                            config.DelayRandom));
-        }
+                var config_play = new SendDataConfig(config);
 
-        private SendDataInfo LoadNextDataInfo(ref int index)
-        {
-            for (; index < GView_CmdList.RowCount; index++) {
-                var info = GetSendDataInfo(index);
+                if (ConfigManager.User.SendDataListMode.Value == SendDataListMode.Simple) {
+                    config_play.DelayFixed = (uint)Num_SendInterval_Fixed.Value;
+                    config_play.DelayRandom = (uint)Num_SendInterval_Random.Value;
+                }
 
-                if (info == null)continue;
-
-                return (info);
+                return (config_play);
             }
 
             return (null);
         }
 
-        private void SendExec(SendDataInfo info)
+        private void SendDataExec(SendDataConfig config)
         {
+            var target = "*";
+
+            /* 送信先補正 */
+            switch (config.SendTargetType) {
+                case SendDataTargetType.System:
+                    target = FormUiManager.SendTarget;
+                    break;
+                case SendDataTargetType.Common:
+                    target = TBox_CommonTarget.Text;
+                    break;
+                case SendDataTargetType.Custom:
+                    target = config.SendTargetCustom;
+                    break;
+            }
+
+            if (ConfigManager.User.SendDataListMode.Value == SendDataListMode.Simple) {
+                target = FormUiManager.SendTarget;
+            }
+
             /* 送信実行 */
-            Program.API.API_SendData(info.Target, info.Command);
+            Program.API.API_SendData(target, config.SendData);
         }
 
         private void UpdateOperationUI()
@@ -439,9 +575,22 @@ namespace Ratatoskr.Forms.MainWindow
             Btn_Stop.Enabled = (play_state_ != PlayStatus.Reset);
 
             /* コントロールの操作可能状態を更新 */
-            TBox_CommonTarget.Enabled = (play_state_ != PlayStatus.Busy);
-            Num_RepeatCount.Enabled = (play_state_ != PlayStatus.Busy);
-            GView_CmdList.Enabled = (play_state_ != PlayStatus.Busy);
+            var enable = play_state_ != PlayStatus.Busy;
+
+            GBox_Style.Enabled = enable;
+            TBox_CommonTarget.Enabled = enable;
+            Num_RepeatCount.Enabled = enable;
+            GView_SendDataList.Enabled = enable;
+            GBox_SendInterval.Enabled = enable;
+
+            /* コントロールの可視状態を更新 */
+            var is_details = (ConfigManager.User.SendDataListMode.Value == SendDataListMode.Details);
+
+            GBox_CommonTarget.Visible = is_details;
+            Btn_Play.Visible = is_details;
+            Btn_Stop.Visible = is_details;
+            GBox_NumberOfRepeat.Visible = is_details;
+            GBox_SendInterval.Visible = !is_details;
         }
 
         private void UpdateStatusUI()
@@ -452,14 +601,14 @@ namespace Ratatoskr.Forms.MainWindow
 
                 /* 変更前に選択状態のコマンドリストを非選択状態にする */
                 if (play_data_index_view_ >= 0) {
-                    GView_CmdList.Rows[play_data_index_view_].DefaultCellStyle.BackColor = Color.White;
+                    GView_SendDataList.Rows[play_data_index_view_].DefaultCellStyle.BackColor = Color.White;
                 }
 
                 play_data_index_view_ = play_data_index_busy_;
 
                 /* 変更後に選択状態のコマンドリストを選択状態にする */
                 if (play_data_index_view_ >= 0) {
-                    GView_CmdList.Rows[play_data_index_view_].DefaultCellStyle.BackColor = COLOR_BUSY_COMMAND;
+                    GView_SendDataList.Rows[play_data_index_view_].DefaultCellStyle.BackColor = COLOR_BUSY_COMMAND;
                 }
             }
 
@@ -501,8 +650,8 @@ namespace Ratatoskr.Forms.MainWindow
             var cmd_target = TBox_CommonTarget.Text;
 
             /* エラー判定 */
-            switch ((ColumnId)cell.OwningColumn.Index) {
-                case ColumnId.Command:
+            switch ((ColumnId)cell.OwningColumn.Tag) {
+                case ColumnId.SendData:
                 {
                     if (cell.Value is string value_str) {
                         if (value_str.Length > 0) {
@@ -541,7 +690,7 @@ namespace Ratatoskr.Forms.MainWindow
                     "{0} {1,3}/{2,-3} | {3} {4,6}[ms] | {5}",
                     "Command list running",
                     play_data_index_busy_ + 1,
-                    GView_CmdList.RowCount,
+                    GView_SendDataList.RowCount,
                     "Next command",
                     play_next_delay_,
                     "Delay waiting");
@@ -552,7 +701,7 @@ namespace Ratatoskr.Forms.MainWindow
                     "{0} {1,3}/{2,-3}",
                     "Command list pause",
                     play_data_index_busy_ + 1,
-                    GView_CmdList.RowCount);
+                    GView_SendDataList.RowCount);
             }
 
             FormUiManager.SetStatusText(StatusTextID.SequentialCommandStatus, str.ToString());
@@ -569,9 +718,9 @@ namespace Ratatoskr.Forms.MainWindow
                 var configs = ImportCsvData(reader, columns);
 
                 /* 適用 */
-                GView_CmdList.Rows.Clear();
+                GView_SendDataList.Rows.Clear();
                 foreach (var config in configs) {
-                    AddSendDataConfig(config);
+                    AddGridDataFromConfig(config);
                 }
             }
         }
@@ -593,17 +742,17 @@ namespace Ratatoskr.Forms.MainWindow
 
                 foreach (var item in items.Select((v, i) => new {v, i})) {
                     switch (columns[item.i]) {
-                        case ColumnId.Enable:
-                            config.Enable = bool.Parse(item.v);
+                        case ColumnId.PlayListInclude:
+                            config.PlayListInclude = bool.Parse(item.v);
                             break;
-                        case ColumnId.TargetType:
-                            config.TargetType = (SendDataTargetType)Enum.Parse(typeof(SendDataTargetType), item.v);
+                        case ColumnId.SendTargetType:
+                            config.SendTargetType = (SendDataTargetType)Enum.Parse(typeof(SendDataTargetType), item.v);
                             break;
-                        case ColumnId.CustomTarget:
-                            config.CustomTarget = item.v;
+                        case ColumnId.SendTargetCustom:
+                            config.SendTargetCustom = item.v;
                             break;
-                        case ColumnId.Command:
-                            config.Command = item.v;
+                        case ColumnId.SendData:
+                            config.SendData = item.v;
                             break;
                         case ColumnId.DelayFixed:
                             config.DelayFixed = uint.Parse(item.v);
@@ -646,10 +795,10 @@ namespace Ratatoskr.Forms.MainWindow
 
                 foreach (ColumnId column in Enum.GetValues(typeof(ColumnId))) {
                     switch (column) {
-                        case ColumnId.Enable:       items.Enqueue(config.Enable.ToString());        break;
-                        case ColumnId.TargetType:   items.Enqueue(config.TargetType.ToString());    break;
-                        case ColumnId.CustomTarget: items.Enqueue(config.CustomTarget);             break;
-                        case ColumnId.Command:      items.Enqueue(config.Command);                  break;
+                        case ColumnId.PlayListInclude:       items.Enqueue(config.PlayListInclude.ToString());        break;
+                        case ColumnId.SendTargetType:   items.Enqueue(config.SendTargetType.ToString());    break;
+                        case ColumnId.SendTargetCustom: items.Enqueue(config.SendTargetCustom);             break;
+                        case ColumnId.SendData:      items.Enqueue(config.SendData);                  break;
                         case ColumnId.DelayFixed:   items.Enqueue(config.DelayFixed.ToString());    break;
                         case ColumnId.DelayRandom:  items.Enqueue(config.DelayRandom.ToString());   break;
                     }
@@ -663,67 +812,27 @@ namespace Ratatoskr.Forms.MainWindow
         {
             /* 再生中 ⇒ 一時停止 */
             if (play_state_ == PlayStatus.Busy) {
-                PlayPause();
+                ListPlayPause();
 
             /* 停止 or 一時停止 ⇒ 再生 */
             } else {
-                PlayStart();
+                ListPlayStart();
             }
         }
 
         private void Btn_Stop_Click(object sender, EventArgs e)
         {
-            PlayReset();
+            ListPlayReset();
         }
 
-        private void GView_CmdList_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-        {
-            if (sender is DataGridView gview) {
-                var row_obj = gview.Rows[gview.CurrentCell.RowIndex];
-                var cell_obj = row_obj.Cells[gview.CurrentCell.ColumnIndex];
-
-                switch ((ColumnId)gview.CurrentCell.ColumnIndex) {
-                    case ColumnId.Command:
-                        GView_CmdList_EditCell_Command(gview.EditingControl as DataGridViewTextBoxEditingControl, row_obj, cell_obj);
-                        break;
-                }
-            }
-        }
-
-        private void GView_CmdList_EditCell_Command(DataGridViewTextBoxEditingControl control, DataGridViewRow row_obj, DataGridViewCell cell_obj)
-        {
-            if (control == null)return;
-
-            /* 初回イベント */
-            GView_CmdList_EditCell_Command_TextChanged(control, new EventArgs());
-
-            /* イベントを登録 */
-            control.TextChanged -= GView_CmdList_EditCell_Command_TextChanged;
-            control.TextChanged += GView_CmdList_EditCell_Command_TextChanged;
-        }
-
-        private void GView_CmdList_EditCell_Command_TextChanged(object sender, EventArgs e)
-        {
-            if (sender is DataGridViewTextBoxEditingControl control) {
-                var value = control.Text;
-
-                /* 表示更新 */
-                if ((value != null) && (value.Length > 0)) {
-                    control.BackColor = (HexTextEncoder.ToByteArray(value) != null) ? (COLOR_COMMAND_FORMAT_OK) : (COLOR_COMMAND_FORMAT_NG);
-                } else {
-                    control.BackColor = Color.White;
-                }
-            }
-        }
-
-        private void GView_CmdList_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        private void GView_SendDataList_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             if (sender is DataGridView gview) {
                 var row_obj = gview.Rows[e.RowIndex];
                 var cell_obj = row_obj.Cells[e.ColumnIndex];
 
-                switch ((ColumnId)e.ColumnIndex) {
-                    case ColumnId.Command:
+                switch ((ColumnId)cell_obj.OwningColumn.Tag) {
+                    case ColumnId.SendData:
                     {
                         /* 編集開始時に背景色をクリア */
                         cell_obj.Style.BackColor = Color.White;
@@ -733,30 +842,88 @@ namespace Ratatoskr.Forms.MainWindow
             }
         }
 
-        private void GView_CmdList_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void GView_SendDataList_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (sender is DataGridView gview) {
                 var row_obj = gview.Rows[e.RowIndex];
+
+                /* 編集データを反映 */
+                SetConfigFromGridData(row_obj);
+                SetGridDataFromConfig(row_obj);
 
                 /* エラー表示を更新 */
                 UpdateEditStatus(row_obj);
             }
         }
 
-        private void GView_CmdList_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
+        private void GView_SendDataList_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            var row_obj = e.Row;
-            var config = new SendDataConfig();
+            /* 編集中動作 */
+            if (sender is DataGridView control) {
+                var row_obj = control.CurrentRow;
+                var cell_obj = control.CurrentCell;
 
-            row_obj.Cells[(int)ColumnId.Enable].Value = config.Enable;
-            row_obj.Cells[(int)ColumnId.TargetType].Value = config.TargetType;
-            row_obj.Cells[(int)ColumnId.CustomTarget].Value = config.CustomTarget;
-            row_obj.Cells[(int)ColumnId.Command].Value = config.Command;
-            row_obj.Cells[(int)ColumnId.DelayFixed].Value = config.DelayFixed.ToString();
-            row_obj.Cells[(int)ColumnId.DelayRandom].Value = config.DelayRandom.ToString();
+                e.Control.Tag = cell_obj;
+
+                if (e.Control is DataGridViewTextBoxEditingControl control_sub) {
+                    /* 初回イベント */
+                    GView_SendDataList_EditingControlShowing_TextChanged(control_sub, EventArgs.Empty);
+
+                    /* これ以降はイベントで処理 */
+                    control_sub.TextChanged -= GView_SendDataList_EditingControlShowing_TextChanged;
+                    control_sub.TextChanged += GView_SendDataList_EditingControlShowing_TextChanged;
+                }
+            }
         }
 
-        private void GView_CmdList_RowContextMenuStripNeeded(object sender, DataGridViewRowContextMenuStripNeededEventArgs e)
+        private void GView_SendDataList_EditingControlShowing_TextChanged(object sender, EventArgs e)
+        {
+            if (sender is DataGridViewTextBoxEditingControl control) {
+                var cell_obj = control.Tag as DataGridViewCell;
+                var value = control.Text;
+
+                switch ((ColumnId)cell_obj.OwningColumn.Tag) {
+                    case ColumnId.SendData:
+                    {
+                        if ((value != null) && (value.Length > 0)) {
+                            control.BackColor = (BinaryTextCompiler.Build(value) != null)
+                                              ? (COLOR_COMMAND_FORMAT_OK)
+                                              : (COLOR_COMMAND_FORMAT_NG);
+                        } else {
+                            control.BackColor = Color.White;
+                        }
+                    }
+                        break;
+                }
+            }
+        }
+
+        private void GView_SendDataList_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var control = sender as DataGridView;
+            var row_obj = control.Rows[e.RowIndex];
+            var cell_obj = row_obj.Cells[e.ColumnIndex];
+
+            if (row_obj.IsNewRow)return;
+
+            var config = row_obj.Tag as SendDataConfig;
+
+            switch ((ColumnId)cell_obj.OwningColumn.Tag) {
+                case ColumnId.SendButton:
+                    SendDataExec(config);
+                    break;
+            }
+        }
+
+        private void GView_SendDataList_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
+        {
+            /* 初期値設定 */
+            e.Row.Tag = new SendDataConfig();
+
+            SetGridDataFromConfig(e.Row);
+        }
+
+        private void GView_SendDataList_RowContextMenuStripNeeded(object sender, DataGridViewRowContextMenuStripNeededEventArgs e)
         {
         }
 
@@ -784,7 +951,34 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void GView_CmdList_KeyDown(object sender, KeyEventArgs e)
         {
-            GView_CmdList.BeginEdit(true);
+            GView_SendDataList.BeginEdit(true);
+        }
+
+        private void RBtn_Style_Simple_CheckedChanged(object sender, EventArgs e)
+        {
+            ConfigManager.User.SendDataListMode.Value = SendDataListMode.Simple;
+
+            if (!load_config_busy_) {
+                BackupConfig_SendDataList();
+            }
+            LoadConfig_SendDataList();
+            UpdateOperationUI();
+        }
+
+        private void RBtn_Style_Details_CheckedChanged(object sender, EventArgs e)
+        {
+            ConfigManager.User.SendDataListMode.Value = SendDataListMode.Details;
+
+            if (!load_config_busy_) {
+                BackupConfig_SendDataList();
+            }
+            LoadConfig_SendDataList();
+            UpdateOperationUI();
+        }
+
+        private void GView_SendDataList_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+
         }
     }
 }
