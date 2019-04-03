@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.FileFormats;
+using RtsCore.Framework.FileFormat;
 using Ratatoskr.Forms.Dialog;
+using Ratatoskr.FileFormats;
 using Ratatoskr.Gate;
-using RtsCore.Generic;
 using Ratatoskr.Plugin;
 
 namespace Ratatoskr.Forms

@@ -29,7 +29,7 @@ namespace Ratatoskr.Devices.UsbMonitor
         private UsbPcapRecordParser recv_parser_;
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+        public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
             : base(devm, devconf, devd, devp)
         {
             prop_ = devp as DevicePropertyImpl;
@@ -172,36 +172,52 @@ namespace Ratatoskr.Devices.UsbMonitor
 
         private void NotifyExec(UsbPcapRecordParser.PacketInfo info)
         {
-            var info_text = new StringBuilder("USB: ");
+            var info_text = new StringBuilder("");
 
-            /* Address */
-            info_text.AppendFormat("{0:X4}-", info.UsbPcapHeader.device);
+            /* Device ID */
+            if (prop_.InfoOut_UsbDeviceID.Value) {
+                info_text.AppendFormat("DEV={0:X4} ", info.UsbPcapHeader.device);
+            }
 
-            /* Type */
-            switch ((UsbPcapRecordParser.UrbFunctionType)info.UsbPcapHeader.transfer) {
-                case UsbPcapRecordParser.UrbFunctionType.Isochronous:
-                {
-                    info_text.Append("Isochronous");
+            /* End Point */
+            if (prop_.InfoOut_EndPoint.Value) {
+                info_text.AppendFormat("EP={0:X} ", info.UsbPcapHeader.endpoint & 0x7F);
+            }
+
+            /* I/O Request Packet ID */
+            if (prop_.InfoOut_IrpID.Value) {
+                info_text.AppendFormat("IrpID={0:X8} ", info.UsbPcapHeader.irpId);
+            }
+
+            /* Function Type */
+            if (prop_.InfoOut_FunctionType.Value) {
+                info_text.Append(((UsbPcapRecordParser.UrbFunctionType)info.UsbPcapHeader.transfer).ToString());
+
+                if (prop_.InfoOut_FunctionParam.Value) {
+                    /* Function Parameter */
+                    switch ((UsbPcapRecordParser.UrbFunctionType)info.UsbPcapHeader.transfer) {
+                        case UsbPcapRecordParser.UrbFunctionType.Isochronous:
+                        {
+                        }
+                            break;
+
+                        case UsbPcapRecordParser.UrbFunctionType.Interrupt:
+                        {
+                        }
+                            break;
+
+                        case UsbPcapRecordParser.UrbFunctionType.Control:
+                        {
+                            info_text.AppendFormat("-{0}", ((UsbPcapRecordParser.UsbPcapControlStage)info.UsbPcapHeader.control.stage).ToString());
+                        }
+                            break;
+
+                        case UsbPcapRecordParser.UrbFunctionType.Bulk:
+                        {
+                        }
+                            break;
+                    }
                 }
-                    break;
-
-                case UsbPcapRecordParser.UrbFunctionType.Interrupt:
-                {
-                    info_text.Append("Interrupt");
-                }
-                    break;
-
-                case UsbPcapRecordParser.UrbFunctionType.Control:
-                {
-                    info_text.Append("Control");
-                }
-                    break;
-
-                case UsbPcapRecordParser.UrbFunctionType.Bulk:
-                {
-                    info_text.Append("Bulk");
-                }
-                    break;
             }
 
             if (info.UsbPcapHeader.info == 0) {

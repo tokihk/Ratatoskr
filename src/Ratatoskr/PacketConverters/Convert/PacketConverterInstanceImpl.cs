@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using RtsCore.Framework.Controls;
 using RtsCore.Framework.PacketConverter;
 using RtsCore.Packet;
 
@@ -59,8 +60,7 @@ namespace Ratatoskr.PacketConverters.Convert
         private PacketConverterPropertyImpl prop_;
         private AlgorithmObject algorithm_obj_ = null;
         private Panel Panel_Sub;
-        private System.Windows.Forms.ComboBox CBox_AlgorithmList;
-
+        private RoundComboBox CBox_AlgorithmList;
 
         public PacketConverterInstanceImpl() : base()
         {
@@ -80,7 +80,7 @@ namespace Ratatoskr.PacketConverters.Convert
 
         private void InitializeComponent()
         {
-            this.CBox_AlgorithmList = new Ratatoskr.Forms.Controls.RoundComboBox();
+            this.CBox_AlgorithmList = new RoundComboBox();
             this.Panel_Sub = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
@@ -103,7 +103,7 @@ namespace Ratatoskr.PacketConverters.Convert
             this.Panel_Sub.Location = new System.Drawing.Point(166, 0);
             this.Panel_Sub.Margin = new System.Windows.Forms.Padding(0);
             this.Panel_Sub.Name = "Panel_Sub";
-            this.Panel_Sub.Size = new System.Drawing.Size(423, 25);
+            this.Panel_Sub.Size = new System.Drawing.Size(432, 25);
             this.Panel_Sub.TabIndex = 2;
             // 
             // PacketConverterInstanceImpl
@@ -112,7 +112,7 @@ namespace Ratatoskr.PacketConverters.Convert
             this.Controls.Add(this.Panel_Sub);
             this.Controls.Add(this.CBox_AlgorithmList);
             this.Name = "PacketConverterInstanceImpl";
-            this.Size = new System.Drawing.Size(589, 25);
+            this.Size = new System.Drawing.Size(598, 25);
             this.ResumeLayout(false);
 
         }

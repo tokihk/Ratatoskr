@@ -62,6 +62,8 @@ namespace Ratatoskr.Forms.ScriptWindow
             if (ConfigManager.System.ScriptWindow.Maximize.Value) {
                 WindowState = FormWindowState.Maximized;
             }
+
+            Panel_DockMain.ShowContents();
         }
 
         private void LoadMenuBarConfig()
@@ -88,7 +90,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 "DC_FileExplorer",
                 "File Explorer",
                 0,
-                Icon.FromHandle(Properties.Resources.memo_32x32.GetHicon()),
+                Icon.FromHandle(RtsCore.Resource.Images.memo_32x32.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockLeft,
                 false,
@@ -103,7 +105,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 "DC_Console",
                 "Output",
                 0,
-                Icon.FromHandle(Properties.Resources.program_16x16.GetHicon()),
+                Icon.FromHandle(RtsCore.Resource.Images.program_16x16.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottom,
                 false,
@@ -120,7 +122,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 "DC_ScriptList",
                 "Running Script List",
                 0,
-                Icon.FromHandle(Properties.Resources.memo_32x32.GetHicon()),
+                Icon.FromHandle(RtsCore.Resource.Images.memo_32x32.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottom,
                 false,
@@ -217,7 +219,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 "DC_CodeEditor",
                 (path != null) ? (Path.GetFileName(path)) : ("(Temp)"),
                 0,
-                Icon.FromHandle(Properties.Resources.memo_32x32.GetHicon()),
+                Icon.FromHandle(RtsCore.Resource.Images.memo_32x32.GetHicon()),
                 DockAreas.Document,
                 DockState.Document,
                 true,
@@ -226,11 +228,11 @@ namespace Ratatoskr.Forms.ScriptWindow
 
         private string GetCurrentScript()
         {
-            var dock = Panel_DockMain.GetActiveDocumentControl() as CodeEditorEx;
-
-            if (dock == null)return (null);
-
-            return (dock.Text);
+            if (Panel_DockMain.GetActiveDocumentControl() is CodeEditorEx dock) {
+                return (dock.Text);
+            } else {
+                return (null);
+            }
         }
 
         private void UpdateCurrentEditorStatus()
@@ -298,9 +300,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                     break;
             }
 
-            var editor = Panel_DockMain.GetActiveDocumentControl() as ScriptWindow_CodeEditor;
-
-            if (editor != null) {
+            if (Panel_DockMain.GetActiveDocumentControl() is ScriptWindow_CodeEditor editor) {
                 editor.FormKeyAction(id);
             }
         }
@@ -339,31 +339,25 @@ namespace Ratatoskr.Forms.ScriptWindow
 
         private void OnMenuClick(object sender, EventArgs e)
         {
-            var menu = sender as ToolStripMenuItem;
-
-            if (menu == null)return;
-            
-            if (menu.Tag is ScriptWindowActionId) {
-                FormKeyAction((ScriptWindowActionId)menu.Tag);
+            if (sender is ToolStripMenuItem menu) {
+                if (menu.Tag is ScriptWindowActionId) {
+                    FormKeyAction((ScriptWindowActionId)menu.Tag);
+                }
             }
         }
 
         private void MenuBar_Script_Run_Click(object sender, EventArgs e)
         {
-            var editor = Panel_DockMain.GetActiveDocumentControl() as ScriptWindow_CodeEditor;
-
-            if (editor == null)return;
-
-            editor.ScriptRun();
+            if (Panel_DockMain.GetActiveDocumentControl() is ScriptWindow_CodeEditor editor) {
+                editor.ScriptRun();
+            }
         }
 
         private void MenuBar_Script_Stop_Click(object sender, EventArgs e)
         {
-            var editor = Panel_DockMain.GetActiveDocumentControl() as ScriptWindow_CodeEditor;
-
-            if (editor == null)return;
-
-            editor.ScriptStop();
+            if (Panel_DockMain.GetActiveDocumentControl() is ScriptWindow_CodeEditor editor) {
+                editor.ScriptStop();
+            }
         }
 
         private void Btn_Script_Run_Click(object sender, EventArgs e)
@@ -383,11 +377,9 @@ namespace Ratatoskr.Forms.ScriptWindow
 
         private void Panel_DockMain_DockContentClosing(object sender, Control control, FormClosingEventArgs e)
         {
-            var editor = control as ScriptWindow_CodeEditor;
-
-            if (editor == null)return;
-
-            editor.SaveScriptFile();
+            if (control is ScriptWindow_CodeEditor editor) {
+                editor.SaveScriptFile();
+            }
         }
 
         private void Panel_DockMain_DockContentClosed(object sender, Control control, FormClosedEventArgs e)

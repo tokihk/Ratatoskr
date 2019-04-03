@@ -382,32 +382,36 @@ blockquote {
 }
 
 </style>
-<link rel="stylesheet" href="file:///c%3A/root/home/github/Ratatoskr/docs/_lib/css/github-markdown.css" type="text/css">
+<link rel="stylesheet" href="file:///d%3A/root/home/own_Tools/src/GateDebugger/_Document/_lib/css/github-markdown.css" type="text/css">
 </head>
 <body>
-<h1 id="basic-usage">Basic usage</h1>
-<h2 id="1add-packet-view">1.Add packet view</h2>
-<p>You can add any packet view from <code>[Menu Bar]-&gt;[View]-&gt;[Add packet view]</code>.</p>
-<h2 id="2set-the-gate">2.Set the gate</h2>
-<p>You can set the gate from the button of the gate bar.</p>
+<!--- Update: 2019.03.06 --->
+<link href="../params.css" rel="stylesheet"></link>
+<h1 id="basic-operation">Basic Operation</h1>
+<h2 id="1-gate-setting">1. Gate Setting</h2>
+<p>At the initial startup, the function is not set on the gate. <br>
+You can set the function from the gate button located at the top to the gate.</p>
+<p>Refer to <a href="gate-device.jpn.html">Gate Device</a> for the assignable functions.</p>
+<p>The operation method varies depending on the state of the gate. <br>
+The state of the gate and how to operate are as follows.</p>
 <table>
 <thead>
 <tr>
 <th style="text-align:center">Icon</th>
-<th style="text-align:center">state</th>
-<th>operation method</th>
+<th style="text-align:center">State</th>
+<th>Operation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center"><img src="../_images/gate-empty.png" alt=""></td>
-<td style="text-align:center">Not set</td>
-<td>Mouse Left /Right click:Gate edit</td>
+<td style="text-align:center"><img src="../_images/ss-gate-empty.png" alt=""></td>
+<td style="text-align:center">No setup</td>
+<td>Left/Right Click: Edit<br></td>
 </tr>
 <tr>
-<td style="text-align:center"><img src="../_images/gate-off.png" alt=""></td>
+<td style="text-align:center"><img src="../_images/ss-gate-allocate.png" alt=""></td>
 <td style="text-align:center">Configured</td>
-<td>Left mouse click:Connect /disconnect<br>Mouse right click:Gate edit<br>Mouse right hold:Gate reset</td>
+<td>Left Click: Connect/Disconnect<br>Right Click: Edit<br>Right Hold: Clear<br></td>
 </tr>
 </tbody>
 </table>
@@ -421,83 +425,48 @@ blockquote {
 <tbody>
 <tr>
 <td style="text-align:center"><img src="../_images/connect_on.png" alt=""></td>
-<td style="text-align:center">Connection status</td>
+<td style="text-align:center">Connected</td>
 </tr>
 <tr>
 <td style="text-align:center"><img src="../_images/connect_busy.png" alt=""></td>
-<td style="text-align:center">Preparing for connection</td>
+<td style="text-align:center">Connecting / Disconnecting</td>
 </tr>
 <tr>
 <td style="text-align:center"><img src="../_images/connect_off.png" alt=""></td>
-<td style="text-align:center">Disconnected state</td>
+<td style="text-align:center">Disconnected</td>
 </tr>
 </tbody>
 </table>
-<h2 id="3send">3.Send</h2>
+<h2 id="2-data-send">2. Data send</h2>
 <p>Data can be sent from the transmission control box at the bottom of the frame.</p>
-<p><img src="../_images/send_control_box.png" alt=""></p>
-<p>The destination gate is specified with <code>wild card 'in</code>Target alias`.</p>
-<ul>
-<li>
-<p><img src="../_images/pen_32x32.png" alt=""> <strong>Edit transmission mode</strong></p>
-<p>Enter in hexadecimal notation and send with Enter key.
-    It recognizes it as a separate data with the 3rd character or space.</p>
-<p>Enclose it with <code>'...'</code>to convert the enclosed character to character code.
-    You can change the character code by enclosing it with <code>&lt;...&gt;</code>.(Default is utf-8)</p>
-<p>If you check <code>Preview</code>, you can check the data actually sent.</p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">Input data</th>
-<th style="text-align:left">Transmission data</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><code>0123456789</code></td>
-<td style="text-align:left"><code>01 23 45 67 89</code></td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 1 2 3 4</code></td>
-<td style="text-align:left"><code>00 01 02 03 04</code></td>
-</tr>
-<tr>
-<td style="text-align:left"><code>02'test '03</code></td>
-<td style="text-align:left"><code>02 74 65 73 74 03</code></td>
-</tr>
-<tr>
-<td style="text-align:left"><code>02 'あいうえお'03</code></td>
-<td style="text-align:left"><code>02 E 3 81 82 E 3 81 84 E 3 81 86 E 3 81 88 E 3 81 8 A 03</code></td>
-</tr>
-<tr>
-<td style="text-align:left"><code>02 &lt;shift-jis&gt;'あいうえお'03</code></td>
-<td style="text-align:left"><code>02 82 A 0 82 A 2 82 A 4 82 A 6 82 A 8 03</code></td>
-</tr>
-</tbody>
-</table>
-<br>
-<ul>
-<li>
-<p><img src="../_images/file_32x32.png" alt=""> <strong>File transmission mode</strong></p>
-<p>Drag and drop transmission data or select from the file selection dialog.<br>
-You can not drag and drop when in administrator mode.<br>
-Send with Enter key.</p>
-</li>
-</ul>
-<h2 id="4receive">4.Receive</h2>
-<p>When data is input to the gate from the outside, data is displayed in the packet view.</p>
-<h1 id="useful-usage-real-time-conversion">Useful usage (real time conversion)</h1>
-<p>Ratatoskr has a function to process transmitted /received packets in real time.
-Conversion functions can be freely combined, which is very useful for data analysis.</p>
-<p>The converter is added from <code>[Menu Bar]-&gt;[View]-&gt;[Add converter]</code>.
-The added transducer will be added under the gate button bar.</p>
-<p><img src="../_images/converter.png" alt=""></p>
-<p>The conversion order is processed sequentially from the transducers arranged above.
-You can swap the added transducer by dragging the left bar.</p>
-<p>Packets subject to converter can be specified for each converter.
-If no target packet is specified, all packets passing through the converter are targeted.</p>
+<p><img src="../_images/ss-send-panel.png" alt=""></p>
+<p>The destination gate is specified with wild card in <code>Target alias</code>.</p>
+<p>Refer to <a href="send-mode.jpn.html">Send Mode</a> for how to use each mode.</p>
+<h2 id="3-%E3%83%91%E3%82%B1%E3%83%83%E3%83%88%E3%83%93%E3%83%A5%E3%83%BC%E3%82%92%E8%BF%BD%E5%8A%A0">3. パケットビューを追加</h2>
+<p><code>[Menu Bar] -&gt; [View] -&gt; [Add packet view]</code>　から任意のパケットビューを追加できます。</p>
+<p>パケットビューについては[Packet View]を参照してください。</p>
+<h2 id="4-%E5%8F%97%E4%BF%A1%E3%81%99%E3%82%8B">4. 受信する</h2>
+<p>外部からゲートにデータが入力されると、パケットビューにデータが表示されます。</p>
+<h1 id="%E4%BE%BF%E5%88%A9%E3%81%AA%E4%BD%BF%E3%81%84%E6%96%B9">便利な使い方</h1>
+<h2 id="%E3%83%91%E3%82%B1%E3%83%83%E3%83%88%E5%A4%89%E6%8F%9B">パケット変換</h2>
+<p><span class="app-name" />には送信/受信したパケットを、リアルタイムで加工する機能が備わっています。<br>
+変換機能は自由に組み合わせができ、データ解析に非常に役立ちます。<br></p>
+<p>変換器は <code>[Menu Bar] -&gt; [View] -&gt; [Add converter]</code> から追加します。<br>
+追加した変換器はゲートボタンバーの下に追加されていきます。</p>
+<p>割り当て可能な変換器については[Packet Converter]を参照してください。</p>
+<p>変換順序は上に配置されている変換器から順番に処理されます。<br>
+追加した変換器は左のバーをドラッグすることで順番を入れ替えることができます。</p>
+<p>変換器の対象となるパケットは変換機毎に指定できます。<br>
+対象パケットを指定しなかった場合は変換機を通過する全パケットが対象です。</p>
+<h2 id="%E3%83%97%E3%83%AD%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">プロファイル</h2>
+<p>ゲート設定、パケットビュー設定、パケット変換設定をプロファイルとして管理し、自由に切り替えることができます。<br></p>
+<p>メニュー右上のプロファイルメニューで操作します。</p>
+<p><img src="../_images/ss-profile.png" alt=""></p>
+<h2 id="%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88">スクリプト</h2>
+<p>スクリプトでゲート操作を制御することができます。</p>
+<p>言語仕様およびサンプルは<a href="script-codestyle.jpn.html">Script - Code Style</a>を参照してください。</p>
+<p>APIインターフェースは<a href="script-api.jpn.html">Script - API</a>を参照してください。</p>
+<p><br><br></p>
 
 </body>
 </html>

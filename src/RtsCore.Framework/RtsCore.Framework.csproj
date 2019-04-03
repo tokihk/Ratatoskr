@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>772db229-7d06-44ae-9ceb-ff65907ab10c</ProjectGuid>
+    <ProjectGuid>{772DB229-7D06-44AE-9CEB-FF65907AB10C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RtsCore.Framework</RootNamespace>
@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\build\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\build\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -51,6 +51,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -70,7 +71,35 @@
     <Compile Include="BinaryText\BinaryTextParser.Scanner.Generated.cs">
       <DependentUpon>BinaryTextParser.Language.analyzer.lex</DependentUpon>
     </Compile>
+    <Compile Include="Config\Types\ColorConfig.cs" />
     <Compile Include="Config\Types\KeyConfig.cs" />
+    <Compile Include="Controls\ComboBoxEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ListViewEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtocolDataValueView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtocolDataValueView.Designer.cs">
+      <DependentUpon>ProtocolDataValueView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProtocolFrameChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtocolFrameChartView.Designer.cs">
+      <DependentUpon>ProtocolFrameChartView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProtocolFrameDetailView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtocolFrameDetailView.Designer.cs">
+      <DependentUpon>ProtocolFrameDetailView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RoundComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\RoundTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -83,7 +112,7 @@
       <DependentUpon>DeviceControlPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Device\DeviceInstance.cs" />
-    <Compile Include="Device\DeviceManager.cs" />
+    <Compile Include="Device\DeviceManagementClass.cs" />
     <Compile Include="Device\DeviceProperty.cs" />
     <Compile Include="Device\DevicePropertyEditor.cs">
       <SubType>UserControl</SubType>
@@ -91,6 +120,23 @@
     <Compile Include="Device\DevicePropertyEditor.Designer.cs">
       <DependentUpon>DevicePropertyEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Drivers\SerialPort\SerialPortController.cs" />
+    <Compile Include="Drivers\SerialPort\SerialPortInfo.cs" />
+    <Compile Include="Drivers\SerialPort\SerialPortManager.cs" />
+    <Compile Include="FileFormat\FileFormatClass.cs" />
+    <Compile Include="FileFormat\FileFormatOption.cs" />
+    <Compile Include="FileFormat\FileFormatOptionEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FileFormat\FileFormatOptionEditor.Designer.cs">
+      <DependentUpon>FileFormatOptionEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileFormat\FileFormatReader.cs" />
+    <Compile Include="FileFormat\FileFormatWriter.cs" />
+    <Compile Include="FileFormat\FileReadTargetInfo.cs" />
+    <Compile Include="FileFormat\FileWriteTargetInfo.cs" />
+    <Compile Include="FileFormat\PacketLogReader.cs" />
+    <Compile Include="FileFormat\PacketLogWriter.cs" />
     <Compile Include="Native\Shell.cs" />
     <Compile Include="Native\WinAPI.cs" />
     <Compile Include="Native\WinErrorCode.cs" />
@@ -140,6 +186,7 @@
     <Compile Include="PacketFilter\Terms\Term_Text.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThirdParty\YaccLexTools\ShiftReduceParserCode.cs" />
+    <Compile Include="Utility\ClipboardUtil.cs" />
     <Compile Include="Utility\ImageUtil.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +213,9 @@
     <None Include="PacketFilter\PacketFilterParser.parser" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\ListViewEx.resx">
+      <DependentUpon>ListViewEx.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PacketView\PacketViewControl.resx">
       <DependentUpon>PacketViewControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -173,6 +223,7 @@
       <DependentUpon>PacketViewInstance.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" DependsOnTargets="YltBuildGen" />
   <Target Name="YltBuildGen" DependsOnTargets="GeneratePacketFilterParser;GenerateBinaryTextParser" />

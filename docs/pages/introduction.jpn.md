@@ -1,3 +1,4 @@
+<!--- Update: 2019.03.06 --->
 <link href="../params.css" rel="stylesheet" />
 
 # <span class="app-name" /> ユーザーマニュアル
@@ -23,8 +24,6 @@
 * フィルタリング、パケット結合等のリアルタイムパケット制御
 * ポートからポートへのリダイレクト転送
 
-![](../_images/basic.png)
-
 ## 著作権
 
 * <span class="author" /> - <span class="author-mail" />
@@ -39,14 +38,19 @@
 
 ## インストール
 
-.NET Framworkをインストールした後に、任意のフォルダに解凍して実行してください。
+* 圧縮ファイル形式<br>
+   .NET Framworkをインストールした後に、任意のフォルダに解凍して実行してください。
+
+* インストーラー形式<br>
+   .NET Framworkをインストールした後に、任意のフォルダにインストールして実行してください。
+
 
 一部の機能を使用するときは他ソフトウェアが必要になります。
 
 | 機能 | 必要ソフトウェア |
 | :--- | :--- |
-| USB Monitor | USBPcap ([http://desowin.org/usbpcap/](http://desowin.org/usbpcap/ "USBPcap")) |
-| Ehernet | WinPcap ([https://www.winpcap.org/](https://www.winpcap.org/)) |
+| Gate Device - USB Monitor | USBPcap ([http://desowin.org/usbpcap/](http://desowin.org/usbpcap/ "USBPcap")) |
+| Gate Device - Ehernet | WinPcap ([https://www.winpcap.org/](https://www.winpcap.org/)) |
 
 ### アンインストール
 

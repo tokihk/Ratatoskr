@@ -10,7 +10,7 @@ namespace RtsCore.Framework.PacketView
     {
         public Guid ID { get; }
 
-        public abstract string Name { get; }
+        public abstract string Name    { get; }
         public abstract string Details { get; }
 
 

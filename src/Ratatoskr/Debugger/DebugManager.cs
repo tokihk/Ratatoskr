@@ -17,8 +17,8 @@ namespace Ratatoskr.Debugger
         }
 
 
-        private static DebugForm debug_form_  = null;
-        private static Stopwatch debug_timer_ = null;
+        private static DebugForm debug_form_   = null;
+        private static Stopwatch debug_timer_  = null;
 
 
         [Conditional("DEBUG")]
@@ -41,7 +41,7 @@ namespace Ratatoskr.Debugger
         {
             if (obj == null)return;
 
-            debug_form_.AddMessage(obj.ToString());
+            MessageOut(obj.ToString());
         }
 
         [Conditional("DEBUG")]
@@ -57,7 +57,7 @@ namespace Ratatoskr.Debugger
 
             debug_timer_.Stop();
 
-            debug_form_.AddMessage(string.Format("Elapsed {0}ms / {1} tick", debug_timer_.ElapsedMilliseconds, debug_timer_.ElapsedTicks));
+            MessageOut(string.Format("Elapsed {0}ms / {1} tick", debug_timer_.ElapsedMilliseconds, debug_timer_.ElapsedTicks));
         }
     }
 }

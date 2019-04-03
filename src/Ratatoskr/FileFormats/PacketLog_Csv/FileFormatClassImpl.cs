@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RtsCore.Framework.FileFormat;
 
 namespace Ratatoskr.FileFormats.PacketLog_Csv
 {
@@ -14,7 +15,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
 
         public override string[] FileExtension { get; } = new [] { "csv" };
 
-        public override Image    Icon          { get; } = Properties.Resources.csv_48x48;
+        public override Image    Icon          { get; } = RtsCore.Resource.Images.csv_48x48;
 
         public override bool     CanRead       { get; } = true;
         public override bool     CanWrite      { get; } = true;

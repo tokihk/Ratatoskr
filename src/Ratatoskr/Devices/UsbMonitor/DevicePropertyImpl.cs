@@ -19,6 +19,12 @@ namespace Ratatoskr.Devices.UsbMonitor
         public BoolConfig   Filter_InterruptTransfer   { get; } = new BoolConfig(true);
         public BoolConfig   Filter_IsochronousTransfer { get; } = new BoolConfig(true);
 
+        public BoolConfig   InfoOut_UsbDeviceID   { get; } = new BoolConfig(true);
+        public BoolConfig   InfoOut_EndPoint      { get; } = new BoolConfig(true);
+        public BoolConfig   InfoOut_IrpID         { get; } = new BoolConfig(false);
+        public BoolConfig   InfoOut_FunctionType  { get; } = new BoolConfig(true);
+        public BoolConfig   InfoOut_FunctionParam { get; } = new BoolConfig(true);
+
         public override DeviceProperty Clone()
         {
             return (ClassUtil.Clone<DevicePropertyImpl>(this));

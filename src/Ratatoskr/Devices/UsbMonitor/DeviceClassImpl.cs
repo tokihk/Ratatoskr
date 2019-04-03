@@ -40,7 +40,7 @@ namespace Ratatoskr.Devices.UsbMonitor
             return (new DevicePropertyImpl());
         }
 
-        protected override DeviceInstance OnCreateInstance(DeviceManager devm, DeviceConfig devconf, DeviceProperty devp)
+        protected override DeviceInstance OnCreateInstance(DeviceManagementClass devm, DeviceConfig devconf, DeviceProperty devp)
         {
             return (new DeviceInstanceImpl(devm, devconf, this, devp));
         }

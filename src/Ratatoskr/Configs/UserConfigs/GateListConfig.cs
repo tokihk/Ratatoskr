@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using RtsCore.Config;
 using RtsCore.Framework.Device;
+using Ratatoskr.Devices;
 using Ratatoskr.Gate;
 
 namespace Ratatoskr.Configs.UserConfigs
@@ -142,7 +143,7 @@ namespace Ratatoskr.Configs.UserConfigs
             if (xml_node == null)return (null);
 
             /* クラスIDからプロパティを取得 */
-            var devp = GateManager.CreateDeviceProperty(class_id);
+            var devp = DeviceManager.CreateDeviceProperty(class_id);
 
             if (devp == null)return (null);
 

@@ -382,66 +382,79 @@ blockquote {
 }
 
 </style>
-<link rel="stylesheet" href="file:///c%3A/root/home/github/Ratatoskr/docs/_lib/css/github-markdown.css" type="text/css">
+<link rel="stylesheet" href="file:///d%3A/root/home/own_Tools/src/GateDebugger/_Document/_lib/css/github-markdown.css" type="text/css">
 </head>
 <body>
+<!--- Update: 2019.03.06 --->
 <link href="../params.css" rel="stylesheet" />
-<h1 id="span-classapp-name-users-manual"><span class="app-name" /> User's manual</h1>
+<h1 id="span-classapp-name-user-manual"><span class="app-name" /> User Manual</h1>
 <p><img src="../_images/app_icon_128x128.png" alt="image"> <img src="../_images/app_logo_600x120.png" alt="image"></p>
-<p><span class = "app-name" /> is a development support tool that can communicate with various devices that can be connected to a personal computer. <br>
-It provides a general-purpose communication debugging environment for various communication ports such as serial port and TCP / UDP.</p>
-<p>You can intuitively operate input / output to / from ports by easy-to-view packet view and interface that emphasizes operability.</p>
-<p><span class = "app-name" /> has the following features.</p>
+<p><span class="app-name" />は、パソコンに接続できる様々なデバイスと通信を行うことができる開発支援ツールです。<br>
+シリアルポートやTCP/UDP等の様々な通信ポートに対して、汎用的な通信デバッグ環境を提供します。</p>
+<p>見やすいパケットビューや、操作性を重視したインターフェースにより、ポートへの入出力を直感的に操作することができます。</p>
+<p><span class="app-name" />には以下の特徴があります。</p>
 <ul>
-<li>Supports various communication such as serial port, TCP / IP, UDP
-  * Serial Port
-  * TCP / IP Server or Client
-  * UDP
-  * USB Capture</li>
-<li>Supports packet view according to usage, such as packet unit and data unit</li>
-<li>Simultaneous connection to multiple ports</li>
-<li>Simultaneous display of multiple types of packet views</li>
-<li>Saving / loading / saving packet logs automatically</li>
-<li>Real-time packet control such as filtering, packet combining</li>
-<li>Redirect transfer from port to port</li>
-</ul>
-<p><img src="../_images/basic.png" alt=""></p>
-<h2 id="copyright">Copyright</h2>
+<li>シリアルポート、TCP/IP、UDP等の様々な通信に対応
 <ul>
-<li><span class = "author" /> - <span class = "author-mail" /></li>
+<li>Serial Port</li>
+<li>TCP/IP Server or Client</li>
+<li>UDP</li>
+<li>USB Capture</li>
 </ul>
-<h2 id="license">license</h2>
-<p>GPL 3 (GNU GENERAL PUBLIC LICENSE v 3)</p>
-<h2 id="operating-environment">Operating environment</h2>
+</li>
+<li>パケット単位やデータ単位など、用途に合わせたパケットビューに対応</li>
+<li>複数ポートに対しての同時接続</li>
+<li>複数種類のパケットビューを同時表示</li>
+<li>パケットログの保存/読み込み/自動保存</li>
+<li>フィルタリング、パケット結合等のリアルタイムパケット制御</li>
+<li>ポートからポートへのリダイレクト転送</li>
+</ul>
+<h2 id="%E8%91%97%E4%BD%9C%E6%A8%A9">著作権</h2>
+<ul>
+<li><span class="author" /> - <span class="author-mail" /></li>
+</ul>
+<h2 id="%E3%83%A9%E3%82%A4%E3%82%BB%E3%83%B3%E3%82%B9">ライセンス</h2>
+<p>GPL3 (GNU GENERAL PUBLIC LICENSE v3)</p>
+<h2 id="%E5%8B%95%E4%BD%9C%E7%92%B0%E5%A2%83">動作環境</h2>
 <ul>
 <li>.NET Framework 4.7</li>
 </ul>
-<h2 id="installation">Installation</h2>
-<p>After installing .NET Framwork, decompress it to an arbitrary folder and execute it.</p>
-<p>Other software is required when using some functions.</p>
+<h2 id="%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">インストール</h2>
+<ul>
+<li>
+<p>圧縮ファイル形式<br>
+.NET Framworkをインストールした後に、任意のフォルダに解凍して実行してください。</p>
+</li>
+<li>
+<p>インストーラー形式<br>
+.NET Framworkをインストールした後に、任意のフォルダにインストールして実行してください。</p>
+</li>
+</ul>
+<p>一部の機能を使用するときは他ソフトウェアが必要になります。</p>
 <table>
 <thead>
 <tr>
-<th style="text-align:left">Features</th>
-<th style="text-align:left">Required Software</th>
+<th style="text-align:left">機能</th>
+<th style="text-align:left">必要ソフトウェア</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left">USB Monitor</td>
+<td style="text-align:left">Gate Device - USB Monitor</td>
 <td style="text-align:left">USBPcap (<a href="http://desowin.org/usbpcap/" title="USBPcap">http://desowin.org/usbpcap/</a>)</td>
 </tr>
 <tr>
-<td style="text-align:left">Ehernet</td>
+<td style="text-align:left">Gate Device - Ehernet</td>
 <td style="text-align:left">WinPcap (<a href="https://www.winpcap.org/">https://www.winpcap.org/</a>)</td>
 </tr>
 </tbody>
 </table>
-<h3 id="uninstall">Uninstall</h3>
-<p><span class = "app-name" /> does not use the registry.</p>
-<p>Delete the file decompressed by installation and delete the configuration file.
-The configuration file exists in the following location.</p>
+<h3 id="%E3%82%A2%E3%83%B3%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">アンインストール</h3>
+<p><span class="app-name" />はレジストリを使用しません。</p>
+<p>インストールで解凍したファイルを削除した後に、設定ファイルを削除してください。
+設定ファイルは以下の場所に存在します。</p>
 <p><code>%APPDATA%\<span class="app-name" /></code></p>
+<p><br><br></p>
 
 </body>
 </html>

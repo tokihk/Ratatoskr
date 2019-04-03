@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
+using Ratatoskr.Plugin;
+using RtsCore.Framework.Plugin;
 using RtsCore.Utility;
 
 namespace Ratatoskr.Forms.AboutForm
@@ -25,8 +27,14 @@ namespace Ratatoskr.Forms.AboutForm
         {
             InitializeComponent();
 
-            PictBox_Icon.Image = Properties.Resources.app_icon_128x128;
-            PictBox_Logo.Image = Properties.Resources.app_logo_300x60;
+            Disposed += (sender, e) => {
+                FONT_LICENSE_DEFAULT.Dispose();
+                FONT_LICENSE_HOMEPAGE.Dispose();
+                FONT_LICENSE_DEFAULT.Dispose();
+            };
+
+            PictBox_Icon.Image = RtsCore.Resource.Images.app_icon_128x128;
+            PictBox_Logo.Image = RtsCore.Resource.Images.app_logo_300x60;
 
             Text = ConfigManager.Language.MainUI.AboutForm_Title.Value;
             LLabel_HomePage.Text = ConfigManager.Fixed.HomePage.Value;
@@ -34,6 +42,7 @@ namespace Ratatoskr.Forms.AboutForm
             Label_Copyright.Text = ConfigManager.Fixed.Copyright.Value;
 
             UpdateLicenseList();
+            UpdatePluginList();
         }
 
         private void UpdateLicenseList()
@@ -60,6 +69,31 @@ namespace Ratatoskr.Forms.AboutForm
                     RTBox_LicenseList.AppendText(Environment.NewLine);
                 }
             } catch { }
+        }
+
+        private void UpdatePluginList()
+        {
+            TView_PluginList.BeginUpdate();
+            {
+                TView_PluginList.Nodes.Clear();
+                foreach (var plugin in PluginManager.GetPluginList()) {
+                    TView_PluginList.Nodes.Add(CreateNodeFromPlugin(plugin));
+                }
+            }
+            TView_PluginList.EndUpdate();
+        }
+
+        private TreeNode CreateNodeFromPlugin(PluginClass plugin)
+        {
+            var node = new TreeNode()
+            {
+                Text = string.Format("{0} {1}", plugin.Name, plugin.Version.ToString()),
+            };
+
+            node.Nodes.Add(plugin.Details);
+            node.Nodes.Add(string.Format("Copyright©{0}", plugin.Copyright));
+
+            return (node);
         }
 
         private void LLabel_HomePage_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

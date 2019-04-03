@@ -27,5 +27,14 @@ namespace RtsCore.Utility
 
             return (bitdata);
         }
+
+        public static int EndianConvert(int value)
+        {
+            return ((int)(
+                      (((uint)value << 24) & 0xFF000000)
+                    | (((uint)value <<  8) & 0x00FF0000)
+                    | (((uint)value >>  8) & 0x0000FF00)
+                    | (((uint)value >> 24) & 0x000000FF)));
+        }
     }
 }

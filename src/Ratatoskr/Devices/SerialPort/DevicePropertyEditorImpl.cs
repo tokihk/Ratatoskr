@@ -8,8 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Drivers.SerialPort;
 using RtsCore.Framework.Device;
+using RtsCore.Framework.Drivers.SerialPort;
 
 namespace Ratatoskr.Devices.SerialPort
 {

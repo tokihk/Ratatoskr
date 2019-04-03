@@ -25,6 +25,11 @@ namespace Ratatoskr.Devices.UsbComm
         public DevicePropertyEditorImpl(DevicePropertyImpl devp) : this()
         {
             devp_ = devp as DevicePropertyImpl;
+
+            ChkBox_UsbEventCapture.Checked = devp_.DeviceEventCapture.Value;
+            ChkBox_UsbDeviceComm.Checked = devp_.DeviceComm.Value;
+            Num_UsbVendorID.Value = devp_.CommVendorID.Value;
+            Num_UsbProductID.Value = devp_.CommProductID.Value;
         }
 
         private void UpdateView()
@@ -33,6 +38,10 @@ namespace Ratatoskr.Devices.UsbComm
 
         public override void Flush()
         {
+            devp_.DeviceEventCapture.Value = ChkBox_UsbEventCapture.Checked;
+            devp_.DeviceComm.Value = ChkBox_UsbDeviceComm.Checked;
+            devp_.CommVendorID.Value = Num_UsbVendorID.Value;
+            devp_.CommProductID.Value = Num_UsbProductID.Value;
         }
     }
 }

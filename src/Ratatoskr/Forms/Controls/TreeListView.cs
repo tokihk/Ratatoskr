@@ -10,8 +10,8 @@ namespace Ratatoskr.Forms.Controls
 {
     internal class TreeListView : ListView
     {
-        private readonly Image ICON_TREE_NODE_CONTAINER_EXPAND   = Properties.Resources.expand_16x16;
-        private readonly Image ICON_TREE_NODE_CONTAINER_COLLAPSE = Properties.Resources.collapse_16x16;
+        private readonly Image ICON_TREE_NODE_CONTAINER_EXPAND   = RtsCore.Resource.Images.expand_16x16;
+        private readonly Image ICON_TREE_NODE_CONTAINER_COLLAPSE = RtsCore.Resource.Images.collapse_16x16;
 
         private Color fore_color_cache_;
         private Brush fore_brush_cache_;

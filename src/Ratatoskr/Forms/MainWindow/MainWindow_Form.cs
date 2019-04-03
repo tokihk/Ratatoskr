@@ -25,7 +25,7 @@ namespace Ratatoskr.Forms.MainWindow
             InitializeComponent();
             InitializeMenuBar();
 
-            Icon = Properties.Resources.app_icon_48x48_ico;
+            Icon = RtsCore.Resource.Icons.app_icon_48x48_icon;
 
             SetStatusText("");
             SetProgressBar(false, 0, 0);

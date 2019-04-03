@@ -30,7 +30,7 @@
             this.GBox_Exp = new System.Windows.Forms.GroupBox();
             this.Btn_Send = new System.Windows.Forms.Button();
             this.ChkBox_Preview = new System.Windows.Forms.CheckBox();
-            this.CBox_ExpList = new Ratatoskr.Forms.Controls.RoundComboBox();
+            this.CBox_ExpList = new RtsCore.Framework.Controls.RoundComboBox();
             this.GBox_Exp.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -103,6 +103,6 @@
         private System.Windows.Forms.GroupBox GBox_Exp;
         private System.Windows.Forms.CheckBox ChkBox_Preview;
         private System.Windows.Forms.Button Btn_Send;
-        private Controls.RoundComboBox CBox_ExpList;
+        private RtsCore.Framework.Controls.RoundComboBox CBox_ExpList;
     }
 }

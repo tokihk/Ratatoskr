@@ -5,61 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Ratatoskr.Devices;
 using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Gate
 {
     internal static class GateManager
     {
-        private static DeviceManager devm_;
-
-        private static List<GateObject> gates_;
+        private static List<GateObject> gates_ = new List<GateObject>();
 
         
-        public static void Startup()
-        {
-            /* デバイスマネージャー初期化 */
-            devm_ = new DeviceManager(GatePacketManager.BasePacketManager);
-
-            /* ゲートリスト初期化 */
-            gates_ = new List<GateObject>();
-
-            /* 基本デバイスインストール */
-            InstallDevice();
-        }
-
-        public static void Shutdown()
-        {
-            devm_.RemoveAllInstance();
-        }
-
-        public static void Poll()
-        {
-            devm_.Poll();
-        }
-
-        private static void InstallDevice()
-        {
-            devm_.AddClass(new Devices.Null.DeviceClassImpl());
-            devm_.AddClass(new Devices.SerialPort.DeviceClassImpl());
-            devm_.AddClass(new Devices.TcpServer.DeviceClassImpl());
-            devm_.AddClass(new Devices.TcpClient.DeviceClassImpl());
-            devm_.AddClass(new Devices.UdpClient.DeviceClassImpl());
-            devm_.AddClass(new Devices.Ethernet.DeviceClassImpl());
-            devm_.AddClass(new Devices.UsbMonitor.DeviceClassImpl());
-            devm_.AddClass(new Devices.AudioDevice.DeviceClassImpl());
-            devm_.AddClass(new Devices.AudioFile.DeviceClassImpl());
-
-#if DEBUG
-            devm_.AddClass(new Devices.UsbComm.DeviceClassImpl());
-#endif
-        }
-
-        public static DeviceClass[] GetDeviceList()
-        {
-            return (devm_.GetClasses().ToArray());
-        }
-
         public static GateObject[] GetGateList()
         {
             lock (gates_) {
@@ -67,12 +22,7 @@ namespace Ratatoskr.Gate
             }
         }
 
-        public static DeviceClass FindDeviceClass(Guid class_id)
-        {
-            return (devm_.FindClass(class_id));
-        }
-
-        public static Regex GetWildcardAliasModule(string alias)
+        private static Regex GetWildcardAliasModule(string alias)
         {
             /* aliasをワイルドカードとして扱うために正規表現に変換する */
             alias = alias.Replace("?", ".");
@@ -98,16 +48,6 @@ namespace Ratatoskr.Gate
             lock (gates_) {
                 return (gates_.FindAll(gate => (gate.DeviceClassID != Guid.Empty) && (gate.Alias == alias)).ToArray());
             }
-        }
-
-        public static DeviceInstance CreateDeviceObject(DeviceConfig devconf, Guid class_id, DeviceProperty devp)
-        {
-            return (devm_.CreateInstance(devconf, class_id, devp));
-        }
-
-        public static DeviceProperty CreateDeviceProperty(Guid class_id)
-        {
-            return (devm_.CreateProperty(class_id));
         }
 
         public static GateObject CreateGateObject(GateProperty gatep, DeviceConfig devconf, Guid devc_id, DeviceProperty devp)

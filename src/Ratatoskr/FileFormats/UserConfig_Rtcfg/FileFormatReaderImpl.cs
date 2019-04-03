@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Ratatoskr.Configs.UserConfigs;
 using Ratatoskr.Forms;
 using RtsCore.Packet;
+using RtsCore.Framework.FileFormat;
 
 namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
 {

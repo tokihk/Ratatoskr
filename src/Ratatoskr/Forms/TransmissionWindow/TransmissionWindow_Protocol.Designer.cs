@@ -30,7 +30,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.listViewEx1 = new Ratatoskr.Forms.Controls.ListViewEx();
+            this.listViewEx1 = new RtsCore.Framework.Controls.ListViewEx();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -103,6 +103,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TreeView treeView1;
-        private Controls.ListViewEx listViewEx1;
+        private RtsCore.Framework.Controls.ListViewEx listViewEx1;
     }
 }

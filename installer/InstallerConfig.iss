@@ -2,9 +2,10 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Ratatoskr"
-#define MyAppVersion "0.5.0"
+#define MyAppVersion "0.6.0"
+#define MyAppVersionSub  ""
 #define MyAppPublisher "Toki.H.K"
-#define MyAppCopyright "Copyright © 2018 H.Kouno"
+#define MyAppCopyright "Copyright © 2018-2019 H.Kouno"
 #define MyAppURL "https://github.com/tokihk/Ratatoskr"
 #define MyAppExeName "Ratatoskr.exe"
 
@@ -16,7 +17,7 @@ AppId={{D0D9DDD0-7ECB-4F6B-B49A-2DCD992BDDE2}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppCopyright={#MyAppCopyright}
-AppVerName={#MyAppName} {#MyAppVersion}
+AppVerName={#MyAppName} {#MyAppVersion} {#MyAppVersionSub}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
@@ -26,7 +27,7 @@ VersionInfoDescription={#MyAppName} Installer
 DefaultDirName={pf64}\{#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=.\output
-OutputBaseFilename={#MyAppName}Setup_{#MyAppVersion}
+OutputBaseFilename={#MyAppName}Installer_{#MyAppVersion}{#MyAppVersionSub}
 Compression=lzma
 SolidCompression=yes
 
@@ -38,7 +39,6 @@ Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-; Source: "C:\Program Files (x86)\Inno Setup 5\Examples\MyProg.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\src\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

@@ -36,7 +36,7 @@ namespace Ratatoskr.Devices.TcpClient
         private object recv_sync_ = new object();
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+        public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
             : base(devm, devconf, devd, devp)
         {
         }

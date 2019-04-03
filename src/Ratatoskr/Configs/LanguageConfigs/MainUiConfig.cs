@@ -47,6 +47,7 @@ namespace Ratatoskr.Configs.LanguageConfigs
         public StringConfig WLPanel_Title                 { get; } = new StringConfig("Watch list");
         public StringConfig WLPanel_Column_Target         { get; } = new StringConfig("Target");
         public StringConfig WLPanel_Column_Expression     { get; } = new StringConfig("Expression");
+        public StringConfig WLPanel_Column_DetectCount    { get; } = new StringConfig("Detect Count");
         public StringConfig WLPanel_Column_NtfPlan        { get; } = new StringConfig("Notify plan");
         public StringConfig WLPanel_Column_NtfPlan_Event  { get; } = new StringConfig("Event");
         public StringConfig WLPanel_Column_NtfPlan_Dialog { get; } = new StringConfig("Dialog");

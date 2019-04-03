@@ -89,7 +89,7 @@
             this.Btn_Refresh.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.Btn_Refresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.Btn_Refresh.Enabled = false;
-            this.Btn_Refresh.Image = global::Ratatoskr.Properties.Resources.reload_32x32;
+            this.Btn_Refresh.Image = RtsCore.Resource.Images.reload_32x32;
             this.Btn_Refresh.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Btn_Refresh.Name = "Btn_Refresh";
             this.Btn_Refresh.Size = new System.Drawing.Size(36, 36);
@@ -106,7 +106,7 @@
             // 
             this.Btn_OpenExplorer.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.Btn_OpenExplorer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.Btn_OpenExplorer.Image = global::Ratatoskr.Properties.Resources.file_explorer_32x32;
+            this.Btn_OpenExplorer.Image = RtsCore.Resource.Images.file_explorer_32x32;
             this.Btn_OpenExplorer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Btn_OpenExplorer.Name = "Btn_OpenExplorer";
             this.Btn_OpenExplorer.Size = new System.Drawing.Size(36, 36);

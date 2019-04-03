@@ -44,6 +44,14 @@ namespace Ratatoskr.Forms.MainWindow
 
         public PacketConverterInstance Instance { get; } = null;
 
+        public bool ConverterEnable
+        {
+            get
+            {
+                return (Instance.Property.ConverterEnable.Value);
+            }
+        }
+
         private void MoveControl(Point pos)
         {
             panel_.MoveConverterIndex(this, PointToScreen(pos));
@@ -87,10 +95,12 @@ namespace Ratatoskr.Forms.MainWindow
             }
 
             if (filter_enable) {
-                Btn_Filter.Image = (filter_check) ? (Properties.Resources.target_ok_22x22) : (Properties.Resources.target_ng_22x22);
+                Btn_Filter.Image = (filter_check) ? (RtsCore.Resource.Images.target_ok_22x22) : (RtsCore.Resource.Images.target_ng_22x22);
             } else {
-                Btn_Filter.Image = Properties.Resources.target_22x22;
+                Btn_Filter.Image = RtsCore.Resource.Images.target_22x22;
             }
+
+            panel_.UpdateView();
         }
 
         private void Btn_Remove_Click(object sender, EventArgs e)

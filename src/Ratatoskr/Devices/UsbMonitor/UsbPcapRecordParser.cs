@@ -21,6 +21,13 @@ namespace Ratatoskr.Devices.UsbMonitor
             Bulk,
         }
 
+        public enum UsbPcapControlStage
+        {
+            Setup,
+            Data,
+            Status,
+        }
+
         public class PcapRecordHeader
         {
             public UInt32 ts_sec   = 0;
@@ -32,6 +39,11 @@ namespace Ratatoskr.Devices.UsbMonitor
             {
                 return (DateTimeOffset.FromUnixTimeSeconds(ts_sec).UtcDateTime.AddMilliseconds(ts_usec / 1000));
             }
+        }
+
+        public class UsbPcapPacketHeader_Control
+        {
+            public Byte    stage;
         }
 
         public class UsbPcapPacketHeader
@@ -49,6 +61,8 @@ namespace Ratatoskr.Devices.UsbMonitor
             public Byte    transfer;  /* transfer type */
 
             public UInt32  dataLength;/* Data length */
+
+            public UsbPcapPacketHeader_Control control = null;
         }
 
         public class PacketInfo
@@ -214,6 +228,10 @@ namespace Ratatoskr.Devices.UsbMonitor
 
         private static void ParsePcapPacket_UsbPcap_Control(BinaryReader reader, PacketInfo info)
         {
+            var usb_info = info.UsbPcapHeader.control = new UsbPcapPacketHeader_Control();
+
+            /* stage */
+            usb_info.stage = reader.ReadByte();
         }
 
         private static void ParsePcapPacket_UsbPcap_Bulk(BinaryReader reader, PacketInfo info)

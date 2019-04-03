@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RtsCore.Packet;
+using RtsCore.Framework.FileFormat;
 
 namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 {

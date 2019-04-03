@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RtsCore.Framework.FileFormat;
 
 namespace Ratatoskr.FileFormats.PacketLog_Pcap
 {
@@ -14,7 +15,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Pcap
 
         public override string[] FileExtension { get; } = new [] { "pcap" };
 
-        public override Image    Icon          { get; } = Properties.Resources.wireshark_32x32;
+        public override Image    Icon          { get; } = RtsCore.Resource.Images.wireshark_32x32;
 
         public override bool     CanRead       { get; } = true;
         public override bool     CanWrite      { get; } = false;

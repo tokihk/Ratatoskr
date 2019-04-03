@@ -12,6 +12,7 @@ namespace Ratatoskr.Configs.UserConfigs
     {
         RawPacket,
         ViewPacket,
+        DrawPacket,
     }
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,11 @@ namespace Ratatoskr.Forms.OptionEditForm
         public decimal             AutoSaveValue_PacketCount;
 
         public decimal RawPacketCountLimit;
+
         public decimal Packet_ViewPacketCountLimit;
+        public Color   Packet_MsgColor;
+        public Color   Packet_RecvColor;
+        public Color   Packet_SendColor;
 
         public bool    Sequential_WinApiMode;
         public bool    Sequential_ViewCharCountLimitEnable;
@@ -58,6 +63,9 @@ namespace Ratatoskr.Forms.OptionEditForm
             RawPacketCountLimit = sys_conf.ApplicationCore.RawPacketCountLimit.Value;
 
             Packet_ViewPacketCountLimit = sys_conf.ApplicationCore.Packet_ViewPacketCountLimit.Value;
+            Packet_MsgColor = user_conf.PacketView_Packet_MsgColor.Value;
+            Packet_RecvColor = user_conf.PacketView_Packet_RecvColor.Value;
+            Packet_SendColor = user_conf.PacketView_Packet_SendColor.Value;
 
             Sequential_WinApiMode = sys_conf.ApplicationCore.Sequential_WinApiMode.Value;
             Sequential_ViewCharCountLimitEnable = sys_conf.ApplicationCore.Sequential_ViewCharCountLimitEnable.Value;
@@ -87,6 +95,9 @@ namespace Ratatoskr.Forms.OptionEditForm
             sys_conf.ApplicationCore.RawPacketCountLimit.Value = RawPacketCountLimit;
 
             sys_conf.ApplicationCore.Packet_ViewPacketCountLimit.Value = Packet_ViewPacketCountLimit;
+            user_conf.PacketView_Packet_MsgColor.Value = Packet_MsgColor;
+            user_conf.PacketView_Packet_RecvColor.Value = Packet_RecvColor;
+            user_conf.PacketView_Packet_SendColor.Value = Packet_SendColor;
 
             sys_conf.ApplicationCore.Sequential_WinApiMode.Value = Sequential_WinApiMode;
             sys_conf.ApplicationCore.Sequential_ViewCharCountLimitEnable.Value = Sequential_ViewCharCountLimitEnable;

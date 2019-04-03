@@ -12,7 +12,7 @@ using System.Windows.Forms;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Ratatoskr")]
-[assembly: AssemblyCopyright("Copyright © 2018 Toki.H.K")]
+[assembly: AssemblyCopyright("Copyright © 2018-2019 Toki.H.K")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,8 +31,8 @@ using System.Windows.Forms;
 //      ビルド番号
 //      Revision
 //
-[assembly: AssemblyVersion("0.5.0.0")]
-[assembly: AssemblyFileVersion("0.5.0.0")]
+[assembly: AssemblyVersion("0.6.0.0")]
+[assembly: AssemblyFileVersion("0.6.0.0")]
 
 internal static class AppInfo
 {

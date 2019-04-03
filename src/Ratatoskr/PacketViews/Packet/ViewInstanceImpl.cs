@@ -14,6 +14,7 @@ using Ratatoskr.PacketViews.Packet.Configs;
 using RtsCore.Packet;
 using RtsCore.Framework.PacketFilter;
 using RtsCore.Framework.PacketView;
+using RtsCore.Framework.Utility;
 using RtsCore.Utility;
 
 namespace Ratatoskr.PacketViews.Packet
@@ -138,7 +139,7 @@ namespace Ratatoskr.PacketViews.Packet
         private System.Windows.Forms.ComboBox CBox_CharCode;
         private System.Windows.Forms.GroupBox GBox_PreviewByteNum;
         private System.Windows.Forms.SplitContainer Split_Main;
-        private ListViewEx LView_Main;
+        private RtsCore.Framework.Controls.ListViewEx LView_Main;
 
         private SplitContainer Split_Sub;
 
@@ -146,18 +147,10 @@ namespace Ratatoskr.PacketViews.Packet
 
         private GroupBox GBox_CustomFormat;
         private NumericUpDown Num_PreviewDataSize;
-        private ToolStrip toolStrip1;
-        private ToolStripDropDownButton Menu_ExtView;
-        private ToolStripMenuItem Menu_ExtView_SelectPacketCount;
-        private ToolStripMenuItem Menu_ExtView_SelectTotalSize;
-        private ToolStripMenuItem Menu_ExtView_FirstPacketInfo;
-        private ToolStripMenuItem Menu_ExtView_LastPacketInfo;
-        private ToolStripMenuItem Menu_ExtView_SelectDelta;
         private ListView LView_ExtInfo;
         private ColumnHeader LView_ExtInfoColumn_Name;
         private ColumnHeader LView_ExtInfoColumn_Value;
         private Label label1;
-        private ToolStripMenuItem Menu_ExtView_SelectRate;
 
         private ContextMenuStrip CMenu_Packet;
         private ToolStripMenuItem CMenu_Packet_Copy;
@@ -207,6 +200,8 @@ namespace Ratatoskr.PacketViews.Packet
         private RadioButton RBtn_Layout_2;
         private RadioButton RBtn_Layout_1;
         private RadioButton RBtn_Layout_0;
+        private TabControl Tab_ExtView;
+        private TabPage TabPage_SelectPacketInfo;
         private TextBox TBox_CustomFormat;
 
 
@@ -227,18 +222,14 @@ namespace Ratatoskr.PacketViews.Packet
             this.label1 = new System.Windows.Forms.Label();
             this.Num_PreviewDataSize = new System.Windows.Forms.NumericUpDown();
             this.Split_Main = new System.Windows.Forms.SplitContainer();
+            this.LView_Main = new RtsCore.Framework.Controls.ListViewEx();
             this.Split_Sub = new System.Windows.Forms.SplitContainer();
+            this.BBox_Main = new Ratatoskr.Forms.Controls.BinEditBox();
+            this.Tab_ExtView = new System.Windows.Forms.TabControl();
+            this.TabPage_SelectPacketInfo = new System.Windows.Forms.TabPage();
             this.LView_ExtInfo = new System.Windows.Forms.ListView();
             this.LView_ExtInfoColumn_Name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.LView_ExtInfoColumn_Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.Menu_ExtView = new System.Windows.Forms.ToolStripDropDownButton();
-            this.Menu_ExtView_SelectPacketCount = new System.Windows.Forms.ToolStripMenuItem();
-            this.Menu_ExtView_SelectTotalSize = new System.Windows.Forms.ToolStripMenuItem();
-            this.Menu_ExtView_FirstPacketInfo = new System.Windows.Forms.ToolStripMenuItem();
-            this.Menu_ExtView_LastPacketInfo = new System.Windows.Forms.ToolStripMenuItem();
-            this.Menu_ExtView_SelectDelta = new System.Windows.Forms.ToolStripMenuItem();
-            this.Menu_ExtView_SelectRate = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Packet = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.CMenu_Packet_Copy = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Packet_Copy_AllInfo_Csv = new System.Windows.Forms.ToolStripMenuItem();
@@ -283,8 +274,6 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_Copy_Data_Custom = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Packet_Export = new System.Windows.Forms.ToolStripMenuItem();
             this.CMenu_Packet_Export_Data = new System.Windows.Forms.ToolStripMenuItem();
-            this.LView_Main = new Ratatoskr.Forms.Controls.ListViewEx();
-            this.BBox_Main = new Ratatoskr.Forms.Controls.BinEditBox();
             this.Panel_ToolBar.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GBox_CustomFormat.SuspendLayout();
@@ -299,7 +288,8 @@ namespace Ratatoskr.PacketViews.Packet
             this.Split_Sub.Panel1.SuspendLayout();
             this.Split_Sub.Panel2.SuspendLayout();
             this.Split_Sub.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
+            this.Tab_ExtView.SuspendLayout();
+            this.TabPage_SelectPacketInfo.SuspendLayout();
             this.CMenu_Packet.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -477,6 +467,29 @@ namespace Ratatoskr.PacketViews.Packet
             this.Split_Main.SplitterDistance = 258;
             this.Split_Main.TabIndex = 1;
             // 
+            // LView_Main
+            // 
+            this.LView_Main.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.LView_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LView_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LView_Main.FullRowSelect = true;
+            this.LView_Main.GridLines = true;
+            this.LView_Main.ItemCountMax = 999999;
+            this.LView_Main.Location = new System.Drawing.Point(0, 0);
+            this.LView_Main.Name = "LView_Main";
+            this.LView_Main.ReadOnly = true;
+            this.LView_Main.Size = new System.Drawing.Size(957, 258);
+            this.LView_Main.TabIndex = 0;
+            this.LView_Main.UseCompatibleStateImageBehavior = false;
+            this.LView_Main.View = System.Windows.Forms.View.Details;
+            this.LView_Main.VirtualMode = true;
+            this.LView_Main.ItemSelectBusyStatusChanged += new System.EventHandler(this.LView_Main_ItemSelectBusyStatusChanged);
+            this.LView_Main.ItemSelectBusyStatusChanging += new System.EventHandler(this.LView_Main_ItemSelectBusyStatusChanging);
+            this.LView_Main.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LView_Main_ColumnClick);
+            this.LView_Main.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.LView_Main_RetrieveVirtualItem);
+            this.LView_Main.SelectedIndexChanged += new System.EventHandler(this.LView_Main_SelectedIndexChanged);
+            this.LView_Main.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LView_Main_MouseClick);
+            // 
             // Split_Sub
             // 
             this.Split_Sub.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -490,11 +503,45 @@ namespace Ratatoskr.PacketViews.Packet
             // 
             // Split_Sub.Panel2
             // 
-            this.Split_Sub.Panel2.Controls.Add(this.LView_ExtInfo);
-            this.Split_Sub.Panel2.Controls.Add(this.toolStrip1);
+            this.Split_Sub.Panel2.Controls.Add(this.Tab_ExtView);
             this.Split_Sub.Size = new System.Drawing.Size(957, 200);
             this.Split_Sub.SplitterDistance = 640;
             this.Split_Sub.TabIndex = 0;
+            // 
+            // BBox_Main
+            // 
+            this.BBox_Main.AllowDrop = true;
+            this.BBox_Main.BackColor = System.Drawing.SystemColors.Window;
+            this.BBox_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.BBox_Main.EditEnable = false;
+            this.BBox_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.BBox_Main.InsertEnable = false;
+            this.BBox_Main.Location = new System.Drawing.Point(0, 0);
+            this.BBox_Main.Name = "BBox_Main";
+            this.BBox_Main.Size = new System.Drawing.Size(640, 200);
+            this.BBox_Main.TabIndex = 1;
+            this.BBox_Main.TextViewEnable = true;
+            // 
+            // Tab_ExtView
+            // 
+            this.Tab_ExtView.Controls.Add(this.TabPage_SelectPacketInfo);
+            this.Tab_ExtView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Tab_ExtView.Location = new System.Drawing.Point(0, 0);
+            this.Tab_ExtView.Name = "Tab_ExtView";
+            this.Tab_ExtView.SelectedIndex = 0;
+            this.Tab_ExtView.Size = new System.Drawing.Size(313, 200);
+            this.Tab_ExtView.TabIndex = 3;
+            // 
+            // TabPage_SelectPacketInfo
+            // 
+            this.TabPage_SelectPacketInfo.Controls.Add(this.LView_ExtInfo);
+            this.TabPage_SelectPacketInfo.Location = new System.Drawing.Point(4, 22);
+            this.TabPage_SelectPacketInfo.Name = "TabPage_SelectPacketInfo";
+            this.TabPage_SelectPacketInfo.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPage_SelectPacketInfo.Size = new System.Drawing.Size(305, 174);
+            this.TabPage_SelectPacketInfo.TabIndex = 0;
+            this.TabPage_SelectPacketInfo.Text = "Select Packet Information";
+            this.TabPage_SelectPacketInfo.UseVisualStyleBackColor = true;
             // 
             // LView_ExtInfo
             // 
@@ -505,9 +552,9 @@ namespace Ratatoskr.PacketViews.Packet
             this.LView_ExtInfo.FullRowSelect = true;
             this.LView_ExtInfo.GridLines = true;
             this.LView_ExtInfo.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.LView_ExtInfo.Location = new System.Drawing.Point(0, 25);
+            this.LView_ExtInfo.Location = new System.Drawing.Point(3, 3);
             this.LView_ExtInfo.Name = "LView_ExtInfo";
-            this.LView_ExtInfo.Size = new System.Drawing.Size(313, 175);
+            this.LView_ExtInfo.Size = new System.Drawing.Size(299, 168);
             this.LView_ExtInfo.TabIndex = 2;
             this.LView_ExtInfo.UseCompatibleStateImageBehavior = false;
             this.LView_ExtInfo.View = System.Windows.Forms.View.Details;
@@ -521,76 +568,6 @@ namespace Ratatoskr.PacketViews.Packet
             // 
             this.LView_ExtInfoColumn_Value.Text = "Value";
             this.LView_ExtInfoColumn_Value.Width = 120;
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Menu_ExtView});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(313, 25);
-            this.toolStrip1.Stretch = true;
-            this.toolStrip1.TabIndex = 1;
-            this.toolStrip1.Text = "toolStrip1";
-            // 
-            // Menu_ExtView
-            // 
-            this.Menu_ExtView.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.Menu_ExtView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Menu_ExtView_SelectPacketCount,
-            this.Menu_ExtView_SelectTotalSize,
-            this.Menu_ExtView_FirstPacketInfo,
-            this.Menu_ExtView_LastPacketInfo,
-            this.Menu_ExtView_SelectDelta,
-            this.Menu_ExtView_SelectRate});
-            this.Menu_ExtView.Image = ((System.Drawing.Image)(resources.GetObject("Menu_ExtView.Image")));
-            this.Menu_ExtView.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.Menu_ExtView.Name = "Menu_ExtView";
-            this.Menu_ExtView.Size = new System.Drawing.Size(132, 22);
-            this.Menu_ExtView.Text = "Display item select";
-            // 
-            // Menu_ExtView_SelectPacketCount
-            // 
-            this.Menu_ExtView_SelectPacketCount.Name = "Menu_ExtView_SelectPacketCount";
-            this.Menu_ExtView_SelectPacketCount.Size = new System.Drawing.Size(373, 22);
-            this.Menu_ExtView_SelectPacketCount.Text = "Select packet count";
-            this.Menu_ExtView_SelectPacketCount.Click += new System.EventHandler(this.Menu_ExtView_Click);
-            // 
-            // Menu_ExtView_SelectTotalSize
-            // 
-            this.Menu_ExtView_SelectTotalSize.Name = "Menu_ExtView_SelectTotalSize";
-            this.Menu_ExtView_SelectTotalSize.Size = new System.Drawing.Size(373, 22);
-            this.Menu_ExtView_SelectTotalSize.Text = "Select packet total size";
-            this.Menu_ExtView_SelectTotalSize.Click += new System.EventHandler(this.Menu_ExtView_Click);
-            // 
-            // Menu_ExtView_FirstPacketInfo
-            // 
-            this.Menu_ExtView_FirstPacketInfo.Name = "Menu_ExtView_FirstPacketInfo";
-            this.Menu_ExtView_FirstPacketInfo.Size = new System.Drawing.Size(373, 22);
-            this.Menu_ExtView_FirstPacketInfo.Text = "Information on selected packet (first)";
-            this.Menu_ExtView_FirstPacketInfo.Click += new System.EventHandler(this.Menu_ExtView_Click);
-            // 
-            // Menu_ExtView_LastPacketInfo
-            // 
-            this.Menu_ExtView_LastPacketInfo.Name = "Menu_ExtView_LastPacketInfo";
-            this.Menu_ExtView_LastPacketInfo.Size = new System.Drawing.Size(373, 22);
-            this.Menu_ExtView_LastPacketInfo.Text = "Information on selected packet (last)";
-            this.Menu_ExtView_LastPacketInfo.Click += new System.EventHandler(this.Menu_ExtView_Click);
-            // 
-            // Menu_ExtView_SelectDelta
-            // 
-            this.Menu_ExtView_SelectDelta.Name = "Menu_ExtView_SelectDelta";
-            this.Menu_ExtView_SelectDelta.Size = new System.Drawing.Size(373, 22);
-            this.Menu_ExtView_SelectDelta.Text = "Time difference of selection packet (last-first)";
-            this.Menu_ExtView_SelectDelta.Click += new System.EventHandler(this.Menu_ExtView_Click);
-            // 
-            // Menu_ExtView_SelectRate
-            // 
-            this.Menu_ExtView_SelectRate.Name = "Menu_ExtView_SelectRate";
-            this.Menu_ExtView_SelectRate.Size = new System.Drawing.Size(373, 22);
-            this.Menu_ExtView_SelectRate.Text = "Communication rate of Selection packet (last-first)";
-            this.Menu_ExtView_SelectRate.Click += new System.EventHandler(this.Menu_ExtView_Click);
             // 
             // CMenu_Packet
             // 
@@ -896,42 +873,6 @@ namespace Ratatoskr.PacketViews.Packet
             this.CMenu_Packet_Export_Data.Size = new System.Drawing.Size(104, 22);
             this.CMenu_Packet_Export_Data.Text = "Data";
             // 
-            // LView_Main
-            // 
-            this.LView_Main.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.LView_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LView_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.LView_Main.FullRowSelect = true;
-            this.LView_Main.GridLines = true;
-            this.LView_Main.ItemCountMax = 999999;
-            this.LView_Main.Location = new System.Drawing.Point(0, 0);
-            this.LView_Main.Name = "LView_Main";
-            this.LView_Main.ReadOnly = true;
-            this.LView_Main.Size = new System.Drawing.Size(957, 258);
-            this.LView_Main.TabIndex = 0;
-            this.LView_Main.UseCompatibleStateImageBehavior = false;
-            this.LView_Main.View = System.Windows.Forms.View.Details;
-            this.LView_Main.VirtualMode = true;
-            this.LView_Main.ItemSelectBusyStatusChanged += new System.EventHandler(this.LView_Main_ItemSelectBusyStatusChanged);
-            this.LView_Main.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LView_Main_ColumnClick);
-            this.LView_Main.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.LView_Main_RetrieveVirtualItem);
-            this.LView_Main.SelectedIndexChanged += new System.EventHandler(this.LView_Main_SelectedIndexChanged);
-            this.LView_Main.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LView_Main_MouseClick);
-            // 
-            // BBox_Main
-            // 
-            this.BBox_Main.AllowDrop = true;
-            this.BBox_Main.BackColor = System.Drawing.SystemColors.Window;
-            this.BBox_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BBox_Main.EditEnable = false;
-            this.BBox_Main.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.BBox_Main.InsertEnable = false;
-            this.BBox_Main.Location = new System.Drawing.Point(0, 0);
-            this.BBox_Main.Name = "BBox_Main";
-            this.BBox_Main.Size = new System.Drawing.Size(640, 200);
-            this.BBox_Main.TabIndex = 1;
-            this.BBox_Main.TextViewEnable = true;
-            // 
             // PacketViewInstanceImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -953,11 +894,10 @@ namespace Ratatoskr.PacketViews.Packet
             this.Split_Main.ResumeLayout(false);
             this.Split_Sub.Panel1.ResumeLayout(false);
             this.Split_Sub.Panel2.ResumeLayout(false);
-            this.Split_Sub.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Split_Sub)).EndInit();
             this.Split_Sub.ResumeLayout(false);
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
+            this.Tab_ExtView.ResumeLayout(false);
+            this.TabPage_SelectPacketInfo.ResumeLayout(false);
             this.CMenu_Packet.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -984,12 +924,7 @@ namespace Ratatoskr.PacketViews.Packet
             Num_PreviewDataSize.Value = prop_.PreviewDataSize.Value;
             CBox_CharCode.SelectedItem = prop_.CharCode.Value;
             TBox_CustomFormat.Text = prop_.CustomFormat.Value;
-            Menu_ExtView_SelectPacketCount.Checked = prop_.ExtViewSelectPacketCount.Value;
-            Menu_ExtView_SelectTotalSize.Checked = prop_.ExtViewSelectTotalSize.Value;
-            Menu_ExtView_FirstPacketInfo.Checked = prop_.ExtViewFirstPacketInfo.Value;
-            Menu_ExtView_LastPacketInfo.Checked = prop_.ExtViewLastPacketInfo.Value;
-            Menu_ExtView_SelectDelta.Checked = prop_.ExtViewSelectDelta.Value;
-            Menu_ExtView_SelectRate.Checked = prop_.ExtViewSelectRate.Value;
+
             BuildExtView();
 
             /* --- 適用 --- */
@@ -1201,6 +1136,12 @@ namespace Ratatoskr.PacketViews.Packet
 
         private void UpdateExtView()
         {
+            UpdateExtView_SelectPacketInfo();
+        }
+
+        private void UpdateExtView_SelectPacketInfo()
+        {
+            var view_text = new StringBuilder();
             var indices = LView_Main.SelectedIndices;
             var index_first = 0;
             var index_last = 0;
@@ -1217,70 +1158,50 @@ namespace Ratatoskr.PacketViews.Packet
             }
 
             /* 選択中のパケットサイズを取得 */
-            if (   (ExtViewItem_SelectTotalSize != null)
-                || (ExtViewItem_SelectRate != null)
-            ) {
-                var packet_d = (PacketListViewItem)null;
-
-                foreach (int index in indices) {
-                    packet_d = LView_Main.ItemElementAt(index) as PacketListViewItem;
-                    if (packet_d == null)continue;
+            foreach (int index in indices) {
+                if (LView_Main.ItemElementAt(index) is PacketListViewItem packet_d) {
                     select_total_size += (ulong)packet_d.Packet.DataLength;
                 }
             }
 
             /* 選択パケットの時間差を取得 */
-            if (   (ExtViewItem_SelectDelta != null)
-                || (ExtViewItem_SelectRate != null)
-            ) {
-                if ((packet_first != null) && (packet_last != null)) {
-                    select_delta = packet_last.Packet.MakeTime - packet_first.Packet.MakeTime;
-                }
+            if ((packet_first != null) && (packet_last != null)) {
+                select_delta = packet_last.Packet.MakeTime - packet_first.Packet.MakeTime;
             }
+
+            /* --- 表示処理 --- */
 
             /* 選択パケット数 */
-            if (ExtViewItem_SelectPacketCount != null) {
-                ExtViewItem_SelectPacketCount.SubItems[1].Text = indices.Count.ToString();
-            }
+            ExtViewItem_SelectPacketCount.SubItems[1].Text = indices.Count.ToString();
 
             /* 選択パケットサイズ */
-            if (ExtViewItem_SelectTotalSize != null) {
-                ExtViewItem_SelectTotalSize.SubItems[1].Text = String.Format("{0} byte", select_total_size);
-            }
+            ExtViewItem_SelectTotalSize.SubItems[1].Text = String.Format("{0} byte", select_total_size);
 
             /* 選択パケット(最初)の情報 */
-            if (ExtViewItem_FirstPacketInfo != null) {
-                if (packet_first != null) {
-                    ExtViewItem_FirstPacketInfo.SubItems[1].Text = String.Format("{0} - No.{1}", packet_first.Packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"), index_first + 1);
-                } else {
-                    ExtViewItem_FirstPacketInfo.SubItems[1].Text = "";
-                }
+            if (packet_first != null) {
+                ExtViewItem_FirstPacketInfo.SubItems[1].Text = String.Format("{0} - No.{1}", packet_first.Packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"), index_first + 1);
+            } else {
+                ExtViewItem_FirstPacketInfo.SubItems[1].Text = "";
             }
 
             /* 選択パケット(最後)の情報 */
-            if (ExtViewItem_LastPacketInfo != null) {
-                if (packet_last != null) {
-                    ExtViewItem_LastPacketInfo.SubItems[1].Text = String.Format("{0} - No.{1}", packet_last.Packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"), index_last + 1);
-                } else {
-                    ExtViewItem_LastPacketInfo.SubItems[1].Text = "";
-                }
+            if (packet_last != null) {
+                ExtViewItem_LastPacketInfo.SubItems[1].Text = String.Format("{0} - No.{1}", packet_last.Packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"), index_last + 1);
+            } else {
+                ExtViewItem_LastPacketInfo.SubItems[1].Text = "";
             }
 
             /* 選択パケット(最後 - 最初)の差分時間 */
-            if (ExtViewItem_SelectDelta != null) {
-                if ((packet_first != null) && (packet_last != null)) {
-                    ExtViewItem_SelectDelta.SubItems[1].Text = String.Format("{0} msec", (uint)(select_delta.TotalMilliseconds));
-                } else {
-                    ExtViewItem_SelectDelta.SubItems[1].Text = "";
-                }
+            if ((packet_first != null) && (packet_last != null)) {
+                ExtViewItem_SelectDelta.SubItems[1].Text = String.Format("{0} msec", (uint)(select_delta.TotalMilliseconds));
+            } else {
+                ExtViewItem_SelectDelta.SubItems[1].Text = "";
             }
 
             /* 選択パケット(最後 - 最初)の通信レート */
-            if (ExtViewItem_SelectRate != null) {
-                var comm_rate_bps = (ulong)(select_total_size / select_delta.TotalSeconds);
+            var comm_rate_bps = (ulong)(select_total_size / select_delta.TotalSeconds);
 
-                ExtViewItem_SelectRate.SubItems[1].Text = String.Format("{0}B/s ({1})", TextUtil.DecToText(comm_rate_bps), comm_rate_bps);
-            }
+            ExtViewItem_SelectRate.SubItems[1].Text = String.Format("{0}B/s ({1})", TextUtil.DecToText(comm_rate_bps), comm_rate_bps);
         }
 
         private void SetCurrentPacketStatus(PacketObject packet)
@@ -1361,58 +1282,46 @@ namespace Ratatoskr.PacketViews.Packet
                 ExtViewItem_SelectDelta = null;
 
                 /* 選択パケット数 */
-                if (Menu_ExtView_SelectPacketCount.Checked) {
-                    ExtViewItem_SelectPacketCount = new ListViewItem() {
-                        Text = "Select packet count"
-                    };
-                    ExtViewItem_SelectPacketCount.SubItems.Add("");
-                    ExtViewItem_SelectPacketCount = LView_ExtInfo.Items.Add(ExtViewItem_SelectPacketCount);
-                }
+                ExtViewItem_SelectPacketCount = new ListViewItem() {
+                    Text = "Select packet count"
+                };
+                ExtViewItem_SelectPacketCount.SubItems.Add("");
+                ExtViewItem_SelectPacketCount = LView_ExtInfo.Items.Add(ExtViewItem_SelectPacketCount);
 
                 /* 選択パケットサイズ */
-                if (Menu_ExtView_SelectTotalSize.Checked) {
-                    ExtViewItem_SelectTotalSize = new ListViewItem() {
-                        Text = "Select packet total size"
-                    };
-                    ExtViewItem_SelectTotalSize.SubItems.Add("");
-                    ExtViewItem_SelectTotalSize = LView_ExtInfo.Items.Add(ExtViewItem_SelectTotalSize);
-                }
+                ExtViewItem_SelectTotalSize = new ListViewItem() {
+                    Text = "Select packet total size"
+                };
+                ExtViewItem_SelectTotalSize.SubItems.Add("");
+                ExtViewItem_SelectTotalSize = LView_ExtInfo.Items.Add(ExtViewItem_SelectTotalSize);
 
                 /* 選択パケット(最初)の情報 */
-                if (Menu_ExtView_FirstPacketInfo.Checked) {
-                    ExtViewItem_FirstPacketInfo = new ListViewItem() {
-                        Text = "Information on selected packet (first)"
-                    };
-                    ExtViewItem_FirstPacketInfo.SubItems.Add("");
-                    ExtViewItem_FirstPacketInfo = LView_ExtInfo.Items.Add(ExtViewItem_FirstPacketInfo);
-                }
+                ExtViewItem_FirstPacketInfo = new ListViewItem() {
+                    Text = "Information on selected packet (first)"
+                };
+                ExtViewItem_FirstPacketInfo.SubItems.Add("");
+                ExtViewItem_FirstPacketInfo = LView_ExtInfo.Items.Add(ExtViewItem_FirstPacketInfo);
 
                 /* 選択パケット(最後)の情報 */
-                if (Menu_ExtView_LastPacketInfo.Checked) {
-                    ExtViewItem_LastPacketInfo = new ListViewItem() {
-                        Text = "Information on selected packet (last)"
-                    };
-                    ExtViewItem_LastPacketInfo.SubItems.Add("");
-                    ExtViewItem_LastPacketInfo = LView_ExtInfo.Items.Add(ExtViewItem_LastPacketInfo);
-                }
+                ExtViewItem_LastPacketInfo = new ListViewItem() {
+                    Text = "Information on selected packet (last)"
+                };
+                ExtViewItem_LastPacketInfo.SubItems.Add("");
+                ExtViewItem_LastPacketInfo = LView_ExtInfo.Items.Add(ExtViewItem_LastPacketInfo);
 
                 /* 選択パケット(最後 - 最初)の差分時間 */
-                if (Menu_ExtView_SelectDelta.Checked) {
-                    ExtViewItem_SelectDelta = new ListViewItem() {
-                        Text = "Time difference of selection packet (last-first)"
-                    };
-                    ExtViewItem_SelectDelta.SubItems.Add("");
-                    ExtViewItem_SelectDelta = LView_ExtInfo.Items.Add(ExtViewItem_SelectDelta);
-                }
+                ExtViewItem_SelectDelta = new ListViewItem() {
+                    Text = "Time difference of selection packet (last-first)"
+                };
+                ExtViewItem_SelectDelta.SubItems.Add("");
+                ExtViewItem_SelectDelta = LView_ExtInfo.Items.Add(ExtViewItem_SelectDelta);
 
                 /* 選択パケット(最後 - 最初)の通信レート */
-                if (Menu_ExtView_SelectRate.Checked) {
-                    ExtViewItem_SelectRate = new ListViewItem() {
-                        Text = "Communication rate of selection packet (last-first)"
-                    };
-                    ExtViewItem_SelectRate.SubItems.Add("");
-                    ExtViewItem_SelectRate = LView_ExtInfo.Items.Add(ExtViewItem_SelectRate);
-                }
+                ExtViewItem_SelectRate = new ListViewItem() {
+                    Text = "Communication rate of selection packet (last-first)"
+                };
+                ExtViewItem_SelectRate.SubItems.Add("");
+                ExtViewItem_SelectRate = LView_ExtInfo.Items.Add(ExtViewItem_SelectRate);
             }
             LView_ExtInfo.EndUpdate();
 
@@ -1530,7 +1439,7 @@ namespace Ratatoskr.PacketViews.Packet
             }
 
             /* 背景色 */
-            item.BackColor = Color.LightGoldenrodYellow;
+            item.BackColor = ConfigManager.User.PacketView_Packet_MsgColor.Value;
         }
 
         private void PacketToListViewItem_Data(ListViewItem item, PacketObject packet)
@@ -1577,8 +1486,8 @@ namespace Ratatoskr.PacketViews.Packet
 
             /* 背景色 */
             item.BackColor = (packet.Direction == PacketDirection.Recv)
-                           ? (Color.LightGreen)
-                           : (Color.LightPink);
+                           ? (ConfigManager.User.PacketView_Packet_RecvColor.Value)
+                           : (ConfigManager.User.PacketView_Packet_SendColor.Value);
         }
 
         private IEnumerable<PacketListViewItem> GetSelectItems()
@@ -1699,14 +1608,6 @@ namespace Ratatoskr.PacketViews.Packet
 
             /* CustomText */
             prop_.CustomFormat.Value = TBox_CustomFormat.Text;
-
-            /* ExtView Backup */
-            prop_.ExtViewSelectPacketCount.Value = Menu_ExtView_SelectPacketCount.Checked;
-            prop_.ExtViewSelectTotalSize.Value = Menu_ExtView_SelectTotalSize.Checked;
-            prop_.ExtViewFirstPacketInfo.Value = Menu_ExtView_FirstPacketInfo.Checked;
-            prop_.ExtViewLastPacketInfo.Value = Menu_ExtView_LastPacketInfo.Checked;
-            prop_.ExtViewSelectDelta.Value = Menu_ExtView_SelectDelta.Checked;
-            prop_.ExtViewSelectRate.Value = Menu_ExtView_SelectRate.Checked;
         }
 
         protected override void OnClearPacket()
@@ -1849,169 +1750,169 @@ namespace Ratatoskr.PacketViews.Packet
                     switch ((MenuActionId)Enum.ToObject(typeof(MenuActionId), menu.Tag)) {
                         case MenuActionId.Copy_Packet_AllInfo_Csv:
                         {
-                            Clipboard.SetText(GetPacketInfoCsvFromSelectPackets(), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoCsvFromSelectPackets(), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Alias:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Alias, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Alias, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_DateTime_UTC_ISO8601:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_UTC_ISO8601, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_UTC_ISO8601, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_DateTime_UTC_Display:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_UTC_Display, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_UTC_Display, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_DateTime_Local_ISO8601:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_Local_ISO8601, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_Local_ISO8601, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_DateTime_Local_Display:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_Local_Display, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.DateTime_Local_Display, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Information:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Information, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Information, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Source:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Source, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Source, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Destination:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Destination, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Destination, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Message:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Message, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Message, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_BitString:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_BitString, ""), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_BitString, ""), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_HexString:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_HexString, ""), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_HexString, ""), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_AsciiText:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextAscii, ""), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextAscii, ""), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_Utf8Text:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF8, ""), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF8, ""), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_Utf16BeText:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16BE, ""), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16BE, ""), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_Utf16LeText:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16LE, ""), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16LE, ""), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_ShiftJisText:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextShiftJIS, ""), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextShiftJIS, ""), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_EucJpText:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextEucJp, ""), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextEucJp, ""), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_Custom:
                         {
-                            Clipboard.SetText(GetPacketInfoCustomFromSelectPackets(""), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoCustomFromSelectPackets(""), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_LF_BitString:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_BitString, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_BitString, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_LF_HexString:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_HexString, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_HexString, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_LF_AsciiText:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextAscii, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextAscii, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_LF_Utf8Text:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF8, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF8, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_LF_Utf16BeText:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16BE, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16BE, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_LF_Utf16LeText:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16LE, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextUTF16LE, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_LF_ShiftJisText:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextShiftJIS, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextShiftJIS, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_LF_EucJpText:
                         {
-                            Clipboard.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextEucJp, Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoTextFromSelectPackets(PacketElementID.Data_TextEucJp, Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
                         case MenuActionId.Copy_Packet_Data_LF_Custom:
                         {
-                            Clipboard.SetText(GetPacketInfoCustomFromSelectPackets(Environment.NewLine), TextDataFormat.Text);
+                            ClipboardUtil.SetText(GetPacketInfoCustomFromSelectPackets(Environment.NewLine), TextDataFormat.Text);
                         }
                             break;
 
@@ -2035,6 +1936,11 @@ namespace Ratatoskr.PacketViews.Packet
         private void LView_Main_ItemSelectBusyStatusChanged(object sender, EventArgs e)
         {
             UpdateOperationBusyStatus();
+        }
+
+        private void LView_Main_ItemSelectBusyStatusChanging(object sender, EventArgs e)
+        {
+            FormUiManager.SetPopupText(string.Format("Item select busy {0} / {1}", LView_Main.SelectedItemCount, LView_Main.ItemCount));
         }
 
         private void RBtn_Layout_0_CheckedChanged(object sender, EventArgs e)

@@ -15,8 +15,10 @@ namespace Ratatoskr.Forms.MainWindow
 {
     internal partial class MainWindow_PacketConverterPanel : Panel
     {
-        private FlowLayoutPanel   Panel_ConverterList;
-        private Button  Btn_Collapse;
+        private string btn_collapse_text_ = "";
+
+        private FlowLayoutPanel Panel_ConverterList;
+        private Button          Btn_Collapse;
 
 
         public MainWindow_PacketConverterPanel() : base()
@@ -24,9 +26,14 @@ namespace Ratatoskr.Forms.MainWindow
             Btn_Collapse = new Button();
             Btn_Collapse.FlatStyle = FlatStyle.Flat;
             Btn_Collapse.FlatAppearance.BorderSize = 0;
-            Btn_Collapse.Image = Properties.Resources.collapse_up_group_16x16;
+            Btn_Collapse.TextAlign = ContentAlignment.MiddleLeft;
+            Btn_Collapse.Font = new Font("Segoe UI", 10);
+            Btn_Collapse.ForeColor = SystemColors.GrayText;
+            Btn_Collapse.Image = RtsCore.Resource.Images.collapse_16x16;
             Btn_Collapse.ImageAlign = ContentAlignment.MiddleLeft;
-            Btn_Collapse.Height = Btn_Collapse.Image.Height;
+            Btn_Collapse.TextImageRelation = TextImageRelation.ImageBeforeText;
+            Btn_Collapse.Height = Btn_Collapse.Image.Height + Btn_Collapse.Margin.Vertical;
+            Btn_Collapse.Paint += Btn_Collapse_Paint;
             Btn_Collapse.Click += Btn_Collapse_Click;
 
             Panel_ConverterList = new FlowLayoutPanel();
@@ -79,8 +86,8 @@ namespace Ratatoskr.Forms.MainWindow
             Panel_ConverterList.Visible = ConfigManager.System.MainWindow.PacketConverterVisible.Value;
 
             Btn_Collapse.Image = (ConfigManager.System.MainWindow.PacketConverterVisible.Value)
-                               ? (Properties.Resources.collapse_up_group_16x16)
-                               : (Properties.Resources.collapse_down_group_16x16);
+                               ? (RtsCore.Resource.Images.expand_16x16)
+                               : (RtsCore.Resource.Images.collapse_16x16);
 
             AdjustControlSize();
         }
@@ -103,6 +110,8 @@ namespace Ratatoskr.Forms.MainWindow
             Panel_ConverterList.Controls.Add(control);
 
             AdjustControlSize();
+
+            UpdateView();
         }
 
         public void RemovePacketConverter(MainWindow_PacketConverter control)
@@ -116,6 +125,8 @@ namespace Ratatoskr.Forms.MainWindow
             Panel_ConverterList.Controls.Remove(control);
 
             AdjustControlSize();
+
+            UpdateView();
         }
 
         private void AdjustControlSize()
@@ -195,14 +206,50 @@ namespace Ratatoskr.Forms.MainWindow
 
         public void UpdateView()
         {
+            var count_all = 0;
+            var count_enable = 0;
+
             foreach (MainWindow_PacketConverter control in Panel_ConverterList.Controls) {
+                count_all++;
+                if (control.ConverterEnable) {
+                    count_enable++;
+                }
+
                 control.UpdatePacketCount();
             }
+
+            btn_collapse_text_ = string.Format("Packet Converter (Enable: {0} , Total: {1})", count_enable, count_all);
+            Btn_Collapse.Invalidate();
         }
 
         protected override void OnResize(EventArgs e)
         {
             AdjustControlSize();
+        }
+
+        private void Btn_Collapse_Paint(object sender, PaintEventArgs e)
+        {
+            if (sender is Button control) {
+                var rect_text = new Rectangle();
+
+                rect_text.X = control.Image.Width + control.Margin.Horizontal;
+                rect_text.Y = 0;
+                rect_text.Width = control.ClientSize.Width - rect_text.X;
+                rect_text.Height = control.ClientSize.Height;
+
+                var text_format = new StringFormat();
+
+                text_format.Alignment = StringAlignment.Near;
+                text_format.LineAlignment = StringAlignment.Center;
+
+                /* 標準テキストだと枠に入らないため、自前で描画 */
+                e.Graphics.DrawString(
+                    btn_collapse_text_,
+                    control.Font,
+                    new SolidBrush(control.ForeColor),
+                    rect_text, 
+                    text_format);
+            }
         }
 
         private void Btn_Collapse_Click(object sender, EventArgs e)

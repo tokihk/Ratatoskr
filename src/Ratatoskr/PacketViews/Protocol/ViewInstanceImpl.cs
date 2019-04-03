@@ -22,7 +22,7 @@ namespace Ratatoskr.PacketViews.Protocol
         
         private class DataListViewItem : ListViewItem
         {
-            public DataListViewItem(ulong no, PacketObject packet, ProtocolDecodeData decode_data)
+            public DataListViewItem(ulong no, PacketObject packet, ProtocolDecodeData2 decode_data)
             {
                 No = no;
                 Packet = packet;
@@ -31,22 +31,22 @@ namespace Ratatoskr.PacketViews.Protocol
 
             public ulong              No         { get; }
             public PacketObject       Packet     { get; }
-            public ProtocolDecodeData DecodeData { get; }
+            public ProtocolDecodeData2 DecodeData { get; }
         }
 
         private class DataBlockBuffer
         {
-            private List<ProtocolDecodeData> data_list_ = new List<ProtocolDecodeData>();
+            private List<ProtocolDecodeData2> data_list_ = new List<ProtocolDecodeData2>();
 
             public DataBlockBuffer(DateTime time)
             {
                 BlockTime = time;
             }
 
-            public DateTime                        BlockTime { get; set; }
-            public IEnumerable<ProtocolDecodeData> DataList  { get { return (data_list_); } }
+            public DateTime                         BlockTime { get; set; }
+            public IEnumerable<ProtocolDecodeData2> DataList  { get { return (data_list_); } }
 
-            public void AddData(ProtocolDecodeData data)
+            public void AddData(ProtocolDecodeData2 data)
             {
                 if ((data_list_.Count == 0) || (data.DataBlockIndex > data_list_.Last().DataBlockIndex)) {
                     /* === データが存在しないか、最後のデータよりもインデックス番号が新しい === */
@@ -70,7 +70,7 @@ namespace Ratatoskr.PacketViews.Protocol
             public ProtocolDecodeChannel        ChannelData { get; set; } = null;
             public IEnumerable<DataBlockBuffer> BlockList   { get { return (block_list_); } }
 
-            public void AddData(ProtocolDecodeData data)
+            public void AddData(ProtocolDecodeData2 data)
             {
                 /* 挿入先ブロックを検索 */
                 var block = block_list_.Find(item => item.BlockTime == data.DataBlockTime);
@@ -95,8 +95,8 @@ namespace Ratatoskr.PacketViews.Protocol
 
         private PacketViewPropertyImpl prop_;
 
-        private Guid            decoder_id_ = Guid.Empty;
-        private ProtocolDecoder decoder_ = null;
+        private Guid                    decoder_id_ = Guid.Empty;
+        private ProtocolDecoderInstance decoder_ = null;
 
         private DataChannelBuffer[] channel_data_ = null;
 
@@ -118,7 +118,7 @@ namespace Ratatoskr.PacketViews.Protocol
         private System.Windows.Forms.TabPage TabPage_FrameErrorRate;
         private System.Windows.Forms.DataVisualization.Charting.Chart Chart_FrameErrorRate;
         private System.Windows.Forms.FlowLayoutPanel Panel_FrameErrorRate;
-        private Forms.Controls.ListViewEx LView_DataList;
+        private RtsCore.Framework.Controls.ListViewEx LView_DataList;
         private System.Windows.Forms.Panel Panel_FrameList;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox TBox_CustomText;
@@ -138,7 +138,7 @@ namespace Ratatoskr.PacketViews.Protocol
             this.CBox_ProtocolType = new System.Windows.Forms.ComboBox();
             this.Splitter_Main = new System.Windows.Forms.SplitContainer();
             this.Splitter_Sub = new System.Windows.Forms.SplitContainer();
-            this.LView_DataList = new Ratatoskr.Forms.Controls.ListViewEx();
+            this.LView_DataList = new RtsCore.Framework.Controls.ListViewEx();
             this.Panel_FrameList = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.TBox_CustomText = new System.Windows.Forms.TextBox();
@@ -511,7 +511,7 @@ namespace Ratatoskr.PacketViews.Protocol
             CBox_ProtocolType.BeginUpdate();
             {
                 CBox_ProtocolType.Items.Clear();
-                CBox_ProtocolType.Items.AddRange(Ratatoskr.Protocol.ProtocolManager.DecoderList);
+                CBox_ProtocolType.Items.AddRange(Ratatoskr.Protocol.ProtocolManager.GetDecoderList());
                 CBox_ProtocolType.SelectedItem = prop_.ProtocolType.Value;
                 if ((CBox_ProtocolType.SelectedIndex < 0) && (CBox_ProtocolType.Items.Count > 0)) {
                     CBox_ProtocolType.SelectedIndex = 0;
@@ -553,12 +553,12 @@ namespace Ratatoskr.PacketViews.Protocol
 
         private void UpdateDecoder()
         {
-            var decoder = (ProtocolDecoder)null;
-            var decoder_info = CBox_ProtocolType.SelectedItem as ProtocolDecoderInfo;
+            var decoder = (ProtocolDecoderInstance)null;
+            var decoder_c = CBox_ProtocolType.SelectedItem as ProtocolDecoderClass;
 
             try {
-                if (decoder_info != null) {
-                    decoder = decoder_info.LoadModule();
+                if (decoder_c != null) {
+                    decoder = decoder_c.CreateInstance();
                 }
 
                 decoder_ = decoder;
@@ -583,7 +583,7 @@ namespace Ratatoskr.PacketViews.Protocol
             }
         }
 
-        private void ProtocolDecodeDataToDataListViewItem_Sub(ListViewItem item, PacketObject packet, ProtocolDecodeData decode_data)
+        private void ProtocolDecodeDataToDataListViewItem_Sub(ListViewItem item, PacketObject packet, ProtocolDecodeData2 decode_data)
         {
             foreach (var config in prop_.FrameListColumn.Value) {
                 switch (config.Type) {
@@ -643,7 +643,7 @@ namespace Ratatoskr.PacketViews.Protocol
             }
         }
 
-        private ListViewItem ProtocolDecodeDataToDataListViewItem(PacketObject packet, ProtocolDecodeData decode_data)
+        private ListViewItem ProtocolDecodeDataToDataListViewItem(PacketObject packet, ProtocolDecodeData2 decode_data)
         {
             var item = new ListViewItem() {
                 Text = (next_item_no_).ToString(),
@@ -659,7 +659,7 @@ namespace Ratatoskr.PacketViews.Protocol
             return (item);
         }
 
-        private void InputDataList(PacketObject packet, ProtocolDecodeData decode_data)
+        private void InputDataList(PacketObject packet, ProtocolDecodeData2 decode_data)
         {
 //            var item = ProtocolDecodeDataToDataListViewItem(packet, decode_data);
 
@@ -708,7 +708,7 @@ namespace Ratatoskr.PacketViews.Protocol
             }
         }
 
-        private void SetDataDetails(ProtocolDecodeData decode_data)
+        private void SetDataDetails(ProtocolDecodeData2 decode_data)
         {
             TLView_FrameDetails.Nodes.Clear();
 
@@ -741,7 +741,7 @@ namespace Ratatoskr.PacketViews.Protocol
             for (var index = 0; index < channel_data_new.Length; index++) {
                 if (channel_data_new[index] == null) {
                     channel_data_new[index] = new DataChannelBuffer() {
-                        ChannelData = decoder_.GetChannelData((uint)index),
+//                        ChannelData = decoder_.GetChannelData((uint)index),
                     };
                 }
             }
@@ -750,7 +750,7 @@ namespace Ratatoskr.PacketViews.Protocol
             channel_data_ = channel_data_new;
         }
 
-        private void AddDecodeData(PacketObject packet, ProtocolDecodeData decode_data)
+        private void AddDecodeData(PacketObject packet, ProtocolDecodeData2 decode_data)
         {
             if (decode_data == null)return;
 
@@ -766,7 +766,7 @@ namespace Ratatoskr.PacketViews.Protocol
             InputDataList(packet, decode_data);
         }
 
-        private void AddDecodeData(PacketObject packet, ProtocolDecodeData[] decode_data_list)
+        private void AddDecodeData(PacketObject packet, ProtocolDecodeData2[] decode_data_list)
         {
             if (decode_data_list == null)return;
 
@@ -846,7 +846,7 @@ namespace Ratatoskr.PacketViews.Protocol
 
         private void LView_DataList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (LView_DataList.FocusedItem.Tag is ProtocolDecodeData decode_data) {
+            if (LView_DataList.FocusedItem.Tag is ProtocolDecodeData2 decode_data) {
                 SetDataDetails(decode_data);
             }
         }

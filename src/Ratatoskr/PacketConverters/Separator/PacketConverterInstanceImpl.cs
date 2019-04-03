@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Gate;
+using RtsCore.Framework.Controls;
 using RtsCore.Framework.PacketConverter;
 using RtsCore.Packet;
 
@@ -59,7 +59,7 @@ namespace Ratatoskr.PacketConverters.Separator
         private PacketObject packet_last_ = null;
 
         private List<string> alias_list_ = new List<string>();
-        private Forms.Controls.RoundComboBox CBox_TargetList;
+        private RoundComboBox CBox_TargetList;
         private Button Btn_Option;
         private Panel Panel_Sub;
 
@@ -96,7 +96,7 @@ namespace Ratatoskr.PacketConverters.Separator
         {
             this.components = new System.ComponentModel.Container();
             this.Btn_Option = new System.Windows.Forms.Button();
-            this.CBox_TargetList = new Ratatoskr.Forms.Controls.RoundComboBox();
+            this.CBox_TargetList = new RoundComboBox();
             this.Panel_Sub = new System.Windows.Forms.Panel();
             this.CMenu_Option = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.CMenu_EventDetectDivide = new System.Windows.Forms.ToolStripMenuItem();

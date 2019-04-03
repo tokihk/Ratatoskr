@@ -531,7 +531,7 @@ namespace RtsCore.Packet
             if (raw_data == null)return ("");
 
             if ((offset == 0) && (size >= raw_data.Length)) {
-                return (DataToHexString());
+                return (DataToHexString(separator));
             } else {
                 return (HexTextEncoder.ToHexText(raw_data, offset, size, separator));
             }

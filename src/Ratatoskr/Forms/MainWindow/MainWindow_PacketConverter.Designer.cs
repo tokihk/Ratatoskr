@@ -47,8 +47,8 @@
             // 
             this.Label_Handle.BackColor = System.Drawing.SystemColors.Control;
             this.Label_Handle.Cursor = System.Windows.Forms.Cursors.NoMoveVert;
-            this.Label_Handle.Image = global::Ratatoskr.Properties.Resources.item_change_16x16;
-            this.Label_Handle.Location = new System.Drawing.Point(3, 0);
+            this.Label_Handle.Image = RtsCore.Resource.Images.item_change_16x16;
+            this.Label_Handle.Location = new System.Drawing.Point(20, 0);
             this.Label_Handle.Name = "Label_Handle";
             this.Label_Handle.Size = new System.Drawing.Size(23, 24);
             this.Label_Handle.TabIndex = 0;
@@ -58,10 +58,10 @@
             // 
             this.Panel_Contents.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Panel_Contents.Location = new System.Drawing.Point(189, 0);
+            this.Panel_Contents.Location = new System.Drawing.Point(206, 0);
             this.Panel_Contents.Margin = new System.Windows.Forms.Padding(0);
             this.Panel_Contents.Name = "Panel_Contents";
-            this.Panel_Contents.Size = new System.Drawing.Size(579, 24);
+            this.Panel_Contents.Size = new System.Drawing.Size(562, 24);
             this.Panel_Contents.TabIndex = 2;
             // 
             // Label_OutputCount
@@ -110,8 +110,8 @@
             // 
             this.Btn_Filter.FlatAppearance.BorderSize = 0;
             this.Btn_Filter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_Filter.Image = global::Ratatoskr.Properties.Resources.target_22x22;
-            this.Btn_Filter.Location = new System.Drawing.Point(163, 1);
+            this.Btn_Filter.Image = RtsCore.Resource.Images.target_22x22;
+            this.Btn_Filter.Location = new System.Drawing.Point(180, 1);
             this.Btn_Filter.Name = "Btn_Filter";
             this.Btn_Filter.Size = new System.Drawing.Size(23, 23);
             this.Btn_Filter.TabIndex = 9;
@@ -121,7 +121,7 @@
             // Label_OutputIcon
             // 
             this.Label_OutputIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label_OutputIcon.Image = global::Ratatoskr.Properties.Resources.output_16x16;
+            this.Label_OutputIcon.Image = RtsCore.Resource.Images.output_16x16;
             this.Label_OutputIcon.Location = new System.Drawing.Point(771, 0);
             this.Label_OutputIcon.Name = "Label_OutputIcon";
             this.Label_OutputIcon.Size = new System.Drawing.Size(24, 24);
@@ -133,7 +133,7 @@
             this.Btn_Remove.FlatAppearance.BorderSize = 0;
             this.Btn_Remove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Btn_Remove.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Btn_Remove.Image = global::Ratatoskr.Properties.Resources.close_16x16;
+            this.Btn_Remove.Image = RtsCore.Resource.Images.close_16x16;
             this.Btn_Remove.Location = new System.Drawing.Point(867, 0);
             this.Btn_Remove.Name = "Btn_Remove";
             this.Btn_Remove.Size = new System.Drawing.Size(24, 24);
@@ -144,7 +144,7 @@
             // ChkBox_Enable
             // 
             this.ChkBox_Enable.AutoSize = true;
-            this.ChkBox_Enable.Location = new System.Drawing.Point(32, 6);
+            this.ChkBox_Enable.Location = new System.Drawing.Point(49, 6);
             this.ChkBox_Enable.Name = "ChkBox_Enable";
             this.ChkBox_Enable.Size = new System.Drawing.Size(15, 14);
             this.ChkBox_Enable.TabIndex = 10;
@@ -153,7 +153,7 @@
             // 
             // Label_Name
             // 
-            this.Label_Name.Location = new System.Drawing.Point(53, 1);
+            this.Label_Name.Location = new System.Drawing.Point(70, 1);
             this.Label_Name.Name = "Label_Name";
             this.Label_Name.Size = new System.Drawing.Size(104, 24);
             this.Label_Name.TabIndex = 11;

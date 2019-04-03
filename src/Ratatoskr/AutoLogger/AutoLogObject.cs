@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.SystemConfigs;
-using Ratatoskr.FileFormats;
+using RtsCore.Framework.FileFormat;
 using RtsCore.Packet;
 
 namespace Ratatoskr.Gate.AutoLogger

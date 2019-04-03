@@ -574,7 +574,7 @@
             // 
             this.MenuBar_Profile_Remove.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.MenuBar_Profile_Remove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.MenuBar_Profile_Remove.Image = global::Ratatoskr.Properties.Resources.database_remove_32x32;
+            this.MenuBar_Profile_Remove.Image = RtsCore.Resource.Images.database_remove_32x32;
             this.MenuBar_Profile_Remove.Name = "MenuBar_Profile_Remove";
             this.MenuBar_Profile_Remove.Size = new System.Drawing.Size(28, 25);
             this.MenuBar_Profile_Remove.Tag = "ProfileRemove";
@@ -585,7 +585,7 @@
             // 
             this.MenuBar_Profile_Add.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.MenuBar_Profile_Add.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.MenuBar_Profile_Add.Image = global::Ratatoskr.Properties.Resources.database_add_32x32;
+            this.MenuBar_Profile_Add.Image = RtsCore.Resource.Images.database_add_32x32;
             this.MenuBar_Profile_Add.Name = "MenuBar_Profile_Add";
             this.MenuBar_Profile_Add.Size = new System.Drawing.Size(28, 25);
             this.MenuBar_Profile_Add.Tag = "ProfileAdd";
@@ -611,7 +611,7 @@
             this.MenuBar_Profile_Edit,
             this.toolStripSeparator5,
             this.MenuBar_Profile_Export});
-            this.MenuBar_Profile.Image = global::Ratatoskr.Properties.Resources.user_24x24;
+            this.MenuBar_Profile.Image = RtsCore.Resource.Images.user_24x24;
             this.MenuBar_Profile.Name = "MenuBar_Profile";
             this.MenuBar_Profile.Size = new System.Drawing.Size(28, 25);
             this.MenuBar_Profile.Text = "Profile";

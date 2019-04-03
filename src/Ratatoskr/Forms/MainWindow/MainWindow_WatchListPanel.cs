@@ -19,11 +19,16 @@ namespace Ratatoskr.Forms.MainWindow
 {
     public partial class MainWindow_WatchListPanel : UserControl
     {
+        private const int VIEW_UPDATE_IVAL_MIN  = 100;
+        private const int VIEW_UPDATE_IVAL_MAX  = 500;
+        private const int VIEW_UPDATE_IVAL_STEP = 10;
+
         private enum ColumnId
         {
             Enable,
             Target,
             Expression,
+            DetectCount,
             NtfEvent,
             NtfDialog,
             NtfMail,
@@ -55,46 +60,51 @@ namespace Ratatoskr.Forms.MainWindow
         private class WatchObject
         {
             private PacketFilterController filter_;
-            private bool ntf_event_;
-            private bool ntf_dialog_;
-            private bool ntf_mail_;
+
             
-            public WatchObject(WatchTargetType target, PacketFilterController filter, bool ntf_event, bool ntf_dialog, bool ntf_mail)
+            public WatchObject(WatchDataConfig config, PacketFilterController filter)
             {
-                Target = target;
+                Config = config;
                 filter_ = filter;
-                ntf_event_ = ntf_event;
-                ntf_dialog_ = ntf_dialog;
-                ntf_mail_ = ntf_mail;
             }
 
-            public WatchTargetType Target { get; }
+            public WatchDataConfig Config      { get; }
+            public ulong           DetectCount { get; private set; } = 0;
 
-            public void Input(IEnumerable<PacketObject> packets)
+            public void StatusClear()
+            {
+                DetectCount = 0;
+            }
+
+            public void Input(IEnumerable<PacketObject> packets, ref bool detect)
             {
                 foreach (var packet in packets) {
-                    Input(packet);
+                    Input(packet, ref detect);
                 }
             }
 
-            public void Input(PacketObject packet)
+            public void Input(PacketObject packet, ref bool detect)
             {
                 if (!filter_.Input(packet))return;
 
                 var event_dt = DateTime.UtcNow;
                 var event_text = string.Format("Event catch. [{0}]", filter_.ExpressionText);
 
-                if (ntf_event_) {
+                DetectCount++;
+
+                if (Config.NtfEvent) {
                     NotifyEvent(event_dt, event_text);
                 }
 
-                if (ntf_dialog_) {
+                if (Config.NtfDialog) {
                     NotifyDialog(event_dt, event_text);
                 }
 
-                if (ntf_mail_) {
+                if (Config.NtfMail) {
                     NotifyMail(event_dt, event_text);
                 }
+
+                detect = true;
             }
 
             private void NotifyEvent(DateTime dt, string text)
@@ -117,8 +127,12 @@ namespace Ratatoskr.Forms.MainWindow
         private readonly Color COLOR_COMMAND_FORMAT_NG = Color.LightPink;
 
         
+        private Timer view_update_timer_ = new Timer();
+        private bool  view_update_req_   = false;
+
         private WatchObject[] watch_objs_raw_ = null;
         private WatchObject[] watch_objs_view_ = null;
+        private WatchObject[] watch_objs_draw_ = null;
 
 
         public MainWindow_WatchListPanel()
@@ -127,8 +141,14 @@ namespace Ratatoskr.Forms.MainWindow
 
             GatePacketManager.RawPacketEntried += OnRawPacketEntried;
             FormTaskManager.DrawPacketEntried += OnDrawPacketEntried;
+            FormTaskManager.DrawPacketScanning += OnDrawPacketScanning;
+            FormTaskManager.DrawPacketCleared += OnDrawPacketCleared;
 
             DGView_WatchList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            view_update_timer_.Interval = VIEW_UPDATE_IVAL_MAX;
+            view_update_timer_.Tick += OnViewUpdateTimer;
+            view_update_timer_.Start();
         }
 
         public void LoadConfig()
@@ -183,6 +203,22 @@ namespace Ratatoskr.Forms.MainWindow
                         column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                         column.HeaderText = ConfigManager.Language.MainUI.WLPanel_Column_Expression.Value;
                         column.DefaultCellStyle.Font = new Font("MS Gothic", 9);
+                        DGView_WatchList.Columns.Add(column);
+                    }
+                        break;
+
+                    case ColumnId.DetectCount:
+                    {
+                        var column = new DataGridViewTextBoxColumn();
+
+                        column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                        column.HeaderText = ConfigManager.Language.MainUI.WLPanel_Column_DetectCount.Value;
+                        column.Width = 100;
+                        column.Resizable = DataGridViewTriState.False;
+                        column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                        column.ReadOnly = true;
+                        column.DefaultCellStyle.Font = new Font("MS Gothic", 9);
+                        column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                         DGView_WatchList.Columns.Add(column);
                     }
                         break;
@@ -344,6 +380,10 @@ namespace Ratatoskr.Forms.MainWindow
                 row_obj.Cells[(int)ColumnId.Expression].Value = config.Expression;
             }
 
+            if (row_obj.Cells.Count > (int)ColumnId.DetectCount) {
+                row_obj.Cells[(int)ColumnId.DetectCount].Value = "";
+            }
+
             if (row_obj.Cells.Count > (int)ColumnId.NtfEvent) {
                 row_obj.Cells[(int)ColumnId.NtfEvent].Value = config.NtfEvent;
             }
@@ -357,10 +397,47 @@ namespace Ratatoskr.Forms.MainWindow
             }
         }
 
+        private void UpdateWatchStatus(DataGridViewRow row_obj)
+        {
+            if (row_obj.Tag is WatchObject watch_obj) {
+                if (row_obj.Cells.Count > (int)ColumnId.DetectCount) {
+                    row_obj.Cells[(int)ColumnId.DetectCount].Value = watch_obj.DetectCount.ToString();
+                }
+            }
+        }
+
+        private void UpdateWatchStatus(bool soon = false)
+        {
+            if (soon) {
+                foreach (DataGridViewRow row_obj in DGView_WatchList.Rows) {
+                    UpdateWatchStatus(row_obj);
+                }
+                view_update_req_ = false;
+            } else {
+                view_update_req_ = true;
+            }
+        }
+
+        private void OnViewUpdateTimer(object sender, EventArgs e)
+        {
+            UpdateWatchStatus(true);
+
+            var update_ival = view_update_timer_.Interval;
+
+            update_ival = (view_update_req_) ? (VIEW_UPDATE_IVAL_STEP) : (-VIEW_UPDATE_IVAL_STEP);
+            update_ival = Math.Min(update_ival, VIEW_UPDATE_IVAL_MAX);
+            update_ival = Math.Max(update_ival, VIEW_UPDATE_IVAL_MIN);
+
+            if (view_update_timer_.Interval != update_ival) {
+                view_update_timer_.Stop();
+                view_update_timer_.Interval = update_ival;
+                view_update_timer_.Start();
+            }
+        }
+
         private void AddWatchDataConfig(WatchDataConfig config)
         {
             var row_index = DGView_WatchList.Rows.Add();
-
             var row_obj = DGView_WatchList.Rows[row_index];
 
             SetWatchDataConfig(row_obj, config);
@@ -395,27 +472,49 @@ namespace Ratatoskr.Forms.MainWindow
                 return (null);
             }
 
+            /* 現在のセル設定をWatchDataConfigに変換する */
             var config = LoadWatchDataConfig(row_obj);
 
+            /* 変換できなかったり有効設定でない場合は監視しない */
             if (   (config == null)
                 || (!config.Enable)
             ) {
                 return (null);
             }
 
-            /* 通知先がない場合は無視 */
-            if (   (!config.NtfEvent)
-                && (!config.NtfDialog)
-                && (!config.NtfMail)
-            ) {
+            /* フィルターが有効でない場合は監視しない */
+            var filter = PacketFilterController.Build(config.Expression);
+
+            if (filter == null) {
                 return (null);
             }
 
-            var filter = PacketFilterController.Build(config.Expression);
+            /* 監視オブジェクト更新 */
+            var watch_obj = row_obj.Tag as WatchObject;
 
-            if (filter == null)return (null);
+            if (   (watch_obj == null)
+                || (watch_obj.Config.Expression != config.Expression)
+            ) {
+                watch_obj = new WatchObject(config, filter);
+            } else {
+                watch_obj.Config.WatchTarget = config.WatchTarget;
+                watch_obj.Config.NtfEvent = config.NtfEvent;
+                watch_obj.Config.NtfDialog = config.NtfDialog;
+                watch_obj.Config.NtfMail = config.NtfMail;
+            }
 
-            return (new WatchObject(config.WatchTarget, filter, config.NtfEvent, config.NtfDialog, config.NtfMail));
+            return (watch_obj);
+        }
+
+        private void UpdateWatchObject(DataGridViewRow row_obj)
+        {
+            if (   (row_obj == null)
+                || (row_obj.IsNewRow)
+            ) {
+                return;
+            }
+
+            row_obj.Tag = LoadWatchObject(row_obj);
         }
 
         private void UpdateWatchRule(DataGridViewRow row_obj)
@@ -423,7 +522,7 @@ namespace Ratatoskr.Forms.MainWindow
             if (row_obj.IsNewRow)return;
 
             /* 生成した監視ルールをタグにバックアップ */
-            row_obj.Tag = LoadWatchObject(row_obj);
+            UpdateWatchObject(row_obj);
         }
 
         private void UpdateWatchRule(int row_index)
@@ -443,6 +542,7 @@ namespace Ratatoskr.Forms.MainWindow
         {
             var objs_raw = new List<WatchObject>();
             var objs_view = new List<WatchObject>();
+            var objs_draw = new List<WatchObject>();
             var obj = (WatchObject)null;
 
             foreach (DataGridViewRow row_obj in DGView_WatchList.Rows) {
@@ -450,32 +550,64 @@ namespace Ratatoskr.Forms.MainWindow
                 
                 if (obj == null)continue;
 
-                switch (obj.Target) {
+                switch (obj.Config.WatchTarget) {
                     case WatchTargetType.RawPacket:  objs_raw.Add(obj);  break;
-                    case WatchTargetType.ViewPacket: objs_raw.Add(obj);  break;
+                    case WatchTargetType.ViewPacket: objs_view.Add(obj);  break;
+                    case WatchTargetType.DrawPacket: objs_draw.Add(obj);  break;
                 }
             }
 
             watch_objs_raw_ = objs_raw.ToArray();
             watch_objs_view_ = objs_view.ToArray();
+            watch_objs_draw_ = objs_draw.ToArray();
+        }
+
+        private void PacketInputAction(IEnumerable<WatchObject> watch_objs, IEnumerable<PacketObject> packets)
+        {
+            if (watch_objs != null) {
+                var detect = false;
+
+                foreach (var obj in watch_objs) {
+                    obj.Input(packets, ref detect);
+                }
+
+                if (detect) {
+                    UpdateWatchStatus();
+                }
+            }
         }
 
         private void OnRawPacketEntried(IEnumerable<PacketObject> packets)
         {
-            if (watch_objs_raw_ != null) {
-                foreach (var obj in watch_objs_raw_) {
-                    obj.Input(packets);
-                }
-            }
+            PacketInputAction(watch_objs_raw_, packets);
         }
 
         private void OnDrawPacketEntried(IEnumerable<PacketObject> packets)
         {
-            if (watch_objs_view_ != null) {
-                foreach (var obj in watch_objs_view_) {
-                    obj.Input(packets);
+            PacketInputAction(watch_objs_view_, packets);
+        }
+
+        private void OnDrawPacketScanning(IEnumerable<PacketObject> packets)
+        {
+            PacketInputAction(watch_objs_draw_, packets);
+        }
+
+        private void DrawPacketClearedAction(IEnumerable<WatchObject> watch_objs)
+        {
+            if (watch_objs != null) {
+                foreach (var obj in watch_objs) {
+                    obj.StatusClear();
                 }
             }
+        }
+
+        private void OnDrawPacketCleared()
+        {
+            DrawPacketClearedAction(watch_objs_raw_);
+            DrawPacketClearedAction(watch_objs_view_);
+            DrawPacketClearedAction(watch_objs_draw_);
+
+            UpdateWatchStatus();
         }
 
         private void DGView_WatchList_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
@@ -485,8 +617,10 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void DGView_WatchList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            UpdateWatchRule(e.RowIndex);
-            BuildWatchRule();
+            if (e.ColumnIndex != (int)ColumnId.DetectCount) {
+                UpdateWatchRule(e.RowIndex);
+                BuildWatchRule();
+            }
         }
 
         private void DGView_WatchList_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)

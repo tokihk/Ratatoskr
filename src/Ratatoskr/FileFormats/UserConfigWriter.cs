@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ratatoskr.FileFormats
+namespace RtsCore.Framework.FileFormat
 {
     internal class UserConfigWriter : FileFormatWriter
     {

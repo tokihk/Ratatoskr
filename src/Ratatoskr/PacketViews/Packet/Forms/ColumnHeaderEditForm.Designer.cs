@@ -154,7 +154,7 @@
             this.groupBox6.Controls.Add(this.CBox_SelectItem_ItemType);
             this.groupBox6.Location = new System.Drawing.Point(215, 18);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(160, 43);
+            this.groupBox6.Size = new System.Drawing.Size(260, 43);
             this.groupBox6.TabIndex = 2;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Item Type";
@@ -167,7 +167,7 @@
             this.CBox_SelectItem_ItemType.FormattingEnabled = true;
             this.CBox_SelectItem_ItemType.Location = new System.Drawing.Point(3, 15);
             this.CBox_SelectItem_ItemType.Name = "CBox_SelectItem_ItemType";
-            this.CBox_SelectItem_ItemType.Size = new System.Drawing.Size(154, 20);
+            this.CBox_SelectItem_ItemType.Size = new System.Drawing.Size(254, 20);
             this.CBox_SelectItem_ItemType.TabIndex = 0;
             // 
             // groupBox5

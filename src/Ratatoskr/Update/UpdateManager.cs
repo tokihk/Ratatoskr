@@ -101,7 +101,7 @@ namespace Ratatoskr.Update
             /* アプリケーションリストをダウンロードするまで待つ */
             if (!downloader_.IsComplete)return;
 
-            var app_infos = AppVersionFileParser.ParseFromXml(downloader_.ResultString);
+            var app_infos = SystemInfo.ParseFromXml(downloader_.ResultString);
 
             /* バージョンリストが解析できなかった場合は終了 */
             if (app_infos == null) {

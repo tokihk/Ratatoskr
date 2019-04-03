@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms.Controls;
+using RtsCore.Framework.Controls;
 using RtsCore.Framework.PacketFilter;
 using RtsCore.Framework.PacketConverter;
 using RtsCore.Packet;
@@ -29,8 +30,7 @@ namespace Ratatoskr.PacketConverters.Filter
 
         private ToolTip TTip_Filter;
         private System.ComponentModel.IContainer components;
-        private System.Windows.Forms.ComboBox CBox_Exp;
-
+        private RoundComboBox CBox_Exp;
 
         public PacketConverterInstanceImpl() : base()
         {
@@ -54,7 +54,7 @@ namespace Ratatoskr.PacketConverters.Filter
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.CBox_Exp = new Ratatoskr.Forms.Controls.RoundComboBox();
+            this.CBox_Exp = new RoundComboBox();
             this.TTip_Filter = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
@@ -68,7 +68,7 @@ namespace Ratatoskr.PacketConverters.Filter
             this.CBox_Exp.Location = new System.Drawing.Point(3, 3);
             this.CBox_Exp.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.CBox_Exp.Name = "CBox_Exp";
-            this.CBox_Exp.Size = new System.Drawing.Size(601, 20);
+            this.CBox_Exp.Size = new System.Drawing.Size(602, 20);
             this.CBox_Exp.TabIndex = 1;
             this.CBox_Exp.TextChanged += new System.EventHandler(this.CBox_Exp_TextChanged);
             this.CBox_Exp.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CBox_Exp_KeyDown);
@@ -84,7 +84,7 @@ namespace Ratatoskr.PacketConverters.Filter
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.Controls.Add(this.CBox_Exp);
             this.Name = "PacketConverterInstanceImpl";
-            this.Size = new System.Drawing.Size(607, 24);
+            this.Size = new System.Drawing.Size(608, 24);
             this.ResumeLayout(false);
 
         }

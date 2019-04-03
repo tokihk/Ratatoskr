@@ -12,31 +12,32 @@ namespace Ratatoskr.Protocol
 {
     internal static class ProtocolManager
     {
-        private static List<ProtocolDecoderInfo> decoder_list_ = new List<ProtocolDecoderInfo>();
+        private static List<ProtocolEncoderClass> encoder_list_ = new List<ProtocolEncoderClass>();
+        private static List<ProtocolDecoderClass> decoder_list_ = new List<ProtocolDecoderClass>();
 
 
-        public static ProtocolDecoderInfo[] DecoderList
+        public static ProtocolEncoderClass[] GetEncoderList()
         {
-            get
-            {
-                return (decoder_list_.ToArray());
+            return (encoder_list_.ToArray());
+        }
+
+        public static ProtocolDecoderClass[] GetDecoderList()
+        {
+            return (decoder_list_.ToArray());
+        }
+
+        public static void AddEncoder(ProtocolEncoderClass prec)
+        {
+            lock (encoder_list_) {
+                encoder_list_.Add(prec);
             }
         }
 
-        public static void LoadFromPlugin(PluginInfo info)
+        public static void AddDecoder(ProtocolDecoderClass prdc)
         {
-            if (info == null)return;
-
-            if (!info.AssemblyType.IsSubclassOf(typeof(RtsCore.Protocol.ProtocolDecoder)))return;
-
-            var decoder = Activator.CreateInstance(info.AssemblyType) as ProtocolDecoder;
-
-            if (decoder == null)return;
-
-            /* 重複しているデコーダーは削除 */
-            decoder_list_.RemoveAll(item => item.ID == decoder.ID);
-
-            decoder_list_.Add(new ProtocolDecoderInfo(info, decoder));
+            lock (decoder_list_) {
+                decoder_list_.Add(prdc);
+            }
         }
     }
 }

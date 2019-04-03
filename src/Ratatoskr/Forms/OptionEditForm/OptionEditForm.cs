@@ -18,6 +18,7 @@ namespace Ratatoskr.Forms.OptionEditForm
         private enum PageId
         {
             None,
+            Color,
             Language,
             AutoUpdate,
             AutoTimeStamp,
@@ -60,7 +61,8 @@ namespace Ratatoskr.Forms.OptionEditForm
         private void InitializePageMenu()
         {
             var items = new [] {
-//                new { level = 0, text = "Application",   page = PageId.None },
+                new { level = 0, text = "Application",   page = PageId.None },
+                new { level = 1, text = "Color",         page = PageId.Color },
 //                new { level = 1, text = "Language",               page = PageId.Language },
 //                new { level = 1, text = "Auto update",           page = PageId.AutoUpdate },
                 new { level = 0, text = "Tool",           page = PageId.None },
@@ -130,6 +132,7 @@ namespace Ratatoskr.Forms.OptionEditForm
 
             } else {
                 switch (id) {
+                    case PageId.Color:               return (new OptionEditPage_Color());
                     case PageId.Language:            return (new OptionEditPage_Language());
                     case PageId.AutoUpdate:          return (new OptionEditPage_AutoUpdate());
                     case PageId.AutoTimeStamp:       return (new OptionEditPage_AutoTimeStamp());

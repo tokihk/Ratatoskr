@@ -29,7 +29,7 @@
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Btn_Send = new System.Windows.Forms.Button();
-            this.CBox_FileList = new Ratatoskr.Forms.Controls.RoundComboBox();
+            this.CBox_FileList = new RtsCore.Framework.Controls.RoundComboBox();
             this.Btn_FileSelect = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -280,6 +280,6 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown Num_SendDelay;
-        private Controls.RoundComboBox CBox_FileList;
+        private RtsCore.Framework.Controls.RoundComboBox CBox_FileList;
     }
 }

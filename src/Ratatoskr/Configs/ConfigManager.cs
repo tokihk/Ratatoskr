@@ -9,7 +9,7 @@ using Ratatoskr.Configs.FixedConfigs;
 using Ratatoskr.Configs.LanguageConfigs;
 using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.FileFormats;
+using RtsCore.Framework.FileFormat;
 using Ratatoskr.Forms;
 using RtsCore.Framework.Native;
 

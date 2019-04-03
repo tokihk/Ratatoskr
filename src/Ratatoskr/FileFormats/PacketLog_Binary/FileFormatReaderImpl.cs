@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RtsCore.Generic;
+using RtsCore.Framework.FileFormat;
 using RtsCore.Packet;
 
 namespace Ratatoskr.FileFormats.PacketLog_Binary

@@ -33,7 +33,7 @@
             this.RBtn_ModeLog = new System.Windows.Forms.RadioButton();
             this.RBtn_ModeFile = new System.Windows.Forms.RadioButton();
             this.RBtn_ModeData = new System.Windows.Forms.RadioButton();
-            this.CBox_TargetList = new Ratatoskr.Forms.Controls.ComboBoxEx();
+            this.CBox_TargetList = new RtsCore.Framework.Controls.ComboBoxEx();
             this.GBox_Target.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +63,7 @@
             this.RBtn_ModeLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.RBtn_ModeLog.Appearance = System.Windows.Forms.Appearance.Button;
             this.RBtn_ModeLog.FlatAppearance.BorderSize = 0;
-            this.RBtn_ModeLog.Image = global::Ratatoskr.Properties.Resources.play2_32x32;
+            this.RBtn_ModeLog.Image = RtsCore.Resource.Images.play2_32x32;
             this.RBtn_ModeLog.Location = new System.Drawing.Point(730, 5);
             this.RBtn_ModeLog.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
             this.RBtn_ModeLog.Name = "RBtn_ModeLog";
@@ -77,7 +77,7 @@
             this.RBtn_ModeFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.RBtn_ModeFile.Appearance = System.Windows.Forms.Appearance.Button;
             this.RBtn_ModeFile.FlatAppearance.BorderSize = 0;
-            this.RBtn_ModeFile.Image = global::Ratatoskr.Properties.Resources.file_32x32;
+            this.RBtn_ModeFile.Image = RtsCore.Resource.Images.file_32x32;
             this.RBtn_ModeFile.Location = new System.Drawing.Point(686, 5);
             this.RBtn_ModeFile.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
             this.RBtn_ModeFile.Name = "RBtn_ModeFile";
@@ -91,7 +91,7 @@
             this.RBtn_ModeData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.RBtn_ModeData.Appearance = System.Windows.Forms.Appearance.Button;
             this.RBtn_ModeData.Checked = true;
-            this.RBtn_ModeData.Image = global::Ratatoskr.Properties.Resources.pen_32x32;
+            this.RBtn_ModeData.Image = RtsCore.Resource.Images.pen_32x32;
             this.RBtn_ModeData.Location = new System.Drawing.Point(642, 5);
             this.RBtn_ModeData.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
             this.RBtn_ModeData.Name = "RBtn_ModeData";
@@ -135,7 +135,7 @@
 
         #endregion
         private System.Windows.Forms.GroupBox GBox_Target;
-        private Controls.ComboBoxEx CBox_TargetList;
+        private RtsCore.Framework.Controls.ComboBoxEx CBox_TargetList;
         private System.Windows.Forms.Panel Panel_Contents;
         private System.Windows.Forms.RadioButton RBtn_ModeData;
         private System.Windows.Forms.RadioButton RBtn_ModeFile;

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RtsCore.Packet;
 using RtsCore.Utility;
+using RtsCore.Framework.FileFormat;
 
 namespace Ratatoskr.FileFormats.PacketLog_Csv
 {

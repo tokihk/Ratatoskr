@@ -24,7 +24,8 @@ namespace Ratatoskr.Gate
 
 
         public delegate void StatusChangedDelegate(object sender, EventArgs e);
-        public event StatusChangedDelegate StatusChanged = delegate(object sender, EventArgs e) { };
+        public static event StatusChangedDelegate AnyStatusChanged = delegate(object sender, EventArgs e) { };
+        public event StatusChangedDelegate        StatusChanged = delegate(object sender, EventArgs e) { };
 
         public delegate void SendBufferEmptyDelegate(object sender, EventArgs e);
         public event SendBufferEmptyDelegate SendBufferEmpty = delegate(object sender, EventArgs e) { };
@@ -150,7 +151,7 @@ namespace Ratatoskr.Gate
                 || (devc_id != devi_.Class.ID)
                 || (!ClassUtil.Compare(devi_.Property, devp))
             ) {
-                SetupDevice(GateManager.CreateDeviceObject(devconf, devc_id, devp));
+                SetupDevice(DeviceManager.CreateDeviceObject(devconf, devc_id, devp));
             }
 
             ApplyGateProperty();
@@ -245,6 +246,7 @@ namespace Ratatoskr.Gate
         private void OnDeviceStatusChanged()
         {
             StatusChanged(this, EventArgs.Empty);
+            AnyStatusChanged(this, EventArgs.Empty);
         }
 
         private void OnDeviceSendBufferEmpty()

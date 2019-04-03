@@ -34,6 +34,12 @@ namespace Ratatoskr.Devices.UsbMonitor
             ChkBox_Filter_BulkTransfer.Checked        = devp_.Filter_BulkTransfer.Value;
             ChkBox_Filter_InterruptTransfer.Checked   = devp_.Filter_InterruptTransfer.Value;
             ChkBox_Filter_IsochronousTransfer.Checked = devp_.Filter_IsochronousTransfer.Value;
+
+            ChkBox_Info_UsbDeviceID.Checked = devp_.InfoOut_UsbDeviceID.Value;
+            ChkBox_Info_EndPoint.Checked = devp_.InfoOut_EndPoint.Value;
+            ChkBox_Info_IrpID.Checked = devp_.InfoOut_IrpID.Value;
+            ChkBox_Info_FuncType.Checked = devp_.InfoOut_FunctionType.Value;
+            ChkBox_Info_FuncParam.Checked = devp_.InfoOut_FunctionParam.Value;
         }
 
         private void InitializeDeviceList()
@@ -48,6 +54,11 @@ namespace Ratatoskr.Devices.UsbMonitor
                 }
             }
             CBox_DeviceList.EndUpdate();
+        }
+
+        private void UpdateView()
+        {
+            ChkBox_Info_FuncParam.Enabled = ChkBox_Info_FuncType.Checked;
         }
 
         private void SelectDevice(string value)
@@ -70,6 +81,12 @@ namespace Ratatoskr.Devices.UsbMonitor
             devp_.Filter_BulkTransfer.Value = ChkBox_Filter_BulkTransfer.Checked;
             devp_.Filter_InterruptTransfer.Value = ChkBox_Filter_InterruptTransfer.Checked;
             devp_.Filter_IsochronousTransfer.Value = ChkBox_Filter_IsochronousTransfer.Checked;
+
+            devp_.InfoOut_UsbDeviceID.Value = ChkBox_Info_UsbDeviceID.Checked;
+            devp_.InfoOut_EndPoint.Value = ChkBox_Info_EndPoint.Checked;
+            devp_.InfoOut_IrpID.Value = ChkBox_Info_IrpID.Checked;
+            devp_.InfoOut_FunctionType.Value = ChkBox_Info_FuncType.Checked;
+            devp_.InfoOut_FunctionParam.Value = ChkBox_Info_FuncParam.Checked;
         }
 
         private void CBox_DeviceList_SelectedIndexChanged(object sender, EventArgs e)
@@ -79,6 +96,11 @@ namespace Ratatoskr.Devices.UsbMonitor
             if (item == null)return;
 
 //            USBPcapCMD.enumerate_attached_devices(item.DeviceName, USBPcapCMD.EnumerationType.ENUMERATE_USBPCAPCMD);
+        }
+
+        private void ChkBox_Info_FuncType_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateView();
         }
     }
 }

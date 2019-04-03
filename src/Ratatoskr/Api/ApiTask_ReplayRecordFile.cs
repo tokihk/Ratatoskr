@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.FileFormats;
-using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using RtsCore.Packet;
+using RtsCore.Framework.FileFormat;
 using RtsCore.Framework.PacketFilter;
+using RtsCore.Packet;
 
 namespace Ratatoskr.Api
 {

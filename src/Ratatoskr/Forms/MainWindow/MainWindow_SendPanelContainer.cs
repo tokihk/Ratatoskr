@@ -10,8 +10,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.Forms.Controls;
 using Ratatoskr.Gate;
+using RtsCore.Framework.Controls;
+using RtsCore.Framework.Device;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -29,9 +30,17 @@ namespace Ratatoskr.Forms.MainWindow
         {
             InitializeComponent();
 
+            Disposed += OnDisposed;
+            GateObject.AnyStatusChanged += GateObject_AnyStatusChanged;
+
             SDPanel_List[(int)SendPanelType.Data] = new MainWindow_SendDataPanel(this);
             SDPanel_List[(int)SendPanelType.File] = new MainWindow_SendFilePanel(this);
             SDPanel_List[(int)SendPanelType.Log] = new MainWindow_SendLogPanel(this);
+        }
+
+        private void OnDisposed(object sender, EventArgs e)
+        {
+            GateObject.AnyStatusChanged -= GateObject_AnyStatusChanged;
         }
 
         public void LoadConfig()
@@ -153,9 +162,16 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void UpdateTargetView()
         {
+            if (InvokeRequired) {
+                Invoke((MethodInvoker)UpdateTargetView);
+                return;
+            }
+
             /* 表示更新 */
             if (CBox_TargetList.Text.Length > 0) {
-                CBox_TargetList.BackColor = RtsCore.Parameter.COLOR_OK;
+                CBox_TargetList.BackColor = (GateManager.FindGateObjectFromWildcardAlias(CBox_TargetList.Text).Any(gate => gate.ConnectStatus == ConnectState.Connected))
+                                          ? (RtsCore.Parameter.COLOR_OK)
+                                          : (RtsCore.Parameter.COLOR_WARNING);
             } else {
                 CBox_TargetList.BackColor = RtsCore.Parameter.COLOR_NG;
             }
@@ -256,6 +272,11 @@ namespace Ratatoskr.Forms.MainWindow
             BackupSendPanelTypeConfig();
 
             UpdateSendPanelContents();
+        }
+
+        private void GateObject_AnyStatusChanged(object sender, EventArgs e)
+        {
+            UpdateTargetView();
         }
     }
 }

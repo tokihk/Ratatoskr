@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Drivers.WinPcap;
+using RtsCore.Framework.FileFormat;
 
 namespace Ratatoskr.FileFormats.PacketLog_Pcap
 {

@@ -36,17 +36,21 @@
             this.PictBox_Icon = new System.Windows.Forms.PictureBox();
             this.TabPage_License = new System.Windows.Forms.TabPage();
             this.RTBox_LicenseList = new System.Windows.Forms.RichTextBox();
+            this.TabPage_Plugin = new System.Windows.Forms.TabPage();
+            this.TView_PluginList = new System.Windows.Forms.TreeView();
             this.tabControl1.SuspendLayout();
             this.TabPage_About.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Logo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Icon)).BeginInit();
             this.TabPage_License.SuspendLayout();
+            this.TabPage_Plugin.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.TabPage_About);
             this.tabControl1.Controls.Add(this.TabPage_License);
+            this.tabControl1.Controls.Add(this.TabPage_Plugin);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.ItemSize = new System.Drawing.Size(160, 18);
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -141,6 +145,25 @@
             this.RTBox_LicenseList.TabIndex = 0;
             this.RTBox_LicenseList.Text = "";
             // 
+            // TabPage_Plugin
+            // 
+            this.TabPage_Plugin.Controls.Add(this.TView_PluginList);
+            this.TabPage_Plugin.Location = new System.Drawing.Point(4, 22);
+            this.TabPage_Plugin.Name = "TabPage_Plugin";
+            this.TabPage_Plugin.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPage_Plugin.Size = new System.Drawing.Size(496, 146);
+            this.TabPage_Plugin.TabIndex = 2;
+            this.TabPage_Plugin.Text = "Plugin";
+            this.TabPage_Plugin.UseVisualStyleBackColor = true;
+            // 
+            // TView_PluginList
+            // 
+            this.TView_PluginList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TView_PluginList.Location = new System.Drawing.Point(3, 3);
+            this.TView_PluginList.Name = "TView_PluginList";
+            this.TView_PluginList.Size = new System.Drawing.Size(490, 140);
+            this.TView_PluginList.TabIndex = 0;
+            // 
             // AboutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -160,6 +183,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Logo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictBox_Icon)).EndInit();
             this.TabPage_License.ResumeLayout(false);
+            this.TabPage_Plugin.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -175,5 +199,7 @@
         private System.Windows.Forms.Label Label_Copyright;
         private System.Windows.Forms.RichTextBox RTBox_LicenseList;
         private System.Windows.Forms.LinkLabel LLabel_HomePage;
+        private System.Windows.Forms.TabPage TabPage_Plugin;
+        private System.Windows.Forms.TreeView TView_PluginList;
     }
 }

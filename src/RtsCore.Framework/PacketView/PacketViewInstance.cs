@@ -34,7 +34,7 @@ namespace RtsCore.Framework.PacketView
             InitializeComponent();
         }
 
-        public Guid         ID       { get; }
+        public Guid               ID       { get; }
         public PacketViewClass    Class    { get; }
         public PacketViewProperty Property { get; }
 
@@ -59,6 +59,10 @@ namespace RtsCore.Framework.PacketView
         protected void RedrawPacket()
         {
             viewm_.RedrawPacket();
+        }
+
+        protected void AddViewPacket()
+        {
         }
 
         internal void BeginDrawPacket(bool auto_scroll)

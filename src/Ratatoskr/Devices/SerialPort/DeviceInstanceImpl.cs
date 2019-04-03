@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ratatoskr.Drivers.SerialPort;
 using RtsCore.Framework.Device;
+using RtsCore.Framework.Drivers.SerialPort;
 using RtsCore.Generic;
 using RtsCore.Packet;
 
@@ -71,7 +71,7 @@ namespace Ratatoskr.Devices.SerialPort
         private IAsyncResult device_task_recv_ar_;
 #endif
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+        public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
             : base(devm, devconf, devd, devp)
         {
             port_.CommStatusUpdated += OnCommStatusUpdated;

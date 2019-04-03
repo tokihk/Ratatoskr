@@ -58,7 +58,8 @@ namespace Ratatoskr.Forms
         public delegate void PacketEventHandler(IEnumerable<PacketObject> packets);
 
         public static event EventHandler       DrawPacketCleared = delegate() { };
-        public static event PacketEventHandler DrawPacketEntried = delegate(IEnumerable<PacketObject> packets) { };
+        public static event PacketEventHandler DrawPacketEntried;
+        public static event PacketEventHandler DrawPacketScanning;
 
 
         public static void Startup()
@@ -410,6 +411,7 @@ namespace Ratatoskr.Forms
 
             UpdatePacketCount();
 
+            /* イベント通知 */
             DrawPacketCleared();
         }
 
@@ -534,8 +536,9 @@ namespace Ratatoskr.Forms
 
             /* イベント通知 */
             if (!redraw_state_) {
-                DrawPacketEntried(packets);
+                DrawPacketEntried?.Invoke(packets);
             }
+            DrawPacketScanning?.Invoke(packets);
         }
 
         private static void UpdatePacketCount()

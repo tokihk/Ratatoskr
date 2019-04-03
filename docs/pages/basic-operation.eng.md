@@ -1,74 +1,81 @@
-# Basic usage
+<!--- Update: 2019.03.06 --->
+<link href="../params.css" rel="stylesheet"></link>
 
-## 1.Add packet view
+# Basic Operation
 
-You can add any packet view from `[Menu Bar]->[View]->[Add packet view]`.
+## 1. Gate Setting
 
-## 2.Set the gate
+At the initial startup, the function is not set on the gate. <br>
+You can set the function from the gate button located at the top to the gate.
 
-You can set the gate from the button of the gate bar.
+Refer to [Gate Device](gate-device.jpn.html) for the assignable functions.
 
-| Icon | state | operation method |
-| :---: | :---: | --- |
-| ![](../_images/gate-empty.png) | Not set | Mouse Left /Right click:Gate edit |
-| ![](../_images/gate-off.png) | Configured | Left mouse click:Connect /disconnect<br>Mouse right click:Gate edit<br>Mouse right hold:Gate reset | -|
+The operation method varies depending on the state of the gate. <br>
+The state of the gate and how to operate are as follows.
 
-| Icon | State |
-|:---:|:---:|
-|![](../_images/connect_on.png)| Connection status |
-|![](../_images/connect_busy.png)| Preparing for connection |
-|![](../_images/connect_off.png)| Disconnected state |
+| Icon                           | State      | Operation |
+| :---:                              | :---:     | --- |
+| ![](../_images/ss-gate-empty.png)    | No setup   | Left/Right Click: Edit<br> |
+| ![](../_images/ss-gate-allocate.png) | Configured | Left Click: Connect/Disconnect<br>Right Click: Edit<br>Right Hold: Clear<br> |
 
-## 3.Send
+| Icon                          | State      |
+| :---: | :---: |
+| ![](../_images/connect_on.png)   | Connected   |
+| ![](../_images/connect_busy.png) | Connecting / Disconnecting |
+| ![](../_images/connect_off.png)  | Disconnected   |
+
+## 2. Data send 
 
 Data can be sent from the transmission control box at the bottom of the frame.
 
-![](../_images/send_control_box.png)
+![](../_images/ss-send-panel.png)
 
-The destination gate is specified with `wild card 'in`Target alias`.
+The destination gate is specified with wild card in `Target alias`.
 
-* ![](../_images/pen_32x32.png) **Edit transmission mode**
+Refer to [Send Mode](send-mode.jpn.html) for how to use each mode.
 
-    Enter in hexadecimal notation and send with Enter key.
-    It recognizes it as a separate data with the 3rd character or space.
+## 3. パケットビューを追加
 
-    Enclose it with `'...'`to convert the enclosed character to character code.
-    You can change the character code by enclosing it with `<...>`.(Default is utf-8)
+`[Menu Bar] -> [View] -> [Add packet view]`　から任意のパケットビューを追加できます。
 
-    If you check `Preview`, you can check the data actually sent.
+パケットビューについては[Packet View]を参照してください。
 
-| Input data | Transmission data |
-| :--- | :--- |
-| `0123456789`|`01 23 45 67 89 `|
-| `0 1 2 3 4`|`00 01 02 03 04`|
-| `02'test '03` | `02 74 65 73 74 03 `|
-| `02 'あいうえお'03 ` | `02 E 3 81 82 E 3 81 84 E 3 81 86 E 3 81 88 E 3 81 8 A 03` |
-| `02 <shift-jis>'あいうえお'03` |  `02 82 A 0 82 A 2 82 A 4 82 A 6 82 A 8 03` |
+## 4. 受信する
 
-<br>
+外部からゲートにデータが入力されると、パケットビューにデータが表示されます。
 
-* ![](../_images/file_32x32.png) **File transmission mode**
+# 便利な使い方
 
-    Drag and drop transmission data or select from the file selection dialog.<br>
-    You can not drag and drop when in administrator mode.<br>
-    Send with Enter key.
+## パケット変換
 
-## 4.Receive
+<span class="app-name" />には送信/受信したパケットを、リアルタイムで加工する機能が備わっています。<br>
+変換機能は自由に組み合わせができ、データ解析に非常に役立ちます。<br>
 
-When data is input to the gate from the outside, data is displayed in the packet view.
+変換器は `[Menu Bar] -> [View] -> [Add converter]` から追加します。<br>
+追加した変換器はゲートボタンバーの下に追加されていきます。
 
-# Useful usage (real time conversion)
+割り当て可能な変換器については[Packet Converter]を参照してください。
 
-Ratatoskr has a function to process transmitted /received packets in real time.
-Conversion functions can be freely combined, which is very useful for data analysis.
+変換順序は上に配置されている変換器から順番に処理されます。<br>
+追加した変換器は左のバーをドラッグすることで順番を入れ替えることができます。
 
-The converter is added from `[Menu Bar]->[View]->[Add converter]`.
-The added transducer will be added under the gate button bar.
+変換器の対象となるパケットは変換機毎に指定できます。<br>
+対象パケットを指定しなかった場合は変換機を通過する全パケットが対象です。
 
-![](../_images/converter.png)
+## プロファイル
 
-The conversion order is processed sequentially from the transducers arranged above.
-You can swap the added transducer by dragging the left bar.
+ゲート設定、パケットビュー設定、パケット変換設定をプロファイルとして管理し、自由に切り替えることができます。<br>
 
-Packets subject to converter can be specified for each converter.
-If no target packet is specified, all packets passing through the converter are targeted.
+メニュー右上のプロファイルメニューで操作します。
+
+![](../_images/ss-profile.png)
+
+## スクリプト
+
+スクリプトでゲート操作を制御することができます。
+
+言語仕様およびサンプルは[Script - Code Style](script-codestyle.jpn.html)を参照してください。
+
+APIインターフェースは[Script - API](script-api.jpn.html)を参照してください。
+
+<br><br>

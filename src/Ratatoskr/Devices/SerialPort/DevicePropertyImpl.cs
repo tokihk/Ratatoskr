@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using RtsCore.Config.Types;
 using RtsCore.Framework.Device;
+using RtsCore.Framework.Drivers.SerialPort;
 using RtsCore.Generic;
-using Ratatoskr.Drivers.SerialPort;
 
 namespace Ratatoskr.Devices.SerialPort
 {

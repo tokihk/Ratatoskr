@@ -42,13 +42,6 @@ namespace Ratatoskr.PacketViews.Packet
         public EnumConfig<CharCodeType>   CharCode        { get; } = new EnumConfig<CharCodeType>(CharCodeType.UTF8);
         public StringConfig               CustomFormat    { get; } = new StringConfig("A: ${HEXTEXT:BYTE:0:8} B: ${BITTEXT:BIT:0:16} C: ${UINT16B:BIT:0:12}");
 
-        public BoolConfig ExtViewSelectPacketCount { get; } = new BoolConfig(true);
-        public BoolConfig ExtViewSelectTotalSize   { get; } = new BoolConfig(true);
-        public BoolConfig ExtViewFirstPacketInfo   { get; } = new BoolConfig(true);
-        public BoolConfig ExtViewLastPacketInfo    { get; } = new BoolConfig(true);
-        public BoolConfig ExtViewSelectDelta       { get; } = new BoolConfig(true);
-        public BoolConfig ExtViewSelectRate        { get; } = new BoolConfig(true);
-
 
         public PacketViewPropertyImpl()
         {

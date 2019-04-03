@@ -5,7 +5,7 @@ set DIR_TARGET=src
 set DIR_OUTPUT=output
 
 set APP_NAME=Ratatoskr
-set APP_VERSION=0.5.0.0
+set APP_VERSION=0.6.0.0
 set OUTPUT_NAME=%APP_NAME%_%APP_VERSION%
 
 set BIN_INNOSETUP=C:\Program Files (x86)\Inno Setup 5\ISCC.exe
@@ -21,9 +21,9 @@ if exist "%DIR_TARGET%" (
 rem 必要なファイルをビルドディレクトリから収集
 copy /Y ReleaseNote.txt .\src
 
-copy /Y ..\build\release\*.exe .\src
-copy /Y ..\build\release\*.exe.config .\src
-copy /Y ..\build\release\*.dll .\src
+copy /Y ..\build\Release\*.exe .\src
+copy /Y ..\build\Release\*.exe.config .\src
+copy /Y ..\build\Release\*.dll .\src
 
 xcopy /Y /E /R /I /K ..\docs .\src\docs
 

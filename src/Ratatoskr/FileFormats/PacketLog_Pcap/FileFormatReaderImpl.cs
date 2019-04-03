@@ -8,6 +8,7 @@ using Ratatoskr.Devices.Ethernet;
 using RtsCore.Packet;
 using Ratatoskr.Drivers.WinPcap;
 using SharpPcap.LibPcap;
+using RtsCore.Framework.FileFormat;
 
 namespace Ratatoskr.FileFormats.PacketLog_Pcap
 {

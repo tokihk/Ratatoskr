@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using RtsCore.Framework.Device;
 using RtsCore.Utility;
+using Ratatoskr.Devices;
 using Ratatoskr.Gate;
 
 namespace Ratatoskr.Forms.Dialog
@@ -54,7 +55,7 @@ namespace Ratatoskr.Forms.Dialog
                 CBox_DeviceType.Items.Clear();
 
                 /* デバイスを追加 */
-                CBox_DeviceType.Items.AddRange(GateManager.GetDeviceList());
+                CBox_DeviceType.Items.AddRange(DeviceManager.GetDeviceList());
             }
             CBox_DeviceType.EndUpdate();
         }
@@ -67,7 +68,7 @@ namespace Ratatoskr.Forms.Dialog
         private void UpdateDevice()
         {
             /* デバイスクラス読み込み */
-            devc_ = GateManager.FindDeviceClass(devc_id_);
+            devc_ = DeviceManager.FindDeviceClass(devc_id_);
 
             /* 管理者権限専用の場合は注意文を表示 */
             if ((devc_ != null) && (devc_.AdminOnly) && (!Program.IsAdministratorMode)) {

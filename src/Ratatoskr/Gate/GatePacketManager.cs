@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms;
-using Ratatoskr.FileFormats;
+using RtsCore.Framework.FileFormat;
 using Ratatoskr.Gate.AutoTimeStamp;
 using Ratatoskr.Gate.AutoLogger;
 using RtsCore.Framework.PacketConverter;

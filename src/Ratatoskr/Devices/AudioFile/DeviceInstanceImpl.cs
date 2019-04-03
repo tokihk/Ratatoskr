@@ -31,7 +31,7 @@ namespace Ratatoskr.Devices.AudioFile
         private byte[]              sampling_buffer_;
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+        public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
             : base(devm, devconf, devd, devp)
         {
             devp_ = devp as DevicePropertyImpl;

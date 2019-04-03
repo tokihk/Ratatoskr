@@ -39,8 +39,8 @@ namespace Ratatoskr.Forms.Controls
 
             var image_list = new ImageList();
 
-            image_list.Images.Add(TreeViewIconId.Directory.ToString(), Properties.Resources.folder_16x16);
-            image_list.Images.Add(TreeViewIconId.File.ToString(), Properties.Resources.file_16x16);
+            image_list.Images.Add(TreeViewIconId.Directory.ToString(), RtsCore.Resource.Images.folder_16x16);
+            image_list.Images.Add(TreeViewIconId.File.ToString(), RtsCore.Resource.Images.file_16x16);
 
             TView_FileList.ImageList = image_list;
 
@@ -75,16 +75,13 @@ namespace Ratatoskr.Forms.Controls
 
         private TreeNode CreateFileNode(string name, string url, uint scan_level = 0)
         {
-            var node = new TreeNode();
+            var node = new TreeNode()
+            {
+                Text     = name,
+                Tag      = new TreeNodeInfo() { BuildTime = DateTime.Now, Url = url },
+                ImageKey = (Directory.Exists(url)) ? (TreeViewIconId.Directory.ToString()) : (TreeViewIconId.File.ToString()),
+            };
 
-            node.Text = name;
-            node.Tag = new TreeNodeInfo() { BuildTime = DateTime.Now, Url = url };
-
-            if (Directory.Exists(url)) {
-                node.ImageKey = TreeViewIconId.Directory.ToString();
-            } else {
-                node.ImageKey = TreeViewIconId.File.ToString();
-            }
             node.SelectedImageKey = node.ImageKey;
 
             UpdateFileNode(node, scan_level);
@@ -109,11 +106,9 @@ namespace Ratatoskr.Forms.Controls
 
         private void UpdateFileNode(TreeNode node, uint scan_level = 0)
         {
-            var node_info = node.Tag as TreeNodeInfo;
-
-            if (node_info == null)return;
-
-            UpdateFileNode(node_info.Url, node.Nodes, scan_level);
+            if (node.Tag is TreeNodeInfo node_info) {
+                UpdateFileNode(node_info.Url, node.Nodes, scan_level);
+            }
         }
 
         private void Watcher_Updated(object sender, FileSystemEventArgs e)
@@ -138,11 +133,9 @@ namespace Ratatoskr.Forms.Controls
 
         private void TView_FileList_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            var node_info = e.Node.Tag as TreeNodeInfo;
-
-            if (node_info == null)return;
-
-            OnFileDoubleClick(node_info.Url);
+            if (e.Node.Tag is TreeNodeInfo node_info) {
+                OnFileDoubleClick(node_info.Url);
+            }
         }
 
         private void Btn_OpenExplorer_Click(object sender, EventArgs e)

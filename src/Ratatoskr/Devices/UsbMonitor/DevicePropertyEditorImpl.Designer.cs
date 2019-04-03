@@ -34,8 +34,15 @@
             this.ChkBox_Filter_BulkTransfer = new System.Windows.Forms.CheckBox();
             this.ChkBox_Filter_ControlTransfer = new System.Windows.Forms.CheckBox();
             this.ChkBox_Filter_IsochronousTransfer = new System.Windows.Forms.CheckBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.ChkBox_Info_FuncParam = new System.Windows.Forms.CheckBox();
+            this.ChkBox_Info_IrpID = new System.Windows.Forms.CheckBox();
+            this.ChkBox_Info_EndPoint = new System.Windows.Forms.CheckBox();
+            this.ChkBox_Info_UsbDeviceID = new System.Windows.Forms.CheckBox();
+            this.ChkBox_Info_FuncType = new System.Windows.Forms.CheckBox();
             this.GBox_DeviceList.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // GBox_DeviceList
@@ -114,17 +121,85 @@
             this.ChkBox_Filter_IsochronousTransfer.Text = "Isochronous transfer";
             this.ChkBox_Filter_IsochronousTransfer.UseVisualStyleBackColor = true;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.ChkBox_Info_FuncParam);
+            this.groupBox2.Controls.Add(this.ChkBox_Info_IrpID);
+            this.groupBox2.Controls.Add(this.ChkBox_Info_EndPoint);
+            this.groupBox2.Controls.Add(this.ChkBox_Info_UsbDeviceID);
+            this.groupBox2.Controls.Add(this.ChkBox_Info_FuncType);
+            this.groupBox2.Location = new System.Drawing.Point(210, 52);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(201, 131);
+            this.groupBox2.TabIndex = 8;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Information Display setting";
+            // 
+            // ChkBox_Info_FuncParam
+            // 
+            this.ChkBox_Info_FuncParam.AutoSize = true;
+            this.ChkBox_Info_FuncParam.Location = new System.Drawing.Point(6, 106);
+            this.ChkBox_Info_FuncParam.Name = "ChkBox_Info_FuncParam";
+            this.ChkBox_Info_FuncParam.Size = new System.Drawing.Size(124, 16);
+            this.ChkBox_Info_FuncParam.TabIndex = 4;
+            this.ChkBox_Info_FuncParam.Text = "Function Parameter";
+            this.ChkBox_Info_FuncParam.UseVisualStyleBackColor = true;
+            // 
+            // ChkBox_Info_IrpID
+            // 
+            this.ChkBox_Info_IrpID.AutoSize = true;
+            this.ChkBox_Info_IrpID.Location = new System.Drawing.Point(6, 62);
+            this.ChkBox_Info_IrpID.Name = "ChkBox_Info_IrpID";
+            this.ChkBox_Info_IrpID.Size = new System.Drawing.Size(140, 16);
+            this.ChkBox_Info_IrpID.TabIndex = 3;
+            this.ChkBox_Info_IrpID.Text = "I/O Request packet ID";
+            this.ChkBox_Info_IrpID.UseVisualStyleBackColor = true;
+            // 
+            // ChkBox_Info_EndPoint
+            // 
+            this.ChkBox_Info_EndPoint.AutoSize = true;
+            this.ChkBox_Info_EndPoint.Location = new System.Drawing.Point(6, 40);
+            this.ChkBox_Info_EndPoint.Name = "ChkBox_Info_EndPoint";
+            this.ChkBox_Info_EndPoint.Size = new System.Drawing.Size(73, 16);
+            this.ChkBox_Info_EndPoint.TabIndex = 2;
+            this.ChkBox_Info_EndPoint.Text = "End Point";
+            this.ChkBox_Info_EndPoint.UseVisualStyleBackColor = true;
+            // 
+            // ChkBox_Info_UsbDeviceID
+            // 
+            this.ChkBox_Info_UsbDeviceID.AutoSize = true;
+            this.ChkBox_Info_UsbDeviceID.Location = new System.Drawing.Point(6, 18);
+            this.ChkBox_Info_UsbDeviceID.Name = "ChkBox_Info_UsbDeviceID";
+            this.ChkBox_Info_UsbDeviceID.Size = new System.Drawing.Size(101, 16);
+            this.ChkBox_Info_UsbDeviceID.TabIndex = 1;
+            this.ChkBox_Info_UsbDeviceID.Text = "USB Device ID";
+            this.ChkBox_Info_UsbDeviceID.UseVisualStyleBackColor = true;
+            // 
+            // ChkBox_Info_FuncType
+            // 
+            this.ChkBox_Info_FuncType.AutoSize = true;
+            this.ChkBox_Info_FuncType.Location = new System.Drawing.Point(6, 84);
+            this.ChkBox_Info_FuncType.Name = "ChkBox_Info_FuncType";
+            this.ChkBox_Info_FuncType.Size = new System.Drawing.Size(97, 16);
+            this.ChkBox_Info_FuncType.TabIndex = 0;
+            this.ChkBox_Info_FuncType.Text = "Function Type";
+            this.ChkBox_Info_FuncType.UseVisualStyleBackColor = true;
+            this.ChkBox_Info_FuncType.CheckedChanged += new System.EventHandler(this.ChkBox_Info_FuncType_CheckedChanged);
+            // 
             // DevicePropertyEditorImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.GBox_DeviceList);
             this.Name = "DevicePropertyEditorImpl";
-            this.Size = new System.Drawing.Size(418, 169);
+            this.Size = new System.Drawing.Size(418, 332);
             this.GBox_DeviceList.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -137,5 +212,11 @@
         private System.Windows.Forms.CheckBox ChkBox_Filter_ControlTransfer;
         private System.Windows.Forms.CheckBox ChkBox_Filter_InterruptTransfer;
         private System.Windows.Forms.CheckBox ChkBox_Filter_BulkTransfer;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox ChkBox_Info_IrpID;
+        private System.Windows.Forms.CheckBox ChkBox_Info_EndPoint;
+        private System.Windows.Forms.CheckBox ChkBox_Info_UsbDeviceID;
+        private System.Windows.Forms.CheckBox ChkBox_Info_FuncType;
+        private System.Windows.Forms.CheckBox ChkBox_Info_FuncParam;
     }
 }

@@ -73,7 +73,7 @@ namespace RtsCore.Framework.Device
         public delegate void DataRateUpdatedHandler(object sender, ulong value);
         public event DataRateUpdatedHandler DataRateUpdated = delegate(object sender, ulong value) { };
 
-        private DeviceManager  devm_ = null;
+        private DeviceManagementClass  devm_ = null;
         private DeviceConfig   devconf_ = null;
         private DeviceClass    devd_ = null;
         private DeviceProperty devp_ = null;
@@ -106,7 +106,7 @@ namespace RtsCore.Framework.Device
         private ulong                data_rate_value_busy_ = 0;
 
 
-        public DeviceInstance(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+        public DeviceInstance(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
         {
             devm_ = devm;
             devconf_ = devconf;
@@ -125,7 +125,7 @@ namespace RtsCore.Framework.Device
         {
         }
 
-        public DeviceManager Manager
+        public DeviceManagementClass Manager
         {
             get { return (devm_); }
         }

@@ -566,8 +566,8 @@ namespace Ratatoskr.Forms.MainWindow
         {
             /* Play/Pause/Stopボタン */
             Btn_Play.Image = (play_state_ == PlayStatus.Busy)
-                           ? (global::Ratatoskr.Properties.Resources.pause_32x32)
-                           : (global::Ratatoskr.Properties.Resources.play_32x32);
+                           ? (RtsCore.Resource.Images.pause_32x32)
+                           : (RtsCore.Resource.Images.play_32x32);
             Btn_Play.Text = (play_state_ == PlayStatus.Busy)
                           ? ("Pause")
                           : ("Play");

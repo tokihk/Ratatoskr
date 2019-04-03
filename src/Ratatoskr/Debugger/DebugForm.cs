@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,11 +19,13 @@ namespace Ratatoskr.Debugger
 
         private sealed class MessageInfo
         {
+            public int      ThreadID { get; }
             public DateTime DateTime { get; }
             public string   Message  { get; }
 
             public MessageInfo(DateTime date, string msg)
             {
+                ThreadID = Thread.CurrentThread.ManagedThreadId;
                 DateTime = date;
                 Message = msg;
             }
@@ -30,14 +33,15 @@ namespace Ratatoskr.Debugger
             public override string ToString()
             {
                 return (String.Format(
-                    "{0} {1}",
+                    "{0} [{1:X8}] {2}",
                     DateTime.ToLocalTime().ToString("yyyy-MM-dd hh:mm:ss.fff"),
+                    ThreadID,
                     Message));
             }
         }
 
 
-        private Timer     draw_timer_ = new Timer();
+        private System.Windows.Forms.Timer draw_timer_ = new System.Windows.Forms.Timer();
         private Stopwatch draw_time_ = new Stopwatch();
 
         private Queue<MessageInfo> msg_queue_ = new Queue<MessageInfo>();

@@ -24,7 +24,7 @@ namespace Ratatoskr.Devices.UdpClient
         private byte[] send_buffer_ = new byte[2048];
 
 
-        public DeviceInstanceImpl(DeviceManager devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+        public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
             : base(devm, devconf, devd, devp)
         {
             devp_ = devp as DevicePropertyImpl;

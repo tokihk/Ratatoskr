@@ -1,58 +1,64 @@
+<!--- Update: 2019.03.06 --->
 <link href="../params.css" rel="stylesheet" />
 
-# <span class="app-name" /> User's manual
+# <span class="app-name" /> User Manual
 
 ![image](../_images/app_icon_128x128.png) ![image](../_images/app_logo_600x120.png)
 
-<span class = "app-name" /> is a development support tool that can communicate with various devices that can be connected to a personal computer. <br>
-It provides a general-purpose communication debugging environment for various communication ports such as serial port and TCP / UDP.
+<span class="app-name" />は、パソコンに接続できる様々なデバイスと通信を行うことができる開発支援ツールです。<br>
+シリアルポートやTCP/UDP等の様々な通信ポートに対して、汎用的な通信デバッグ環境を提供します。
 
-You can intuitively operate input / output to / from ports by easy-to-view packet view and interface that emphasizes operability.
+見やすいパケットビューや、操作性を重視したインターフェースにより、ポートへの入出力を直感的に操作することができます。
 
-<span class = "app-name" /> has the following features.
+<span class="app-name" />には以下の特徴があります。
 
-* Supports various communication such as serial port, TCP / IP, UDP
-  * Serial Port
-  * TCP / IP Server or Client
-  * UDP
-  * USB Capture
-* Supports packet view according to usage, such as packet unit and data unit
-* Simultaneous connection to multiple ports
-* Simultaneous display of multiple types of packet views
-* Saving / loading / saving packet logs automatically
-* Real-time packet control such as filtering, packet combining
-* Redirect transfer from port to port
+* シリアルポート、TCP/IP、UDP等の様々な通信に対応
+  * Serial Port
+  * TCP/IP Server or Client
+  * UDP
+  * USB Capture
+* パケット単位やデータ単位など、用途に合わせたパケットビューに対応
+* 複数ポートに対しての同時接続
+* 複数種類のパケットビューを同時表示
+* パケットログの保存/読み込み/自動保存
+* フィルタリング、パケット結合等のリアルタイムパケット制御
+* ポートからポートへのリダイレクト転送
 
-![](../_images/basic.png)
+## 著作権
 
-## Copyright
+* <span class="author" /> - <span class="author-mail" />
 
-* <span class = "author" /> - <span class = "author-mail" />
+## ライセンス
 
-## license
+　　GPL3 (GNU GENERAL PUBLIC LICENSE v3)
 
-GPL 3 (GNU GENERAL PUBLIC LICENSE v 3)
-
-## Operating environment
+## 動作環境
 
 * .NET Framework 4.7
 
-## Installation
+## インストール
 
-After installing .NET Framwork, decompress it to an arbitrary folder and execute it.
+* 圧縮ファイル形式<br>
+   .NET Framworkをインストールした後に、任意のフォルダに解凍して実行してください。
 
-Other software is required when using some functions.
+* インストーラー形式<br>
+   .NET Framworkをインストールした後に、任意のフォルダにインストールして実行してください。
 
-| Features | Required Software |
+
+一部の機能を使用するときは他ソフトウェアが必要になります。
+
+| 機能 | 必要ソフトウェア |
 | :--- | :--- |
-| USB Monitor | USBPcap ([http://desowin.org/usbpcap/](http://desowin.org/usbpcap/ "USBPcap")) |
-| Ehernet | WinPcap ([https://www.winpcap.org/](https://www.winpcap.org/)) |
+| Gate Device - USB Monitor | USBPcap ([http://desowin.org/usbpcap/](http://desowin.org/usbpcap/ "USBPcap")) |
+| Gate Device - Ehernet | WinPcap ([https://www.winpcap.org/](https://www.winpcap.org/)) |
 
-### Uninstall
+### アンインストール
 
-<span class = "app-name" /> does not use the registry.
+<span class="app-name" />はレジストリを使用しません。
 
-Delete the file decompressed by installation and delete the configuration file.
-The configuration file exists in the following location.
+インストールで解凍したファイルを削除した後に、設定ファイルを削除してください。
+設定ファイルは以下の場所に存在します。
 
-<code>%APPDATA%\\<span class="app-name" /></code>
+<code>%APPDATA%&#92;<span class="app-name" /></code>
+
+<br><br>

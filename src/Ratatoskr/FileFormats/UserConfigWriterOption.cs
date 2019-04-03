@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RtsCore.Packet;
 
-namespace Ratatoskr.FileFormats
+namespace RtsCore.Framework.FileFormat
 {
     internal sealed class UserConfigWriterOption : FileFormatOption
     {

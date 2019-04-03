@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
+using Ratatoskr.Devices;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
 using Ratatoskr.Gate.AutoLogger;
@@ -115,8 +116,8 @@ namespace Ratatoskr
         private static List<(ScriptRunMode mode, string path)> startup_script_list_ = new List<(ScriptRunMode, string)>();
 
 
-        public static AppVersion Version    { get; private set; }
-        public static bool       IsSafeMode { get; private set; } = false;
+        public static ModuleVersion Version    { get; private set; }
+        public static bool          IsSafeMode { get; private set; } = false;
 
         public static Api.ApiSandbox API { get; } = new Api.ApiSandbox();
 
@@ -209,7 +210,7 @@ namespace Ratatoskr
         private static void LoadAppInfo()
         {
             /* バージョン情報取得 */
-            Version = new AppVersion(AppInfo.Version);
+            Version = new RtsCore.Utility.ModuleVersion(AppInfo.Version);
         }
 
         public static byte GetStartupProgressAverage()
@@ -290,7 +291,7 @@ namespace Ratatoskr
             GatePacketManager.Startup();
 
             /* マネージャー初期化 */
-            GateManager.Startup();
+            DeviceManager.Startup();
             FormUiManager.Startup();
             FormTaskManager.Startup();
 //            UpdateManager.Startup();
@@ -334,7 +335,7 @@ namespace Ratatoskr
 //            UpdateManager.Shutdown();
             FormUiManager.Shutdown();
             FormTaskManager.Shutdown();
-            GateManager.Shutdown();
+            DeviceManager.Shutdown();
             ConfigManager.Shutdown();
 
             startup_state_ = false;
@@ -379,7 +380,7 @@ namespace Ratatoskr
 
             /* タスク処理 */
             if (startup_state_) {
-                GateManager.Poll();
+                DeviceManager.Poll();
                 GatePacketManager.Poll();
                 FormUiManager.Poll();
                 FormTaskManager.Poll();

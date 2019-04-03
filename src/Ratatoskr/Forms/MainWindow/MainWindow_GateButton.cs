@@ -25,15 +25,15 @@ namespace Ratatoskr.Forms.MainWindow
         private GraphicsPath    gpath_surface_;
 
         private Color           back_color_;
-        private Brush           back_color_brush_;
-        private Brush           back_color_s_brush_;
+        private Brush           back_color_brush_ = null;
+        private Brush           back_color_s_brush_ = null;
 
 //        private Brush shadow_b
 
 
         public MainWindow_GateButton()
         {
-            UpdateDrawBrush(true);
+            UpdateDrawBrush();
         }
 
         public bool Selectable
@@ -76,13 +76,13 @@ namespace Ratatoskr.Forms.MainWindow
 
         private Image GetGateStatusImage(GateObject gate)
         {
-            var image = Properties.Resources.connect_off;
+            var image = RtsCore.Resource.Images.connect_off;
 
             if (gate != null) {
                 switch (gate.ConnectStatus) {
-                    case ConnectState.Connected:    image = Properties.Resources.connect_on;    break;
-                    case ConnectState.Disconnected: image = Properties.Resources.connect_off;   break;
-                    default:                        image = Properties.Resources.connect_busy;  break;
+                    case ConnectState.Connected:    image = RtsCore.Resource.Images.connect_on;    break;
+                    case ConnectState.Disconnected: image = RtsCore.Resource.Images.connect_off;   break;
+                    default:                        image = RtsCore.Resource.Images.connect_busy;  break;
                 }
             }
 
@@ -112,6 +112,13 @@ namespace Ratatoskr.Forms.MainWindow
                     Math.Min(back_color_.B + 15, 255)));
         }
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+
+            UpdateDrawBrush(true);
+        }
+
         protected override void OnMouseEnter(EventArgs e)
         {
             IsMouseEnter = true;
@@ -139,6 +146,11 @@ namespace Ratatoskr.Forms.MainWindow
 
         protected override void OnPaint(PaintEventArgs pevent)
         {
+            if (DesignMode) {
+                base.OnPaint(pevent);
+                return;
+            }
+
             UpdateDrawBrush();
 
             var g = pevent.Graphics;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 using RtsCore.Config;
 using RtsCore.Config.Types;
+using RtsCore.Framework.Config.Types;
 using RtsCore.Packet;
 
 namespace Ratatoskr.Configs.UserConfigs
@@ -82,6 +84,10 @@ namespace Ratatoskr.Configs.UserConfigs
         public IntegerConfig    PacketListRepeat { get; } = new IntegerConfig(1);
 
         public StringListConfig Script_OpenFileList { get; } = new StringListConfig();
+
+        public ColorConfig PacketView_Packet_MsgColor  { get; } = new ColorConfig(Color.LightGoldenrodYellow);
+        public ColorConfig PacketView_Packet_RecvColor { get; } = new ColorConfig(Color.LightGreen);
+        public ColorConfig PacketView_Packet_SendColor { get; } = new ColorConfig(Color.LightPink);
 
 
         public UserConfig() : base("user")

@@ -13,9 +13,10 @@ namespace Ratatoskr.Devices.UsbComm
     [Serializable]
     internal sealed class DevicePropertyImpl : DeviceProperty
     {
-        public IntegerConfig VendorID  { get; } = new IntegerConfig(0x0000);
-        public IntegerConfig ProductID { get; } = new IntegerConfig(0x0000);
-
+        public BoolConfig    DeviceEventCapture { get; } = new BoolConfig(false);
+        public BoolConfig    DeviceComm         { get; } = new BoolConfig(false);
+        public IntegerConfig CommVendorID       { get; } = new IntegerConfig(0x0000);
+        public IntegerConfig CommProductID      { get; } = new IntegerConfig(0x0000);
 
 
         public override DeviceProperty Clone()
@@ -26,9 +27,9 @@ namespace Ratatoskr.Devices.UsbComm
         public override string GetStatusString()
         {
             return (String.Format(
-                "VID 0x{0:X4} - PID 0x{1:X4}",
-                VendorID.Value,
-                ProductID.Value));
+                "VID 0x{0,4:X4} - PID 0x{1,4:X4}",
+                (uint)CommVendorID.Value,
+                (uint)CommProductID.Value));
         }
 
         public override DevicePropertyEditor GetPropertyEditor()

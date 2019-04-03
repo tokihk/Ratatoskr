@@ -49,7 +49,7 @@ namespace Ratatoskr.PacketConverters.Transfer
         private PacketConverterPropertyImpl prop_;
         private AlgorithmObject algorithm_obj_ = null;
         private Panel Panel_Sub;
-        private System.Windows.Forms.ComboBox CBox_AlgorithmList;
+        private RtsCore.Framework.Controls.RoundComboBox CBox_AlgorithmList;
 
 
         public PacketConverterInstanceImpl() : base()
@@ -70,7 +70,7 @@ namespace Ratatoskr.PacketConverters.Transfer
 
         private void InitializeComponent()
         {
-            this.CBox_AlgorithmList = new Ratatoskr.Forms.Controls.RoundComboBox();
+            this.CBox_AlgorithmList = new RtsCore.Framework.Controls.RoundComboBox();
             this.Panel_Sub = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 

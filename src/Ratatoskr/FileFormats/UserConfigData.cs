@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs.UserConfigs;
 
-namespace Ratatoskr.FileFormats
+namespace RtsCore.Framework.FileFormat
 {
     internal class UserConfigData
     {
