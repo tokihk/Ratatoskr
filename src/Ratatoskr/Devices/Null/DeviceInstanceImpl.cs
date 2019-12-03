@@ -22,9 +22,8 @@ namespace Ratatoskr.Devices.Null
         {
         }
 
-        protected override EventResult OnConnectStart()
+        protected override void OnConnectStart()
         {
-            return (EventResult.Success);
         }
 
         protected override EventResult OnConnectBusy()

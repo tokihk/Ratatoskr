@@ -4,25 +4,27 @@ using System.Text;
 
 namespace RtsCore.Protocol
 {
-    public class ProtocolDecodeEvent
+    public abstract class ProtocolDecodeEvent
     {
         public enum DecodeEventType
         {
-            ProtocolPacket   = 0x0001,
-            ProtocolMessage  = 0x0002,
-            ProtocolValue    = 0x0003,
-            ViewPacket       = 0x1000,
+            Frame,
+            Message,
+            Data,
         }
 
-        public ProtocolDecodeEvent(DateTime event_dt, DecodeEventType event_type, ulong channel_bit)
+        internal ProtocolDecodeEvent(ProtocolDecodeChannel channel, DateTime dt_block, DateTime dt_event, DecodeEventType event_type)
         {
-            EventDateTime = event_dt;
+            Channel = channel;
+            BlockDateTime = dt_block;
+            EventDateTime = dt_event;
             EventType = event_type;
-            ChannelBit = channel_bit;
         }
 
-        public DateTime        EventDateTime { get; }
-        public DecodeEventType EventType     { get; }
-        public ulong           ChannelBit    { get; }
+        public ProtocolDecodeChannel Channel       { get; }
+        public DateTime              BlockDateTime { get; }
+        public DateTime              EventDateTime { get; }
+        public DecodeEventType       EventType     { get; }
+        public abstract double       EventTickMsec { get; }
     }
 }

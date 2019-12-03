@@ -1,10 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29201.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ratatoskr", "Ratatoskr\Ratatoskr.csproj", "{929AD9D4-2453-4B65-8BA1-FCAF17B32B30}"
 	ProjectSection(ProjectDependencies) = postProject
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4} = {D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}
 		{1432F3F6-7E7D-41EA-9EBD-7A861B7A1379} = {1432F3F6-7E7D-41EA-9EBD-7A861B7A1379}
 	EndProjectSection
 EndProject
@@ -13,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtsCore.Framework", "RtsCore.Framework\RtsCore.Framework.csproj", "{772DB229-7D06-44AE-9CEB-FF65907AB10C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtsCore.Resource", "RtsCore.Resource\RtsCore.Resource.csproj", "{0B6F43EF-E187-4979-89FE-F88E6C40FBA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtsPlugin.Pcap", "RtsPlugin.Pcap\RtsPlugin.Pcap.csproj", "{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +75,18 @@ Global
 		{0B6F43EF-E187-4979-89FE-F88E6C40FBA9}.Release|x64.Build.0 = Release|Any CPU
 		{0B6F43EF-E187-4979-89FE-F88E6C40FBA9}.Release|x86.ActiveCfg = Release|Any CPU
 		{0B6F43EF-E187-4979-89FE-F88E6C40FBA9}.Release|x86.Build.0 = Release|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Debug|x64.Build.0 = Debug|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Debug|x86.Build.0 = Debug|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Release|x64.ActiveCfg = Release|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Release|x64.Build.0 = Release|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Release|x86.ActiveCfg = Release|Any CPU
+		{D9DB43B2-D354-4A4E-B0D9-B3F5976424B4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

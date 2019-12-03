@@ -35,8 +35,9 @@ namespace Ratatoskr.Forms.MainWindow
         }
 
 
-        private MainWindow_SendDataListPanel MFDC_SendDataListPanel_Control;
-        private MainWindow_WatchListPanel    MFDC_WatchListPanel_Control;
+        private MainWindow_SendDataListPanel  MFDC_SendDataListPanel_Control = null;
+		private MainWindow_SendFrameListPanel MFDC_SendFrameListPanel_Control = null;
+		private MainWindow_WatchListPanel     MFDC_WatchListPanel_Control = null;
 
 
         public MainWindow_FrameCenter()
@@ -71,7 +72,19 @@ namespace Ratatoskr.Forms.MainWindow
                 false,
                 MFDC_SendDataListPanel_Control = new MainWindow_SendDataListPanel());
 
-            DockPanel_Main.AddDockContent(
+#if DEBUG
+			DockPanel_Main.AddDockContent(
+				"MFDC_SendFrameListPanel_Control",
+				ConfigManager.Language.MainUI.FLPanel_Title.Value,
+				(uint)DockContentsGroup.Fixed,
+				Icon.FromHandle(RtsCore.Resource.Images.memo_32x32.GetHicon()),
+				DockAreas.Document | DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
+				DockState.DockBottomAutoHide,
+				false,
+				MFDC_SendFrameListPanel_Control = new MainWindow_SendFrameListPanel());
+#endif
+
+			DockPanel_Main.AddDockContent(
                 "MFDC_WatchListPanel",
                 ConfigManager.Language.MainUI.WLPanel_Title.Value,
                 (uint)DockContentsGroup.Fixed,
@@ -82,7 +95,10 @@ namespace Ratatoskr.Forms.MainWindow
                 MFDC_WatchListPanel_Control = new MainWindow_WatchListPanel());
 
             MFDC_SendDataListPanel_Control.LoadConfig();
-            MFDC_WatchListPanel_Control.LoadConfig();
+#if DEBUG
+			MFDC_SendFrameListPanel_Control.LoadConfig();
+#endif
+			MFDC_WatchListPanel_Control.LoadConfig();
         }
 
         private void LoadPacketViewConfig()
@@ -122,8 +138,9 @@ namespace Ratatoskr.Forms.MainWindow
             GatePanel_Main.BackupConfig();
             PacketConverter_Main.BackupConfig();
             
-            MFDC_SendDataListPanel_Control.BackupConfig();
-            MFDC_WatchListPanel_Control.BackupConfig();
+            MFDC_SendDataListPanel_Control?.BackupConfig();
+			MFDC_SendFrameListPanel_Control?.BackupConfig();
+			MFDC_WatchListPanel_Control?.BackupConfig();
 
             BackupDockConfig();
             BackupPacketViewConfig();

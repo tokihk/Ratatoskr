@@ -19,7 +19,7 @@ namespace RtsCore.Resource {
     // または Visual Studio のようなツールを使用して自動生成されました。
     // メンバーを追加または削除するには、.ResX ファイルを編集して、/str オプションと共に
     // ResGen を実行し直すか、または VS プロジェクトをビルドし直します。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Images {
@@ -1066,26 +1066,6 @@ namespace RtsCore.Resource {
         public static System.Drawing.Bitmap watch_32x32 {
             get {
                 object obj = ResourceManager.GetObject("watch_32x32", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
-        /// </summary>
-        public static System.Drawing.Bitmap wireshark_16x16 {
-            get {
-                object obj = ResourceManager.GetObject("wireshark_16x16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
-        /// </summary>
-        public static System.Drawing.Bitmap wireshark_32x32 {
-            get {
-                object obj = ResourceManager.GetObject("wireshark_32x32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

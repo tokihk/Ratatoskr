@@ -12,12 +12,15 @@ namespace Ratatoskr.PacketViews.Protocol
 {
     internal class PacketViewPropertyImpl : PacketViewProperty
     {
-        public GuidConfig                ProtocolType    { get; } = new GuidConfig(Guid.Empty);
+        public GuidConfig                DecoderClassID  { get; } = new GuidConfig(Guid.Empty);
 
-        public FrameListColumnListConfig FrameListColumn { get; } = new FrameListColumnListConfig();
+        public EventListColumnListConfig EventListColumn { get; } = new EventListColumnListConfig();
+
+		public IntegerConfig ChartAxisMag_X { get; } = new IntegerConfig((decimal)1.0f);
+		public IntegerConfig ChartAxisMag_Y { get; } = new IntegerConfig((decimal)1.0f);
 
 
-        public override PacketViewProperty Clone()
+		public override PacketViewProperty Clone()
         {
             return (ClassUtil.Clone<PacketViewPropertyImpl>(this));
         }

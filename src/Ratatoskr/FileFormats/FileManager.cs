@@ -16,13 +16,11 @@ namespace Ratatoskr.FileFormats
         static FileManager()
         {
             var format_plog_rtcap = new PacketLog_Rtcap.FileFormatClassImpl();
-            var format_plog_pcap = new PacketLog_Pcap.FileFormatClassImpl();
             var format_plog_csv = new PacketLog_Csv.FileFormatClassImpl();
             var format_plog_bin = new PacketLog_Binary.FileFormatClassImpl();
             var format_uconf_rtcfg = new UserConfig_Rtcfg.FileFormatClassImpl();
 
             FileOpen.Formats.Add(format_plog_rtcap);
-            FileOpen.Formats.Add(format_plog_pcap);
             FileOpen.Formats.Add(format_plog_csv);
             FileOpen.Formats.Add(format_plog_bin);
             FileOpen.Formats.Add(format_uconf_rtcfg);

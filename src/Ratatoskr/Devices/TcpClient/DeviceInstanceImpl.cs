@@ -41,7 +41,7 @@ namespace Ratatoskr.Devices.TcpClient
         {
         }
 
-        protected override EventResult OnConnectStart()
+        protected override void OnConnectStart()
         {
             ipep_list_ = null;
             ipep_index_ = 0;
@@ -62,8 +62,6 @@ namespace Ratatoskr.Devices.TcpClient
             } catch (Exception) {
                 ipep_ = null;
             }
-
-            return (EventResult.Success);
         }
 
         protected override EventResult OnConnectBusy()

@@ -112,14 +112,14 @@ namespace Ratatoskr.Forms.MainWindow
                     Math.Min(back_color_.B + 15, 255)));
         }
 
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
+		protected override void OnCreateControl()
+		{
+			base.OnCreateControl();
 
-            UpdateDrawBrush(true);
-        }
+			UpdateDrawBrush(true);
+		}
 
-        protected override void OnMouseEnter(EventArgs e)
+		protected override void OnMouseEnter(EventArgs e)
         {
             IsMouseEnter = true;
 

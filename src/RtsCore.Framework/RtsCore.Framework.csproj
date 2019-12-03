@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RtsCore.Framework</RootNamespace>
     <AssemblyName>RtsCore.Framework</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -102,6 +102,12 @@
     </Compile>
     <Compile Include="Controls\RoundTextBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TreeListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TreeListView.Designer.cs">
+      <DependentUpon>TreeListView.cs</DependentUpon>
     </Compile>
     <Compile Include="Device\DeviceClass.cs" />
     <Compile Include="Device\DeviceConfig.cs" />
@@ -215,6 +221,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\ListViewEx.resx">
       <DependentUpon>ListViewEx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TreeListView.resx">
+      <DependentUpon>TreeListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PacketView\PacketViewControl.resx">
       <DependentUpon>PacketViewControl.cs</DependentUpon>

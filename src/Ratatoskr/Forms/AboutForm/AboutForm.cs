@@ -93,6 +93,21 @@ namespace Ratatoskr.Forms.AboutForm
             node.Nodes.Add(plugin.Details);
             node.Nodes.Add(string.Format("Copyright©{0}", plugin.Copyright));
 
+			if (plugin.ThirdPartyLicenses is LicenseInfo[] infos) {
+				foreach (var info in infos) {
+					var node_l = new TreeNode(info.Name);
+
+					if ((info.Homepage != null) && (info.Homepage.Length > 0)) {
+						node_l.Nodes.Add(info.Homepage);
+					}
+					if ((info.LicenseName != null) && (info.LicenseName.Length > 0)) {
+						node_l.Nodes.Add(info.LicenseName);
+					}
+
+					node.Nodes.Add(node_l);
+				}
+			}
+
             return (node);
         }
 

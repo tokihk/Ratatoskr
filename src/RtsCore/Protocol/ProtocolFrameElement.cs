@@ -5,135 +5,102 @@ using RtsCore.Utility;
 
 namespace RtsCore.Protocol
 {
-    public enum ProtocolDataErrorLevel
+    public enum ProtocolFrameStatus
     {
-        NoError,
-        LevelLow,
-        LevelHigh,
+        Normal,
+        Error,
     }
 
     public abstract class ProtocolFrameElement
     {
-        private ProtocolFrameElement       parent_ = null;
-
-        private BitData            pack_data_ = null;
-
-        private BitData            unpack_data_ = null;
-        private ProtocolFrameValue         unpack_value_ = null;
-        private List<ProtocolFrameElement> unpack_elements_ = new List<ProtocolFrameElement>();
+        private BitData                    pack_data_ = null;
+        private BitData                    unpack_data_ = null;
+        private List<ProtocolFrameElement> unpack_elements_ = null;
 
 
-        public ProtocolFrameElement(ProtocolFrameElement parent, string name, uint pack_bitlen, uint unpack_bitlen)
+        public ProtocolFrameElement(ProtocolFrameElement parent, string name, uint pack_bitlen)
         {
+            Parent = parent;
             Name = name;
             PackDataBitLength = pack_bitlen;
-            UnpackDataBitLength = unpack_bitlen;
 
-            parent_ = parent;
-            if (parent_ != null) {
-                parent_.unpack_elements_.Add(this);
+            pack_data_ = new BitData(PackDataBitLength);
+            unpack_data_ = pack_data_;
+            unpack_elements_ = null;
+
+            if (Parent != null) {
+                Parent.AddUnpackElement(this);
             }
         }
 
-        public ProtocolFrameElement Parent
-        {
-            get { return (parent_); }
-        }
-
-        public ProtocolFrameElement RootParent
-        {
-            get
-            {
-                var parent = parent_;
-
-                while ((parent != null) && (parent.parent_ != null)) {
-                    parent = parent.parent_;
-                }
-
-                return (parent);
-            }
-        }
+        public ProtocolFrameElement Parent { get; }
 
         public string Name { get; }
 
-        public uint   PackDataBitLength   { get; }
-        public uint   UnpackDataBitLength { get; }
+        public uint   PackDataBitLength { get; }
 
-        public ProtocolDataErrorLevel ErrorStatus { get; set; } = ProtocolDataErrorLevel.NoError;
+        public ProtocolFrameStatus Status { get; set; } = ProtocolFrameStatus.Normal;
 
-
-        public void Unpack()
+        public virtual double GetFrameTickMsec()
         {
-            unpack_data_ = new BitData(UnpackDataBitLength);
-            unpack_value_ = null;
-            unpack_elements_ = new List<ProtocolFrameElement>();
-
-            if (pack_data_ != null) {
-                OnPackDataToUnpackData(pack_data_, unpack_data_);
-            }
-
-            if (unpack_value_ != null) {
-                unpack_value_ = OnUnpackDataToUnpackValue(unpack_data_);
-                OnUnpackDataToUnpackElements(unpack_data_, unpack_elements_);
-            }
+            return (0.0f);
         }
 
-        public void UpdateFromUnpackElement()
+        public bool UpdateFromPackData()
         {
-            pack_data_ = new BitData(PackDataBitLength);
-            unpack_data_ = new BitData(UnpackDataBitLength);
-            unpack_value_ = null;
+            if (pack_data_ == null)return (false);
+
+            unpack_data_ = null;
+            unpack_elements_ = null;
+
+            /* Pack BitData -> Unpack BitData */
+            if (pack_data_ != null) {
+                if (!OnPackDataToUnpackData(pack_data_, ref unpack_data_))return (false);
+            }
+
+            /* Unpack BitData -> Unpack Elements */
+            if (unpack_data_ != null) {
+                if (!OnUnpackDataToUnpackElements(unpack_data_))return (false);
+            }
+
+            return (true);
+        }
+
+        public bool UpdateFromUnpackData()
+        {
+            if (unpack_data_ == null)return (false);
+
+            pack_data_ = null;
+            unpack_elements_ = null;
+
+            if (unpack_data_ != null) {
+                if (!OnUnpackDataToUnpackElements(unpack_data_))return (false);
+
+                if (!OnUnpackDataToPackData(unpack_data_, ref pack_data_))return (false);
+            }
+
+            return (true);
+        }
+
+        public bool UpdateFromUnpackElements()
+        {
+            if (unpack_elements_ == null)return (false);
+
+            pack_data_ = null;
+            unpack_data_ = null;
 
             if (unpack_elements_ != null) {
-                OnUnpackElementsToUnpackData(unpack_elements_.ToArray(), unpack_data_);
-            }
+                /* 下層全ての要素を更新 */
+                unpack_elements_.ForEach(elem => elem.UpdateFromUnpackElements());
 
-            unpack_value_ = OnUnpackDataToUnpackValue(unpack_data_);
-            OnUnpackDataToPackData(unpack_data_, pack_data_);
-
-            /* 親要素も更新 */
-            if (parent_ != null) {
-                parent_.UpdateFromUnpackElement();
-            }
-        }
-
-        private void UpdateFromUnpackData()
-        {
-            pack_data_ = new BitData(PackDataBitLength);
-            unpack_value_ = null;
-            unpack_elements_ = new List<ProtocolFrameElement>();
-
-            if (unpack_data_ != null) {
-                unpack_value_ = OnUnpackDataToUnpackValue(unpack_data_);
-                OnUnpackDataToUnpackElements(unpack_data_, unpack_elements_);
-                OnUnpackDataToPackData(unpack_data_, pack_data_);
-            }
-
-            /* 親要素も更新 */
-            if (parent_ != null) {
-                parent_.UpdateFromUnpackElement();
-            }
-        }
-
-        private void UpdateFromUnpackValue()
-        {
-            pack_data_ = new BitData(PackDataBitLength);
-            unpack_data_ = new BitData(UnpackDataBitLength);
-            unpack_elements_ = new List<ProtocolFrameElement>();
-
-            if (unpack_value_ != null) {
-                OnUnpackValueToUnpackData(unpack_value_, unpack_data_);
+                if (!OnUnpackElementsToUnpackData(unpack_elements_, ref unpack_data_))return (false);
             }
 
             if (unpack_data_ != null) {
-                OnUnpackDataToUnpackElements(unpack_data_, unpack_elements_);
-                OnUnpackDataToPackData(unpack_data_, pack_data_);
+                if (!OnUnpackDataToPackData(unpack_data_, ref pack_data_))return (false);
             }
 
-            /* 親要素も更新 */
-            if (parent_ != null) {
-                parent_.UpdateFromUnpackElement();
-            }
+            return (true);
         }
 
         public BitData GetPackData()
@@ -146,72 +113,117 @@ namespace RtsCore.Protocol
             return (unpack_data_);
         }
 
-        public ProtocolFrameValue GetUnpackValue()
+        public object GetUnpackValue()
         {
-            return (unpack_value_);
+            var value = (object)null;
+
+            if (!OnUnpackDataToUnpackValue(unpack_data_, ref value)) {
+                value = null;
+            }
+
+            return (value);
         }
 
-        public ProtocolFrameElement[] GetUnpackElement()
+        public IEnumerable<ProtocolFrameElement> GetUnpackElements()
         {
-            return (unpack_elements_.ToArray());
+            return ((unpack_elements_ != null) ? (unpack_elements_.ToArray()) : (null));
         }
 
-        public void SetPackData(byte[] pack_bitdata, uint pack_bitdata_bitlen)
+        public bool SetPackData(BitData pack_data)
         {
-            pack_data_ = new BitData(pack_bitdata, Math.Min(PackDataBitLength, pack_bitdata_bitlen));
+            pack_data_ = new BitData(pack_data.Data, Math.Min(PackDataBitLength, pack_data.Length));
 
-            Unpack();
+            return (UpdateFromPackData());
         }
 
-        public void SetUnpackData(byte[] unpack_bitdata, uint unpack_bitdata_bitlen)
+        public bool SetUnpackData(BitData unpack_data)
         {
-            unpack_data_ = new BitData(unpack_bitdata, Math.Min(UnpackDataBitLength, unpack_bitdata_bitlen));
+            unpack_data_ = unpack_data;
 
-            UpdateFromUnpackData();
+            return (UpdateFromUnpackData());
         }
 
-        public void SetUnpackValue(ProtocolFrameValue value)
+        public bool SetUnpackValue(object unpack_value)
         {
-            if (value == null)return;
+            if (unpack_value == null)return (false);
 
-            unpack_value_ = value;
+            unpack_data_ = null;
 
-            UpdateFromUnpackValue();
+            if (!OnUnpackValueToUnpackData(unpack_value, ref unpack_data_))return (false);
+
+            return (UpdateFromUnpackData());
         }
 
-        protected virtual void OnPackDataToUnpackData(BitData pack_data, BitData unpack_data)
+        private void AddUnpackElement(ProtocolFrameElement prfe)
         {
-            unpack_data.SetBitData(0, pack_data);
+            if (unpack_elements_ == null) {
+                unpack_elements_ = new List<ProtocolFrameElement>();
+            }
+            unpack_elements_.Add(prfe);
         }
 
-        protected virtual ProtocolFrameValue OnUnpackDataToUnpackValue(BitData unpack_data)
+        protected virtual bool OnPackDataToUnpackData(BitData pack_data, ref BitData unpack_data)
         {
-            return (null);
+            unpack_data = pack_data;
+
+            return (true);
         }
 
-        protected virtual void OnUnpackDataToUnpackElements(BitData unpack_data, List<ProtocolFrameElement> unpack_elements)
+        protected virtual bool OnUnpackValueToUnpackData(object unpack_value, ref BitData unpack_data)
         {
+            return (true);
         }
 
-        protected virtual void OnUnpackElementsToUnpackData(ProtocolFrameElement[] unpack_elements, BitData unpack_data)
+        protected virtual bool OnUnpackDataToUnpackElements(BitData unpack_data)
         {
+            return (true);
         }
 
-        protected virtual void OnUnpackValueToUnpackData(ProtocolFrameValue unpack_value, BitData unpack_data)
+        protected virtual bool OnUnpackElementsToUnpackData(IEnumerable<ProtocolFrameElement> unpack_elements, ref BitData unpack_data)
         {
-            unpack_data.SetBitData(0, unpack_value.GetBitData());
+            var unpack_bitdata_list = new List<BitData>();
+            var unpack_bitdata_length = (uint)0;
+            var unpack_bitdata_offset = (uint)0;
+            var unpack_bitdata = (BitData)null;
+
+            foreach (var elem in unpack_elements) {
+                unpack_bitdata = elem.GetUnpackData();
+
+                if (unpack_bitdata != null) {
+                    unpack_bitdata_list.Add(unpack_bitdata);
+                    unpack_bitdata_length += unpack_bitdata.Length;
+                }
+            }
+
+            unpack_data = new BitData(unpack_bitdata_length);
+
+            foreach (var bitdata in unpack_bitdata_list) {
+                unpack_data.SetBitData(unpack_bitdata_offset, bitdata);
+                unpack_bitdata_offset += bitdata.Length;
+            }
+
+            return (true);
         }
 
-        protected virtual void OnUnpackDataToPackData(BitData unpack_data, BitData pack_data)
+        protected virtual bool OnUnpackDataToUnpackValue(BitData unpack_data, ref object unpack_value)
         {
-            pack_data.SetBitData(0, unpack_data);
+            unpack_value = unpack_data;
+
+            return (true);
+        }
+
+        protected virtual bool OnUnpackDataToPackData(BitData unpack_data, ref BitData pack_data)
+        {
+            pack_data = unpack_data_;
+
+            return (true);
         }
 
         public override string ToString()
         {
-            var value = GetUnpackValue();
+            var unpack_value = GetUnpackValue();
 
-            return ((value != null) ? (value.ToString()) : (""));
+            return ((unpack_value != null) ? (unpack_value.ToString()) : ("Unknown"));
         }
     }
 }

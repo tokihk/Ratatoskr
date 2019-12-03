@@ -1265,7 +1265,6 @@ namespace Ratatoskr.PacketViews.Packet
                 }
             }
             LView_Main.EndUpdate();
-
         }
 
         private void BuildExtView()

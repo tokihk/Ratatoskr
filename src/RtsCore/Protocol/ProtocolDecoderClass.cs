@@ -18,6 +18,24 @@ namespace RtsCore.Protocol
         public abstract string        Details { get; }
         public virtual  ModuleVersion Version { get; } = new ModuleVersion(0, 1, 0, "");
 
+        public override bool Equals(object obj)
+        {
+            if (obj is Guid obj_guid) {
+                return (ID == obj_guid);
+            }
+
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return (Name);
+        }
 
         public ProtocolDecoderInstance CreateInstance()
         {

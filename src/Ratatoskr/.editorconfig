@@ -1,0 +1,11 @@
+# .editorconfig について詳しくは、次をご覧ください https://aka.ms/editorconfigdocs
+root = true
+
+# All files
+[*]
+indent_style = tab
+end_of_line = crlf
+
+# Xml files
+[*.xml]
+indent_size = 2

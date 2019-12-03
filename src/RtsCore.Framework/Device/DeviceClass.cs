@@ -45,6 +45,7 @@ namespace RtsCore.Framework.Device
 
         internal DeviceInstance CreateInstance(DeviceManagementClass devm, DeviceConfig devconf, DeviceProperty devp)
         {
+            if (devp == null)return (null);
             if (devp.GetType() != GetPropertyType())return (null);
 
             return (OnCreateInstance(devm, devconf, devp));

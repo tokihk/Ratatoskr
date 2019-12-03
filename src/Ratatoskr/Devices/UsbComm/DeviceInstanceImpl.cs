@@ -31,9 +31,8 @@ namespace Ratatoskr.Devices.UsbComm
             devp_ = devp as DevicePropertyImpl;
         }
 
-        protected override EventResult OnConnectStart()
+        protected override void OnConnectStart()
         {
-            return (EventResult.Success);
         }
 
         protected override EventResult OnConnectBusy()

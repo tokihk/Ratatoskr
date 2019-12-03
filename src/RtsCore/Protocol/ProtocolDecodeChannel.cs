@@ -1,36 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using RtsCore.Utility;
 
 namespace RtsCore.Protocol
 {
     public class ProtocolDecodeChannel
     {
-        internal ProtocolDecodeChannel(ProtocolDecoderInstance prdi, string name, int channel_no)
+        private List<ProtocolDecodeEvent> event_list_ = new List<ProtocolDecodeEvent>();
+
+
+        internal ProtocolDecodeChannel(ProtocolDecoderInstance prdi, string name)
         {
             Instance = prdi;
             Name = name;
-            ChannelBit = 1ul << channel_no;
         }
 
-        public ProtocolDecoderInstance Instance
+        public ProtocolDecoderInstance Instance { get; }
+
+        public string Name { get; }
+
+        public IEnumerable<ProtocolDecodeEvent> Events
         {
-            get;
+            get { return (event_list_); }
         }
 
-        public string Name
+        public DateTime FirstEventTime
         {
-            get;
+            get { return ((event_list_.Count > 0) ? (event_list_.First().EventDateTime) : (DateTime.MaxValue)); }
         }
 
-        public ulong ChannelBit
+        public DateTime LastEventTime
         {
-            get;
+            get { return ((event_list_.Count > 0) ? (event_list_.Last().EventDateTime) : (DateTime.MinValue)); }
         }
 
-        public override string ToString()
+        private void AddEvent(ProtocolDecodeEvent prde)
         {
-            return (Name);
+            event_list_.Add(prde);
+
+            Instance.RegisterNewEvent(prde);
+        }
+
+        public void CreateMessageEvent(DateTime dt_block, DateTime dt_event, string message)
+        {
+            AddEvent(new ProtocolDecodeEvent_Message(this, dt_block, dt_event, message));
+        }
+
+        public void CreateBitDataEvent(DateTime dt_block, DateTime dt_event, BitData bitdata)
+        {
+            AddEvent(new ProtocolDecodeEvent_BitData(this, dt_block, dt_event, bitdata));
+        }
+
+        public void CreateValueEvent(DateTime dt_block, DateTime dt_event, double value)
+        {
+            AddEvent(new ProtocolDecodeEvent_Value(this, dt_block, dt_event, value));
+        }
+
+        public void CreateFrameEvent(DateTime dt_block, DateTime dt_event, ProtocolFrameElement frame)
+        {
+            AddEvent(new ProtocolDecodeEvent_Frame(this, dt_block, dt_event, frame));
         }
     }
 }

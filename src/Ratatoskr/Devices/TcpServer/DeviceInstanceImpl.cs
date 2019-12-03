@@ -20,7 +20,7 @@ namespace Ratatoskr.Devices.TcpServer
         {
         }
 
-        protected override EventResult OnConnectStart()
+        protected override void OnConnectStart()
         {
             try {
                 var prop = Property as DevicePropertyImpl;
@@ -41,8 +41,6 @@ namespace Ratatoskr.Devices.TcpServer
 
             } catch (Exception) {
             }
-
-            return (EventResult.Success);
         }
 
         protected override EventResult OnConnectBusy()

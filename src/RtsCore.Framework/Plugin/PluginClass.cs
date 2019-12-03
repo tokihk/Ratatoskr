@@ -15,11 +15,13 @@ namespace RtsCore.Framework.Plugin
     {
         public Guid ID { get; }
 
-        public abstract string Name      { get; }
-        public abstract string Details   { get; }
-        public abstract string Copyright { get; }
+        public abstract string Name                 { get; }
+        public abstract string Details              { get; }
+        public abstract string Copyright            { get; }
 
         public virtual ModuleVersion Version { get; } = new ModuleVersion(0, 0, 0, "");
+
+        public virtual LicenseInfo[] ThirdPartyLicenses { get; } = null;
 
 
         public PluginClass(Guid id)

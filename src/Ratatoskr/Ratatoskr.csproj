@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.1\build\Microsoft.CodeAnalysis.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.1\build\Microsoft.CodeAnalysis.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\build\Microsoft.CodeAnalysis.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\build\Microsoft.CodeAnalysis.Analyzers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Ratatoskr</RootNamespace>
     <AssemblyName>Ratatoskr</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -108,6 +108,7 @@
     <Compile Include="Configs\UserConfigs\PacketListConfig.cs" />
     <Compile Include="Configs\UserConfigs\PacketViewConfig.cs" />
     <Compile Include="Configs\UserConfigs\SendDataListConfig.cs" />
+    <Compile Include="Configs\UserConfigs\SendFrameListConfig.cs" />
     <Compile Include="Configs\UserConfigs\UserConfig.cs" />
     <Compile Include="Configs\UserConfigs\WatchDataListConfig.cs" />
     <Compile Include="Debugger\DebugForm.cs">
@@ -128,15 +129,6 @@
     <Compile Include="Devices\AudioFile\DevicePropertyImpl.cs" />
     <Compile Include="Devices\AudioFile\MicDeviceInfo.cs" />
     <Compile Include="Devices\DeviceManager.cs" />
-    <Compile Include="Devices\Ethernet\DeviceClassImpl.cs" />
-    <Compile Include="Devices\Ethernet\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\Ethernet\DevicePropertyEditorImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Devices\Ethernet\DevicePropertyEditorImpl.Designer.cs">
-      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Devices\Ethernet\DevicePropertyImpl.cs" />
     <Compile Include="Devices\AudioDevice\DeviceClassImpl.cs" />
     <Compile Include="Devices\AudioDevice\DeviceInstanceImpl.cs" />
     <Compile Include="Devices\AudioDevice\DevicePropertyEditorImpl.cs">
@@ -223,8 +215,6 @@
     <Compile Include="Drivers\USBPcap\USBPcapDeviceNode.cs" />
     <Compile Include="Drivers\USBPcap\USBPcapDeviceObject.cs" />
     <Compile Include="Drivers\USBPcap\USBPcapPacket.cs" />
-    <Compile Include="Drivers\WinPcap\WinPcapPacketParser.cs" />
-    <Compile Include="Drivers\WinPcap\WinPcapPacketParserOption.cs" />
     <Compile Include="FileFormats\FileFormatManager.cs" />
     <Compile Include="FileFormats\FileFormatOptionForm.cs">
       <SubType>Form</SubType>
@@ -260,9 +250,6 @@
     <Compile Include="FileFormats\PacketLog_Rtcap\FileFormatClassImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Rtcap\FileFormatReaderImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Rtcap\FileFormatWriterImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Pcap\FileFormatClassImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Pcap\FileFormatOptionImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Pcap\FileFormatReaderImpl.cs" />
     <Compile Include="FileFormats\UserConfigData.cs" />
     <Compile Include="FileFormats\UserConfigReader.cs" />
     <Compile Include="FileFormats\UserConfigWriter.cs" />
@@ -470,6 +457,12 @@
     <Compile Include="Forms\MainWindow\MainWindow_SendFilePanel.Designer.cs">
       <DependentUpon>MainWindow_SendFilePanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_SendFrameListPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_SendFrameListPanel.Designer.cs">
+      <DependentUpon>MainWindow_SendFrameListPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MainWindow\MainWindow_SendLogPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -608,6 +601,38 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PacketConverters\Convert\DataRemove\AlgorithmProperty.cs" />
+    <Compile Include="PacketConverters\Grouping\ConvertMethodClass.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverters\Grouping\ConvertMethodClass.Designer.cs">
+      <DependentUpon>ConvertMethodClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PacketConverters\Grouping\ConvertMethodInstance.cs" />
+    <Compile Include="PacketConverters\Grouping\DataContentsMatch\ConvertMethodClassImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverters\Grouping\DataContentsMatch\ConvertMethodInstanceImpl.cs" />
+    <Compile Include="PacketConverters\Grouping\DataContentsMatch\ConvertMethodProperty.cs" />
+    <Compile Include="PacketConverters\Grouping\DataLengthMatch\ConvertMethodClassImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverters\Grouping\DataLengthMatch\ConvertMethodInstanceImpl.cs" />
+    <Compile Include="PacketConverters\Grouping\DataLengthMatch\ConvertMethodProperty.cs" />
+    <Compile Include="PacketConverters\Grouping\MSecPassingFromFirstPacket\ConvertMethodClassImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverters\Grouping\MSecPassingFromFirstPacket\ConvertMethodInstanceImpl.cs" />
+    <Compile Include="PacketConverters\Grouping\MSecPassingFromFirstPacket\ConvertMethodProperty.cs" />
+    <Compile Include="PacketConverters\Grouping\MSecPassingFromPrevPacket\ConvertMethodClassImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverters\Grouping\MSecPassingFromPrevPacket\ConvertMethodInstanceImpl.cs" />
+    <Compile Include="PacketConverters\Grouping\MSecPassingFromPrevPacket\ConvertMethodProperty.cs" />
+    <Compile Include="PacketConverters\Grouping\PacketConverterClassImpl.cs" />
+    <Compile Include="PacketConverters\Grouping\PacketConverterInstanceImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverters\Grouping\PacketConverterPropertyImpl.cs" />
     <Compile Include="PacketViews\Graph\Configs\ChannelListConfig.cs" />
     <Compile Include="PacketViews\Graph\DataCollectModules\DataCollectModule.cs" />
     <Compile Include="PacketViews\Graph\DataCollectModules\DataCollect_Count.cs" />
@@ -639,7 +664,7 @@
     <Compile Include="PacketViews\Packet\Controls\SelectPacketStatusView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PacketViews\Protocol\Configs\FrameListColumnListConfig.cs" />
+    <Compile Include="PacketViews\Protocol\Configs\EventListColumnListConfig.cs" />
     <Compile Include="PacketViews\Protocol\ViewClassImpl.cs" />
     <Compile Include="PacketViews\Protocol\ViewInstanceImpl.cs">
       <SubType>UserControl</SubType>
@@ -688,33 +713,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PacketConverters\Filter\PacketConverterPropertyImpl.cs" />
-    <Compile Include="PacketConverters\Separator\DataContentsMatch\RuleObjectImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Separator\DataContentsMatch\RuleProperty.cs" />
-    <Compile Include="PacketConverters\Separator\DataLengthMatch\RuleObjectImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Separator\DataLengthMatch\RuleProperty.cs" />
-    <Compile Include="PacketConverters\Separator\MSecPassingFromFirstPacket\RuleObjectImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Separator\MSecPassingFromFirstPacket\RuleProperty.cs" />
-    <Compile Include="PacketConverters\Separator\MSecPassingFromPrevPacket\RuleObjectImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Separator\MSecPassingFromPrevPacket\RuleProperty.cs" />
-    <Compile Include="PacketConverters\Separator\PacketConverterClassImpl.cs" />
-    <Compile Include="PacketConverters\Separator\PacketConverterInstanceImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Separator\PacketConverterPropertyImpl.cs" />
-    <Compile Include="PacketConverters\Separator\RuleObject.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Separator\RuleObject.Designer.cs">
-      <DependentUpon>RuleObject.cs</DependentUpon>
-    </Compile>
     <Compile Include="PacketConverters\Transfer\AlgorithmObject.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -772,9 +770,6 @@
       <DependentUpon>DebugForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Devices\AudioFile\DevicePropertyEditorImpl.resx">
-      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Devices\Ethernet\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Devices\AudioDevice\DevicePropertyEditorImpl.resx">
@@ -897,6 +892,9 @@
     <EmbeddedResource Include="Forms\MainWindow\MainWindow_SendFilePanel.resx">
       <DependentUpon>MainWindow_SendFilePanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_SendFrameListPanel.resx">
+      <DependentUpon>MainWindow_SendFrameListPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainWindow\MainWindow_SendLogPanel.resx">
       <DependentUpon>MainWindow_SendLogPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -975,19 +973,19 @@
     <EmbeddedResource Include="PacketConverters\Filter\PacketConverterInstanceImpl.resx">
       <DependentUpon>PacketConverterInstanceImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Separator\DataContentsMatch\RuleObjectImpl.resx">
-      <DependentUpon>RuleObjectImpl.cs</DependentUpon>
+    <EmbeddedResource Include="PacketConverters\Grouping\DataContentsMatch\ConvertMethodClassImpl.resx">
+      <DependentUpon>ConvertMethodClassImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Separator\DataLengthMatch\RuleObjectImpl.resx">
-      <DependentUpon>RuleObjectImpl.cs</DependentUpon>
+    <EmbeddedResource Include="PacketConverters\Grouping\DataLengthMatch\ConvertMethodClassImpl.resx">
+      <DependentUpon>ConvertMethodClassImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Separator\MSecPassingFromFirstPacket\RuleObjectImpl.resx">
-      <DependentUpon>RuleObjectImpl.cs</DependentUpon>
+    <EmbeddedResource Include="PacketConverters\Grouping\MSecPassingFromFirstPacket\ConvertMethodClassImpl.resx">
+      <DependentUpon>ConvertMethodClassImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Separator\MSecPassingFromPrevPacket\RuleObjectImpl.resx">
-      <DependentUpon>RuleObjectImpl.cs</DependentUpon>
+    <EmbeddedResource Include="PacketConverters\Grouping\MSecPassingFromPrevPacket\ConvertMethodClassImpl.resx">
+      <DependentUpon>ConvertMethodClassImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Separator\PacketConverterInstanceImpl.resx">
+    <EmbeddedResource Include="PacketConverters\Grouping\PacketConverterInstanceImpl.resx">
       <DependentUpon>PacketConverterInstanceImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PacketConverters\Transfer\File\AlgorithmObjectImpl.resx">
@@ -1069,30 +1067,24 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.3.0.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis, Version=3.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.3.3.1\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.3.0.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=3.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.3.3.1\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp.Scripting, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.Scripting.3.0.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Scripting, Version=3.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.Scripting.3.3.1\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.Scripting, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Scripting.Common.3.0.0\lib\netstandard2.0\Microsoft.CodeAnalysis.Scripting.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.Scripting, Version=3.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Scripting.Common.3.3.1\lib\netstandard2.0\Microsoft.CodeAnalysis.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NAudio, Version=1.8.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.8.5\lib\net35\NAudio.dll</HintPath>
-    </Reference>
-    <Reference Include="PacketDotNet, Version=0.20.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PacketDotNet.0.20.1\lib\net45\PacketDotNet.dll</HintPath>
+    <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.9.0\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpPcap, Version=4.6.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpPcap.4.6.1\lib\netstandard2.0\SharpPcap.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.dll</HintPath>
@@ -1105,8 +1097,8 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    <Reference Include="System.Collections.Immutable, Version=1.2.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.6.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Console, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -1157,8 +1149,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Management" />
-    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.2\lib\netstandard2.0\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -1169,16 +1161,16 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reflection.Metadata.1.6.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
+    <Reference Include="System.Reflection.Metadata, Version=1.4.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.Metadata.1.7.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.6.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Extensions, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.Extensions.4.3.1\lib\net462\System.Runtime.Extensions.dll</HintPath>
@@ -1210,11 +1202,11 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Encoding.CodePages, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encoding.CodePages.4.5.1\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    <Reference Include="System.Text.Encoding.CodePages, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.4.6.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.3\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Thread, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Thread.4.3.0\lib\net46\System.Threading.Thread.dll</HintPath>
@@ -1257,14 +1249,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.1\build\Microsoft.CodeAnalysis.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.1\build\Microsoft.CodeAnalysis.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\build\Microsoft.CodeAnalysis.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\build\Microsoft.CodeAnalysis.Analyzers.props'))" />
   </Target>
 </Project>

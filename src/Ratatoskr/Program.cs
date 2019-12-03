@@ -258,8 +258,11 @@ namespace Ratatoskr
             gc_control_timer_.Interval = GC_CONTROL_INTERVAL;
             gc_control_timer_.Start();
 
-            /* プラグイン読み込み開始 */
-            PluginManager.Startup();
+			/* マネージャー初期化 */
+			DeviceManager.Initialize();
+
+			/* プラグイン読み込み開始 */
+			PluginManager.Startup();
 
             /* スクリプトマネージャ初期化 */
             ScriptManager.Startup();
@@ -367,6 +370,7 @@ namespace Ratatoskr
             /* 初期化処理 */
             if (   (!startup_state_)
                 && (!shutdown_req_)
+				&& (!PluginManager.IsLoadBusy)		// プラグイン読み込みが完了するまで待機
             ) {
                 Startup();
             }

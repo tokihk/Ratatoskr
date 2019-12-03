@@ -19,114 +19,149 @@ namespace Ratatoskr.PacketViews.Protocol
         private const ulong ITEM_NO_MIN = 1;
         private const ulong ITEM_NO_MAX = ulong.MaxValue;
 
-        
-        private class DataListViewItem : ListViewItem
+		private readonly double[] TIME_CHART_AXIS_MAG_LIST = { 5.00, 2.00, 1.25, 1.00, 0.50, 0.20, 0.10, 0.01 };
+
+		private readonly Padding MARGIN_TIME_CHART_BODY    = new Padding(10,  10, 10, 10);
+
+		private const int TIME_CHART_MEASURE_HEIGHT            = 30;
+		private const int TIME_CHART_MEASURE_LABEL_HEIGHT      = 25;
+		private const int TIME_CHART_MEASURE_MAJOR_LINE_HEIGHT = 5;
+		private const int TIME_CHART_MEASURE_MAJOR_LINE_STEP   = 20;
+
+		private const int TIME_CHART_MEASURE_MINOR_LINE_HEIGHT = 2;
+		private const int TIME_CHART_MEASURE_MINOR_LINE_STEP   = 2;
+
+		private readonly Font  TIME_CHART_SCALE_FONT  = new Font("MS Gothic", 8);
+		private readonly Pen   TIME_CHART_SCALE_PEN   = Pens.Gray;
+		private readonly Brush TIME_CHART_SCALE_BRUSH = Brushes.Gray;
+
+		private readonly Font  TIME_CHART_DATA_FONT      = new Font("Arial", 10);
+		private          Pen   TIME_CHART_DATA_PEN_BASE  = new Pen(Brushes.Black, 1);
+		private readonly Pen   TIME_CHART_DATA_PEN_EVENT = new Pen(Brushes.Black, 2);
+		private readonly Brush TIME_CHART_DATA_BRUSH     = Brushes.Black;
+
+		private const int TIME_CHART_SCALE_TEXT_WIDTH = 100;
+		private const int TIME_CHART_SCALE_STEP = 5;
+
+		private const int TIME_CHART_CHART_LABEL_WIDTH = 120;
+		private const int TIME_CHART_CHART_HEIGHT      = 20;
+
+		private const int TIME_CHART_DATA_DOT_SIZE = 6;
+
+
+		private class AxisMagListItem
+		{
+			public AxisMagListItem(double value)
+			{
+				Value = value;
+			}
+
+			public double Value { get; }
+
+			public override bool Equals(object obj)
+			{
+				if (obj is double obj_d) {
+					return (obj_d == Value);
+				}
+
+				return base.Equals(obj);
+			}
+
+			public override int GetHashCode()
+			{
+				return base.GetHashCode();
+			}
+
+			public override string ToString()
+			{
+				return (Value.ToString("N2"));
+			}
+		}
+
+		private class EventListViewItem : ListViewItem
         {
-            public DataListViewItem(ulong no, PacketObject packet, ProtocolDecodeData2 decode_data)
+            public EventListViewItem(ulong no, string alias, ProtocolDecodeEvent prde)
             {
                 No = no;
-                Packet = packet;
-                DecodeData = decode_data;
+				Alias = alias;
+				DecodeEvent = prde;
             }
 
-            public ulong              No         { get; }
-            public PacketObject       Packet     { get; }
-            public ProtocolDecodeData2 DecodeData { get; }
+            public ulong               No          { get; }
+			public string              Alias       { get; }
+            public ProtocolDecodeEvent DecodeEvent { get; }
         }
 
-        private class DataBlockBuffer
-        {
-            private List<ProtocolDecodeData2> data_list_ = new List<ProtocolDecodeData2>();
+		private class DrawTimeChartParam
+		{
+			public Rectangle DrawRect_MeasureTop;
+			public Rectangle DrawRect_MeasureBottom;
+			public Rectangle DrawRect_ChartData;
 
-            public DataBlockBuffer(DateTime time)
-            {
-                BlockTime = time;
-            }
+			public string                Alias;
+			public ProtocolDecodeChannel Channel;
 
-            public DateTime                         BlockTime { get; set; }
-            public IEnumerable<ProtocolDecodeData2> DataList  { get { return (data_list_); } }
+			public DateTime FirstEventTime;
+			public DateTime LastEventTime;
 
-            public void AddData(ProtocolDecodeData2 data)
-            {
-                if ((data_list_.Count == 0) || (data.DataBlockIndex > data_list_.Last().DataBlockIndex)) {
-                    /* === データが存在しないか、最後のデータよりもインデックス番号が新しい === */
-                    data_list_.Add(data);
-                } else {
-                    var insert_pos = data_list_.FindLastIndex(item => data.DataBlockIndex > item.DataBlockIndex);
+			public DateTime ViewFirstEventTime;
+			public DateTime ViewLastEventTime;
+			public int      ViewScaleIndex;
+			public int      ViewScaleSize;
 
-                    if (insert_pos >= 0) {
-                        data_list_.Insert(insert_pos, data);
-                    } else {
-                        data_list_.Add(data);
-                    }
-                }
-            }
-        }
+			public int      ViewVerticalOffset;
 
-        private class DataChannelBuffer
-        {
-            private List<DataBlockBuffer> block_list_ = new List<DataBlockBuffer>();
+			public double   OneScaleTimeMsec;
+			public double   OnePixelTimeWidth;
 
-            public ProtocolDecodeChannel        ChannelData { get; set; } = null;
-            public IEnumerable<DataBlockBuffer> BlockList   { get { return (block_list_); } }
+			public StringFormat ScaleStringFormat     = new StringFormat();
+			public StringFormat DataLabelStringFormat = new StringFormat();
+		}
 
-            public void AddData(ProtocolDecodeData2 data)
-            {
-                /* 挿入先ブロックを検索 */
-                var block = block_list_.Find(item => item.BlockTime == data.DataBlockTime);
+		private PacketViewPropertyImpl prop_;
 
-                /* ブロックが見つからない場合は新規作成 */
-                if (block == null) {
-                    block = new DataBlockBuffer(data.DataBlockTime);
+        private Guid decoder_id_ = Guid.Empty;
 
-                    /* 挿入先を検索 */
-                    var insert_pos = block_list_.FindLastIndex(item => block.BlockTime > item.BlockTime);
+		private ProtocolDecoderClass                        prdc_ = null;
+        private Dictionary<string, ProtocolDecoderInstance> prdi_map_ = null;
 
-                    if (insert_pos >= 0) {
-                        block_list_.Insert(insert_pos, block);
-                    } else {
-                        block_list_.Add(block);
-                    }
-                }
-
-                block.AddData(data);
-            }
-        }
-
-        private PacketViewPropertyImpl prop_;
-
-        private Guid                    decoder_id_ = Guid.Empty;
-        private ProtocolDecoderInstance decoder_ = null;
-
-        private DataChannelBuffer[] channel_data_ = null;
-
-        private List<DataListViewItem> list_items_temp_;
+        private List<EventListViewItem> list_items_temp_;
 
         private ulong next_item_no_ = 1;
 
-        private System.Windows.Forms.Panel panel1;
+		private DrawTimeChartParam draw_chart_param_ = new DrawTimeChartParam();
+
+		private double draw_chart_axis_x_mag_ = 1.0f;
+		private double draw_chart_axis_y_mag_ = 1.0f;
+		private double scroll_pixel_time_ = 1.0f;
+
+		private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox GBox_Decoder;
-        private System.Windows.Forms.ComboBox CBox_ProtocolType;
+        private System.Windows.Forms.ComboBox CBox_DecoderType;
         private System.Windows.Forms.SplitContainer Splitter_Main;
         private System.Windows.Forms.SplitContainer Splitter_Sub;
         private System.Windows.Forms.Panel Panel_FrameDetails;
-        private System.Windows.Forms.Label Label_DetailsFilter;
-        private System.Windows.Forms.TextBox TBox_DetailsFilter;
+        private System.Windows.Forms.Label Label_EventDetailsSearch;
+        private System.Windows.Forms.TextBox TBox_EventDetailsSearch;
         private System.Windows.Forms.TabControl TabControl_Chart;
         private System.Windows.Forms.TabPage TabPage_TimeChart;
-        private System.Windows.Forms.FlowLayoutPanel Panel_TimeChart;
         private System.Windows.Forms.TabPage TabPage_FrameErrorRate;
         private System.Windows.Forms.DataVisualization.Charting.Chart Chart_FrameErrorRate;
         private System.Windows.Forms.FlowLayoutPanel Panel_FrameErrorRate;
-        private RtsCore.Framework.Controls.ListViewEx LView_DataList;
+        private RtsCore.Framework.Controls.ListViewEx LView_EventList;
         private System.Windows.Forms.Panel Panel_FrameList;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox TBox_CustomText;
+        private System.Windows.Forms.Label Label_EventListSearch;
+        private System.Windows.Forms.TextBox TBox_EventListSearch;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.PictureBox PBox_TimeChart;
+        private System.Windows.Forms.PictureBox PBox_EventTimeChart;
         private System.Windows.Forms.HScrollBar HScroll_TimeChart;
         private System.Windows.Forms.VScrollBar VScroll_TimeChart;
-        private TreeListView TLView_FrameDetails;
+		private GroupBox groupBox1;
+		private ComboBox CBox_ChartAxisMag_X;
+		private Label label1;
+		private ComboBox CBox_ChartAxisMag_Y;
+		private Label label3;
+		private TreeListView TLView_EventDetails;
 
         private void InitializeComponent()
         {
@@ -134,29 +169,34 @@ namespace Ratatoskr.PacketViews.Protocol
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.CBox_ChartAxisMag_Y = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.CBox_ChartAxisMag_X = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.GBox_Decoder = new System.Windows.Forms.GroupBox();
-            this.CBox_ProtocolType = new System.Windows.Forms.ComboBox();
+            this.CBox_DecoderType = new System.Windows.Forms.ComboBox();
             this.Splitter_Main = new System.Windows.Forms.SplitContainer();
             this.Splitter_Sub = new System.Windows.Forms.SplitContainer();
-            this.LView_DataList = new RtsCore.Framework.Controls.ListViewEx();
+            this.LView_EventList = new RtsCore.Framework.Controls.ListViewEx();
             this.Panel_FrameList = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.TBox_CustomText = new System.Windows.Forms.TextBox();
-            this.TLView_FrameDetails = new Ratatoskr.Forms.Controls.TreeListView();
+            this.Label_EventListSearch = new System.Windows.Forms.Label();
+            this.TBox_EventListSearch = new System.Windows.Forms.TextBox();
+            this.TLView_EventDetails = new Ratatoskr.Forms.Controls.TreeListView();
             this.Panel_FrameDetails = new System.Windows.Forms.Panel();
-            this.Label_DetailsFilter = new System.Windows.Forms.Label();
-            this.TBox_DetailsFilter = new System.Windows.Forms.TextBox();
+            this.Label_EventDetailsSearch = new System.Windows.Forms.Label();
+            this.TBox_EventDetailsSearch = new System.Windows.Forms.TextBox();
             this.TabControl_Chart = new System.Windows.Forms.TabControl();
             this.TabPage_TimeChart = new System.Windows.Forms.TabPage();
-            this.PBox_TimeChart = new System.Windows.Forms.PictureBox();
+            this.PBox_EventTimeChart = new System.Windows.Forms.PictureBox();
             this.HScroll_TimeChart = new System.Windows.Forms.HScrollBar();
             this.VScroll_TimeChart = new System.Windows.Forms.VScrollBar();
-            this.Panel_TimeChart = new System.Windows.Forms.FlowLayoutPanel();
             this.TabPage_FrameErrorRate = new System.Windows.Forms.TabPage();
             this.Chart_FrameErrorRate = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.Panel_FrameErrorRate = new System.Windows.Forms.FlowLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.GBox_Decoder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Splitter_Main)).BeginInit();
             this.Splitter_Main.Panel1.SuspendLayout();
@@ -170,7 +210,7 @@ namespace Ratatoskr.PacketViews.Protocol
             this.Panel_FrameDetails.SuspendLayout();
             this.TabControl_Chart.SuspendLayout();
             this.TabPage_TimeChart.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PBox_TimeChart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PBox_EventTimeChart)).BeginInit();
             this.TabPage_FrameErrorRate.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Chart_FrameErrorRate)).BeginInit();
             this.Panel_FrameErrorRate.SuspendLayout();
@@ -178,16 +218,70 @@ namespace Ratatoskr.PacketViews.Protocol
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.GBox_Decoder);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1056, 51);
+            this.panel1.Size = new System.Drawing.Size(1056, 53);
             this.panel1.TabIndex = 0;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.CBox_ChartAxisMag_Y);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.CBox_ChartAxisMag_X);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Location = new System.Drawing.Point(209, 4);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(240, 41);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Chart/Graph Axis Magnification";
+            // 
+            // CBox_ChartAxisMag_Y
+            // 
+            this.CBox_ChartAxisMag_Y.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_ChartAxisMag_Y.FormattingEnabled = true;
+            this.CBox_ChartAxisMag_Y.Location = new System.Drawing.Point(149, 14);
+            this.CBox_ChartAxisMag_Y.Name = "CBox_ChartAxisMag_Y";
+            this.CBox_ChartAxisMag_Y.Size = new System.Drawing.Size(80, 20);
+            this.CBox_ChartAxisMag_Y.TabIndex = 3;
+            this.CBox_ChartAxisMag_Y.SelectedIndexChanged += new System.EventHandler(this.CBox_ChartAxisMag_Y_SelectedIndexChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(125, 17);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(18, 12);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Y :";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // CBox_ChartAxisMag_X
+            // 
+            this.CBox_ChartAxisMag_X.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_ChartAxisMag_X.FormattingEnabled = true;
+            this.CBox_ChartAxisMag_X.Location = new System.Drawing.Point(30, 14);
+            this.CBox_ChartAxisMag_X.Name = "CBox_ChartAxisMag_X";
+            this.CBox_ChartAxisMag_X.Size = new System.Drawing.Size(80, 20);
+            this.CBox_ChartAxisMag_X.TabIndex = 1;
+            this.CBox_ChartAxisMag_X.SelectedIndexChanged += new System.EventHandler(this.CBox_ChartAxisMag_X_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 17);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(18, 12);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "X :";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // GBox_Decoder
             // 
-            this.GBox_Decoder.Controls.Add(this.CBox_ProtocolType);
+            this.GBox_Decoder.Controls.Add(this.CBox_DecoderType);
             this.GBox_Decoder.Location = new System.Drawing.Point(3, 3);
             this.GBox_Decoder.Name = "GBox_Decoder";
             this.GBox_Decoder.Size = new System.Drawing.Size(200, 42);
@@ -195,22 +289,22 @@ namespace Ratatoskr.PacketViews.Protocol
             this.GBox_Decoder.TabStop = false;
             this.GBox_Decoder.Text = "Decoder";
             // 
-            // CBox_ProtocolType
+            // CBox_DecoderType
             // 
-            this.CBox_ProtocolType.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CBox_ProtocolType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CBox_ProtocolType.FormattingEnabled = true;
-            this.CBox_ProtocolType.Location = new System.Drawing.Point(3, 15);
-            this.CBox_ProtocolType.Name = "CBox_ProtocolType";
-            this.CBox_ProtocolType.Size = new System.Drawing.Size(194, 20);
-            this.CBox_ProtocolType.TabIndex = 0;
-            this.CBox_ProtocolType.SelectedIndexChanged += new System.EventHandler(this.CBox_ProtocolType_SelectedIndexChanged);
+            this.CBox_DecoderType.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CBox_DecoderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_DecoderType.FormattingEnabled = true;
+            this.CBox_DecoderType.Location = new System.Drawing.Point(3, 15);
+            this.CBox_DecoderType.Name = "CBox_DecoderType";
+            this.CBox_DecoderType.Size = new System.Drawing.Size(194, 20);
+            this.CBox_DecoderType.TabIndex = 0;
+            this.CBox_DecoderType.SelectedIndexChanged += new System.EventHandler(this.CBox_DecoderType_SelectedIndexChanged);
             // 
             // Splitter_Main
             // 
             this.Splitter_Main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Splitter_Main.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.Splitter_Main.Location = new System.Drawing.Point(0, 51);
+            this.Splitter_Main.Location = new System.Drawing.Point(0, 53);
             this.Splitter_Main.Name = "Splitter_Main";
             this.Splitter_Main.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -221,125 +315,127 @@ namespace Ratatoskr.PacketViews.Protocol
             // Splitter_Main.Panel2
             // 
             this.Splitter_Main.Panel2.Controls.Add(this.TabControl_Chart);
-            this.Splitter_Main.Size = new System.Drawing.Size(1056, 587);
-            this.Splitter_Main.SplitterDistance = 381;
+            this.Splitter_Main.Size = new System.Drawing.Size(1056, 585);
+            this.Splitter_Main.SplitterDistance = 379;
             this.Splitter_Main.TabIndex = 2;
             // 
             // Splitter_Sub
             // 
             this.Splitter_Sub.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Splitter_Sub.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Splitter_Sub.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.Splitter_Sub.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.Splitter_Sub.Location = new System.Drawing.Point(0, 0);
             this.Splitter_Sub.Name = "Splitter_Sub";
             // 
             // Splitter_Sub.Panel1
             // 
-            this.Splitter_Sub.Panel1.Controls.Add(this.LView_DataList);
+            this.Splitter_Sub.Panel1.Controls.Add(this.LView_EventList);
             this.Splitter_Sub.Panel1.Controls.Add(this.Panel_FrameList);
             // 
             // Splitter_Sub.Panel2
             // 
-            this.Splitter_Sub.Panel2.Controls.Add(this.TLView_FrameDetails);
+            this.Splitter_Sub.Panel2.Controls.Add(this.TLView_EventDetails);
             this.Splitter_Sub.Panel2.Controls.Add(this.Panel_FrameDetails);
-            this.Splitter_Sub.Size = new System.Drawing.Size(1056, 381);
-            this.Splitter_Sub.SplitterDistance = 544;
+            this.Splitter_Sub.Size = new System.Drawing.Size(1056, 379);
+            this.Splitter_Sub.SplitterDistance = 560;
             this.Splitter_Sub.TabIndex = 0;
             // 
-            // LView_DataList
+            // LView_EventList
             // 
-            this.LView_DataList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.LView_DataList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LView_DataList.FullRowSelect = true;
-            this.LView_DataList.GridLines = true;
-            this.LView_DataList.HideSelection = false;
-            this.LView_DataList.ItemCountMax = 99999999;
-            this.LView_DataList.Location = new System.Drawing.Point(0, 25);
-            this.LView_DataList.Name = "LView_DataList";
-            this.LView_DataList.ReadOnly = false;
-            this.LView_DataList.Size = new System.Drawing.Size(542, 354);
-            this.LView_DataList.TabIndex = 1;
-            this.LView_DataList.UseCompatibleStateImageBehavior = false;
-            this.LView_DataList.View = System.Windows.Forms.View.Details;
-            this.LView_DataList.VirtualMode = true;
-            this.LView_DataList.SelectedIndexChanged += new System.EventHandler(this.LView_DataList_SelectedIndexChanged);
+            this.LView_EventList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.LView_EventList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LView_EventList.FullRowSelect = true;
+            this.LView_EventList.GridLines = true;
+            this.LView_EventList.HideSelection = false;
+            this.LView_EventList.ItemCountMax = 99999999;
+            this.LView_EventList.Location = new System.Drawing.Point(0, 25);
+            this.LView_EventList.Name = "LView_EventList";
+            this.LView_EventList.ReadOnly = false;
+            this.LView_EventList.Size = new System.Drawing.Size(558, 352);
+            this.LView_EventList.TabIndex = 1;
+            this.LView_EventList.UseCompatibleStateImageBehavior = false;
+            this.LView_EventList.View = System.Windows.Forms.View.Details;
+            this.LView_EventList.VirtualMode = true;
+            this.LView_EventList.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.LView_EventList_RetrieveVirtualItem);
+            this.LView_EventList.SelectedIndexChanged += new System.EventHandler(this.LView_EventList_SelectedIndexChanged);
             // 
             // Panel_FrameList
             // 
             this.Panel_FrameList.AutoSize = true;
             this.Panel_FrameList.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Panel_FrameList.Controls.Add(this.label1);
-            this.Panel_FrameList.Controls.Add(this.TBox_CustomText);
+            this.Panel_FrameList.Controls.Add(this.Label_EventListSearch);
+            this.Panel_FrameList.Controls.Add(this.TBox_EventListSearch);
             this.Panel_FrameList.Dock = System.Windows.Forms.DockStyle.Top;
             this.Panel_FrameList.Location = new System.Drawing.Point(0, 0);
             this.Panel_FrameList.Name = "Panel_FrameList";
-            this.Panel_FrameList.Size = new System.Drawing.Size(542, 25);
+            this.Panel_FrameList.Size = new System.Drawing.Size(558, 25);
             this.Panel_FrameList.TabIndex = 0;
             // 
-            // label1
+            // Label_EventListSearch
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 7);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 7, 3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(71, 12);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Custom Text";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Label_EventListSearch.AutoSize = true;
+            this.Label_EventListSearch.Location = new System.Drawing.Point(3, 7);
+            this.Label_EventListSearch.Margin = new System.Windows.Forms.Padding(3, 7, 3, 0);
+            this.Label_EventListSearch.Name = "Label_EventListSearch";
+            this.Label_EventListSearch.Size = new System.Drawing.Size(40, 12);
+            this.Label_EventListSearch.TabIndex = 1;
+            this.Label_EventListSearch.Text = "Search";
+            this.Label_EventListSearch.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // TBox_CustomText
+            // TBox_EventListSearch
             // 
-            this.TBox_CustomText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.TBox_EventListSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TBox_CustomText.Location = new System.Drawing.Point(80, 3);
-            this.TBox_CustomText.Name = "TBox_CustomText";
-            this.TBox_CustomText.Size = new System.Drawing.Size(459, 19);
-            this.TBox_CustomText.TabIndex = 2;
+            this.TBox_EventListSearch.Location = new System.Drawing.Point(49, 3);
+            this.TBox_EventListSearch.Name = "TBox_EventListSearch";
+            this.TBox_EventListSearch.Size = new System.Drawing.Size(506, 19);
+            this.TBox_EventListSearch.TabIndex = 2;
             // 
-            // TLView_FrameDetails
+            // TLView_EventDetails
             // 
-            this.TLView_FrameDetails.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.TLView_FrameDetails.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TLView_FrameDetails.FullRowSelect = true;
-            this.TLView_FrameDetails.GridLines = true;
-            this.TLView_FrameDetails.Location = new System.Drawing.Point(0, 25);
-            this.TLView_FrameDetails.Name = "TLView_FrameDetails";
-            this.TLView_FrameDetails.OwnerDraw = true;
-            this.TLView_FrameDetails.Size = new System.Drawing.Size(506, 354);
-            this.TLView_FrameDetails.TabIndex = 3;
-            this.TLView_FrameDetails.UseCompatibleStateImageBehavior = false;
-            this.TLView_FrameDetails.View = System.Windows.Forms.View.Details;
+            this.TLView_EventDetails.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TLView_EventDetails.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TLView_EventDetails.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.TLView_EventDetails.FullRowSelect = true;
+            this.TLView_EventDetails.GridLines = true;
+            this.TLView_EventDetails.Location = new System.Drawing.Point(0, 25);
+            this.TLView_EventDetails.Name = "TLView_EventDetails";
+            this.TLView_EventDetails.OwnerDraw = true;
+            this.TLView_EventDetails.Size = new System.Drawing.Size(490, 352);
+            this.TLView_EventDetails.TabIndex = 3;
+            this.TLView_EventDetails.UseCompatibleStateImageBehavior = false;
+            this.TLView_EventDetails.View = System.Windows.Forms.View.Details;
             // 
             // Panel_FrameDetails
             // 
             this.Panel_FrameDetails.AutoSize = true;
-            this.Panel_FrameDetails.Controls.Add(this.Label_DetailsFilter);
-            this.Panel_FrameDetails.Controls.Add(this.TBox_DetailsFilter);
+            this.Panel_FrameDetails.Controls.Add(this.Label_EventDetailsSearch);
+            this.Panel_FrameDetails.Controls.Add(this.TBox_EventDetailsSearch);
             this.Panel_FrameDetails.Dock = System.Windows.Forms.DockStyle.Top;
             this.Panel_FrameDetails.Location = new System.Drawing.Point(0, 0);
             this.Panel_FrameDetails.Name = "Panel_FrameDetails";
-            this.Panel_FrameDetails.Size = new System.Drawing.Size(506, 25);
+            this.Panel_FrameDetails.Size = new System.Drawing.Size(490, 25);
             this.Panel_FrameDetails.TabIndex = 1;
             // 
-            // Label_DetailsFilter
+            // Label_EventDetailsSearch
             // 
-            this.Label_DetailsFilter.AutoSize = true;
-            this.Label_DetailsFilter.Location = new System.Drawing.Point(3, 7);
-            this.Label_DetailsFilter.Margin = new System.Windows.Forms.Padding(3, 7, 3, 0);
-            this.Label_DetailsFilter.Name = "Label_DetailsFilter";
-            this.Label_DetailsFilter.Size = new System.Drawing.Size(32, 12);
-            this.Label_DetailsFilter.TabIndex = 0;
-            this.Label_DetailsFilter.Text = "Filter";
-            this.Label_DetailsFilter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Label_EventDetailsSearch.AutoSize = true;
+            this.Label_EventDetailsSearch.Location = new System.Drawing.Point(3, 7);
+            this.Label_EventDetailsSearch.Margin = new System.Windows.Forms.Padding(3, 7, 3, 0);
+            this.Label_EventDetailsSearch.Name = "Label_EventDetailsSearch";
+            this.Label_EventDetailsSearch.Size = new System.Drawing.Size(40, 12);
+            this.Label_EventDetailsSearch.TabIndex = 0;
+            this.Label_EventDetailsSearch.Text = "Search";
+            this.Label_EventDetailsSearch.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // TBox_DetailsFilter
+            // TBox_EventDetailsSearch
             // 
-            this.TBox_DetailsFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.TBox_EventDetailsSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TBox_DetailsFilter.Location = new System.Drawing.Point(41, 3);
-            this.TBox_DetailsFilter.Name = "TBox_DetailsFilter";
-            this.TBox_DetailsFilter.Size = new System.Drawing.Size(461, 19);
-            this.TBox_DetailsFilter.TabIndex = 1;
+            this.TBox_EventDetailsSearch.Location = new System.Drawing.Point(49, 3);
+            this.TBox_EventDetailsSearch.Name = "TBox_EventDetailsSearch";
+            this.TBox_EventDetailsSearch.Size = new System.Drawing.Size(437, 19);
+            this.TBox_EventDetailsSearch.TabIndex = 1;
             // 
             // TabControl_Chart
             // 
@@ -354,10 +450,9 @@ namespace Ratatoskr.PacketViews.Protocol
             // 
             // TabPage_TimeChart
             // 
-            this.TabPage_TimeChart.Controls.Add(this.PBox_TimeChart);
+            this.TabPage_TimeChart.Controls.Add(this.PBox_EventTimeChart);
             this.TabPage_TimeChart.Controls.Add(this.HScroll_TimeChart);
             this.TabPage_TimeChart.Controls.Add(this.VScroll_TimeChart);
-            this.TabPage_TimeChart.Controls.Add(this.Panel_TimeChart);
             this.TabPage_TimeChart.Location = new System.Drawing.Point(4, 22);
             this.TabPage_TimeChart.Name = "TabPage_TimeChart";
             this.TabPage_TimeChart.Padding = new System.Windows.Forms.Padding(3);
@@ -366,14 +461,16 @@ namespace Ratatoskr.PacketViews.Protocol
             this.TabPage_TimeChart.Text = "Time Chart";
             this.TabPage_TimeChart.UseVisualStyleBackColor = true;
             // 
-            // PBox_TimeChart
+            // PBox_EventTimeChart
             // 
-            this.PBox_TimeChart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PBox_TimeChart.Location = new System.Drawing.Point(3, 43);
-            this.PBox_TimeChart.Name = "PBox_TimeChart";
-            this.PBox_TimeChart.Size = new System.Drawing.Size(1025, 113);
-            this.PBox_TimeChart.TabIndex = 3;
-            this.PBox_TimeChart.TabStop = false;
+            this.PBox_EventTimeChart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PBox_EventTimeChart.Location = new System.Drawing.Point(3, 3);
+            this.PBox_EventTimeChart.Name = "PBox_EventTimeChart";
+            this.PBox_EventTimeChart.Size = new System.Drawing.Size(1025, 153);
+            this.PBox_EventTimeChart.TabIndex = 3;
+            this.PBox_EventTimeChart.TabStop = false;
+            this.PBox_EventTimeChart.SizeChanged += new System.EventHandler(this.PBox_EventTimeChart_SizeChanged);
+            this.PBox_EventTimeChart.Paint += new System.Windows.Forms.PaintEventHandler(this.PBox_EventTimeChart_Paint);
             // 
             // HScroll_TimeChart
             // 
@@ -382,22 +479,16 @@ namespace Ratatoskr.PacketViews.Protocol
             this.HScroll_TimeChart.Name = "HScroll_TimeChart";
             this.HScroll_TimeChart.Size = new System.Drawing.Size(1025, 17);
             this.HScroll_TimeChart.TabIndex = 2;
+            this.HScroll_TimeChart.Scroll += new System.Windows.Forms.ScrollEventHandler(this.HScroll_TimeChart_Scroll);
             // 
             // VScroll_TimeChart
             // 
             this.VScroll_TimeChart.Dock = System.Windows.Forms.DockStyle.Right;
-            this.VScroll_TimeChart.Location = new System.Drawing.Point(1028, 43);
+            this.VScroll_TimeChart.Location = new System.Drawing.Point(1028, 3);
             this.VScroll_TimeChart.Name = "VScroll_TimeChart";
-            this.VScroll_TimeChart.Size = new System.Drawing.Size(17, 130);
+            this.VScroll_TimeChart.Size = new System.Drawing.Size(17, 170);
             this.VScroll_TimeChart.TabIndex = 1;
-            // 
-            // Panel_TimeChart
-            // 
-            this.Panel_TimeChart.Dock = System.Windows.Forms.DockStyle.Top;
-            this.Panel_TimeChart.Location = new System.Drawing.Point(3, 3);
-            this.Panel_TimeChart.Name = "Panel_TimeChart";
-            this.Panel_TimeChart.Size = new System.Drawing.Size(1042, 40);
-            this.Panel_TimeChart.TabIndex = 0;
+            this.VScroll_TimeChart.Scroll += new System.Windows.Forms.ScrollEventHandler(this.VScroll_TimeChart_Scroll);
             // 
             // TabPage_FrameErrorRate
             // 
@@ -453,9 +544,11 @@ namespace Ratatoskr.PacketViews.Protocol
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.Controls.Add(this.Splitter_Main);
             this.Controls.Add(this.panel1);
-            this.Name = "ViewInstanceImpl";
+            this.Name = "PacketViewInstanceImpl";
             this.Size = new System.Drawing.Size(1056, 638);
             this.panel1.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.GBox_Decoder.ResumeLayout(false);
             this.Splitter_Main.Panel1.ResumeLayout(false);
             this.Splitter_Main.Panel2.ResumeLayout(false);
@@ -473,7 +566,7 @@ namespace Ratatoskr.PacketViews.Protocol
             this.Panel_FrameDetails.PerformLayout();
             this.TabControl_Chart.ResumeLayout(false);
             this.TabPage_TimeChart.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.PBox_TimeChart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PBox_EventTimeChart)).EndInit();
             this.TabPage_FrameErrorRate.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Chart_FrameErrorRate)).EndInit();
             this.Panel_FrameErrorRate.ResumeLayout(false);
@@ -493,43 +586,110 @@ namespace Ratatoskr.PacketViews.Protocol
 
             InitializeComponent();
             InitializeFrameDetailsColumn();
+			InitializeDecorderType();
+			InitializeChartAxisMagList();
 
-            UpdateProtocolTypeList();
-            UpdateFrameListHeader();
+			TIME_CHART_DATA_PEN_BASE.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+
+			draw_chart_param_.ScaleStringFormat.Alignment = StringAlignment.Near;
+			draw_chart_param_.ScaleStringFormat.LineAlignment = StringAlignment.Near;
+
+			draw_chart_param_.DataLabelStringFormat.Alignment = StringAlignment.Near;
+			draw_chart_param_.DataLabelStringFormat.LineAlignment = StringAlignment.Center;
+
+			CBox_DecoderType.SelectedItem = prop_.DecoderClassID.Value;
+			if ((CBox_DecoderType.SelectedIndex < 0) && (CBox_DecoderType.Items.Count > 0)) {
+				CBox_DecoderType.SelectedIndex = 0;
+			}
+
+			CBox_ChartAxisMag_X.SelectedItem = (double)prop_.ChartAxisMag_X.Value;
+			CBox_ChartAxisMag_Y.SelectedItem = (double)prop_.ChartAxisMag_Y.Value;
+
+			UpdateEventListHeader();
 
             UpdateDecoder();
+
+			UpdateTimeChartSize();
+			UpdateTimeChartScrollRange();
+			UpdateTimeChartView();
+		}
+
+		private void InitializeFrameDetailsColumn()
+        {
+            TLView_EventDetails.Columns.Add("Name", 220);
+            TLView_EventDetails.Columns.Add("Value", 200);
         }
 
-        private void InitializeFrameDetailsColumn()
-        {
-            TLView_FrameDetails.Columns.Add("Name", 220);
-            TLView_FrameDetails.Columns.Add("Value", -2);
-        }
+		private void InitializeDecorderType()
+		{
+			CBox_DecoderType.BeginUpdate();
+			{
+				CBox_DecoderType.Items.Clear();
+				CBox_DecoderType.Items.AddRange(Ratatoskr.Protocol.ProtocolManager.GetDecoderList());
+			}
+			CBox_DecoderType.EndUpdate();
+		}
 
-        private void UpdateProtocolTypeList()
-        {
-            CBox_ProtocolType.BeginUpdate();
-            {
-                CBox_ProtocolType.Items.Clear();
-                CBox_ProtocolType.Items.AddRange(Ratatoskr.Protocol.ProtocolManager.GetDecoderList());
-                CBox_ProtocolType.SelectedItem = prop_.ProtocolType.Value;
-                if ((CBox_ProtocolType.SelectedIndex < 0) && (CBox_ProtocolType.Items.Count > 0)) {
-                    CBox_ProtocolType.SelectedIndex = 0;
-                }
-            }
-            CBox_ProtocolType.EndUpdate();
-        }
+		private void InitializeChartAxisMagList()
+		{
+			CBox_ChartAxisMag_X.BeginUpdate();
+			{
+				foreach (var item in TIME_CHART_AXIS_MAG_LIST) {
+					CBox_ChartAxisMag_X.Items.Add(new AxisMagListItem(item));
+				}
+			}
+			CBox_ChartAxisMag_X.EndUpdate();
 
-        private void UpdateFrameListHeader()
+			CBox_ChartAxisMag_Y.BeginUpdate();
+			{
+				foreach (var item in TIME_CHART_AXIS_MAG_LIST) {
+					CBox_ChartAxisMag_Y.Items.Add(new AxisMagListItem(item));
+				}
+			}
+			CBox_ChartAxisMag_Y.EndUpdate();
+		}
+
+		private (int channel_count, DateTime first_event_time, DateTime last_event_time) GetChannelStatus()
+		{
+			var channel_count = 0;
+			var dt_first = DateTime.MaxValue;
+			var dt_last = DateTime.MinValue;
+			var dt_temp = DateTime.MaxValue;
+
+			/* 全イベントから最も早いイベント時刻を取得 */
+			foreach (var prdi in prdi_map_.Values) {
+				foreach (var prdch in prdi.GetProtocolDecodeChannels()) {
+					channel_count++;
+
+					dt_temp = prdch.FirstEventTime;
+					if (dt_first > dt_temp) {
+						dt_first = dt_temp;
+					}
+
+					dt_temp = prdch.LastEventTime;
+					if (dt_last < dt_temp) {
+						dt_last = dt_temp;
+					}
+				}
+			}
+
+			if (dt_first == DateTime.MaxValue) {
+				dt_first = DateTime.MinValue;
+			}
+
+			return (channel_count, dt_first, dt_last);
+		}
+
+		private void UpdateEventListHeader()
         {
-            LView_DataList.BeginUpdate();
+            LView_EventList.BeginUpdate();
             {
                 /* 先にデータをすべて削除してからヘッダーを削除する */
-                LView_DataList.ItemClear();
-                LView_DataList.Columns.Clear();
+                LView_EventList.ItemClear();
+                LView_EventList.Columns.Clear();
 
                 /* メインヘッダー */
-                LView_DataList.Columns.Add(
+                LView_EventList.Columns.Add(
                     new ColumnHeader()
                     {
                         Text = "No.",
@@ -537,96 +697,148 @@ namespace Ratatoskr.PacketViews.Protocol
                     }
                 );
 
-                foreach (var config in prop_.FrameListColumn.Value) {
-                    LView_DataList.Columns.Add(
+                foreach (var config in prop_.EventListColumn.Value) {
+                    LView_EventList.Columns.Add(
                         new ColumnHeader()
                         {
-                            Text = GetDataListViewHeaderName(config.Type),
+                            Text = GetEventListViewHeaderName(config.Type),
                             Width = (int)config.Width,
                             Tag = config.Type,
                         }
                     );
                 }
             }
-            LView_DataList.EndUpdate();
+            LView_EventList.EndUpdate();
         }
 
         private void UpdateDecoder()
         {
-            var decoder = (ProtocolDecoderInstance)null;
-            var decoder_c = CBox_ProtocolType.SelectedItem as ProtocolDecoderClass;
-
-            try {
-                if (decoder_c != null) {
-                    decoder = decoder_c.CreateInstance();
-                }
-
-                decoder_ = decoder;
-            } catch {
-                decoder_ = null;
-            }
+            prdc_ = CBox_DecoderType.SelectedItem as ProtocolDecoderClass;
+			prdi_map_ = new Dictionary<string, ProtocolDecoderInstance>();
         }
 
-        private string GetDataListViewHeaderName(FrameListColumnType type)
+		private void UpdateEventDetails(ProtocolDecodeEvent prde)
+		{
+			TLView_EventDetails.Nodes.Clear();
+
+			var node = BuildTreeNodeFromProtocolDecodeEvent(prde);
+
+			if (node == null) return;
+
+			node.ExpandAll();
+
+			TLView_EventDetails.Nodes.Add(node);
+			TLView_EventDetails.UpdateView();
+		}
+
+		private void UpdateTimeChartSize()
+		{
+			var client_size = PBox_EventTimeChart.ClientSize;
+
+			draw_chart_param_.DrawRect_MeasureTop.X = MARGIN_TIME_CHART_BODY.Left + TIME_CHART_CHART_LABEL_WIDTH;
+			draw_chart_param_.DrawRect_MeasureTop.Y = MARGIN_TIME_CHART_BODY.Top;
+			draw_chart_param_.DrawRect_MeasureTop.Width = client_size.Width - draw_chart_param_.DrawRect_MeasureTop.X - MARGIN_TIME_CHART_BODY.Right;
+			draw_chart_param_.DrawRect_MeasureTop.Height = TIME_CHART_MEASURE_HEIGHT;
+
+			draw_chart_param_.DrawRect_MeasureBottom.Width = draw_chart_param_.DrawRect_MeasureTop.Width;
+			draw_chart_param_.DrawRect_MeasureBottom.Height = draw_chart_param_.DrawRect_MeasureTop.Height;
+			draw_chart_param_.DrawRect_MeasureBottom.X = draw_chart_param_.DrawRect_MeasureTop.X;
+			draw_chart_param_.DrawRect_MeasureBottom.Y = client_size.Height - MARGIN_TIME_CHART_BODY.Bottom - draw_chart_param_.DrawRect_MeasureBottom.Height;
+
+			draw_chart_param_.DrawRect_ChartData.X = MARGIN_TIME_CHART_BODY.Left;
+			draw_chart_param_.DrawRect_ChartData.Y = draw_chart_param_.DrawRect_MeasureTop.Bottom;
+			draw_chart_param_.DrawRect_ChartData.Width = Math.Max(0, client_size.Width - MARGIN_TIME_CHART_BODY.Horizontal);
+			draw_chart_param_.DrawRect_ChartData.Height = Math.Max(0, draw_chart_param_.DrawRect_MeasureBottom.Top - draw_chart_param_.DrawRect_MeasureTop.Bottom);
+		}
+
+		private void UpdateTimeChartScrollRange()
+		{
+			var status = GetChannelStatus();
+
+			draw_chart_param_.FirstEventTime = status.first_event_time;
+			draw_chart_param_.LastEventTime  = status.last_event_time;
+			draw_chart_param_.ViewScaleSize  = draw_chart_param_.DrawRect_MeasureTop.Width / TIME_CHART_SCALE_STEP;
+
+			var dt_delta = (draw_chart_param_.LastEventTime - draw_chart_param_.FirstEventTime).TotalMilliseconds;
+
+			var scroll_now = (double)HScroll_TimeChart.Value / HScroll_TimeChart.Maximum;
+			var scroll_scale_max  = (int)(Math.Min(dt_delta / draw_chart_param_.OneScaleTimeMsec, int.MaxValue));
+
+			if (double.IsNaN(scroll_now)) {
+				scroll_now = 0;
+			}
+
+			HScroll_TimeChart.Minimum = 0;
+			HScroll_TimeChart.Maximum = (int)Math.Max(scroll_scale_max - draw_chart_param_.ViewScaleSize, 0);
+			HScroll_TimeChart.Value = Math.Min((int)(HScroll_TimeChart.Maximum * scroll_now), HScroll_TimeChart.Maximum);
+
+			VScroll_TimeChart.Minimum = 0;
+			VScroll_TimeChart.Maximum = Math.Max(0, status.channel_count * TIME_CHART_CHART_HEIGHT - draw_chart_param_.DrawRect_ChartData.Height);
+			VScroll_TimeChart.Value = Math.Min(VScroll_TimeChart.Value, VScroll_TimeChart.Maximum);
+
+			UpdateTimeChartScrollPos();
+		}
+
+		private void UpdateTimeChartScrollPos()
+		{
+			draw_chart_param_.ViewVerticalOffset = VScroll_TimeChart.Value;
+			draw_chart_param_.ViewScaleIndex = HScroll_TimeChart.Value;
+
+			draw_chart_param_.ViewFirstEventTime = draw_chart_param_.FirstEventTime.AddMilliseconds(draw_chart_param_.OneScaleTimeMsec * draw_chart_param_.ViewScaleIndex);
+			draw_chart_param_.ViewLastEventTime = draw_chart_param_.ViewFirstEventTime.AddMilliseconds(draw_chart_param_.OneScaleTimeMsec * draw_chart_param_.ViewScaleSize);
+
+			PBox_EventTimeChart.Invalidate();
+		}
+
+		private void UpdateTimeChartView()
+		{
+			PBox_EventTimeChart.Invalidate();
+		}
+
+		private string GetEventListViewHeaderName(EventListColumnType type)
         {
             switch (type) {
-                case FrameListColumnType.Alias:             return ("Alias");
-                case FrameListColumnType.Channel:           return ("Channel");
-                case FrameListColumnType.BlockTime_UTC:     return ("BlockTime(UTC)");
-                case FrameListColumnType.BlockTime_Local:   return ("BlockTime(Local)");
-                case FrameListColumnType.BlockIndex:        return ("Index");
-                case FrameListColumnType.DateTime_UTC:      return ("DateTime(UTC)");
-                case FrameListColumnType.DateTime_Local:    return ("DateTime(Local)");
-                case FrameListColumnType.Outline:           return ("Outline");
-                case FrameListColumnType.Outline_Custom:    return ("Outline(Custom)");
-                default:                                    return (type.ToString());
+                case EventListColumnType.Channel:           return ("Channel");
+                case EventListColumnType.BlockTime_UTC:     return ("BlockTime(UTC)");
+                case EventListColumnType.BlockTime_Local:   return ("BlockTime(Local)");
+                case EventListColumnType.EventTime_UTC:     return ("EventTime(UTC)");
+                case EventListColumnType.EventTime_Local:   return ("EventTime(Local)");
+                case EventListColumnType.EventType:         return ("Type");
+				case EventListColumnType.Information:       return ("Information");
+				default:                                    return (type.ToString());
             }
         }
 
-        private void ProtocolDecodeDataToDataListViewItem_Sub(ListViewItem item, PacketObject packet, ProtocolDecodeData2 decode_data)
+        private void ProtocolDecodeEventToDataListViewItem_Sub(ListViewItem item, ProtocolDecodeEvent prde)
         {
-            foreach (var config in prop_.FrameListColumn.Value) {
+            foreach (var config in prop_.EventListColumn.Value) {
                 switch (config.Type) {
-                    case FrameListColumnType.Alias:
-                        item.SubItems.Add(packet.Alias);
+                    case EventListColumnType.Channel:
+						item.SubItems.Add(prde.Channel.Name);
+						break;
+
+                    case EventListColumnType.BlockTime_UTC:
+                        item.SubItems.Add(prde.BlockDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         break;
 
-                    case FrameListColumnType.Channel:
-                        item.SubItems.Add(
-                              (decode_data.DataChannel < channel_data_.Length)
-                            ? (channel_data_[decode_data.DataChannel].ChannelData.ToString())
-                            : (decode_data.DataChannel.ToString()));
+                    case EventListColumnType.BlockTime_Local:
+                        item.SubItems.Add(prde.BlockDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         break;
 
-                    case FrameListColumnType.BlockTime_UTC:
-                        item.SubItems.Add(decode_data.DataBlockTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                    case EventListColumnType.EventTime_UTC:
+                        item.SubItems.Add(prde.EventDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         break;
 
-                    case FrameListColumnType.BlockTime_Local:
-                        item.SubItems.Add(decode_data.DataBlockTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                    case EventListColumnType.EventTime_Local:
+                        item.SubItems.Add(prde.EventDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         break;
 
-                    case FrameListColumnType.BlockIndex:
-                        item.SubItems.Add(decode_data.DataBlockIndex.ToString());
-                        break;
+					case EventListColumnType.EventType:
+						item.SubItems.Add(prde.EventType.ToString());
+						break;
 
-                    case FrameListColumnType.DateTime_UTC:
-                        item.SubItems.Add(packet.MakeTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                        break;
-
-                    case FrameListColumnType.DateTime_Local:
-                        item.SubItems.Add(packet.MakeTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                        break;
-
-                    case FrameListColumnType.Outline:
-                        if (decode_data.Data != null) {
-                            item.SubItems.Add(decode_data.Data.ToString());
-                        } else {
-                            item.SubItems.Add("");
-                        }
-                        break;
-
-                    case FrameListColumnType.Outline_Custom:
+					case EventListColumnType.Information:
+                        item.SubItems.Add(prde.ToString());
                         break;
 
                     default:
@@ -636,68 +848,105 @@ namespace Ratatoskr.PacketViews.Protocol
             }
 
             /* 背景色 */
-            switch (decode_data.Data.ErrorStatus) {
-                case ProtocolDataErrorLevel.NoError:    item.BackColor = Color.LightGreen;      break;
-                case ProtocolDataErrorLevel.LevelLow:   item.BackColor = Color.LightYellow;     break;
-                default:                                item.BackColor = Color.LightPink;       break;
-            }
+			if (prde is ProtocolDecodeEvent_Frame prde_f) {
+				switch (prde_f.Frame.Status) {
+					case ProtocolFrameStatus.Normal:    item.BackColor = Color.LightGreen;      break;
+					default:                            item.BackColor = Color.LightPink;       break;
+				}
+			}
         }
 
-        private ListViewItem ProtocolDecodeDataToDataListViewItem(PacketObject packet, ProtocolDecodeData2 decode_data)
+        private ListViewItem EventListViewItemToListViewItem(EventListViewItem elvi)
         {
             var item = new ListViewItem() {
-                Text = (next_item_no_).ToString(),
-                Tag = decode_data,
+                Text = elvi.No.ToString(),
+                Tag  = elvi,
             };
 
-            /* サブサイテム */
-            ProtocolDecodeDataToDataListViewItem_Sub(item, packet, decode_data);
+			/* サブサイテム */
+			foreach (var config in prop_.EventListColumn.Value) {
+				switch (config.Type) {
+					case EventListColumnType.Channel:
+						item.SubItems.Add(string.Format("{0} - {1}", elvi.Alias, elvi.DecodeEvent.Channel.Name));
+						break;
 
-            /* 次のインデックス番号を更新 */
-            next_item_no_ = Math.Max(1, next_item_no_ + 1);
+					case EventListColumnType.BlockTime_UTC:
+						item.SubItems.Add(elvi.DecodeEvent.BlockDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+						break;
 
-            return (item);
+					case EventListColumnType.BlockTime_Local:
+						item.SubItems.Add(elvi.DecodeEvent.BlockDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+						break;
+
+					case EventListColumnType.EventTime_UTC:
+						item.SubItems.Add(elvi.DecodeEvent.EventDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+						break;
+
+					case EventListColumnType.EventTime_Local:
+						item.SubItems.Add(elvi.DecodeEvent.EventDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+						break;
+
+					case EventListColumnType.EventType:
+						item.SubItems.Add(elvi.DecodeEvent.EventType.ToString());
+						break;
+
+					case EventListColumnType.Information:
+						item.SubItems.Add(elvi.DecodeEvent.ToString());
+						break;
+
+					default:
+						item.SubItems.Add("");
+						break;
+				}
+			}
+
+			/* 背景色 */
+			if (elvi.DecodeEvent is ProtocolDecodeEvent_Frame prde_f) {
+				switch (prde_f.Frame.Status) {
+					case ProtocolFrameStatus.Normal: item.BackColor = Color.LightGreen; break;
+					default: item.BackColor = Color.LightPink; break;
+				}
+			}
+
+			return (item);
         }
 
-        private void InputDataList(PacketObject packet, ProtocolDecodeData2 decode_data)
+		private TreeListViewNode BuildTreeNodeFromProtocolDecodeEvent(ProtocolDecodeEvent prde)
+		{
+			if (prde == null)return (null);
+
+			if (prde is ProtocolDecodeEvent_Frame prde_f) {
+				return (BuildTreeNodeFromProtocolDecodeEvent_Frame(prde_f.Frame));
+			}
+
+			return (null);
+		}
+
+		private TreeListViewNode BuildTreeNodeFromProtocolDecodeEvent_Frame(ProtocolFrameElement pfe)
         {
-//            var item = ProtocolDecodeDataToDataListViewItem(packet, decode_data);
-
-//            if (item == null)return;
-
-            next_item_no_ = Math.Max(next_item_no_, ITEM_NO_MIN);
-            next_item_no_ = Math.Min(next_item_no_, ITEM_NO_MAX);
-
-            list_items_temp_.Add(new DataListViewItem(next_item_no_, packet, decode_data));
-
-            next_item_no_++;
-        }
-
-        private TreeListViewNode BuildTreeNodeFromFrameElement(ProtocolFrameElement frame_element)
-        {
-            if (frame_element == null)return (null);
+			if (pfe == null)return (null);
 
             try {
-//                var node = new TreeNode();
-                var node = new TreeListViewNode();
+                var node  = new TreeListViewNode();
 
-                var value_name = frame_element.Name;
-                var value_text = frame_element.ToString();
+                var value_name = pfe.Name;
+                var value_text = pfe.ToString();
 
                 node.Text = value_name;
-                node.Values.Add(value_text);
-                node.Tag = frame_element;
+				node.Tag  = pfe;
 
-                var sub_elements = frame_element.GetUnpackElement();
-                var sub_node = (TreeListViewNode)null;
+				node.Values.Add(value_text);
+
+                var sub_elements = pfe.GetUnpackElements();
 
                 if (sub_elements != null) {
-                    foreach (var sub_element in frame_element.GetUnpackElement()) {
-                        sub_node = BuildTreeNodeFromFrameElement(sub_element);
+					var sub_node = (TreeListViewNode)null;
 
-                        if (sub_node == null)continue;
-                    
-                        node.Nodes.Add(sub_node);
+					foreach (var sub_element in pfe.GetUnpackElements()) {
+                        sub_node = BuildTreeNodeFromProtocolDecodeEvent_Frame(sub_element);
+                        if (sub_node != null) {
+							node.Nodes.Add(sub_node);
+						}
                     }
                 }
 
@@ -708,74 +957,224 @@ namespace Ratatoskr.PacketViews.Protocol
             }
         }
 
-        private void SetDataDetails(ProtocolDecodeData2 decode_data)
-        {
-            TLView_FrameDetails.Nodes.Clear();
+		private void AddDecodeEvent(string alias, ProtocolDecodeEvent prde)
+		{
+			/* フレームリスト */
+			next_item_no_ = Math.Max(next_item_no_, ITEM_NO_MIN);
+			next_item_no_ = Math.Min(next_item_no_, ITEM_NO_MAX);
 
-            var node = BuildTreeNodeFromFrameElement(decode_data.Data);
+			list_items_temp_.Add(new EventListViewItem(next_item_no_, alias, prde));
 
-            if (node == null)return;
+			next_item_no_++;
+		}
 
-            node.ExpandAll();
+		private void DrawTimeChart(Graphics graphics, Size graphics_size)
+		{
+			/* 目盛り描画 */
+			DrawTimeChart_TimeMeasure(graphics, draw_chart_param_);
 
-            TLView_FrameDetails.Nodes.Add(node);
-            TLView_FrameDetails.UpdateView();
-        }
+//			graphics.DrawRectangle(Pens.LightBlue, draw_chart_param_.DrawRect_MeasureTop);
+//			graphics.DrawRectangle(Pens.LightPink, draw_chart_param_.DrawRect_MeasureBottom);
+//			graphics.DrawRectangle(Pens.LightGreen, draw_chart_param_.DrawRect_ChartData);
 
-        private void StretchChannelBufferList(uint num)
-        {
-            if (   (channel_data_ != null)
-                && (num < (uint)channel_data_.Length)
-            ) {
-                return;
-            }
+			/* データ描画 */
+			DrawTimeChart_ChartData(graphics, draw_chart_param_);
 
-            var channel_data_new = new DataChannelBuffer[num + 1];
+#if false
+			/* タイムチャート描画 */
+			foreach (var prdi in prdi_map_) {
+				if (draw_offset.Y > graphics_size.Height)break;
 
-            /* 既にデータが存在する場合は新しいリストにコピー */
-            if ((channel_data_ != null) && (channel_data_.Length > 0)) {
-                Array.Copy(channel_data_new, channel_data_, Math.Min(channel_data_new.Length, channel_data_.Length));
-            }
+				foreach (var prdch in prdi.Value.GetProtocolDecodeChannels()) {
+					/* 描画範囲を取得 */
+					view_rect.Width = canvas_size.Width - MARGIN_TIME_CHART_BODY.Horizontal;
+					view_rect.Height = canvas_size.Height - MARGIN_TIME_CHART_BODY.Vertical;
+					view_rect.X = MARGIN_TIME_CHART_BODY.Left;
+					view_rect.Y = MARGIN_TIME_CHART_BODY.Top;
 
-            /* 新規チャンネル情報を更新 */
-            for (var index = 0; index < channel_data_new.Length; index++) {
-                if (channel_data_new[index] == null) {
-                    channel_data_new[index] = new DataChannelBuffer() {
-//                        ChannelData = decoder_.GetChannelData((uint)index),
-                    };
-                }
-            }
+					if (draw_offset.Y > graphics_rect.Bottom)break;
 
-            /* チャンネルバッファをスワップ */
-            channel_data_ = channel_data_new;
-        }
+					draw_offset.Y += DrawTimeChart_Group(graphics, graphics_rect, draw_offset, dt_first, prdcg);
+				}
+			}
 
-        private void AddDecodeData(PacketObject packet, ProtocolDecodeData2 decode_data)
-        {
-            if (decode_data == null)return;
+			graphics_layer.Render(graphics);
+			graphics_layer.Dispose();
+#endif
+		}
 
-            /* 新しいデコードチャンネルを検出した場合はリストを拡張 */
-            StretchChannelBufferList(decode_data.DataChannel);
+		private void DrawTimeChart_TimeMeasure(Graphics graphics, DrawTimeChartParam param)
+		{
+			var scale_index = param.ViewScaleIndex;
 
-            /* チャンネルバッファにデータを追加 */
-            if (decode_data.DataChannel < (uint)channel_data_.Length) {
-                channel_data_[decode_data.DataChannel].AddData(decode_data);
-            }
+			var draw_measure_top_s    = new Point(param.DrawRect_MeasureTop.Left, param.DrawRect_MeasureTop.Top + TIME_CHART_MEASURE_LABEL_HEIGHT);
+			var draw_measure_bottom_s = new Point(param.DrawRect_MeasureTop.Left, param.DrawRect_MeasureBottom.Bottom - TIME_CHART_MEASURE_LABEL_HEIGHT);
 
-            /* データ追加 */
-            InputDataList(packet, decode_data);
-        }
+			var dt_scale_minor = param.ViewFirstEventTime;
+			var dt_scale_major = ((scale_index % TIME_CHART_MEASURE_MAJOR_LINE_STEP) == 0)
+							   ? (dt_scale_minor)
+							   : (dt_scale_minor.AddMilliseconds((TIME_CHART_MEASURE_MAJOR_LINE_STEP - (scale_index % TIME_CHART_MEASURE_MAJOR_LINE_STEP)) * param.OneScaleTimeMsec));
 
-        private void AddDecodeData(PacketObject packet, ProtocolDecodeData2[] decode_data_list)
-        {
-            if (decode_data_list == null)return;
+			/* 基本線(上側) */
+			graphics.DrawLine(
+				TIME_CHART_SCALE_PEN,
+				param.DrawRect_MeasureTop.Left,
+				param.DrawRect_MeasureTop.Top + TIME_CHART_MEASURE_LABEL_HEIGHT,
+				param.DrawRect_MeasureTop.Right,
+				param.DrawRect_MeasureTop.Top + TIME_CHART_MEASURE_LABEL_HEIGHT);
 
-            foreach (var decode_data in decode_data_list) {
-                AddDecodeData(packet, decode_data);
-            }
-        }
+			/* 基本線(下側) */
+			graphics.DrawLine(
+				TIME_CHART_SCALE_PEN,
+				param.DrawRect_MeasureBottom.Left,
+				param.DrawRect_MeasureBottom.Bottom - TIME_CHART_MEASURE_LABEL_HEIGHT,
+				param.DrawRect_MeasureBottom.Right,
+				param.DrawRect_MeasureBottom.Bottom - TIME_CHART_MEASURE_LABEL_HEIGHT);
 
-        private void DecodePacket(PacketObject packet)
+			/* 目盛り */
+			var draw_pos = param.DrawRect_MeasureTop.Left;
+			var draw_scale_text = new Point();
+
+			/* メイン */
+			draw_scale_text.X = draw_pos;
+			draw_scale_text.Y = draw_measure_top_s.Y - TIME_CHART_MEASURE_LABEL_HEIGHT;
+
+			graphics.DrawString(
+				dt_scale_major.ToString("yyyy-MM-dd"),
+				TIME_CHART_SCALE_FONT,
+				TIME_CHART_SCALE_BRUSH,
+				draw_scale_text,
+				param.ScaleStringFormat);
+
+			while (draw_pos < param.DrawRect_MeasureTop.Right) {
+				if ((scale_index % TIME_CHART_MEASURE_MAJOR_LINE_STEP) == 0) {
+					/* メイン */
+					draw_scale_text.X = draw_pos;
+					draw_scale_text.Y = draw_measure_top_s.Y - TIME_CHART_MEASURE_LABEL_HEIGHT / 2;
+
+					graphics.DrawString(
+//						dt_scale_major.ToString("HH:mm:ss.fff"),
+						(dt_scale_major - param.FirstEventTime).ToString("hh\\:mm\\:ss\\.fff"),
+						TIME_CHART_SCALE_FONT,
+						TIME_CHART_SCALE_BRUSH,
+						draw_scale_text,
+						param.ScaleStringFormat);
+
+					graphics.DrawLine(
+						TIME_CHART_SCALE_PEN,
+						draw_pos,
+						draw_measure_top_s.Y,
+						draw_pos,
+						draw_measure_top_s.Y + TIME_CHART_MEASURE_MAJOR_LINE_HEIGHT);
+
+					graphics.DrawLine(
+						TIME_CHART_SCALE_PEN,
+						draw_pos,
+						draw_measure_bottom_s.Y,
+						draw_pos,
+						draw_measure_bottom_s.Y - TIME_CHART_MEASURE_MAJOR_LINE_HEIGHT);
+
+					dt_scale_major = dt_scale_major.AddMilliseconds(TIME_CHART_MEASURE_MAJOR_LINE_STEP * param.OneScaleTimeMsec);
+
+				} else if ((scale_index % TIME_CHART_MEASURE_MINOR_LINE_STEP) == 0) {
+					/* サブ */
+					graphics.DrawLine(
+						TIME_CHART_SCALE_PEN,
+						draw_pos,
+						draw_measure_top_s.Y,
+						draw_pos,
+						draw_measure_top_s.Y + TIME_CHART_MEASURE_MINOR_LINE_HEIGHT);
+
+					graphics.DrawLine(
+						TIME_CHART_SCALE_PEN,
+						draw_pos,
+						draw_measure_bottom_s.Y,
+						draw_pos,
+						draw_measure_bottom_s.Y - TIME_CHART_MEASURE_MINOR_LINE_HEIGHT);
+				}
+
+				scale_index++;
+				draw_pos += TIME_CHART_SCALE_STEP;
+			}
+		}
+
+		private void DrawTimeChart_ChartData(Graphics graphics, DrawTimeChartParam param)
+		{
+			var graphics_layer = BufferedGraphicsManager.Current.Allocate(graphics, param.DrawRect_ChartData);
+
+			graphics_layer.Graphics.FillRectangle(SystemBrushes.Window, param.DrawRect_ChartData);
+
+			{
+				var draw_pos_base = new Point(param.DrawRect_ChartData.X, param.DrawRect_ChartData.Y - param.ViewVerticalOffset);
+
+				var draw_pos_center_s = Point.Empty;
+				var draw_pos_center_e = Point.Empty;
+
+				var draw_dot_rect = new Rectangle(0, 0, TIME_CHART_DATA_DOT_SIZE, TIME_CHART_DATA_DOT_SIZE);
+
+				var dt_event_e = DateTime.MinValue;
+
+				foreach (var prdi in prdi_map_) {
+					foreach (var prdch in prdi.Value.GetProtocolDecodeChannels()) {
+						/* 描画範囲を超えた場合は終了 */
+						if (draw_pos_base.Y >= param.DrawRect_ChartData.Bottom)break;
+
+						/* 描画対象 */
+						if (draw_pos_base.Y + TIME_CHART_CHART_HEIGHT >= param.DrawRect_ChartData.Top) {
+							draw_pos_base.X = param.DrawRect_ChartData.X;
+							draw_pos_center_s.X = draw_pos_center_e.X = draw_pos_base.X;
+							draw_pos_center_s.Y = draw_pos_center_e.Y = draw_pos_base.Y + TIME_CHART_CHART_HEIGHT / 2;
+
+							/* ラベル */
+							graphics_layer.Graphics.DrawString(
+								string.Format("{0} - {1}", prdi.Key, prdch.Name),
+								TIME_CHART_DATA_FONT,
+								TIME_CHART_DATA_BRUSH,
+								draw_pos_center_s,
+								param.DataLabelStringFormat);
+
+							/* 基準線 */
+							draw_pos_base.X += TIME_CHART_CHART_LABEL_WIDTH;
+							draw_pos_center_s.X += TIME_CHART_CHART_LABEL_WIDTH;
+							draw_pos_center_e.X = param.DrawRect_ChartData.Right;
+							graphics_layer.Graphics.DrawLine(TIME_CHART_DATA_PEN_BASE, draw_pos_center_s, draw_pos_center_e);
+
+							/* データ */
+							draw_dot_rect.Y = draw_pos_center_s.Y - draw_dot_rect.Height / 2;
+
+							foreach (var prde in prdch.Events) {
+								/* 描画範囲を超えたので終了 */
+								if (prde.EventDateTime >= param.ViewLastEventTime) break;
+
+								/* イベントの終端時刻を取得 */
+								dt_event_e = prde.EventDateTime.AddMilliseconds(prde.EventTickMsec);
+
+								/* 描画対象 */
+								if (dt_event_e >= param.ViewFirstEventTime) {
+									draw_pos_center_s.X = draw_pos_base.X + (int)((prde.EventDateTime - param.ViewFirstEventTime).TotalMilliseconds * draw_chart_axis_x_mag_);
+									draw_pos_center_e.X = draw_pos_center_s.X + (int)(prde.EventTickMsec * draw_chart_axis_x_mag_);
+
+									draw_dot_rect.X = draw_pos_center_s.X - draw_dot_rect.Width / 2;
+
+									/* イベント線 */
+									graphics_layer.Graphics.DrawLine(TIME_CHART_DATA_PEN_EVENT, draw_pos_center_s, draw_pos_center_e);
+
+									/* イベント点 */
+									graphics_layer.Graphics.FillRectangle(TIME_CHART_DATA_BRUSH, draw_dot_rect);
+								}
+							}
+						}
+
+						draw_pos_base.Y += TIME_CHART_CHART_HEIGHT;
+					}
+				}
+			}
+
+			graphics_layer.Render(graphics);
+			graphics_layer.Dispose();
+		}
+
+		private void DecodePacket(PacketObject packet)
         {
             /* 受信データパケット以外は無視 */
             if (   (packet.Attribute != PacketAttribute.Data)
@@ -784,26 +1183,38 @@ namespace Ratatoskr.PacketViews.Protocol
                 return;
             }
 
-            /* デコーダーによる解析 */
-            try {
-                AddDecodeData(packet, decoder_.Decode(packet.MakeTime, packet.Data));
-            } catch {
-            }
-        }
+			var prdi = (ProtocolDecoderInstance)null;
 
-        protected override void OnBackupProperty()
+			/* 処理用デコーダー取得 */
+			if (!prdi_map_.TryGetValue(packet.Alias, out prdi)) {
+				/* 受信エイリアスに該当するインスタンスがないので新規作成 */
+				prdi = prdc_.CreateInstance();
+				prdi_map_.Add(packet.Alias, prdi);
+			}
+
+			var prde_list = new List<ProtocolDecodeEvent>();
+
+			/* デコード処理 */
+			prdi.InputData(packet.MakeTime, packet.Data, prde_list);
+
+			/* 表示 */
+			prde_list.ForEach(prde => AddDecodeEvent(packet.Alias, prde));
+		}
+
+		protected override void OnBackupProperty()
         {
-            prop_ = Property as PacketViewPropertyImpl;
-
+			prop_.DecoderClassID.Value = (CBox_DecoderType.SelectedItem as ProtocolDecoderClass).ID;
         }
 
         protected override void OnClearPacket()
         {
             UpdateDecoder();
 
-            LView_DataList.ItemClear();
-            TLView_FrameDetails.Nodes.Clear();
-            TLView_FrameDetails.UpdateView();
+            LView_EventList.ItemClear();
+            TLView_EventDetails.Nodes.Clear();
+            TLView_EventDetails.UpdateView();
+
+			UpdateTimeChartScrollRange();
 
             next_item_no_ = 1;
         }
@@ -811,44 +1222,109 @@ namespace Ratatoskr.PacketViews.Protocol
         protected override void OnDrawPacketBegin(bool auto_scroll)
         {
             /* ちらつき防止用の一時バッファ */
-            list_items_temp_ = new List<DataListViewItem>();
+            list_items_temp_ = new List<EventListViewItem>();
 
             /* リストビューの描画開始 */
-            LView_DataList.BeginUpdate();
+            LView_EventList.BeginUpdate();
         }
 
         protected override void OnDrawPacketEnd(bool auto_scroll, bool next_packet_exist)
         {
             /* 一時リストをリストビューに追加 */
-            LView_DataList.ItemAddRange(list_items_temp_);
+            LView_EventList.ItemAddRange(list_items_temp_);
             list_items_temp_ = null;
 
             /* 自動スクロール */
-            if ((auto_scroll) && (LView_DataList.ItemCount > 0)) {
-                LView_DataList.EnsureVisible(LView_DataList.ItemCount - 1);
+            if ((auto_scroll) && (LView_EventList.ItemCount > 0)) {
+                LView_EventList.EnsureVisible(LView_EventList.ItemCount - 1);
             }
 
             /* リストビューの描画完了 */
-            LView_DataList.EndUpdate();
-        }
+            LView_EventList.EndUpdate();
+
+			UpdateTimeChartScrollRange();
+		}
 
         protected override void OnDrawPacket(PacketObject packet)
         {
-            if (decoder_ == null)return;
+            if (prdc_ == null)return;
 
             DecodePacket(packet);
         }
 
-        private void CBox_ProtocolType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            RedrawPacket();
-        }
+		protected override void OnIdle()
+		{
+			foreach (var prdi in prdi_map_) {
+				var prde_list = new List<ProtocolDecodeEvent>();
 
-        private void LView_DataList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (LView_DataList.FocusedItem.Tag is ProtocolDecodeData2 decode_data) {
-                SetDataDetails(decode_data);
+				/* ポーリング処理 */
+				prdi.Value.Poll(prde_list);
+
+				/* 表示 */
+				prde_list.ForEach(prde => AddDecodeEvent(prdi.Key, prde));
+			}
+		}
+
+		private void CBox_DecoderType_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateDecoder();
+
+			RedrawPacket();
+		}
+
+		private void LView_EventList_SelectedIndexChanged(object sender, EventArgs e)
+		{
+            if (LView_EventList.FocusedItem.Tag is EventListViewItem item_e) {
+                UpdateEventDetails(item_e.DecodeEvent);
             }
         }
-    }
+
+		private void LView_EventList_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+		{
+			e.Item = EventListViewItemToListViewItem(LView_EventList.ItemElementAt(e.ItemIndex) as EventListViewItem);
+		}
+
+		private void PBox_EventTimeChart_Paint(object sender, PaintEventArgs e)
+		{
+			DrawTimeChart(e.Graphics, (sender as Control).ClientSize);
+		}
+
+		private void PBox_EventTimeChart_SizeChanged(object sender, EventArgs e)
+		{
+			UpdateTimeChartSize();
+			UpdateTimeChartScrollRange();
+		}
+
+		private void CBox_ChartAxisMag_X_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (!double.TryParse(CBox_ChartAxisMag_X.Text, out draw_chart_axis_x_mag_)) {
+				draw_chart_axis_x_mag_ = 1.0f;
+			}
+
+			/* 1pixel当たりの時間を更新 */
+			draw_chart_param_.OnePixelTimeWidth = 1 / draw_chart_axis_x_mag_;
+			draw_chart_param_.OneScaleTimeMsec = TIME_CHART_SCALE_STEP / draw_chart_axis_x_mag_;
+
+			UpdateTimeChartScrollRange();
+		}
+
+		private void CBox_ChartAxisMag_Y_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (!double.TryParse(CBox_ChartAxisMag_Y.Text, out draw_chart_axis_y_mag_)) {
+				draw_chart_axis_y_mag_ = 1.0f;
+			}
+
+			UpdateTimeChartScrollRange();
+		}
+
+		private void HScroll_TimeChart_Scroll(object sender, ScrollEventArgs e)
+		{
+			UpdateTimeChartScrollPos();
+		}
+
+		private void VScroll_TimeChart_Scroll(object sender, ScrollEventArgs e)
+		{
+			UpdateTimeChartScrollPos();
+		}
+	}
 }

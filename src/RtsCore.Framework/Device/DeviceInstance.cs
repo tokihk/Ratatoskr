@@ -657,7 +657,7 @@ namespace RtsCore.Framework.Device
 
         protected virtual DeviceControlPanel OnCreateControlPanel() { return (null); }
 
-        protected virtual EventResult OnConnectStart() { return (EventResult.Success); }
+        protected virtual void        OnConnectStart() { }
         protected virtual EventResult OnConnectBusy()  { return (EventResult.Success); }
         protected virtual void        OnConnected()    { }
 

@@ -187,7 +187,7 @@ namespace Ratatoskr.Forms
         private static void InstallPacketConverter()
         {
             pcvtm_.AddClass(new PacketConverters.Filter.PacketConverterClassImpl());
-            pcvtm_.AddClass(new PacketConverters.Separator.PacketConverterClassImpl());
+            pcvtm_.AddClass(new PacketConverters.Grouping.PacketConverterClassImpl());
             pcvtm_.AddClass(new PacketConverters.Convert.PacketConverterClassImpl());
         }
 

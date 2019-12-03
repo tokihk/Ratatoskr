@@ -10,17 +10,22 @@ namespace Ratatoskr.Devices
 {
     internal static class DeviceManager
     {
-        private static RtsCore.Framework.Device.DeviceManagementClass devm_;
+        private static DeviceManagementClass devm_;
         private static readonly object devm_sync_ = new object();
 
 
-        public static void Startup()
-        {
-            /* デバイスマネージャー初期化 */
-            devm_ = new RtsCore.Framework.Device.DeviceManagementClass(GatePacketManager.BasePacketManager);
+		public static void Initialize()
+		{
+			/* デバイスマネージャー初期化 */
+			devm_ = new DeviceManagementClass();
 
-            /* 基本デバイスインストール */
-            InstallBasicDevice();
+			/* 基本デバイスインストール */
+			InstallBasicDevice();
+		}
+
+		public static void Startup()
+        {
+			devm_.PacketManager = GatePacketManager.BasePacketManager;
         }
 
         public static void Shutdown()
@@ -40,7 +45,6 @@ namespace Ratatoskr.Devices
             AddDevice(new Devices.TcpServer.DeviceClassImpl());
             AddDevice(new Devices.TcpClient.DeviceClassImpl());
             AddDevice(new Devices.UdpClient.DeviceClassImpl());
-            AddDevice(new Devices.Ethernet.DeviceClassImpl());
             AddDevice(new Devices.UsbMonitor.DeviceClassImpl());
 #if DEBUG
             AddDevice(new Devices.UsbComm.DeviceClassImpl());

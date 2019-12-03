@@ -77,7 +77,7 @@ namespace Ratatoskr.Devices.SerialPort
             port_.CommStatusUpdated += OnCommStatusUpdated;
         }
 
-        protected override EventResult OnConnectStart()
+        protected override void OnConnectStart()
         {
             prop_ = Property as DevicePropertyImpl;
 
@@ -103,8 +103,6 @@ namespace Ratatoskr.Devices.SerialPort
             port_.XoffChar = (sbyte)prop_.XoffChar.Value;
 
             port_.SimplexMode = prop_.SimplexMode.Value;
-
-            return (EventResult.Success);
         }
 
         protected override EventResult OnConnectBusy()

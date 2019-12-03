@@ -85,8 +85,8 @@ namespace Ratatoskr.Devices.AudioFile
             }
         }
 
-        protected override EventResult OnConnectStart()
-        {
+		protected override EventResult OnConnectBusy()
+		{
             try {
                 /* 一度でも開いていないときのみ初期化 */
                 if (   (reader_ == null)
@@ -112,15 +112,15 @@ namespace Ratatoskr.Devices.AudioFile
 
         protected override void OnConnected()
         {
-            /* 接続のたびに初期化する設定の場合 */
-            if (devp_.ConnectAction.Value == ConnectActionType.Restart) {
-                reader_.Position = 0;
-                repeat_count_ = 0;
-            }
+			/* 接続のたびに初期化する設定の場合 */
+			if (devp_.ConnectAction.Value == ConnectActionType.Restart) {
+				reader_.Position = 0;
+				repeat_count_ = 0;
+			}
 
-            play_complete_ = false;
+			play_complete_ = false;
 
-            sampling_timer_.Start();
+			sampling_timer_.Start();
         }
 
         protected override void OnDisconnectStart()

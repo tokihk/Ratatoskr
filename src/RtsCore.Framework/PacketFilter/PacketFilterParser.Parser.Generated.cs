@@ -3,9 +3,7 @@
 // (see accompanying GPPGcopyright.rtf)
 
 // GPPG version 1.5.2
-// Machine:  KPC-2456
 // DateTime: 2018/12/18 18:55:25
-// UserName: i32719
 // Input file <PacketFilter\PacketFilterParser.Language.grammar.y - 2018/12/18 16:56:27>
 
 // options: no-lines gplex

@@ -180,7 +180,6 @@
             // CBox_InputSamplingRate
             // 
             this.CBox_InputSamplingRate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CBox_InputSamplingRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CBox_InputSamplingRate.FormattingEnabled = true;
             this.CBox_InputSamplingRate.Location = new System.Drawing.Point(3, 15);
             this.CBox_InputSamplingRate.Name = "CBox_InputSamplingRate";
@@ -200,7 +199,6 @@
             // CBox_InputBitsPerSample
             // 
             this.CBox_InputBitsPerSample.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CBox_InputBitsPerSample.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CBox_InputBitsPerSample.FormattingEnabled = true;
             this.CBox_InputBitsPerSample.Location = new System.Drawing.Point(3, 15);
             this.CBox_InputBitsPerSample.Name = "CBox_InputBitsPerSample";
@@ -220,7 +218,6 @@
             // CBox_InputChannelNum
             // 
             this.CBox_InputChannelNum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CBox_InputChannelNum.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CBox_InputChannelNum.FormattingEnabled = true;
             this.CBox_InputChannelNum.Location = new System.Drawing.Point(3, 15);
             this.CBox_InputChannelNum.Name = "CBox_InputChannelNum";

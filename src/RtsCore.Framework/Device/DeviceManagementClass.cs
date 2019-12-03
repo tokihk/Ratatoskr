@@ -16,9 +16,8 @@ namespace RtsCore.Framework.Device
         private PacketManager pktm_;
 
 
-        public DeviceManagementClass(PacketManager pktm)
+        public DeviceManagementClass()
         {
-            pktm_ = pktm;
         }
 
         ~DeviceManagementClass()
@@ -121,9 +120,15 @@ namespace RtsCore.Framework.Device
             return (devd.CreateProperty());
         }
 
+        public PacketManager PacketManager
+        {
+            get { return (pktm_); }
+            set { pktm_ = value;  }
+        }
+
         internal void SetupPacket(PacketObject packet)
         {
-            pktm_.Enqueue(packet);
+            PacketManager.Enqueue(packet);
         }
 
         internal void UpdateRedirectMap()

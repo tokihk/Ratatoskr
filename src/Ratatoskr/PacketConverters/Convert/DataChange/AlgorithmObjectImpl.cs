@@ -203,7 +203,7 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
             var pattern_index = pattern.Length - 1;
 
             /* 高速化のため後方から検索 */
-            for (var data_index = data.Length - 1; data_index >= pattern.Length; data_index--) {
+            for (var data_index = data.Length - 1; data_index >= pattern_index; data_index--) {
                 if (data[data_index] == pattern[pattern_index]) {
                     /* --- 連続一致(次のデータの比較に進む) --- */
                     pattern_index--;
@@ -212,7 +212,11 @@ namespace Ratatoskr.PacketConverters.Convert.DataChange
                     pattern_index = pattern.Length - 2;
                 } else {
                     /* --- 検出エラー(1バイト目の比較に進む) --- */
-                    pattern_index = pattern.Length - 1;
+                    if (pattern_index != (pattern.Length - 1)) {
+                        /* 途中でエラーが発生した場合はもう一度先頭データからの一致判定を試みる */
+                        pattern_index = pattern.Length - 1;
+                        data_index++;
+                    }
                 }
 
                 if (pattern_index >= 0)continue;

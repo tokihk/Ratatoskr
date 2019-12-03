@@ -5,9 +5,7 @@
 //  See accompanying file GPLEXcopyright.rtf.
 //
 //  GPLEX Version:  1.2.2
-//  Machine:  KPC-2456
 //  DateTime: 2018/11/01 17:54:13
-//  UserName: i32719
 //  GPLEX input file <BinaryText\BinaryTextParser.Language.analyzer.lex - 2018/11/01 17:52:13>
 //  GPLEX frame file <embedded resource>
 //

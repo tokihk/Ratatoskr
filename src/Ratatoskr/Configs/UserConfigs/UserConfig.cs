@@ -74,10 +74,13 @@ namespace Ratatoskr.Configs.UserConfigs
         public SendDataListConfig           SendDataList       { get; } = new SendDataListConfig();
         public EnumConfig<SendDataListMode> SendDataListMode   { get; } = new EnumConfig<SendDataListMode>(UserConfigs.SendDataListMode.Details);
         public StringConfig                 SendDataListTarget { get; } = new StringConfig("*");
-        public IntegerConfig                SendDataListLimit  { get; } = new IntegerConfig(200);
         public IntegerConfig                SendDataListRepeat { get; } = new IntegerConfig(1);
 
-        public WatchDataListConfig   WatchDataList          { get; } = new WatchDataListConfig();
+		public SendFrameListConfig SendFrameList       { get; } = new SendFrameListConfig();
+		public StringConfig        SendFrameListTarget { get; } = new StringConfig("*");
+		public IntegerConfig       SendFrameListRepeat { get; } = new IntegerConfig(1);
+
+		public WatchDataListConfig   WatchDataList          { get; } = new WatchDataListConfig();
 
         public PacketListConfig PacketList       { get; } = new PacketListConfig();
         public IntegerConfig    PacketListLimit  { get; } = new IntegerConfig(2000);

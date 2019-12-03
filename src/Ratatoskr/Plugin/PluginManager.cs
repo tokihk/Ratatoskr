@@ -83,11 +83,10 @@ namespace Ratatoskr.Plugin
 
             /* プラグイン検索 */
             try {
-                var asm_paths = Directory.EnumerateFiles(
-                                    path_plugin,
-                                    "*.dll",
-                                    SearchOption.TopDirectoryOnly).Where(
-                                        path => !PluginEgnoreList.IGNORE_NAMES.Contains(Path.GetFileName(path)));
+                var asm_paths = from path in Directory.EnumerateFiles(path_plugin, "*.dll", SearchOption.TopDirectoryOnly)
+								where path.Contains("RtsPlugin")
+								where !PluginEgnoreList.IGNORE_NAMES.Contains(Path.GetFileName(path))
+								select path;
 
                 foreach (var asm_path in asm_paths.Select((v, i) => (v, i))) {
                     Debugger.DebugManager.MessageOut(string.Format("CheckDLL [{0:D4}: {1}]", asm_path.i, asm_path.v));

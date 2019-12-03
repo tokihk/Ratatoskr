@@ -18,9 +18,9 @@ namespace Ratatoskr.Gate
 {
     internal static class GatePacketManager
     {
-        private static bool enable_ = true;
+		private static bool enable_  = true;
 
-        private static IPacketContainer packets_;
+        private static IPacketContainer packets_ = null;
         private static readonly object  packets_sync_ = new object();
 
         private static IAsyncResult ar_load_ = null;
@@ -37,23 +37,25 @@ namespace Ratatoskr.Gate
         public static event PacketEventHandler RawPacketEntried = delegate(IEnumerable<PacketObject> packets) { };
 
 
-        public static void Startup()
+		public static void Initialize()
+		{
+		}
+
+		public static void Startup()
         {
-            packets_?.Dispose();
+			/* パケットマネージャー初期化 */
+			BasePacketManager = new PacketManager(true);
+			BasePacketManager.PacketEntry += OnPacketEntry;
 
-            /* 使用していないパケットキャッシュを削除する */
-//            ResetPacketCacheDirectory();
+			/* 使用していないパケットキャッシュを削除する */
+			//            ResetPacketCacheDirectory();
 
-            packets_ = CreatePacketContainer();
-
-            /* パケットマネージャー初期化 */
-            BasePacketManager = new PacketManager(true);
-            BasePacketManager.PacketEntry += OnPacketEntry;
+			packets_ = CreatePacketContainer();
         }
 
         public static void Shutdown()
         {
-            packets_?.Dispose();
+			packets_?.Dispose();
         }
 
         public static void Poll()
@@ -68,7 +70,8 @@ namespace Ratatoskr.Gate
 
         private static void PacketPoll()
         {
-            if (!enable_)return;
+            if (!Enable) return;
+
             if ((ar_load_ != null) && (!ar_load_.IsCompleted))return;
             if ((ar_save_ != null) && (!ar_save_.IsCompleted))return;
 
@@ -180,7 +183,11 @@ namespace Ratatoskr.Gate
 
         private static void AddPacket(IEnumerable<PacketObject> packets)
         {
-            if (packets == null)return;
+            if (   (packets == null)
+				|| (packets_ == null)
+			) {
+				return;
+			}
 
             /* パケット一覧に追加 */
             packets_.AddRange(packets);

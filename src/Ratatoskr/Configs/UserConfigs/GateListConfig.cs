@@ -145,7 +145,11 @@ namespace Ratatoskr.Configs.UserConfigs
             /* クラスIDからプロパティを取得 */
             var devp = DeviceManager.CreateDeviceProperty(class_id);
 
-            if (devp == null)return (null);
+            if (devp == null) {
+				/* 該当デバイスが存在しないかプロパティが生成できない */
+				Debugger.DebugManager.MessageOut(string.Format("LoadDeviceProperty Error: {0}", class_id.ToString("D")));
+				return (null);
+			}
 
             /* プロパティ読み込み */
             devp.LoadConfigData(xml_node);

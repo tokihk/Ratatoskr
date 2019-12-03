@@ -56,6 +56,11 @@ namespace RtsCore.Utility
             Length = bitlen;
         }
 
+        public BitData(UInt64 value, uint bitlen) : this(bitlen)
+        {
+            SetInteger(0, bitlen, value);
+        }
+
         public BitData(BitData obj) : this(obj.Data, obj.Length)
         {
         }
@@ -144,6 +149,7 @@ namespace RtsCore.Utility
         public void SetBitData(uint dst_offset, byte[] src_data, uint src_offset, uint bitlen)
         {
             if (Length == 0)return;
+            if (src_data == null)return;
             if (src_data.Length == 0)return;
 
             dst_offset = Math.Min(dst_offset, Length - 1);
@@ -181,17 +187,23 @@ namespace RtsCore.Utility
 
         public void SetBitData(uint dst_offset, BitData src_data, uint src_offset, uint bitlen)
         {
-            SetBitData(dst_offset, src_data.Data, src_offset, src_data.Length);
+            if (src_data != null) {
+                SetBitData(dst_offset, src_data.Data, src_offset, src_data.Length);
+            }
         }
 
         public void SetBitData(uint dst_offset, BitData src_data, uint bitlen)
         {
-            SetBitData(dst_offset, src_data.Data, 0, bitlen);
+            if (src_data != null) {
+                SetBitData(dst_offset, src_data.Data, 0, bitlen);
+            }
         }
 
         public void SetBitData(uint dst_offset, BitData src_data)
         {
-            SetBitData(dst_offset, src_data, src_data.Length);
+            if (src_data != null) {
+                SetBitData(dst_offset, src_data, src_data.Length);
+            }
         }
 
         public void SetInteger(uint offset, uint bitlen, UInt64 value, bool little_endian = false)

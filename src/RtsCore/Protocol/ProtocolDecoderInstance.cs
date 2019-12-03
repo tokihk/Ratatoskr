@@ -6,17 +6,10 @@ namespace RtsCore.Protocol
 {
     public abstract class ProtocolDecoderInstance
     {
-        private const int CHANNEL_MAX = 63;
-
-
         private ProtocolDecoderClass prdc_;
-        private ProtocolDecodeStack  decode_stack_ = null;
 
-        private List<ProtocolDecodeChannel> channel_list_ = new List<ProtocolDecodeChannel>();
-
-        private int next_channel_no_ = 0;
-
-        private DateTime last_input_dt_ = DateTime.MinValue;
+        private List<ProtocolDecodeChannel> prdch_list_ = new List<ProtocolDecodeChannel>();
+        private List<ProtocolDecodeEvent>   event_list_new_ = new List<ProtocolDecodeEvent>();
 
 
         public ProtocolDecoderInstance(ProtocolDecoderClass prdc)
@@ -29,32 +22,40 @@ namespace RtsCore.Protocol
             get { return (prdc_); }
         }
 
-        public ProtocolDecodeChannel[] GetChannelList()
+        public DateTime LastInputDateTime { get; private set; } = DateTime.MinValue;
+
+        public ProtocolDecodeChannel[] GetProtocolDecodeChannels()
         {
-            lock (channel_list_) {
-                return (channel_list_.ToArray());
-            }
+            return (prdch_list_.ToArray());
         }
 
         protected ProtocolDecodeChannel CreateChannel(string name)
         {
-            if (next_channel_no_ >= CHANNEL_MAX)return (null);
+            var group = new ProtocolDecodeChannel(this, name);
 
-            var channel = new ProtocolDecodeChannel(this, name, next_channel_no_++);
+            prdch_list_.Add(group);
 
-            lock (channel_list_) {
-                channel_list_.Add(channel);
-            }
-
-            return (channel);
+            return (group);
         }
 
-        public void InputData(byte[] input_data, List<ProtocolDecodeEvent> output)
+        internal void RegisterNewEvent(ProtocolDecodeEvent prde)
+        {
+            event_list_new_.Add(prde);
+        }
+
+        private void ExtractNewEvent(List<ProtocolDecodeEvent> new_event)
+        {
+            new_event.AddRange(event_list_new_);
+
+            event_list_new_ = new List<ProtocolDecodeEvent>();
+        }
+
+        public void InputData(string input_alias, byte[] input_data, List<ProtocolDecodeEvent> output)
         {
             var input_dt = DateTime.UtcNow;
 
-            if (last_input_dt_ == DateTime.MinValue) {
-                last_input_dt_ = input_dt;
+            if (LastInputDateTime == DateTime.MinValue) {
+                LastInputDateTime = input_dt;
             }
 
             InputData(input_dt, input_data, output);
@@ -62,72 +63,49 @@ namespace RtsCore.Protocol
 
         public void InputData(TimeSpan input_offset, byte[] input_data, List<ProtocolDecodeEvent> output)
         {
-            if (last_input_dt_ == DateTime.MinValue) {
-                last_input_dt_ = DateTime.UtcNow;
+            if (LastInputDateTime == DateTime.MinValue) {
+                LastInputDateTime = DateTime.UtcNow;
             }
 
-            InputData(last_input_dt_ + input_offset, input_data, output);
+            InputData(LastInputDateTime + input_offset, input_data, output);
         }
 
         public void InputData(DateTime input_dt, byte[] input_data, List<ProtocolDecodeEvent> output)
         {
-            if (last_input_dt_ == DateTime.MinValue) {
-                last_input_dt_ = DateTime.UtcNow;
+            if (LastInputDateTime == DateTime.MinValue) {
+                LastInputDateTime = DateTime.UtcNow;
             }
 
-            OnInputData(input_dt, input_data, output);
+            OnInputData(input_dt, input_data);
 
-            last_input_dt_ = input_dt;
+            LastInputDateTime = input_dt;
+
+            ExtractNewEvent(output);
         }
 
-        public void InputBreakOff(List<ProtocolDecodeEvent> output)
+        public void InputBreak(List<ProtocolDecodeEvent> output)
+        {
+            OnInputBreak();
+
+            ExtractNewEvent(output);
+        }
+
+        public void Poll(List<ProtocolDecodeEvent> output)
+        {
+            OnPoll();
+
+            ExtractNewEvent(output);
+        }
+
+        protected virtual void OnInputData(DateTime input_dt, byte[] input_data)
         {
         }
 
-        public void InputPoll(List<ProtocolDecodeEvent> output)
+        protected virtual void OnInputBreak()
         {
         }
 
-        protected virtual void OnInputData(DateTime input_dt, byte[] input_data, List<ProtocolDecodeEvent> output)
-        {
-        }
-
-        protected virtual void OnInputBreakOff(List<ProtocolDecodeEvent> output)
-        {
-        }
-
-        protected virtual void OnInputPoll(List<ProtocolDecodeEvent> output)
-        {
-        }
-
-        public ProtocolDecodeData2[] Decode(DateTime input_datetime, byte[] input_data)
-        {
-            var decode_data_list = new List<ProtocolDecodeData2>();
-
-            /* スタックバッファ作成 */
-            if (decode_stack_ == null) {
-                decode_stack_ = OnCreateDecodeStack();
-            }
-
-            /* デコード処理 */
-            if (input_data != null) {
-                OnDecode(decode_stack_, new ProtocolDecoderParam()
-                {
-                    DecodeDataList = decode_data_list,
-                    InputDateTime = input_datetime,
-                    InputData = input_data,
-                });
-            }
-
-            return (decode_data_list.ToArray());
-        }
-
-        protected virtual ProtocolDecodeStack OnCreateDecodeStack()
-        {
-            return (new ProtocolDecodeStack());
-        }
-
-        protected virtual void OnDecode(ProtocolDecodeStack ds, ProtocolDecoderParam param)
+        protected virtual void OnPoll()
         {
         }
     }

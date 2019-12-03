@@ -3,9 +3,7 @@
 // (see accompanying GPPGcopyright.rtf)
 
 // GPPG version 1.5.2
-// Machine:  KPC-2456
 // DateTime: 2018/11/01 17:54:13
-// UserName: i32719
 // Input file <BinaryText\BinaryTextParser.Language.grammar.y - 2018/11/01 17:54:09>
 
 // options: no-lines gplex
