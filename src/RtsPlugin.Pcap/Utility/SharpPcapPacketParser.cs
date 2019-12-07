@@ -207,7 +207,6 @@ namespace RtsPlugin.Pcap.Utility
             param.Protocol = "Ethernet";
             param.SourceHwAddress = packet.SourceHardwareAddress;
             param.DestinationHwAddress = packet.DestinationHardwareAddress;
-            param.IsSend = (packet.SourceHardwareAddress.Equals(param.Device.MacAddress));
         }
 
         private static void AnalyzePacket_PPP(PacketDotNet.PppPacket packet, PacketAnalyzeParam param)
