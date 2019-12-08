@@ -17,7 +17,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Rtcap
 
         public override string   Name          { get; } = ConfigManager.Fixed.ApplicationName.Value + " format";
 
-        public override string[] FileExtension { get; } = new [] { ConfigManager.Fixed.ApplicationID.Value + "cap" };
+        public override string[] FileExtension { get; } = new [] { "." + ConfigManager.Fixed.ApplicationID.Value + "cap" };
 
         public override Image    Icon          { get; } = RtsCore.Resource.Images.app_icon_32x32;
 

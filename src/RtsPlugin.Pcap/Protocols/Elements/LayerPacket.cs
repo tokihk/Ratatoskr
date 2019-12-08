@@ -38,6 +38,8 @@ namespace RtsPlugin.Pcap.Protocols.Elements
 
         public override string ToString()
         {
+            return (GetUnpackData().ToHexText());
+#if false
             var str = Name;
             var unpack_elems = GetUnpackElements();
 
@@ -50,6 +52,7 @@ namespace RtsPlugin.Pcap.Protocols.Elements
             }
 
             return (str);
+#endif
         }
     }
 }

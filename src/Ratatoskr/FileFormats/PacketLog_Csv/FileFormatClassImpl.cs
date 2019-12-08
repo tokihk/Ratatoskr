@@ -13,7 +13,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Csv
     {
         public override string   Name          { get; } = "CSV format";
 
-        public override string[] FileExtension { get; } = new [] { "csv" };
+        public override string[] FileExtension { get; } = new [] { ".csv" };
 
         public override Image    Icon          { get; } = RtsCore.Resource.Images.csv_48x48;
 

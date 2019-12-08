@@ -167,6 +167,10 @@ namespace RtsPlugin.Pcap.Utility
                         AnalyzePacket_PPP(packet_i, param);
                         break;
 
+                    case PacketDotNet.Ieee8021QPacket packet_i:
+                        AnalyzePacket_IEEE8021Q(packet_i, param);
+                        break;
+
                     case PacketDotNet.IPPacket packet_i:
                         AnalyzePacket_IP(packet_i, param);
                         break;
@@ -212,6 +216,11 @@ namespace RtsPlugin.Pcap.Utility
         private static void AnalyzePacket_PPP(PacketDotNet.PppPacket packet, PacketAnalyzeParam param)
         {
             param.Protocol = "PPP";
+        }
+
+        private static void AnalyzePacket_IEEE8021Q(PacketDotNet.Ieee8021QPacket packet, PacketAnalyzeParam param)
+        {
+            param.Protocol = "IEEE802.1Q";
         }
 
         private static void AnalyzePacket_IP(PacketDotNet.IPPacket packet, PacketAnalyzeParam param)

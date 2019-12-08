@@ -25,7 +25,7 @@ namespace Ratatoskr.FileFormats.UserConfig_Rtcfg
         
         public override string   Name          { get; } = ConfigManager.Fixed.ApplicationName.Value + " Config";
 
-        public override string[] FileExtension { get; } = new [] { ConfigManager.Fixed.ApplicationID.Value + "cfg" };
+        public override string[] FileExtension { get; } = new [] { "." + ConfigManager.Fixed.ApplicationID.Value + "cfg" };
 
         public override Image    Icon          { get; } = RtsCore.Resource.Images.app_icon_32x32;
 

@@ -74,6 +74,7 @@
     <Compile Include="Protocols\Elements\L3_ICMPv4.cs" />
     <Compile Include="Protocols\Elements\L3_ICMPv6.cs" />
     <Compile Include="Protocols\Elements\L3_IGMP.cs" />
+    <Compile Include="Protocols\Elements\L3_IEEE8021Q.cs" />
     <Compile Include="Protocols\Elements\L3_IPv4.cs" />
     <Compile Include="Protocols\Elements\L3_IPv6.cs" />
     <Compile Include="Protocols\Elements\L4_TCP.cs" />

@@ -13,7 +13,7 @@ namespace Ratatoskr.FileFormats.PacketLog_Binary
     {
         public override string   Name          { get; } = "Binary format";
 
-        public override string[] FileExtension { get; } = new [] { "bin" };
+        public override string[] FileExtension { get; } = new [] { ".bin" };
 
         public override Image    Icon          { get; } = null;
 

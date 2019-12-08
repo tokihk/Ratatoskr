@@ -82,7 +82,7 @@ namespace Ratatoskr.Gate.AutoLogger
                     output_path_ = (new Uri(
                         new Uri(output_path_),
                         string.Format(
-                            "{0}_{1}.{2}",
+                            "{0}_{1}{2}",
                             ConfigManager.System.AutoPacketSave.SavePrefix.Value,
                             DateTime.Now.ToString("yyyyMMddHHmmssfff"),
                             output_format_.FileExtension[0]))).LocalPath;

@@ -44,7 +44,7 @@ namespace Ratatoskr.FileFormats
             var str = new StringBuilder();
 
             foreach (var ext in format.FileExtension) {
-                str.AppendFormat("*.{0};", ext);
+                str.AppendFormat("*{0};", ext);
             }
             str.Remove(str.Length - 1, 1);
 
@@ -58,17 +58,9 @@ namespace Ratatoskr.FileFormats
             }
 
             try {
-                var path_ext = Path.GetExtension(path);
-
-                if (path_ext == null)return (null);
-
-                /* 最初のドットを削除 */
-                if (path_ext.Length > 0) {
-                    path_ext = path_ext.Substring(1);
-                }
-
                 return (from format in formats
-                        where format.FileExtension.Contains(path_ext)
+						from format_ext in format.FileExtension
+						where path.IndexOf(format_ext, Math.Max(0, path.Length - format_ext.Length)) >= 0
                         select format);
 
             } catch {

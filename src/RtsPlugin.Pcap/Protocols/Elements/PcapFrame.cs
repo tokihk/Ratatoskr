@@ -14,14 +14,15 @@ namespace RtsPlugin.Pcap.Protocols.Elements
             var elem = (ProtocolFrameElement)null;
 
             switch (packet) {
-                case EthernetPacket packet_c:       elem = new L2_EthernetII(parent, packet_c);     break;
-                case ArpPacket      packet_c:       elem = new L2_ARP(parent, packet_c);            break;
-                case IcmpV4Packet   packet_c:       elem = new L3_ICMPv4(parent, packet_c);         break;
-                case IcmpV6Packet   packet_c:       elem = new L3_ICMPv6(parent, packet_c);         break;
-                case IgmpV2Packet   packet_c:       elem = new L3_IGMP(parent, packet_c);           break;
-                case IPv4Packet     packet_c:       elem = new L3_IPv4(parent, packet_c);           break;
-                case TcpPacket      packet_c:       elem = new L4_TCP(parent, packet_c);            break;
-                case UdpPacket      packet_c:       elem = new L4_UDP(parent, packet_c);            break;
+                case EthernetPacket  packet_c:       elem = new L2_EthernetII(parent, packet_c);     break;
+                case ArpPacket       packet_c:       elem = new L2_ARP(parent, packet_c);            break;
+                case Ieee8021QPacket packet_c:       elem = new L3_IEEE8021Q(parent, packet_c);      break;
+                case IcmpV4Packet    packet_c:       elem = new L3_ICMPv4(parent, packet_c);         break;
+                case IcmpV6Packet    packet_c:       elem = new L3_ICMPv6(parent, packet_c);         break;
+                case IgmpV2Packet    packet_c:       elem = new L3_IGMP(parent, packet_c);           break;
+                case IPv4Packet      packet_c:       elem = new L3_IPv4(parent, packet_c);           break;
+                case TcpPacket       packet_c:       elem = new L4_TCP(parent, packet_c);            break;
+                case UdpPacket       packet_c:       elem = new L4_UDP(parent, packet_c);            break;
             }
 
             if (elem == null) {

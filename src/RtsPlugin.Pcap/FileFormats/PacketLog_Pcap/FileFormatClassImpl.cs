@@ -13,7 +13,7 @@ namespace RtsPlugin.Pcap.FileFormats.PacketLog_Pcap
     {
         public override string   Name          { get; } = "pcap format";
 
-        public override string[] FileExtension { get; } = new [] { "pcap", "cap" };
+        public override string[] FileExtension { get; } = new [] { ".pcap", ".cap" };
 
         public override Image    Icon          { get; } = Properties.Resource.wireshark_32x32;
 
