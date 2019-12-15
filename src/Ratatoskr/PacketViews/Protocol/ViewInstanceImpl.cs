@@ -818,19 +818,19 @@ namespace Ratatoskr.PacketViews.Protocol
 						break;
 
                     case EventListColumnType.BlockTime_UTC:
-                        item.SubItems.Add(prde.BlockDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                        item.SubItems.Add(prde.BlockDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.ffffff"));
                         break;
 
                     case EventListColumnType.BlockTime_Local:
-                        item.SubItems.Add(prde.BlockDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                        item.SubItems.Add(prde.BlockDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.ffffff"));
                         break;
 
                     case EventListColumnType.EventTime_UTC:
-                        item.SubItems.Add(prde.EventDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                        item.SubItems.Add(prde.EventDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.ffffff"));
                         break;
 
                     case EventListColumnType.EventTime_Local:
-                        item.SubItems.Add(prde.EventDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                        item.SubItems.Add(prde.EventDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.ffffff"));
                         break;
 
 					case EventListColumnType.EventType:
@@ -871,19 +871,19 @@ namespace Ratatoskr.PacketViews.Protocol
 						break;
 
 					case EventListColumnType.BlockTime_UTC:
-						item.SubItems.Add(elvi.DecodeEvent.BlockDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+						item.SubItems.Add(elvi.DecodeEvent.BlockDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.ffffff"));
 						break;
 
 					case EventListColumnType.BlockTime_Local:
-						item.SubItems.Add(elvi.DecodeEvent.BlockDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+						item.SubItems.Add(elvi.DecodeEvent.BlockDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.ffffff"));
 						break;
 
 					case EventListColumnType.EventTime_UTC:
-						item.SubItems.Add(elvi.DecodeEvent.EventDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+						item.SubItems.Add(elvi.DecodeEvent.EventDateTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss.ffffff"));
 						break;
 
 					case EventListColumnType.EventTime_Local:
-						item.SubItems.Add(elvi.DecodeEvent.EventDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+						item.SubItems.Add(elvi.DecodeEvent.EventDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.ffffff"));
 						break;
 
 					case EventListColumnType.EventType:

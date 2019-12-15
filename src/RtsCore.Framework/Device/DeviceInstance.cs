@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using RtsCore.Packet;
+using RtsCore.Utility;
 
 namespace RtsCore.Framework.Device
 {
@@ -453,7 +454,7 @@ namespace RtsCore.Framework.Device
                     alias_,
                     PacketPriority.Standard,
                     PacketAttribute.Message,
-                    DateTime.UtcNow,
+                    HighResolutionDateTime.UtcNow,
                     info,
                     PacketDirection.Recv,
                     "",
@@ -484,7 +485,7 @@ namespace RtsCore.Framework.Device
 
         public void NotifySendComplete(string info, string src, string dst, byte[] data)
         {
-            NotifySendComplete(DateTime.UtcNow, info, src, dst, data);
+            NotifySendComplete(HighResolutionDateTime.UtcNow, info, src, dst, data);
         }
 
         public void NotifyRecvComplete(DateTime dt_utc, string info, string src, string dst, byte[] data)
@@ -514,7 +515,7 @@ namespace RtsCore.Framework.Device
 
         public void NotifyRecvComplete(string info, string src, string dst, byte[] data)
         {
-            NotifyRecvComplete(DateTime.UtcNow, info, src, dst, data);
+            NotifyRecvComplete(HighResolutionDateTime.UtcNow, info, src, dst, data);
         }
 
         public void Poll()

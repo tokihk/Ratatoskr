@@ -80,10 +80,9 @@ namespace RtsPlugin.Pcap.Utility
 
         private static PcapPacketInfo CreatePacketInfo(RawCapture packet, PacketAnalyzeParam param, PcapPacketParserOption option)
         {
-            var packet_info = new PcapPacketInfo()
-            {
-                DateTime = packet.Timeval.Date,
-            };
+            var packet_info = new PcapPacketInfo();
+
+            packet_info.DateTime = packet.Timeval.Date;
 
             packet_info.Direction = (param.IsSend) ? (PacketDirection.Send) : (PacketDirection.Recv);
 

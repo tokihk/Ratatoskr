@@ -79,8 +79,8 @@ namespace RtsCore.Packet
         }
 #endif
 
-        public const string DATETIME_FORMAT_UTC_DISPLAY   = "yyyy-MM-dd HH:mm:ss.fff";
-        public const string DATETIME_FORMAT_LOCAL_DISPLAY = "yyyy-MM-dd HH:mm:ss.fff";
+        public const string DATETIME_FORMAT_UTC_DISPLAY   = "yyyy-MM-dd HH:mm:ss.ffffff";
+        public const string DATETIME_FORMAT_LOCAL_DISPLAY = "yyyy-MM-dd HH:mm:ss.ffffff";
 
         private const int CACHE_ENABLE_SIZE = 32;
 
