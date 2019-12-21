@@ -37,7 +37,7 @@ namespace Ratatoskr.Devices.UsbMonitor
 
             public DateTime GetDateTime()
             {
-                return (DateTimeOffset.FromUnixTimeSeconds(ts_sec).UtcDateTime.AddMilliseconds(ts_usec / 1000));
+                return (DateTimeOffset.FromUnixTimeSeconds(ts_sec).UtcDateTime.AddTicks(ts_usec * 10));
             }
         }
 

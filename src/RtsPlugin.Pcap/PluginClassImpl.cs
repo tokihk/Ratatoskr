@@ -29,7 +29,7 @@ namespace RtsPlugin.Pcap
 
         public override string Copyright
         {
-            get { return ("2019 H.Kouno"); }
+            get { return ("2019 Toki.H.K"); }
         }
 
         public override ModuleVersion Version
