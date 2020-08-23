@@ -238,8 +238,8 @@ namespace Ratatoskr.PacketViews.Graph.DisplayModules
                     /* 実データを補正 */
                     value_y = value_y * layer_param.AxisY_Magnification + layer_param.AxisY_Offset;
 
-                    /* 座標データに変換 */
-                    value_y_canvas = (int)Math.Max(int.MinValue, Math.Min(int.MaxValue, (axis_y_max - value_y) * value_y_mag));
+                    /* 座標データに変換(ウィンドウ座標はwordサイズ以内としなければ例外が発生) */
+                    value_y_canvas = (int)Math.Max(short.MinValue, Math.Min(short.MaxValue, (axis_y_max - value_y) * value_y_mag));
 
                     draw_points.Add(new Point(graphics_rect.Left + value_x_canvas, graphics_rect.Top + value_y_canvas));
                     value_x_canvas_last = value_x_canvas;
