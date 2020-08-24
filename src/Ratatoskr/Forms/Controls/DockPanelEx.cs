@@ -14,7 +14,14 @@ namespace Ratatoskr.Forms.Controls
 {
     internal class DockPanelEx : DockPanel
     {
-        public partial class DockContentEx : DockContent
+		private class DockPanelTheme : VS2015LightTheme
+		{
+			public DockPanelTheme()
+			{
+			}
+		}
+
+		public partial class DockContentEx : DockContent
         {
             public string    ContentName      { get; } = "";
             public uint      ContentGroup     { get; } = 0;
@@ -31,7 +38,7 @@ namespace Ratatoskr.Forms.Controls
                 ContentControl = control;
                 DefaultDockState = state;
 
-                Text = title;
+				Text = title;
                 Icon = icon;
                 
                 DockAreas = areas;
@@ -71,9 +78,10 @@ namespace Ratatoskr.Forms.Controls
 
         public DockPanelEx()
         {
-        }
+			Theme = new DockPanelTheme();
+		}
 
-        public void ShowContents(string layout_file_path = null)
+		public void ShowContents(string layout_file_path = null)
         {
             show_contents_ = true;
 

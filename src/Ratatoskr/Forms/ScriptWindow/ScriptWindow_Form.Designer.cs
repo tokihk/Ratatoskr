@@ -33,6 +33,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.Label_CodeRowNo = new System.Windows.Forms.ToolStripStatusLabel();
             this.Label_CodeColumnNo = new System.Windows.Forms.ToolStripStatusLabel();
+            this.DockPanel_Main = new Ratatoskr.Forms.Controls.DockPanelEx();
             this.MenuBar_Root = new System.Windows.Forms.MenuStrip();
             this.MenuBar_File = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_File_OpenScriptDir = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,9 +46,11 @@
             this.Btn_Script_Run = new System.Windows.Forms.ToolStripButton();
             this.Btn_Script_Stop = new System.Windows.Forms.ToolStripButton();
             this.Container_Main.BottomToolStripPanel.SuspendLayout();
+            this.Container_Main.ContentPanel.SuspendLayout();
             this.Container_Main.TopToolStripPanel.SuspendLayout();
             this.Container_Main.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.DockPanel_Main)).BeginInit();
             this.MenuBar_Root.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -61,7 +64,8 @@
             // 
             // Container_Main.ContentPanel
             // 
-            this.Container_Main.ContentPanel.Size = new System.Drawing.Size(872, 447);
+            this.Container_Main.ContentPanel.Controls.Add(this.DockPanel_Main);
+            this.Container_Main.ContentPanel.Size = new System.Drawing.Size(872, 449);
             this.Container_Main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Container_Main.Location = new System.Drawing.Point(0, 0);
             this.Container_Main.Name = "Container_Main";
@@ -109,6 +113,21 @@
             this.Label_CodeColumnNo.Text = "Column: ";
             this.Label_CodeColumnNo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // DockPanel_Main
+            // 
+            this.DockPanel_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DockPanel_Main.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
+            this.DockPanel_Main.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
+            this.DockPanel_Main.Location = new System.Drawing.Point(0, 0);
+            this.DockPanel_Main.Name = "DockPanel_Main";
+            this.DockPanel_Main.Padding = new System.Windows.Forms.Padding(6);
+            this.DockPanel_Main.ShowAutoHideContentOnHover = false;
+            this.DockPanel_Main.Size = new System.Drawing.Size(872, 449);
+            this.DockPanel_Main.TabIndex = 0;
+            this.DockPanel_Main.DockContentClosing += new Ratatoskr.Forms.Controls.DockPanelEx.DockContentClosingHandler(this.DockPanel_Main_DockContentClosing);
+            this.DockPanel_Main.DockContentClosed += new Ratatoskr.Forms.Controls.DockPanelEx.DockContentClosedHandler(this.DockPanel_Main_DockContentClosed);
+            this.DockPanel_Main.ActiveDocumentChanged += new System.EventHandler(this.DockPanel_Main_ActiveDocumentChanged);
+            // 
             // MenuBar_Root
             // 
             this.MenuBar_Root.Dock = System.Windows.Forms.DockStyle.None;
@@ -117,7 +136,7 @@
             this.MenuBar_Script});
             this.MenuBar_Root.Location = new System.Drawing.Point(0, 0);
             this.MenuBar_Root.Name = "MenuBar_Root";
-            this.MenuBar_Root.Size = new System.Drawing.Size(872, 26);
+            this.MenuBar_Root.Size = new System.Drawing.Size(872, 24);
             this.MenuBar_Root.TabIndex = 0;
             this.MenuBar_Root.Text = "menuStrip1";
             // 
@@ -128,25 +147,25 @@
             this.toolStripSeparator1,
             this.MenuBar_File_Exit});
             this.MenuBar_File.Name = "MenuBar_File";
-            this.MenuBar_File.Size = new System.Drawing.Size(40, 22);
+            this.MenuBar_File.Size = new System.Drawing.Size(37, 20);
             this.MenuBar_File.Text = "File";
             // 
             // MenuBar_File_OpenScriptDir
             // 
             this.MenuBar_File_OpenScriptDir.Name = "MenuBar_File_OpenScriptDir";
-            this.MenuBar_File_OpenScriptDir.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_File_OpenScriptDir.Size = new System.Drawing.Size(193, 22);
             this.MenuBar_File_OpenScriptDir.Tag = "OpenScriptDirectory";
             this.MenuBar_File_OpenScriptDir.Text = "Open script directory...";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(206, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(190, 6);
             // 
             // MenuBar_File_Exit
             // 
             this.MenuBar_File_Exit.Name = "MenuBar_File_Exit";
-            this.MenuBar_File_Exit.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_File_Exit.Size = new System.Drawing.Size(193, 22);
             this.MenuBar_File_Exit.Tag = "FormExit";
             this.MenuBar_File_Exit.Text = "Exit";
             // 
@@ -156,23 +175,23 @@
             this.MenuBar_Script_Run,
             this.MenuBar_Script_Stop});
             this.MenuBar_Script.Name = "MenuBar_Script";
-            this.MenuBar_Script.Size = new System.Drawing.Size(54, 22);
+            this.MenuBar_Script.Size = new System.Drawing.Size(49, 20);
             this.MenuBar_Script.Text = "Script";
             // 
             // MenuBar_Script_Run
             // 
-            this.MenuBar_Script_Run.Image = RtsCore.Resource.Images.play_32x32;
+            this.MenuBar_Script_Run.Image = ((System.Drawing.Image)(resources.GetObject("MenuBar_Script_Run.Image")));
             this.MenuBar_Script_Run.Name = "MenuBar_Script_Run";
-            this.MenuBar_Script_Run.Size = new System.Drawing.Size(189, 22);
+            this.MenuBar_Script_Run.Size = new System.Drawing.Size(173, 22);
             this.MenuBar_Script_Run.Tag = "ScriptRun";
             this.MenuBar_Script_Run.Text = "Current Script Run";
             this.MenuBar_Script_Run.Click += new System.EventHandler(this.MenuBar_Script_Run_Click);
             // 
             // MenuBar_Script_Stop
             // 
-            this.MenuBar_Script_Stop.Image = RtsCore.Resource.Images.stop_32x32;
+            this.MenuBar_Script_Stop.Image = ((System.Drawing.Image)(resources.GetObject("MenuBar_Script_Stop.Image")));
             this.MenuBar_Script_Stop.Name = "MenuBar_Script_Stop";
-            this.MenuBar_Script_Stop.Size = new System.Drawing.Size(189, 22);
+            this.MenuBar_Script_Stop.Size = new System.Drawing.Size(173, 22);
             this.MenuBar_Script_Stop.Tag = "ScriptStop";
             this.MenuBar_Script_Stop.Text = "Current Script Stop";
             this.MenuBar_Script_Stop.Click += new System.EventHandler(this.MenuBar_Script_Stop_Click);
@@ -186,7 +205,7 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Btn_Script_Run,
             this.Btn_Script_Stop});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 26);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(872, 51);
             this.toolStrip1.Stretch = true;
@@ -195,7 +214,7 @@
             // Btn_Script_Run
             // 
             this.Btn_Script_Run.AutoSize = false;
-            this.Btn_Script_Run.Image = RtsCore.Resource.Images.play_32x32;
+            this.Btn_Script_Run.Image = ((System.Drawing.Image)(resources.GetObject("Btn_Script_Run.Image")));
             this.Btn_Script_Run.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Btn_Script_Run.Name = "Btn_Script_Run";
             this.Btn_Script_Run.Size = new System.Drawing.Size(48, 48);
@@ -207,7 +226,7 @@
             // Btn_Script_Stop
             // 
             this.Btn_Script_Stop.AutoSize = false;
-            this.Btn_Script_Stop.Image = RtsCore.Resource.Images.stop_32x32;
+            this.Btn_Script_Stop.Image = ((System.Drawing.Image)(resources.GetObject("Btn_Script_Stop.Image")));
             this.Btn_Script_Stop.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Btn_Script_Stop.Name = "Btn_Script_Stop";
             this.Btn_Script_Stop.Size = new System.Drawing.Size(48, 48);
@@ -232,12 +251,14 @@
             this.Resize += new System.EventHandler(this.ScriptWindow_Form_Resize);
             this.Container_Main.BottomToolStripPanel.ResumeLayout(false);
             this.Container_Main.BottomToolStripPanel.PerformLayout();
+            this.Container_Main.ContentPanel.ResumeLayout(false);
             this.Container_Main.TopToolStripPanel.ResumeLayout(false);
             this.Container_Main.TopToolStripPanel.PerformLayout();
             this.Container_Main.ResumeLayout(false);
             this.Container_Main.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.DockPanel_Main)).EndInit();
             this.MenuBar_Root.ResumeLayout(false);
             this.MenuBar_Root.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -264,5 +285,6 @@
         private System.Windows.Forms.ToolStripMenuItem MenuBar_File_OpenScriptDir;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_File_Exit;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-    }
+		private Controls.DockPanelEx DockPanel_Main;
+	}
 }

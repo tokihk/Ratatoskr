@@ -19,8 +19,6 @@ namespace Ratatoskr.Forms.ScriptWindow
 {
     internal partial class ScriptWindow_Form : Form
     {
-        private DockPanelEx Panel_DockMain;
-
         private FileExplorerEx           DC_FileExplorer;
         private ScriptWindow_Console     DC_Console;
         private ScriptWindow_ScriptList  DC_ScriptList;
@@ -31,14 +29,7 @@ namespace Ratatoskr.Forms.ScriptWindow
             InitializeComponent();
             InitializeMenuBar();
 
-            Panel_DockMain = new DockPanelEx();
-            Panel_DockMain.Dock = DockStyle.Fill;
-            Panel_DockMain.DocumentStyle = DocumentStyle.DockingWindow;
-            Panel_DockMain.DockContentClosing += Panel_DockMain_DockContentClosing;
-            Panel_DockMain.DockContentClosed += Panel_DockMain_DockContentClosed;
-            Panel_DockMain.ActiveDocumentChanged += Panel_DockMain_ActiveDocumentChanged;
-            
-            Container_Main.ContentPanel.Controls.Add(Panel_DockMain);
+            Container_Main.ContentPanel.Controls.Add(DockPanel_Main);
         }
 
         private void InitializeMenuBar()
@@ -63,7 +54,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 WindowState = FormWindowState.Maximized;
             }
 
-            Panel_DockMain.ShowContents();
+			DockPanel_Main.ShowContents();
         }
 
         private void LoadMenuBarConfig()
@@ -86,7 +77,7 @@ namespace Ratatoskr.Forms.ScriptWindow
 
             DC_FileExplorer.RootUrl = root_path;
 
-            Panel_DockMain.AddDockContent(
+			DockPanel_Main.AddDockContent(
                 "DC_FileExplorer",
                 "File Explorer",
                 0,
@@ -101,7 +92,7 @@ namespace Ratatoskr.Forms.ScriptWindow
         {
             DC_Console = new ScriptWindow_Console();
 
-            Panel_DockMain.AddDockContent(
+			DockPanel_Main.AddDockContent(
                 "DC_Console",
                 "Output",
                 0,
@@ -118,7 +109,7 @@ namespace Ratatoskr.Forms.ScriptWindow
 
             DC_ScriptList.LoadConfig();
 
-            Panel_DockMain.AddDockContent(
+			DockPanel_Main.AddDockContent(
                 "DC_ScriptList",
                 "Running Script List",
                 0,
@@ -152,7 +143,7 @@ namespace Ratatoskr.Forms.ScriptWindow
         {
             ConfigManager.User.Script_OpenFileList.Value.Clear();
 
-            foreach (ScriptWindow_CodeEditor editor in Panel_DockMain.GetDocumentControls()) {
+            foreach (ScriptWindow_CodeEditor editor in DockPanel_Main.GetDocumentControls()) {
                 /* 現在の状態を保存 */
                 editor.SaveScriptFile();
 
@@ -188,7 +179,7 @@ namespace Ratatoskr.Forms.ScriptWindow
 
         private ScriptWindow_CodeEditor GetOpenedScriptEditor(string path)
         {
-            foreach (ScriptWindow_CodeEditor editor in Panel_DockMain.GetDocumentControls()) {
+            foreach (ScriptWindow_CodeEditor editor in DockPanel_Main.GetDocumentControls()) {
                 if (editor.ScriptPath == path)return (editor);
             }
 
@@ -200,7 +191,7 @@ namespace Ratatoskr.Forms.ScriptWindow
             var editor = GetOpenedScriptEditor(path);
 
             if (editor != null) {
-                Panel_DockMain.SetActiveDocumentControl(editor);
+				DockPanel_Main.SetActiveDocumentControl(editor);
                 return;
             }
 
@@ -214,8 +205,8 @@ namespace Ratatoskr.Forms.ScriptWindow
             editor.ScriptMessageAppended += OnScriptMessageOutput;
             editor.ScriptStatusChanged += OnScriptStatusChanged;
 
-            /* 新しいタブでテキストを開く */
-            Panel_DockMain.AddDockContent(
+			/* 新しいタブでテキストを開く */
+			DockPanel_Main.AddDockContent(
                 "DC_CodeEditor",
                 (path != null) ? (Path.GetFileName(path)) : ("(Temp)"),
                 0,
@@ -228,7 +219,7 @@ namespace Ratatoskr.Forms.ScriptWindow
 
         private string GetCurrentScript()
         {
-            if (Panel_DockMain.GetActiveDocumentControl() is CodeEditorEx dock) {
+            if (DockPanel_Main.GetActiveDocumentControl() is CodeEditorEx dock) {
                 return (dock.Text);
             } else {
                 return (null);
@@ -237,7 +228,7 @@ namespace Ratatoskr.Forms.ScriptWindow
 
         private void UpdateCurrentEditorStatus()
         {
-            var editor = Panel_DockMain.GetActiveDocumentControl() as ScriptWindow_CodeEditor;
+            var editor = DockPanel_Main.GetActiveDocumentControl() as ScriptWindow_CodeEditor;
 
             UpdateEditorCursorStatus(editor);
             UpdateEditorScriptStatus(editor);
@@ -300,7 +291,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                     break;
             }
 
-            if (Panel_DockMain.GetActiveDocumentControl() is ScriptWindow_CodeEditor editor) {
+            if (DockPanel_Main.GetActiveDocumentControl() is ScriptWindow_CodeEditor editor) {
                 editor.FormKeyAction(id);
             }
         }
@@ -348,14 +339,14 @@ namespace Ratatoskr.Forms.ScriptWindow
 
         private void MenuBar_Script_Run_Click(object sender, EventArgs e)
         {
-            if (Panel_DockMain.GetActiveDocumentControl() is ScriptWindow_CodeEditor editor) {
+            if (DockPanel_Main.GetActiveDocumentControl() is ScriptWindow_CodeEditor editor) {
                 editor.ScriptRun();
             }
         }
 
         private void MenuBar_Script_Stop_Click(object sender, EventArgs e)
         {
-            if (Panel_DockMain.GetActiveDocumentControl() is ScriptWindow_CodeEditor editor) {
+            if (DockPanel_Main.GetActiveDocumentControl() is ScriptWindow_CodeEditor editor) {
                 editor.ScriptStop();
             }
         }
@@ -375,18 +366,18 @@ namespace Ratatoskr.Forms.ScriptWindow
             OpenScriptFile(url);
         }
 
-        private void Panel_DockMain_DockContentClosing(object sender, Control control, FormClosingEventArgs e)
+        private void DockPanel_Main_DockContentClosing(object sender, Control control, FormClosingEventArgs e)
         {
             if (control is ScriptWindow_CodeEditor editor) {
                 editor.SaveScriptFile();
             }
         }
 
-        private void Panel_DockMain_DockContentClosed(object sender, Control control, FormClosedEventArgs e)
+        private void DockPanel_Main_DockContentClosed(object sender, Control control, FormClosedEventArgs e)
         {
         }
 
-        private void Panel_DockMain_ActiveDocumentChanged(object sender, EventArgs e)
+        private void DockPanel_Main_ActiveDocumentChanged(object sender, EventArgs e)
         {
             UpdateCurrentEditorStatus();
         }
@@ -403,7 +394,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 return;
             }
 
-            if (sender == (Panel_DockMain.GetActiveDocumentControl() as CodeEditorEx)) {
+            if (sender == (DockPanel_Main.GetActiveDocumentControl() as CodeEditorEx)) {
                 DC_Console.ClearMessage();
             }
         }
@@ -415,7 +406,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 return;
             }
 
-            if (sender == (Panel_DockMain.GetActiveDocumentControl() as CodeEditorEx)) {
+            if (sender == (DockPanel_Main.GetActiveDocumentControl() as CodeEditorEx)) {
                 DC_Console.AddMessage(msg);
             }
         }
