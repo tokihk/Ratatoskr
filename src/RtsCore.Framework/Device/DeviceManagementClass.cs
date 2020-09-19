@@ -5,6 +5,7 @@ using System.Timers;
 using System.Threading;
 using System.Threading.Tasks;
 using RtsCore.Packet;
+using System.Windows.Forms;
 
 namespace RtsCore.Framework.Device
 {
@@ -91,6 +92,9 @@ namespace RtsCore.Framework.Device
             /* 新しいデバイスを追加 */
             lock (devd_list_) {
                 devd_list_.Add(devd);
+
+                /* 名前順にソート */
+                devd_list_.Sort((a, b) => a.Name.CompareTo(b.Name));
             }
 
             return (true);

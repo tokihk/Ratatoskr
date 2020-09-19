@@ -45,7 +45,6 @@ namespace Ratatoskr.Devices
             AddDevice(new Devices.TcpServer.DeviceClassImpl());
             AddDevice(new Devices.TcpClient.DeviceClassImpl());
             AddDevice(new Devices.UdpClient.DeviceClassImpl());
-            AddDevice(new Devices.UsbMonitor.DeviceClassImpl());
 #if DEBUG
             AddDevice(new Devices.UsbComm.DeviceClassImpl());
 #endif

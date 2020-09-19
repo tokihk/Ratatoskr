@@ -1,4 +1,4 @@
-﻿namespace Ratatoskr.Devices.UsbMonitor
+﻿namespace RtsPlugin.Pcap.Devices.UsbCapture
 {
     partial class DevicePropertyEditorImpl
     {

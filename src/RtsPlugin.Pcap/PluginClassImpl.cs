@@ -29,7 +29,7 @@ namespace RtsPlugin.Pcap
 
         public override string Copyright
         {
-            get { return ("2019 Toki.H.K"); }
+            get { return ("2019-2020 Toki.H.K"); }
         }
 
         public override ModuleVersion Version
@@ -51,7 +51,8 @@ namespace RtsPlugin.Pcap
         protected override DeviceClass[] OnLoadDeviceClasses()
         {
             return (new DeviceClass[] {
-                new Devices.EthernetCapture.DeviceClassImpl()
+                new Devices.EthernetCapture.DeviceClassImpl(),
+                new Devices.UsbCapture.DeviceClassImpl()
             });
         }
 

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RtsCore.Generic;
 
-namespace Ratatoskr.Devices.UsbMonitor
+namespace RtsPlugin.Pcap.Devices.UsbCapture
 {
     internal sealed class UsbPcapRecordParser
     {

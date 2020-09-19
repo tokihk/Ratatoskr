@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE;TRACE __SHARPPCAP__</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PacketDotNet, Version=0.30.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -63,6 +65,19 @@
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
     <Compile Include="Devices\EthernetCapture\DevicePropertyImpl.cs" />
+    <Compile Include="Devices\UsbCapture\DeviceClassImpl.cs" />
+    <Compile Include="Devices\UsbCapture\DeviceInstanceImpl.cs" />
+    <Compile Include="Devices\UsbCapture\DevicePropertyEditorImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Devices\UsbCapture\DevicePropertyEditorImpl.Designer.cs">
+      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Devices\UsbCapture\DevicePropertyImpl.cs" />
+    <Compile Include="Devices\UsbCapture\USBPcapCMDManager.cs" />
+    <Compile Include="Devices\UsbCapture\UsbPcapDeviceObject.cs" />
+    <Compile Include="Devices\UsbCapture\UsbPcapManager.cs" />
+    <Compile Include="Devices\UsbCapture\UsbPcapRecordParser.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatClassImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatOptionImpl.cs" />
     <Compile Include="FileFormats\PacketLog_Pcap\FileFormatReaderImpl.cs" />
@@ -102,6 +117,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Devices\EthernetCapture\DevicePropertyEditorImpl.resx">
+      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Devices\UsbCapture\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resource.resx" />

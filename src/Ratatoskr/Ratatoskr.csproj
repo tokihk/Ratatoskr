@@ -193,24 +193,6 @@
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
     <Compile Include="Devices\UsbComm\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\UsbMonitor\DeviceClassImpl.cs" />
-    <Compile Include="Devices\UsbMonitor\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\UsbMonitor\DevicePropertyEditorImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Devices\UsbMonitor\DevicePropertyEditorImpl.Designer.cs">
-      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Devices\UsbMonitor\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\UsbMonitor\USBPcapCMDManager.cs" />
-    <Compile Include="Devices\UsbMonitor\UsbPcapDeviceObject.cs" />
-    <Compile Include="Devices\UsbMonitor\UsbPcapManager.cs" />
-    <Compile Include="Devices\UsbMonitor\UsbPcapRecordParser.cs" />
-    <Compile Include="Drivers\USBPcap\USBPcapCMD.cs" />
-    <Compile Include="Drivers\USBPcap\USBPcapDeviceInfo.cs" />
-    <Compile Include="Drivers\USBPcap\USBPcapDeviceNode.cs" />
-    <Compile Include="Drivers\USBPcap\USBPcapDeviceObject.cs" />
-    <Compile Include="Drivers\USBPcap\USBPcapPacket.cs" />
     <Compile Include="FileFormats\FileFormatManager.cs" />
     <Compile Include="FileFormats\FileFormatOptionForm.cs">
       <SubType>Form</SubType>
@@ -813,9 +795,6 @@
     <EmbeddedResource Include="Devices\UsbComm\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Devices\UsbMonitor\DevicePropertyEditorImpl.resx">
-      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FileFormats\FileFormatOptionForm.resx">
       <DependentUpon>FileFormatOptionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -1284,7 +1263,9 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Drivers\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

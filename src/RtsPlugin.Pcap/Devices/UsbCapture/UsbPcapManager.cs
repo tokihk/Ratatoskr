@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 using RtsCore.Framework.Native;
 
-namespace Ratatoskr.Devices.UsbMonitor
+namespace RtsPlugin.Pcap.Devices.UsbCapture
 {
     internal sealed class UsbPcapManager
     {

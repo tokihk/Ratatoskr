@@ -7,11 +7,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Drivers.USBPcap;
 using RtsCore.Framework.Device;
 using RtsCore.Framework.Native;
 
-namespace Ratatoskr.Devices.UsbMonitor
+namespace RtsPlugin.Pcap.Devices.UsbCapture
 {
     internal sealed class DeviceInstanceImpl : DeviceInstance
     {
@@ -21,9 +20,10 @@ namespace Ratatoskr.Devices.UsbMonitor
 
         private IntPtr handle_ = IntPtr.Zero;
 
-        private IAsyncResult task_ar_;
-        private IntPtr       task_exit_event_ = IntPtr.Zero;
-        private IntPtr       task_recv_event_ = IntPtr.Zero;
+        private IntPtr       exit_event_handle_ = IntPtr.Zero;
+        private IntPtr       recv_event_handle_ = IntPtr.Zero;
+
+        private IAsyncResult recv_task_ar_;
 
         private byte[]              recv_buffer_;
         private UsbPcapRecordParser recv_parser_;
@@ -54,25 +54,35 @@ namespace Ratatoskr.Devices.UsbMonitor
             recv_buffer_ = new byte[RECV_BUFFER_SIZE];
             recv_parser_ = new UsbPcapRecordParser();
 
-            task_exit_event_ = WinAPI.CreateEvent(IntPtr.Zero, true, false, null);
-            task_recv_event_ = WinAPI.CreateEvent(IntPtr.Zero, true, false, null);
+            exit_event_handle_ = WinAPI.CreateEvent(IntPtr.Zero, true, false, null);
+            recv_event_handle_ = WinAPI.CreateEvent(IntPtr.Zero, true, false, null);
 
-            task_ar_ = (new TaskDelegate(Task)).BeginInvoke(null, null);
+            /* タスク開始 */
+            recv_task_ar_ = (new RecvTaskDelegate(RecvTask)).BeginInvoke(null, null);
         }
 
         protected override void OnDisconnectStart()
         {
-            WinAPI.SetEvent(task_exit_event_);
+            /* タスク終了要求 */
+            WinAPI.SetEvent(exit_event_handle_);
+        }
 
-            while ((task_ar_ != null) && (!task_ar_.IsCompleted)) {
-                Thread.Sleep(1);
+        protected override EventResult OnDisconnectBusy()
+        {
+            if (WinAPI.WaitForSingleObject(exit_event_handle_, 0) != WinAPI.WAIT_OBJECT_0) {
+                return (EventResult.Busy);
             }
 
-            WinAPI.CloseHandle(task_exit_event_);
-            task_exit_event_ = IntPtr.Zero;
+            return (EventResult.Success);
+        }
 
-            WinAPI.CloseHandle(task_recv_event_);
-            task_recv_event_ = IntPtr.Zero;
+        protected override void OnDisconnected()
+        {
+            WinAPI.CloseHandle(exit_event_handle_);
+            exit_event_handle_ = IntPtr.Zero;
+
+            WinAPI.CloseHandle(recv_event_handle_);
+            recv_event_handle_ = IntPtr.Zero;
 
             UsbPcapManager.CloseDevice(handle_);
             handle_ = WinAPI.INVALID_HANDLE_VALUE;
@@ -83,17 +93,17 @@ namespace Ratatoskr.Devices.UsbMonitor
             return (PollState.Idle);
         }
 
-        private delegate void TaskDelegate();
-        private unsafe void Task()
+        private delegate void RecvTaskDelegate();
+        private unsafe void RecvTask()
         {
             var task_exit = false;
             var recv_overlapped = new NativeOverlapped();
 
-            recv_overlapped.EventHandle = task_recv_event_;
+            recv_overlapped.EventHandle = recv_event_handle_;
 
             fixed (byte *recv_buff = recv_buffer_)
             {
-                var event_list = new IntPtr[] { task_exit_event_, recv_overlapped.EventHandle };
+                var event_list = new IntPtr[] { exit_event_handle_, recv_overlapped.EventHandle };
                 var recv_size = (uint)0;
                 var result = (int)0;
 

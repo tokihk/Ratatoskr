@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using RtsCore.Framework.Device;
 
-namespace Ratatoskr.Devices.UsbMonitor
+namespace RtsPlugin.Pcap.Devices.UsbCapture
 {
     internal class DeviceClassImpl : DeviceClass
     {
-        public DeviceClassImpl() : base(Guid.Parse("F04B54F3-0D02-4C79-9B35-019ECC97E9C2"))
+        public DeviceClassImpl() : base(Guid.Parse("2CDB3FBD-46B6-4CBA-91F9-D51ECBBCB748"))
         {
         }
 
         public override string Name
         {
-            get { return ("USB Monitor"); }
+            get { return ("USB Capture"); }
         }
 
         public override string Details
@@ -25,7 +25,7 @@ namespace Ratatoskr.Devices.UsbMonitor
 
         public override string DescID
         {
-            get { return ("UsbMonitor"); }
+            get { return ("UsbCapture"); }
         }
 
         public override bool AdminOnly => true;

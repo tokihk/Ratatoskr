@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ratatoskr.Devices.UsbMonitor
+namespace RtsPlugin.Pcap.Devices.UsbCapture
 {
     internal sealed class USBPcapCMDManager
     {

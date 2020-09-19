@@ -8,7 +8,7 @@ using RtsCore.Config.Types;
 using RtsCore.Framework.Device;
 using RtsCore.Generic;
 
-namespace Ratatoskr.Devices.UsbMonitor
+namespace RtsPlugin.Pcap.Devices.UsbCapture
 {
     [Serializable]
     internal sealed class DevicePropertyImpl : DeviceProperty

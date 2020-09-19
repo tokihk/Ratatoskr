@@ -8,10 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Drivers.USBPcap;
 using RtsCore.Framework.Device;
 
-namespace Ratatoskr.Devices.UsbMonitor
+namespace RtsPlugin.Pcap.Devices.UsbCapture
 {
     internal partial class DevicePropertyEditorImpl : DevicePropertyEditor
     {
