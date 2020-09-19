@@ -123,7 +123,7 @@ namespace Ratatoskr.PacketViews.Protocol
         private Guid decoder_id_ = Guid.Empty;
 
 		private ProtocolDecoderClass                        prdc_ = null;
-        private Dictionary<string, ProtocolDecoderInstance> prdi_map_ = null;
+        private Dictionary<string, ProtocolDecoderInstance> prdi_map_ = new Dictionary<string, ProtocolDecoderInstance>();
 
         private List<EventListViewItem> list_items_temp_;
 
@@ -222,8 +222,9 @@ namespace Ratatoskr.PacketViews.Protocol
             this.panel1.Controls.Add(this.GBox_Decoder);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1056, 53);
+            this.panel1.Size = new System.Drawing.Size(1408, 66);
             this.panel1.TabIndex = 0;
             // 
             // groupBox1
@@ -232,9 +233,11 @@ namespace Ratatoskr.PacketViews.Protocol
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.CBox_ChartAxisMag_X);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(209, 4);
+            this.groupBox1.Location = new System.Drawing.Point(279, 5);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(240, 41);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(320, 51);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Chart/Graph Axis Magnification";
@@ -243,18 +246,20 @@ namespace Ratatoskr.PacketViews.Protocol
             // 
             this.CBox_ChartAxisMag_Y.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CBox_ChartAxisMag_Y.FormattingEnabled = true;
-            this.CBox_ChartAxisMag_Y.Location = new System.Drawing.Point(149, 14);
+            this.CBox_ChartAxisMag_Y.Location = new System.Drawing.Point(199, 18);
+            this.CBox_ChartAxisMag_Y.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CBox_ChartAxisMag_Y.Name = "CBox_ChartAxisMag_Y";
-            this.CBox_ChartAxisMag_Y.Size = new System.Drawing.Size(80, 20);
+            this.CBox_ChartAxisMag_Y.Size = new System.Drawing.Size(105, 23);
             this.CBox_ChartAxisMag_Y.TabIndex = 3;
             this.CBox_ChartAxisMag_Y.SelectedIndexChanged += new System.EventHandler(this.CBox_ChartAxisMag_Y_SelectedIndexChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(125, 17);
+            this.label3.Location = new System.Drawing.Point(167, 21);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(18, 12);
+            this.label3.Size = new System.Drawing.Size(24, 15);
             this.label3.TabIndex = 2;
             this.label3.Text = "Y :";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -263,18 +268,20 @@ namespace Ratatoskr.PacketViews.Protocol
             // 
             this.CBox_ChartAxisMag_X.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CBox_ChartAxisMag_X.FormattingEnabled = true;
-            this.CBox_ChartAxisMag_X.Location = new System.Drawing.Point(30, 14);
+            this.CBox_ChartAxisMag_X.Location = new System.Drawing.Point(40, 18);
+            this.CBox_ChartAxisMag_X.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CBox_ChartAxisMag_X.Name = "CBox_ChartAxisMag_X";
-            this.CBox_ChartAxisMag_X.Size = new System.Drawing.Size(80, 20);
+            this.CBox_ChartAxisMag_X.Size = new System.Drawing.Size(105, 23);
             this.CBox_ChartAxisMag_X.TabIndex = 1;
             this.CBox_ChartAxisMag_X.SelectedIndexChanged += new System.EventHandler(this.CBox_ChartAxisMag_X_SelectedIndexChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 17);
+            this.label1.Location = new System.Drawing.Point(8, 21);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(18, 12);
+            this.label1.Size = new System.Drawing.Size(24, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "X :";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -282,9 +289,11 @@ namespace Ratatoskr.PacketViews.Protocol
             // GBox_Decoder
             // 
             this.GBox_Decoder.Controls.Add(this.CBox_DecoderType);
-            this.GBox_Decoder.Location = new System.Drawing.Point(3, 3);
+            this.GBox_Decoder.Location = new System.Drawing.Point(4, 4);
+            this.GBox_Decoder.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.GBox_Decoder.Name = "GBox_Decoder";
-            this.GBox_Decoder.Size = new System.Drawing.Size(200, 42);
+            this.GBox_Decoder.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.GBox_Decoder.Size = new System.Drawing.Size(267, 52);
             this.GBox_Decoder.TabIndex = 1;
             this.GBox_Decoder.TabStop = false;
             this.GBox_Decoder.Text = "Decoder";
@@ -294,9 +303,10 @@ namespace Ratatoskr.PacketViews.Protocol
             this.CBox_DecoderType.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CBox_DecoderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CBox_DecoderType.FormattingEnabled = true;
-            this.CBox_DecoderType.Location = new System.Drawing.Point(3, 15);
+            this.CBox_DecoderType.Location = new System.Drawing.Point(4, 19);
+            this.CBox_DecoderType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CBox_DecoderType.Name = "CBox_DecoderType";
-            this.CBox_DecoderType.Size = new System.Drawing.Size(194, 20);
+            this.CBox_DecoderType.Size = new System.Drawing.Size(259, 23);
             this.CBox_DecoderType.TabIndex = 0;
             this.CBox_DecoderType.SelectedIndexChanged += new System.EventHandler(this.CBox_DecoderType_SelectedIndexChanged);
             // 
@@ -304,7 +314,8 @@ namespace Ratatoskr.PacketViews.Protocol
             // 
             this.Splitter_Main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Splitter_Main.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.Splitter_Main.Location = new System.Drawing.Point(0, 53);
+            this.Splitter_Main.Location = new System.Drawing.Point(0, 66);
+            this.Splitter_Main.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Splitter_Main.Name = "Splitter_Main";
             this.Splitter_Main.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -315,8 +326,9 @@ namespace Ratatoskr.PacketViews.Protocol
             // Splitter_Main.Panel2
             // 
             this.Splitter_Main.Panel2.Controls.Add(this.TabControl_Chart);
-            this.Splitter_Main.Size = new System.Drawing.Size(1056, 585);
-            this.Splitter_Main.SplitterDistance = 379;
+            this.Splitter_Main.Size = new System.Drawing.Size(1408, 732);
+            this.Splitter_Main.SplitterDistance = 525;
+            this.Splitter_Main.SplitterWidth = 5;
             this.Splitter_Main.TabIndex = 2;
             // 
             // Splitter_Sub
@@ -325,6 +337,7 @@ namespace Ratatoskr.PacketViews.Protocol
             this.Splitter_Sub.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Splitter_Sub.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.Splitter_Sub.Location = new System.Drawing.Point(0, 0);
+            this.Splitter_Sub.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Splitter_Sub.Name = "Splitter_Sub";
             // 
             // Splitter_Sub.Panel1
@@ -336,22 +349,25 @@ namespace Ratatoskr.PacketViews.Protocol
             // 
             this.Splitter_Sub.Panel2.Controls.Add(this.TLView_EventDetails);
             this.Splitter_Sub.Panel2.Controls.Add(this.Panel_FrameDetails);
-            this.Splitter_Sub.Size = new System.Drawing.Size(1056, 379);
-            this.Splitter_Sub.SplitterDistance = 560;
+            this.Splitter_Sub.Size = new System.Drawing.Size(1408, 525);
+            this.Splitter_Sub.SplitterDistance = 911;
+            this.Splitter_Sub.SplitterWidth = 5;
             this.Splitter_Sub.TabIndex = 0;
             // 
             // LView_EventList
             // 
             this.LView_EventList.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.LView_EventList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LView_EventList.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.LView_EventList.FullRowSelect = true;
             this.LView_EventList.GridLines = true;
             this.LView_EventList.HideSelection = false;
             this.LView_EventList.ItemCountMax = 99999999;
-            this.LView_EventList.Location = new System.Drawing.Point(0, 25);
+            this.LView_EventList.Location = new System.Drawing.Point(0, 30);
+            this.LView_EventList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.LView_EventList.Name = "LView_EventList";
             this.LView_EventList.ReadOnly = false;
-            this.LView_EventList.Size = new System.Drawing.Size(558, 352);
+            this.LView_EventList.Size = new System.Drawing.Size(909, 493);
             this.LView_EventList.TabIndex = 1;
             this.LView_EventList.UseCompatibleStateImageBehavior = false;
             this.LView_EventList.View = System.Windows.Forms.View.Details;
@@ -367,17 +383,18 @@ namespace Ratatoskr.PacketViews.Protocol
             this.Panel_FrameList.Controls.Add(this.TBox_EventListSearch);
             this.Panel_FrameList.Dock = System.Windows.Forms.DockStyle.Top;
             this.Panel_FrameList.Location = new System.Drawing.Point(0, 0);
+            this.Panel_FrameList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Panel_FrameList.Name = "Panel_FrameList";
-            this.Panel_FrameList.Size = new System.Drawing.Size(558, 25);
+            this.Panel_FrameList.Size = new System.Drawing.Size(909, 30);
             this.Panel_FrameList.TabIndex = 0;
             // 
             // Label_EventListSearch
             // 
             this.Label_EventListSearch.AutoSize = true;
-            this.Label_EventListSearch.Location = new System.Drawing.Point(3, 7);
-            this.Label_EventListSearch.Margin = new System.Windows.Forms.Padding(3, 7, 3, 0);
+            this.Label_EventListSearch.Location = new System.Drawing.Point(4, 9);
+            this.Label_EventListSearch.Margin = new System.Windows.Forms.Padding(4, 9, 4, 0);
             this.Label_EventListSearch.Name = "Label_EventListSearch";
-            this.Label_EventListSearch.Size = new System.Drawing.Size(40, 12);
+            this.Label_EventListSearch.Size = new System.Drawing.Size(52, 15);
             this.Label_EventListSearch.TabIndex = 1;
             this.Label_EventListSearch.Text = "Search";
             this.Label_EventListSearch.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -386,9 +403,10 @@ namespace Ratatoskr.PacketViews.Protocol
             // 
             this.TBox_EventListSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TBox_EventListSearch.Location = new System.Drawing.Point(49, 3);
+            this.TBox_EventListSearch.Location = new System.Drawing.Point(65, 4);
+            this.TBox_EventListSearch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.TBox_EventListSearch.Name = "TBox_EventListSearch";
-            this.TBox_EventListSearch.Size = new System.Drawing.Size(506, 19);
+            this.TBox_EventListSearch.Size = new System.Drawing.Size(838, 22);
             this.TBox_EventListSearch.TabIndex = 2;
             // 
             // TLView_EventDetails
@@ -398,10 +416,12 @@ namespace Ratatoskr.PacketViews.Protocol
             this.TLView_EventDetails.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.TLView_EventDetails.FullRowSelect = true;
             this.TLView_EventDetails.GridLines = true;
-            this.TLView_EventDetails.Location = new System.Drawing.Point(0, 25);
+            this.TLView_EventDetails.HideSelection = false;
+            this.TLView_EventDetails.Location = new System.Drawing.Point(0, 30);
+            this.TLView_EventDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.TLView_EventDetails.Name = "TLView_EventDetails";
             this.TLView_EventDetails.OwnerDraw = true;
-            this.TLView_EventDetails.Size = new System.Drawing.Size(490, 352);
+            this.TLView_EventDetails.Size = new System.Drawing.Size(490, 493);
             this.TLView_EventDetails.TabIndex = 3;
             this.TLView_EventDetails.UseCompatibleStateImageBehavior = false;
             this.TLView_EventDetails.View = System.Windows.Forms.View.Details;
@@ -413,17 +433,18 @@ namespace Ratatoskr.PacketViews.Protocol
             this.Panel_FrameDetails.Controls.Add(this.TBox_EventDetailsSearch);
             this.Panel_FrameDetails.Dock = System.Windows.Forms.DockStyle.Top;
             this.Panel_FrameDetails.Location = new System.Drawing.Point(0, 0);
+            this.Panel_FrameDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Panel_FrameDetails.Name = "Panel_FrameDetails";
-            this.Panel_FrameDetails.Size = new System.Drawing.Size(490, 25);
+            this.Panel_FrameDetails.Size = new System.Drawing.Size(490, 30);
             this.Panel_FrameDetails.TabIndex = 1;
             // 
             // Label_EventDetailsSearch
             // 
             this.Label_EventDetailsSearch.AutoSize = true;
-            this.Label_EventDetailsSearch.Location = new System.Drawing.Point(3, 7);
-            this.Label_EventDetailsSearch.Margin = new System.Windows.Forms.Padding(3, 7, 3, 0);
+            this.Label_EventDetailsSearch.Location = new System.Drawing.Point(4, 9);
+            this.Label_EventDetailsSearch.Margin = new System.Windows.Forms.Padding(4, 9, 4, 0);
             this.Label_EventDetailsSearch.Name = "Label_EventDetailsSearch";
-            this.Label_EventDetailsSearch.Size = new System.Drawing.Size(40, 12);
+            this.Label_EventDetailsSearch.Size = new System.Drawing.Size(52, 15);
             this.Label_EventDetailsSearch.TabIndex = 0;
             this.Label_EventDetailsSearch.Text = "Search";
             this.Label_EventDetailsSearch.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -432,9 +453,10 @@ namespace Ratatoskr.PacketViews.Protocol
             // 
             this.TBox_EventDetailsSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TBox_EventDetailsSearch.Location = new System.Drawing.Point(49, 3);
+            this.TBox_EventDetailsSearch.Location = new System.Drawing.Point(65, 4);
+            this.TBox_EventDetailsSearch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.TBox_EventDetailsSearch.Name = "TBox_EventDetailsSearch";
-            this.TBox_EventDetailsSearch.Size = new System.Drawing.Size(437, 19);
+            this.TBox_EventDetailsSearch.Size = new System.Drawing.Size(418, 22);
             this.TBox_EventDetailsSearch.TabIndex = 1;
             // 
             // TabControl_Chart
@@ -443,9 +465,10 @@ namespace Ratatoskr.PacketViews.Protocol
             this.TabControl_Chart.Controls.Add(this.TabPage_FrameErrorRate);
             this.TabControl_Chart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TabControl_Chart.Location = new System.Drawing.Point(0, 0);
+            this.TabControl_Chart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.TabControl_Chart.Name = "TabControl_Chart";
             this.TabControl_Chart.SelectedIndex = 0;
-            this.TabControl_Chart.Size = new System.Drawing.Size(1056, 202);
+            this.TabControl_Chart.Size = new System.Drawing.Size(1408, 202);
             this.TabControl_Chart.TabIndex = 0;
             // 
             // TabPage_TimeChart
@@ -453,10 +476,11 @@ namespace Ratatoskr.PacketViews.Protocol
             this.TabPage_TimeChart.Controls.Add(this.PBox_EventTimeChart);
             this.TabPage_TimeChart.Controls.Add(this.HScroll_TimeChart);
             this.TabPage_TimeChart.Controls.Add(this.VScroll_TimeChart);
-            this.TabPage_TimeChart.Location = new System.Drawing.Point(4, 22);
+            this.TabPage_TimeChart.Location = new System.Drawing.Point(4, 25);
+            this.TabPage_TimeChart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.TabPage_TimeChart.Name = "TabPage_TimeChart";
-            this.TabPage_TimeChart.Padding = new System.Windows.Forms.Padding(3);
-            this.TabPage_TimeChart.Size = new System.Drawing.Size(1048, 176);
+            this.TabPage_TimeChart.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.TabPage_TimeChart.Size = new System.Drawing.Size(1400, 173);
             this.TabPage_TimeChart.TabIndex = 0;
             this.TabPage_TimeChart.Text = "Time Chart";
             this.TabPage_TimeChart.UseVisualStyleBackColor = true;
@@ -464,9 +488,10 @@ namespace Ratatoskr.PacketViews.Protocol
             // PBox_EventTimeChart
             // 
             this.PBox_EventTimeChart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PBox_EventTimeChart.Location = new System.Drawing.Point(3, 3);
+            this.PBox_EventTimeChart.Location = new System.Drawing.Point(4, 4);
+            this.PBox_EventTimeChart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.PBox_EventTimeChart.Name = "PBox_EventTimeChart";
-            this.PBox_EventTimeChart.Size = new System.Drawing.Size(1025, 153);
+            this.PBox_EventTimeChart.Size = new System.Drawing.Size(1375, 148);
             this.PBox_EventTimeChart.TabIndex = 3;
             this.PBox_EventTimeChart.TabStop = false;
             this.PBox_EventTimeChart.SizeChanged += new System.EventHandler(this.PBox_EventTimeChart_SizeChanged);
@@ -475,18 +500,18 @@ namespace Ratatoskr.PacketViews.Protocol
             // HScroll_TimeChart
             // 
             this.HScroll_TimeChart.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.HScroll_TimeChart.Location = new System.Drawing.Point(3, 156);
+            this.HScroll_TimeChart.Location = new System.Drawing.Point(4, 152);
             this.HScroll_TimeChart.Name = "HScroll_TimeChart";
-            this.HScroll_TimeChart.Size = new System.Drawing.Size(1025, 17);
+            this.HScroll_TimeChart.Size = new System.Drawing.Size(1375, 17);
             this.HScroll_TimeChart.TabIndex = 2;
             this.HScroll_TimeChart.Scroll += new System.Windows.Forms.ScrollEventHandler(this.HScroll_TimeChart_Scroll);
             // 
             // VScroll_TimeChart
             // 
             this.VScroll_TimeChart.Dock = System.Windows.Forms.DockStyle.Right;
-            this.VScroll_TimeChart.Location = new System.Drawing.Point(1028, 3);
+            this.VScroll_TimeChart.Location = new System.Drawing.Point(1379, 4);
             this.VScroll_TimeChart.Name = "VScroll_TimeChart";
-            this.VScroll_TimeChart.Size = new System.Drawing.Size(17, 170);
+            this.VScroll_TimeChart.Size = new System.Drawing.Size(17, 165);
             this.VScroll_TimeChart.TabIndex = 1;
             this.VScroll_TimeChart.Scroll += new System.Windows.Forms.ScrollEventHandler(this.VScroll_TimeChart_Scroll);
             // 
@@ -494,10 +519,11 @@ namespace Ratatoskr.PacketViews.Protocol
             // 
             this.TabPage_FrameErrorRate.Controls.Add(this.Chart_FrameErrorRate);
             this.TabPage_FrameErrorRate.Controls.Add(this.Panel_FrameErrorRate);
-            this.TabPage_FrameErrorRate.Location = new System.Drawing.Point(4, 22);
+            this.TabPage_FrameErrorRate.Location = new System.Drawing.Point(4, 25);
+            this.TabPage_FrameErrorRate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.TabPage_FrameErrorRate.Name = "TabPage_FrameErrorRate";
-            this.TabPage_FrameErrorRate.Padding = new System.Windows.Forms.Padding(3);
-            this.TabPage_FrameErrorRate.Size = new System.Drawing.Size(1048, 176);
+            this.TabPage_FrameErrorRate.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.TabPage_FrameErrorRate.Size = new System.Drawing.Size(1400, 223);
             this.TabPage_FrameErrorRate.TabIndex = 1;
             this.TabPage_FrameErrorRate.Text = "Frame Error Rate";
             this.TabPage_FrameErrorRate.UseVisualStyleBackColor = true;
@@ -509,13 +535,14 @@ namespace Ratatoskr.PacketViews.Protocol
             this.Chart_FrameErrorRate.Dock = System.Windows.Forms.DockStyle.Fill;
             legend1.Name = "Legend1";
             this.Chart_FrameErrorRate.Legends.Add(legend1);
-            this.Chart_FrameErrorRate.Location = new System.Drawing.Point(3, 28);
+            this.Chart_FrameErrorRate.Location = new System.Drawing.Point(4, 35);
+            this.Chart_FrameErrorRate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Chart_FrameErrorRate.Name = "Chart_FrameErrorRate";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.Chart_FrameErrorRate.Series.Add(series1);
-            this.Chart_FrameErrorRate.Size = new System.Drawing.Size(1042, 145);
+            this.Chart_FrameErrorRate.Size = new System.Drawing.Size(1392, 184);
             this.Chart_FrameErrorRate.TabIndex = 2;
             this.Chart_FrameErrorRate.Text = "chart1";
             // 
@@ -523,29 +550,31 @@ namespace Ratatoskr.PacketViews.Protocol
             // 
             this.Panel_FrameErrorRate.Controls.Add(this.label2);
             this.Panel_FrameErrorRate.Dock = System.Windows.Forms.DockStyle.Top;
-            this.Panel_FrameErrorRate.Location = new System.Drawing.Point(3, 3);
+            this.Panel_FrameErrorRate.Location = new System.Drawing.Point(4, 4);
+            this.Panel_FrameErrorRate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Panel_FrameErrorRate.Name = "Panel_FrameErrorRate";
-            this.Panel_FrameErrorRate.Size = new System.Drawing.Size(1042, 25);
+            this.Panel_FrameErrorRate.Size = new System.Drawing.Size(1392, 31);
             this.Panel_FrameErrorRate.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 7);
-            this.label2.Margin = new System.Windows.Forms.Padding(3, 7, 3, 0);
+            this.label2.Location = new System.Drawing.Point(4, 9);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 9, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(71, 12);
+            this.label2.Size = new System.Drawing.Size(90, 15);
             this.label2.TabIndex = 2;
             this.label2.Text = "Custom Text";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // PacketViewInstanceImpl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.Controls.Add(this.Splitter_Main);
             this.Controls.Add(this.panel1);
+            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.Name = "PacketViewInstanceImpl";
-            this.Size = new System.Drawing.Size(1056, 638);
+            this.Size = new System.Drawing.Size(1408, 798);
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -813,6 +842,9 @@ namespace Ratatoskr.PacketViews.Protocol
         {
             foreach (var config in prop_.EventListColumn.Value) {
                 switch (config.Type) {
+					case EventListColumnType.Alias:
+						break;
+
                     case EventListColumnType.Channel:
 						item.SubItems.Add(prde.Channel.Name);
 						break;
@@ -866,6 +898,10 @@ namespace Ratatoskr.PacketViews.Protocol
 			/* サブサイテム */
 			foreach (var config in prop_.EventListColumn.Value) {
 				switch (config.Type) {
+					case EventListColumnType.Alias:
+						item.SubItems.Add(elvi.Alias);
+						break;
+
 					case EventListColumnType.Channel:
 						item.SubItems.Add(string.Format("{0} - {1}", elvi.Alias, elvi.DecodeEvent.Channel.Name));
 						break;

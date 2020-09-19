@@ -9,8 +9,9 @@ using Ratatoskr.Configs.FixedConfigs;
 using Ratatoskr.Configs.LanguageConfigs;
 using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.Configs.UserConfigs;
-using RtsCore.Framework.FileFormat;
 using Ratatoskr.Forms;
+using RtsCore;
+using RtsCore.Framework.FileFormat;
 using RtsCore.Framework.Native;
 
 namespace Ratatoskr.Configs
@@ -232,7 +233,7 @@ namespace Ratatoskr.Configs
                 System.Profile.ProfileID.Value = profile_list.First().ID;
             }
 
-            Debugger.DebugManager.MessageOut(string.Format("Load Profile :{0}", GetCurrentProfileID()));
+            Kernel.DebugMessage(string.Format("Load Profile :{0}", GetCurrentProfileID()));
 
             User.Load(GetCurrentProfilePath());
         }
@@ -247,7 +248,7 @@ namespace Ratatoskr.Configs
             /* 読込専用のときは何もしない */
             if ((!ignore_readonly) && (User.ReadOnly.Value))return;
 
-            Debugger.DebugManager.MessageOut(string.Format("Save Profile :{0}", GetCurrentProfileID()));
+            Kernel.DebugMessage(string.Format("Save Profile :{0}", GetCurrentProfileID()));
 
             User.Save(GetCurrentProfilePath());
         }
@@ -292,7 +293,7 @@ namespace Ratatoskr.Configs
             /* 指定のプロファイルを削除 */
             Shell.rm(GetProfilePath(profile_id));
 
-            Debugger.DebugManager.MessageOut(string.Format("Delete Profile :{0}", profile_id));
+            Kernel.DebugMessage(string.Format("Delete Profile :{0}", profile_id));
 
             /* 選択中のプロファイルを削除したときは違うプロファイルを選択 */
             if (System.Profile.ProfileID.Value == profile_id) {

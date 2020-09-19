@@ -15,25 +15,19 @@ namespace Ratatoskr.Devices.TcpClient
 {
     internal sealed class DeviceInstanceImpl : DeviceInstance
     {
-        private Socket socket_ = null;
+		private DevicePropertyImpl devp_;
 
-        private IPEndPoint[] ipep_list_ = null;
-        private int          ipep_index_ = 0;
-        private IPEndPoint   ipep_ = null;
+		private System.Net.Sockets.TcpClient tcp_client_ = null;
 
-        private IAsyncResult iar_connect_ = null;
+        private IAsyncResult connect_task_ar_ = null;
+        private IAsyncResult send_task_ar_ = null;
+        private IAsyncResult recv_task_ar_ = null;
 
-        private string local_text_;
-        private string remote_text_;
+		private string local_ep_text_ = "";
+		private string remote_ep_text_ = "";
 
-        private byte[] send_buffer_;
-        private byte[] recv_buffer_;
-
-        private bool send_state_ = false;
-        private bool recv_state_ = false;
-
-        private object send_sync_ = new object();
-        private object recv_sync_ = new object();
+        private byte[] send_data_;
+        private byte[] recv_data_;
 
 
         public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
@@ -43,119 +37,146 @@ namespace Ratatoskr.Devices.TcpClient
 
         protected override void OnConnectStart()
         {
-            ipep_list_ = null;
-            ipep_index_ = 0;
-            ipep_ = null;
+			devp_ = Property as DevicePropertyImpl;
 
-            try {
-                var prop = Property as DevicePropertyImpl;
-                var addrlist = Dns.GetHostAddresses(prop.RemoteAddress.Value);
+			connect_task_ar_ = null;
+			send_task_ar_ = null;
+			recv_task_ar_ = null;
 
-                /* --- 接続先EndPoint一覧作成 --- */
-                var ipep_list = new List<IPEndPoint>();
-
-                foreach (var addr in addrlist) {
-                    ipep_list.Add(new IPEndPoint(addr, (int)prop.RemotePortNo.Value));
-                }
-                ipep_list_ = ipep_list.ToArray();
-
-            } catch (Exception) {
-                ipep_ = null;
-            }
+			send_data_ = null;
+			recv_data_ = null;
         }
 
         protected override EventResult OnConnectBusy()
         {
-            var connect = false;
+			void SocketIOControl(Socket socket, IOControlCode code, params UInt32[] outputs)
+			{
+				var output_values = new List<byte>();
 
-            /* --- 接続開始 --- */
-            if (iar_connect_ == null) {
-                ipep_ = LoadEndPoint();
-                
-                if (ipep_ != null) {
-                    /* --- ソケット作成 --- */
-                    socket_ = new Socket(ipep_.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+				foreach (var output in outputs) {
+					output_values.AddRange(BitConverter.GetBytes(output));
+				}
 
-                    /* --- Keep Alive --- */
-                    var keepalive = new List<byte>();
+				socket.IOControl(code, output_values.ToArray(), null);
+			}
 
-                    keepalive.AddRange(BitConverter.GetBytes(1u));    // u_long onoff
-                    keepalive.AddRange(BitConverter.GetBytes(3000u)); // u_long keepalivetime
-                    keepalive.AddRange(BitConverter.GetBytes(1000u)); // u_long keepaliveinterval
+			var addr_family = (devp_.AddressFamily.Value == AddressFamilyType.IPv6) ? (AddressFamily.InterNetworkV6) : (AddressFamily.InterNetwork);
 
-                    socket_.IOControl(IOControlCode.KeepAliveValues, keepalive.ToArray(), null);
+			try {
+				/* 接続準備 */
+				if (connect_task_ar_ == null) {
+					/* 古いオブジェクトを削除 */
+					if (tcp_client_ != null) {
+						tcp_client_.Close();
+						tcp_client_.Dispose();
+					}
 
-                    iar_connect_ = socket_.BeginConnect(ipep_, null, null);
-                }
-            }
+					/* 選択中のアドレスファミリと異なる設定の場合はエラー */
+					if (devp_.RemoteIpAddress.Value.AddressFamily != addr_family) {
+						return (EventResult.Error);
+					}
 
-            /* --- 接続状態チェック --- */
-            if ((iar_connect_ != null) && (iar_connect_.IsCompleted)) {
-                if (socket_.Connected) {
-                    connect = true;
-                } else {
-                    socket_.Close();
-                }
-                iar_connect_ = null;
-            }
+					/* ソケット生成 */
+					tcp_client_ = new System.Net.Sockets.TcpClient(addr_family);
 
-            return (  (connect)
-                    ? (EventResult.Success)
-                    : (EventResult.Busy));
+					/* Buffer Size */
+					tcp_client_.SendBufferSize = (int)devp_.SendBufferSize.Value;
+					tcp_client_.ReceiveBufferSize = (int)devp_.RecvBufferSize.Value;
+
+					/* Reuse Address */
+					if (devp_.ReuseAddress.Value) {
+						tcp_client_.Client.SetSocketOption(
+							(addr_family == AddressFamily.InterNetworkV6) ? (SocketOptionLevel.IPv6) : (SocketOptionLevel.IP),
+							SocketOptionName.ReuseAddress,
+							true);
+					}
+
+					/* Keep Alive設定 */
+					if (devp_.KeepAliveOnOff.Value) {
+						SocketIOControl(
+							tcp_client_.Client,
+							IOControlCode.KeepAliveValues,
+							(uint)((devp_.KeepAliveOnOff.Value) ? (1u) : (0u)),
+							(uint)devp_.KeepAliveTime_Value.Value,
+							(uint)devp_.KeepAliveInterval_Value.Value);
+					}
+
+					/* TTL設定 */
+					if (devp_.TTL_Unicast.Value) {
+						tcp_client_.Client.Ttl = (byte)devp_.TTL_Unicast_Value.Value;
+					}
+
+					/* 接続開始 */
+					connect_task_ar_ = tcp_client_.BeginConnect(devp_.RemoteIpAddress.Value, (ushort)devp_.RemotePortNo.Value, null, null);
+				}
+
+				/* 接続処理 */
+				if (connect_task_ar_ != null) {
+					/* 接続処理待ち */
+					if (!connect_task_ar_.IsCompleted) {
+						return (EventResult.Busy);
+					}
+
+					/* 接続失敗 */
+					if (!tcp_client_.Connected) {
+						connect_task_ar_ = null;
+						return (EventResult.Error);
+					}
+
+					tcp_client_.EndConnect(connect_task_ar_);
+				}
+
+				/* 接続完了 */
+				return (EventResult.Success);
+			} catch {
+				connect_task_ar_ = null;
+
+				return (EventResult.Error);
+			}
         }
 
         protected override void OnConnected()
         {
-            local_text_ = string.Format(
+            local_ep_text_ = string.Format(
                             "{0:G}:{1:G}",
-                            ((IPEndPoint)socket_.LocalEndPoint).Address.ToString(),
-                            ((IPEndPoint)socket_.LocalEndPoint).Port.ToString());
-            remote_text_ = string.Format(
-                            "{0:G}:{1:G}",
-                            ((IPEndPoint)socket_.RemoteEndPoint).Address.ToString(),
-                            ((IPEndPoint)socket_.RemoteEndPoint).Port.ToString());
+                            ((IPEndPoint)tcp_client_.Client.LocalEndPoint).Address.ToString(),
+                            ((IPEndPoint)tcp_client_.Client.LocalEndPoint).Port.ToString());
 
-            recv_buffer_ = new byte[2048];
+            remote_ep_text_ = string.Format(
+                            "{0:G}:{1:G}",
+                            ((IPEndPoint)tcp_client_.Client.RemoteEndPoint).Address.ToString(),
+                            ((IPEndPoint)tcp_client_.Client.RemoteEndPoint).Port.ToString());
+
+            recv_data_ = new byte[tcp_client_.ReceiveBufferSize];
 
             NotifyMessage(
                 PacketPriority.Standard,
                 "Device Event",
-                String.Format("Connect => [{0:G}]", remote_text_));
+                String.Format("Connect => [{0:G}]", remote_ep_text_));
 
-            send_state_ = false;
-            recv_state_ = false;
+			/* 受信開始 */
+			RecvStart();
         }
 
         protected override void OnDisconnectStart()
         {
-            try {
-                /* === 切断処理 === */
-                if (socket_.Connected) {
-                    socket_.Disconnect(false);
-                }
-
-                /* --- リソース解放待ち --- */
-                var sw = new Stopwatch();
-
-                sw.Restart();
-                while (   (sw.ElapsedMilliseconds < 5000)
-                        && (   (send_state_)
-                            || (recv_state_))
-                ) {
-                    System.Threading.Thread.Sleep(1);
-                }
-
-                socket_.Close();
-            } catch (Exception) {
-            }
         }
 
         protected override void OnDisconnected()
         {
-            NotifyMessage(
-                PacketPriority.Standard,
-                "Device Event",
-                String.Format("Disconnect <= [{0:G}]", remote_text_));
+			if (tcp_client_ != null) {
+				if (tcp_client_.Connected) {
+					tcp_client_.Close();
+				}
+
+				NotifyMessage(
+					PacketPriority.Standard,
+					"Device Event",
+					String.Format("Disconnect <= [{0:G}]", remote_ep_text_));
+
+				tcp_client_.Dispose();
+				tcp_client_ = null;
+			}
         }
 
         protected override PollState OnPoll()
@@ -163,140 +184,94 @@ namespace Ratatoskr.Devices.TcpClient
             var busy = false;
 
             SendPoll(ref busy);
-            RecvPoll(ref busy);
-            ReconnectPoll(ref busy);
 
             return ((busy) ? (PollState.Active) : (PollState.Idle));
         }
 
-        private IPEndPoint LoadEndPoint()
-        {
-            if (ipep_list_ == null)return (null);
-            if (ipep_list_.Length == 0)return (null);
+		private void SendPoll(ref bool busy)
+		{
+			/* 送信状態であればアクティブ状態でスキップ */
+			if ((send_task_ar_ != null) && (!send_task_ar_.IsCompleted)) {
+				busy = true;
+				return;
+			}
 
-            if (ipep_index_ >= ipep_list_.Length) {
-                ipep_index_ = 0;
-            }
+			/* 切断状態であれば再接続 */
+			if (!tcp_client_.Connected) {
+				ConnectReboot();
+				return;
+			}
 
-            return (ipep_list_[ipep_index_++]);
-        }
+			/* 送信ブロック取得 */
+			if (send_data_ == null) {
+				send_data_ = GetSendData();
+			}
 
-        private void SendPoll(ref bool busy)
-        {
-            /* 送信実行中 */
-            if (send_state_) {
-                busy = true;
-                return;
-            }
+			/* 送信データが存在しない場合はIDLE状態でスキップ */
+			if (send_data_ == null) {
+				busy = false;
+				return;
+			}
 
-            lock (send_sync_) {
-                /* --- 送信データリロード --- */
-                if ((send_buffer_ == null) || (send_buffer_.Length == 0)) {
-                    send_buffer_ = GetSendData();
-                }
+			/* 送信開始 */
+			send_task_ar_ = tcp_client_.GetStream().BeginWrite(send_data_, 0, send_data_.Length, SendTaskComplete, tcp_client_);
 
-                /* 送信データが存在しない */
-                if ((send_buffer_ == null) || (send_buffer_.Length == 0)) {
-                    return;
-                }
+			/* 送信完了通知(リクエスト時点で通知する場合) */
+			// NotifySendComplete("", local_ep_text_, remote_ep_text_, send_data_);
 
-                /* --- 送信開始 --- */
-                try {
-                    send_state_ = true;
+			busy = true;
+		}
 
-                    socket_.BeginSend(
-                            send_buffer_,
-                            0,
-                            send_buffer_.Length,
-                            SocketFlags.None,
-                            CallbackSend,
-                            socket_);
+		private void SendTaskComplete(IAsyncResult ar)
+		{
+			try {
+				if (ar.AsyncState is System.Net.Sockets.TcpClient tcp_client) {
+					/* 送信処理完了 */
+					tcp_client.GetStream().EndWrite(ar);
 
-                    busy = true;
+					/* 送信完了通知(バッファへのセットアップが完了したときに通知する場合) */
+					NotifySendComplete("", local_ep_text_, remote_ep_text_, send_data_);
 
-                } catch (Exception) {
-                    ConnectReboot();
-                }
-            }
-        }
+					send_data_ = null;
+				}
+			} catch {
+				ConnectReboot();
+			}
+		}
 
-        private void CallbackSend(IAsyncResult iar)
-        {
-            lock (send_sync_) {
-                try {
-                    var socket = iar.AsyncState as Socket;
-                    var send_size = socket_.EndSend(iar);
+		private void RecvStart()
+		{
+			if (!tcp_client_.Client.IsBound)return;
 
-                    /* --- 送信完了 --- */
-                    if (send_size > 0) {
-                        var send_data = send_buffer_;
-                        var next_data = (byte[])null;
+			/* 受信状態であれば無視 */
+			if ((recv_task_ar_ != null) && (!recv_task_ar_.IsCompleted)) {
+				return;
+			}
 
-                        if (send_size < send_buffer_.Length) {
-                            send_data = ClassUtil.CloneCopy(send_buffer_, send_size);
-                            next_data = ClassUtil.CloneCopy(send_buffer_, send_size, int.MaxValue);
-                        }
+			/* 受信開始 */
+			recv_task_ar_ = tcp_client_.GetStream().BeginRead(recv_data_, 0, recv_data_.Length, RecvTaskComplete, tcp_client_);
+		}
 
-                        NotifySendComplete("", local_text_, remote_text_, send_data);
-                        send_buffer_ = next_data;
-                    }
-                } catch (Exception) {
-                    ConnectReboot();
-                }
+		private void RecvTaskComplete(IAsyncResult ar)
+		{
+			try {
+				if (ar.AsyncState is System.Net.Sockets.TcpClient tcp_client) {
+					/* 受信完了 */
+					var recv_size = tcp_client.GetStream().EndRead(ar);
 
-                send_state_ = false;
-            }
-        }
+					if (recv_size > 0) {
+						/* 受信通知 */
+						NotifyRecvComplete("", remote_ep_text_, local_ep_text_, ClassUtil.CloneCopy(recv_data_, recv_size));
+					} else {
+						/* 切断通知 */
+						ConnectReboot();
+					}
 
-        private void RecvPoll(ref bool busy)
-        {
-            if (recv_state_)return;
-
-            lock (recv_sync_) {
-                /* --- 受信開始 --- */
-                try {
-                    recv_state_ = true;
-
-                    socket_.BeginReceive(
-                        recv_buffer_,
-                        0,
-                        recv_buffer_.Length,
-                        SocketFlags.None,
-                        CallbackRecv,
-                        socket_);
-                } catch (Exception) {
-                    ConnectReboot();
-                }
-            }
-        }
-
-        private void CallbackRecv(IAsyncResult iar)
-        {
-            lock (recv_sync_) {
-                try {
-                    var socket = iar.AsyncState as Socket;
-                    var recv_size = socket_.EndReceive(iar);
-
-                    /* --- 受信完了 --- */
-                    if (recv_size > 0) {
-                        NotifyRecvComplete("", remote_text_, local_text_, ClassUtil.CloneCopy(recv_buffer_, recv_size));
-                    }
-                } catch (Exception) {
-                    ConnectReboot();
-                }
-
-                recv_state_ = false;
-            }
-        }
-
-        private void ReconnectPoll(ref bool busy)
-        {
-            /* --- サーバーからの切断をチェック --- */
-            if (   (socket_.Poll(0, SelectMode.SelectRead))
-                && (socket_.Available == 0)
-            ) {
-                ConnectReboot();
-            }
-        }
+					RecvStart();
+				}
+			} catch {
+				ConnectReboot();
+			}
+		}
     }
 }

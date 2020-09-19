@@ -198,7 +198,11 @@ namespace RtsPlugin.Pcap.Devices.EthernetCapture
 
         public override void Flush()
         {
-            devp_.Interface.Value = (CBox_IfceList.SelectedItem as CaptureDeviceInfo).Device.Name;
+            if (CBox_IfceList.SelectedItem is CaptureDeviceInfo cdi) {
+                devp_.Interface.Value = cdi.Device.Name;
+            } else {
+                devp_.Interface.Value = "";
+            }
             devp_.Filter.Value = TBox_RecvFilter.Text;
             devp_.ViewSourceType.Value = (SourceInfoType)CBox_ViewSourceType.SelectedItem;
             devp_.ViewDestinationType.Value = (DestinationInfoType)CBox_ViewDestinationType.SelectedItem;

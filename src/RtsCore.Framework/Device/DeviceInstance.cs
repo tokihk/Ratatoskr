@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using RtsCore.Generic;
 using RtsCore.Packet;
 using RtsCore.Utility;
 
@@ -42,10 +43,16 @@ namespace RtsCore.Framework.Device
 
     public abstract class DeviceInstance : IDisposable
     {
-        private const int  DEVICE_THREAD_IVAL_ACTIVE = 5;
-        private const int  DEVICE_THREAD_IVAL_IDLE   = 50;
+        private const int  DEVICE_THREAD_IVAL_ACTIVE = 1;
+        private const int  DEVICE_THREAD_IVAL_IDLE   = 200;
         
         private const long DISPOSE_TIMEOUT = 60000;
+
+        private enum DevicePollEventID
+        {
+            ActiveRequest,
+            DataRateSampling,
+        }
 
         private enum ConnectSequence
         {
@@ -103,8 +110,14 @@ namespace RtsCore.Framework.Device
         private volatile ConnectSequence connect_seq_ = ConnectSequence.Disconnected;
         private volatile ConnectState    connect_state_ = ConnectState.Disconnected;
 
-        private Stopwatch            data_rate_timer_ = new Stopwatch();
-        private ulong                data_rate_value_busy_ = 0;
+        private Stopwatch       data_rate_timer_ = new Stopwatch();
+        private ulong           data_rate_value_busy_ = 0;
+
+        private WaitHandle[]        device_poll_events_ = null;
+        private int                 device_poll_ival_ = 0;
+
+        private ManualResetEvent    shutdown_event_ = new ManualResetEvent(false);
+        private AutoResetEvent      active_request_event_ = new AutoResetEvent(false);
 
 
         public DeviceInstance(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
@@ -115,6 +128,11 @@ namespace RtsCore.Framework.Device
             devp_ = devp;
 
             data_rate_timer_.Restart();
+
+            /* イベント初期化 */
+            device_poll_events_ = new WaitHandle[Enum.GetValues(typeof(DevicePollEventID)).Length];
+            device_poll_events_[(int)DevicePollEventID.ActiveRequest] = active_request_event_;
+            device_poll_events_[(int)DevicePollEventID.DataRateSampling] = devm_.WaitHandle_1000ms;
         }
 
         public virtual void Dispose()
@@ -266,7 +284,13 @@ namespace RtsCore.Framework.Device
                 data_queue.Enqueue(data);
             }
 
+            Kernel.DebugMessage("DeviceInstance.OnSendRequest", SystemMessageAttr.System | SystemMessageAttr.SendAction);
+
+            /* 送信要求に対する最速の通知 */
             OnSendRequest();
+
+            /* Device Pollを即座に呼び出す */
+            ActiveReqeust();
 
             return (true, SendRequestStatus.Accept);
         }
@@ -279,6 +303,11 @@ namespace RtsCore.Framework.Device
         public (bool discard_req, SendRequestStatus status) PushRedirectData(byte[] data)
         {
             return (PushSendData(send_queue_redirect_, Config.RedirectDataQueueLimit, data));
+        }
+
+        protected void ActiveReqeust()
+        {
+            active_request_event_.Set();
         }
 
         private byte[] PopSendData()
@@ -340,6 +369,8 @@ namespace RtsCore.Framework.Device
                     send_data_busy_ = null;
                 }
 
+                Kernel.DebugMessage("DeviceInstance.GetSendData", SystemMessageAttr.Device | SystemMessageAttr.SendAction);
+
                 return (send_size);
             }
         }
@@ -361,17 +392,14 @@ namespace RtsCore.Framework.Device
 
                 } else {
                     /* 送信バッファの途中から適用するのでバッファを用意 */
-                    var send_size = Math.Max(0, send_data_busy_.Length - send_data_offset_);
-
-                    if (send_size > 0) {
-                        send_data = new byte[send_size];
-                        Buffer.BlockCopy(send_data_busy_, send_data_offset_, send_data, 0, send_size);
-                    }
+                    send_data = ClassUtil.CloneCopy(send_data_busy_, send_data_offset_, send_data_busy_.Length);
                 }
 
                 /* 送信バッファをクリア */
                 send_data_busy_ = null;
                 send_data_offset_ = 0;
+
+                Kernel.DebugMessage("DeviceInstance.GetSendData", SystemMessageAttr.Device | SystemMessageAttr.SendAction);
 
                 return (send_data);
             }
@@ -520,10 +548,17 @@ namespace RtsCore.Framework.Device
 
         public void Poll()
         {
-            var state = PollState.Idle;
+            /* イベント発生待ち */
+            var wait_result = WaitHandle.WaitAny(device_poll_events_, device_poll_ival_);
+
+#if DEBUG
+            if (wait_result == (int)DevicePollEventID.ActiveRequest) {
+                RtsCore.Kernel.DebugMessage(string.Format("DeviceInstance.Poll = {0}", wait_result), SystemMessageAttr.Device);
+            }
+#endif
 
             /* 接続/切断処理 */
-            state = ConnectPoll();
+            var state = ConnectPoll();
 
             /* シャットダウン判定 */
             if (   (shutdown_req_)
@@ -533,12 +568,14 @@ namespace RtsCore.Framework.Device
             }
 
             /* データレート計算 */
-            DataRateSampling();
+            if (wait_result == (int)DevicePollEventID.DataRateSampling) {
+                DataRateSampling();
+            }
 
             /* スリープ処理 */
             switch (state) {
-                case PollState.Active:  Thread.Sleep(DEVICE_THREAD_IVAL_ACTIVE);    break;
-                case PollState.Idle:    Thread.Sleep(DEVICE_THREAD_IVAL_IDLE);      break;
+                case PollState.Active:  device_poll_ival_ = DEVICE_THREAD_IVAL_ACTIVE;    break;
+                case PollState.Idle:    device_poll_ival_ = DEVICE_THREAD_IVAL_IDLE;      break;
             }
         }
 

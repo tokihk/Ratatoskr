@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using RtsCore;
 using RtsCore.Framework.Native;
 
 namespace Ratatoskr.Drivers.USBPcap
@@ -253,7 +254,7 @@ namespace Ratatoskr.Drivers.USBPcap
 
             if (filter_handle == WinAPI.INVALID_HANDLE_VALUE)
             {
-                Debugger.DebugManager.MessageOut(string.Format("Couldn't open device - {0}", WinAPI.GetLastError()));
+                Kernel.DebugMessage(string.Format("Couldn't open device - {0}", WinAPI.GetLastError()));
                 return;
             }
 
@@ -269,7 +270,7 @@ namespace Ratatoskr.Drivers.USBPcap
                     var str = Marshal.PtrToStringAuto(outBuf, (int)bytes_ret);
 
                     if (enumType == EnumerationType.ENUMERATE_USBPCAPCMD) {
-                        Debugger.DebugManager.MessageOut(str);
+                        Kernel.DebugMessage(str);
                     }
 
 //                    EnumerateHub(str, NULL, 2, enumType);

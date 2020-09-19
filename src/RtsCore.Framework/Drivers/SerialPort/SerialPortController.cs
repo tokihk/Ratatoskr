@@ -79,6 +79,20 @@ namespace RtsCore.Framework.Drivers.SerialPort
         TXIM        = 1 << WinAPI.COMSTAT.FlagsParamOffset.Txim,
     }
 
+    [Flags]
+    public enum CommEvent
+    {
+        BREAK       = (int)WinAPI.EV_BREAK,
+        CTS         = (int)WinAPI.EV_CTS,
+        DSR         = (int)WinAPI.EV_DSR,
+        ERR         = (int)WinAPI.EV_ERR,
+        RING        = (int)WinAPI.EV_RING,
+        RLSD        = (int)WinAPI.EV_RLSD,
+        RXCHAR      = (int)WinAPI.EV_RXCHAR,
+        RXFLAG      = (int)WinAPI.EV_RXFLAG,
+        TXEMPTY     = (int)WinAPI.EV_TXEMPTY,
+    }
+
     public class SerialPortController : IDisposable
     {
         private const int SIMPLEX_SEND_WAIT_TIME = 200;
@@ -274,25 +288,33 @@ namespace RtsCore.Framework.Drivers.SerialPort
             /* === タイムアウト設定 === */
             var timeout = new WinAPI.COMMTIMEOUTS();
 
+#if false
             timeout.ReadIntervalTimeout = 0;
             timeout.ReadTotalTimeoutMultiplier = 0;
             timeout.ReadTotalTimeoutConstant = 10;
-            timeout.WriteTotalTimeoutConstant = 100;
+
+#else
+            timeout.ReadIntervalTimeout = 0;
+            timeout.ReadTotalTimeoutMultiplier = 0;
+            timeout.ReadTotalTimeoutConstant = 5;
+#endif
+
+            timeout.WriteTotalTimeoutConstant = 5;
 
             WinAPI.SetCommTimeouts(handle_, ref timeout);
 
             /* === イベント設定 === */
             if (!WinAPI.SetCommMask(
                 handle_,
-//                  NativeMethods.EV_BREAK
-//                | NativeMethods.EV_CTS
-//                | NativeMethods.EV_DSR
-//                | NativeMethods.EV_ERR
-//                | NativeMethods.EV_RING
-//                | NativeMethods.EV_RLSD
-                  WinAPI.EV_RXCHAR
-//                | NativeMethods.EV_RXFLAG
-//                | NativeMethods.EV_TXEMPTY
+//                  WinAPI.EV_BREAK
+//                | WinAPI.EV_CTS
+//                | WinAPI.EV_DSR
+//                | WinAPI.EV_ERR
+//                | WinAPI.EV_RING
+//                | WinAPI.EV_RLSD
+                 WinAPI.EV_RXCHAR
+//                | WinAPI.EV_RXFLAG
+//                | WinAPI.EV_TXEMPTY
                 )
             ) {
                 return (false);
@@ -353,6 +375,18 @@ namespace RtsCore.Framework.Drivers.SerialPort
                 comstat_.cbInQue = comstat_temp_.cbInQue;
                 comstat_.cbOutQue = comstat_temp_.cbOutQue;
             }
+        }
+
+        public CommEvent WaitEvents()
+        {
+            var  result = (CommEvent)0;
+            uint api_result;
+
+            if (WinAPI.WaitCommEvent(handle_, out api_result, WinAPI.Null)) {
+                result = (CommEvent)api_result;
+            }
+
+            return (result);
         }
 
         public bool IsOpened

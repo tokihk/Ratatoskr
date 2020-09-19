@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Ratatoskr.FileFormats;
 using Ratatoskr.Protocol;
 using Ratatoskr.Devices;
+using RtsCore;
 using RtsCore.Framework.Device;
 using RtsCore.Framework.FileFormat;
 using RtsCore.Framework.Plugin;
@@ -79,7 +80,7 @@ namespace Ratatoskr.Plugin
         private delegate void LoadAllPluginTaskDelegate(string path_plugin);
         private static void LoadAllPluginTask(string path_plugin)
         {
-            Debugger.DebugManager.MessageOut(string.Format("LoadAllPlugin - Start: [{0}]", path_plugin));
+            Kernel.DebugMessage(string.Format("LoadAllPlugin - Start: [{0}]", path_plugin));
 
             /* プラグイン検索 */
             try {
@@ -89,7 +90,7 @@ namespace Ratatoskr.Plugin
 								select path;
 
                 foreach (var asm_path in asm_paths.Select((v, i) => (v, i))) {
-                    Debugger.DebugManager.MessageOut(string.Format("CheckDLL [{0:D4}: {1}]", asm_path.i, asm_path.v));
+                    Kernel.DebugMessage(string.Format("CheckDLL [{0:D4}: {1}]", asm_path.i, asm_path.v));
 
                     LoadPlugin(asm_path.v);
 
@@ -100,7 +101,7 @@ namespace Ratatoskr.Plugin
 
             Program.SetStartupProgress(Program.StartupTaskID.LoadPlugin, 100);
 
-            Debugger.DebugManager.MessageOut("LoadAllPlugin - End");
+            Kernel.DebugMessage("LoadAllPlugin - End");
         }
 
         private static void LoadPlugin(string asm_path)
@@ -137,7 +138,7 @@ namespace Ratatoskr.Plugin
             if (plugin == null)return;
 
             lock (plugin_sync_) {
-                Debugger.DebugManager.MessageOut(string.Format("LoadPlugin [{0}]", info.AssemblyPath));
+                Kernel.DebugMessage(string.Format("LoadPlugin [{0}]", info.AssemblyPath));
 
                 plugin_list_.Add(plugin);
 

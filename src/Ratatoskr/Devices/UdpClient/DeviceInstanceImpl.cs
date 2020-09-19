@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -15,16 +16,22 @@ namespace Ratatoskr.Devices.UdpClient
     {
         private DevicePropertyImpl devp_;
 
-        private List<SendSocket> sockets_send_ = new List<SendSocket>();
-        private List<RecvSocket> sockets_recv_ = new List<RecvSocket>();
+		private System.Net.Sockets.UdpClient	udp_client_;
 
-        private Task<IPAddress[]> local_addr_task_ = null;
-        private Task<IPAddress[]> remote_addr_task_ = null;
+		private IPEndPoint	local_ep_ = null;
+		private string		local_ep_text_ = "";
 
-        private byte[] send_buffer_ = new byte[2048];
+		private IPEndPoint	remote_ep_ = null;
+		private string		remote_ep_text_ = "";
+
+        private byte[]			send_data_ = null;
+		private IAsyncResult	send_task_ar_ = null;
+
+		private IPEndPoint		recv_remote_ep_ = new IPEndPoint(IPAddress.Any, 0);
+		private IAsyncResult	recv_task_ar_ = null;
 
 
-        public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+		public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
             : base(devm, devconf, devd, devp)
         {
             devp_ = devp as DevicePropertyImpl;
@@ -32,217 +39,259 @@ namespace Ratatoskr.Devices.UdpClient
 
         protected override void OnConnectStart()
         {
+			send_task_ar_ = null;
+			recv_task_ar_ = null;
         }
 
         protected override EventResult OnConnectBusy()
         {
-            return (EventResult.Success);
+			/* 処理中のオブジェクトを全て開放する */
+			if (udp_client_ != null) {
+				udp_client_.Close();
+				udp_client_ = null;
+			}
+
+			var addr_family = (devp_.AddressFamily.Value == AddressFamilyType.IPv6) ? (AddressFamily.InterNetworkV6) : (AddressFamily.InterNetwork);
+
+			/* === Local Setting === */
+			try {
+				switch (devp_.LocalBindMode.Value) {
+					case BindModeType.NotBind:
+						local_ep_ = null;
+						local_ep_text_ = "";
+						udp_client_ = new System.Net.Sockets.UdpClient(addr_family);
+						break;
+					case BindModeType.INADDR_ANY:
+						local_ep_ = new IPEndPoint((addr_family == AddressFamily.InterNetworkV6) ? (IPAddress.IPv6Any) : (IPAddress.Any), (ushort)devp_.LocalPortNo.Value);
+						local_ep_text_ = string.Format("INADDR_ANY:{0:G}", devp_.LocalPortNo.Value.ToString());
+						udp_client_ = new System.Net.Sockets.UdpClient(local_ep_);
+						break;
+					case BindModeType.SelectAddress:
+						local_ep_ = new IPEndPoint(devp_.LocalIpAddress.Value, (int)devp_.LocalPortNo.Value);
+						local_ep_text_ = string.Format("{0:G}:{1:G}", local_ep_.Address.ToString(), local_ep_.Port.ToString());
+						udp_client_ = new System.Net.Sockets.UdpClient(local_ep_);
+						break;
+					default:
+						return (EventResult.Error);
+				}
+
+				/* 生成したエンドポイントが設定しているアドレスファミリーと異なる場合はエラー */
+				if ((local_ep_ != null) && (local_ep_.AddressFamily != addr_family)) {
+					return (EventResult.Error);
+				}
+
+			} catch {
+				return (EventResult.Error);
+			}
+
+			/* === Remote Setting === */
+			try {
+				switch (devp_.RemoteAddressType.Value) {
+					case AddressType.Unicast:
+						remote_ep_ = new IPEndPoint(devp_.RemoteIpAddress.Value, (int)devp_.RemotePortNo.Value);
+						break;
+					case AddressType.Broadcast:
+						udp_client_.EnableBroadcast = true;
+						remote_ep_ = new IPEndPoint(IPAddress.Broadcast, (int)devp_.RemotePortNo.Value);
+						break;
+					case AddressType.Multicast:
+						remote_ep_ = new IPEndPoint(devp_.RemoteIpAddress.Value, (int)devp_.RemotePortNo.Value);
+						break;
+					default:
+						return (EventResult.Error);
+				}
+
+				remote_ep_text_ = string.Format("{0:G}:{1:G}", remote_ep_.Address.ToString(), remote_ep_.Port.ToString());
+
+				/* 生成したエンドポイントが設定しているアドレスファミリーと異なる場合はエラー */
+				if ((remote_ep_ != null) && (remote_ep_.AddressFamily != addr_family)) {
+					return (EventResult.Error);
+				}
+
+			} catch {
+				return (EventResult.Error);
+			}
+
+			/* Unicast - TTL */
+			if (devp_.Unicast_TTL.Value) {
+				udp_client_.Ttl = (byte)devp_.Unicast_TTL_Value.Value;
+			}
+
+			/* Multicast - TTL */
+			if (devp_.Multicast_TTL.Value) {
+				if (devp_.AddressFamily.Value == AddressFamilyType.IPv6) {
+					udp_client_.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastTimeToLive, (byte)devp_.Multicast_TTL_Value.Value);
+				} else {
+					udp_client_.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, (byte)devp_.Multicast_TTL_Value.Value);
+				}
+			}
+
+			/* Multicast - Loopback */
+			if (devp_.Multicast_Loopback.Value) {
+				udp_client_.MulticastLoopback = devp_.Multicast_Loopback.Value;
+			}
+
+			/* Multicast Interface */
+			var nic_index = -1;
+
+			if (devp_.Multicast_Interface.Value) {
+				var nics = NetworkInterface.GetAllNetworkInterfaces();
+
+				if ((nics != null) && (nics.Length > 0)) {
+					for (var nic_index_temp = 0; nic_index_temp < nics.Length; nic_index_temp++) {
+						if (nics[nic_index_temp].Id == devp_.Multicast_Interface_Value.Value) {
+							nic_index = nic_index_temp;
+							break;
+						}
+					}
+				}
+			}
+
+			/* Multicast - Group */
+			if (devp_.Multicast_GroupAddress.Value) {
+				IPAddress ipaddr;
+
+				foreach (var ipaddr_text in devp_.Multicast_GroupAddressList.Value) {
+					if ((IPAddress.TryParse(ipaddr_text, out ipaddr)) && (ipaddr.AddressFamily == addr_family)) {
+						if (nic_index >= 0) {
+							udp_client_.JoinMulticastGroup(nic_index, ipaddr);
+						} else {
+							udp_client_.JoinMulticastGroup(ipaddr);
+						}
+					}
+				}
+			}
+
+			return (EventResult.Success);
         }
 
         protected override void OnConnected()
         {
-        }
+			/* リモートエンドポイントテキスト作成 */
+			if (remote_ep_ != null) {
+				remote_ep_text_ = string.Format(
+									"{0:G}:{1:G}",
+									remote_ep_.Address.ToString(),
+									remote_ep_.Port.ToString());
+			}
 
-        protected override void OnDisconnectStart()
+			/* 受信処理開始 */
+			RecvStart();
+		}
+
+		protected override void OnDisconnectStart()
         {
-            sockets_send_.ForEach(socket => socket.Close());
-            sockets_send_.Clear();
+			if (udp_client_ == null)return;
 
-            sockets_recv_.ForEach(socket => socket.Close());
-            sockets_recv_.Clear();
+			udp_client_.Client.Close();
+
+			/* 送信状態と受信状態が終了するまで待機 */
+			while (   ((send_task_ar_ != null) && (!send_task_ar_.IsCompleted))
+				   || ((recv_task_ar_ != null) && (!recv_task_ar_.IsCompleted))
+			) {
+			}
+
+			udp_client_ = null;
         }
 
         protected override PollState OnPoll()
         {
             var busy = false;
 
-            LocalAddressCollectPoll();
-
-            RemoteAddressCollectPoll();
-
-            SocketPoll(ref busy);
+            SendPoll(ref busy);
 
             return ((busy) ? (PollState.Active) : (PollState.Idle));
         }
 
-        private void LocalAddressCollectPoll()
-        {
-            if (devp_.BindMode.Value != BindModeType.None) {
-                /* アドレス取得タスク完了 */
-                if (   (local_addr_task_ != null)
-                    && (local_addr_task_.IsCompleted)
-                ) {
-                    var ip_addrs = new List<IPAddress>();
+		private void SendPoll(ref bool busy)
+		{
+			/* 送信状態であればアクティブ状態でスキップ */
+			if ((send_task_ar_ != null) && (!send_task_ar_.IsCompleted)) {
+				busy = true;
+				return;
+			}
 
-                    /* ループバックアドレスを追加 */
-                    ip_addrs.Add(IPAddress.Parse("127.0.0.1"));
-                    ip_addrs.Add(IPAddress.Parse("::1"));
+			/* 送信ブロック取得 */
+			if (send_data_ == null) {
+				send_data_ = GetSendData();
+			}
 
-                    /* DNSからのアドレスを追加 */
-                    ip_addrs.AddRange(local_addr_task_.Result);
+			/* 送信データが存在しない場合はIDLE状態でスキップ */
+			if (send_data_ == null) {
+				busy = false;
+				return;
+			}
 
-                    /* 受信用ソケットリストを更新 */
-                    UpdateRecvSocketList(ip_addrs);
+			/* 送信開始 */
+			send_task_ar_ = udp_client_.BeginSend(send_data_, send_data_.Length, remote_ep_, SendTaskComplete, udp_client_);
 
-                    local_addr_task_ = null;
-                }
+			/* 送信完了通知(リクエストが完了したときに通知する場合) */
+			NotifySendComplete("", local_ep_text_, remote_ep_text_, send_data_);
 
-                /* アドレス取得タスク開始 */
-                if (local_addr_task_ == null) {
-                    /* DNSからアドレスを取得 */
-                    local_addr_task_ = Dns.GetHostAddressesAsync(Dns.GetHostName());
-                }
-            }
-        }
+			busy = true;
+		}
 
-        private void RemoteAddressCollectPoll()
-        {
-            /* アドレス取得タスク完了 */
-            if (   (remote_addr_task_ != null)
-                && (remote_addr_task_.IsCompleted)
-            ) {
-                /* 送信用ソケットリストを更新 */
-                UpdateSendSocketList(remote_addr_task_.Result);
+		private void SendTaskComplete(IAsyncResult ar)
+		{
+			try {
+				if (ar.AsyncState is System.Net.Sockets.UdpClient udp_client) {
+					/* 送信処理完了 */
+					var send_complete_size = udp_client.EndSend(ar);
+					var send_complete_data = send_data_;
 
-                remote_addr_task_ = null;
-            }
+					if (send_complete_size >= send_data_.Length) {
+						/* 要求した送信データの全送信完了 */
+						send_data_ = null;
+					} else {
+						/* 要求した送信データの一部のみ送信完了 */
+						send_complete_data = ClassUtil.CloneCopy(send_data_, send_complete_size);
+						send_data_ = ClassUtil.CloneCopy(send_data_, send_complete_size, send_data_.Length);
+					}
 
-            /* アドレス取得タスク開始 */
-            if (remote_addr_task_ == null) {
-                /* DNSからアドレスを取得 */
-                remote_addr_task_ = Dns.GetHostAddressesAsync(devp_.RemoteAddress.Value);
-            }
-        }
+					/* 送信完了通知(バッファへのセットアップが完了したときに通知する場合) */
+					// NotifySendComplete("", local_ep_text_, remote_ep_text_, send_complete_data);
+				}
+			} catch {
+			}
+		}
 
-        private void UpdateSendSocketList(IEnumerable<IPAddress> addresses)
-        {
-            lock (sockets_send_) {
-                /* アドレスリストに存在しないソケットを破棄 */
-                foreach (var socket in sockets_send_) {
-                    if (!addresses.Contains(socket.RemoteEndPoint.Address)) {
-                        socket.Close();
-                    }
-                }
+		private void RecvStart()
+		{
+			if (!udp_client_.Client.IsBound)return;
 
-                /* 破棄済みのソケットをリストから削除 */
-                sockets_send_.RemoveAll(socket => socket.IsClosed);
+			/* 受信状態であれば無視 */
+			if ((recv_task_ar_ != null) && (!recv_task_ar_.IsCompleted)) {
+				return;
+			}
 
-                /* アドレスリストからソケットを作成 */
-                foreach (var address in addresses) {
-                    if (sockets_send_.Find(socket => socket.RemoteEndPoint.Address.Equals(address)) == null) {
-                        var socket_new = CreateSendSocket(address);
+			/* 受信開始 */
+			recv_task_ar_ = udp_client_.BeginReceive(RecvTaskComplete, udp_client_);
+		}
 
-                        if (socket_new != null) {
-                            sockets_send_.Add(socket_new);
-                        }
-                    }
-                }
-            }
-        }
+		private void RecvTaskComplete(IAsyncResult ar)
+		{
+			try {
+				if (ar.AsyncState is System.Net.Sockets.UdpClient udp_client) {
+					/* 受信完了 */
+					var recv_data = udp_client.EndReceive(ar, ref recv_remote_ep_);
 
-        private void UpdateRecvSocketList(IEnumerable<IPAddress> addresses)
-        {
-            lock (sockets_recv_) {
-                /* アドレスリストに存在しないソケットを破棄 */
-                foreach (var socket in sockets_recv_) {
-                    if (!addresses.Contains(socket.LocalEndPoint.Address)) {
-                        socket.Close();
-                    }
-                }
+					if (recv_data.Length > 0) {
+						/* 受信通知 */
+						NotifyRecvComplete("", GetEndPointString(recv_remote_ep_), local_ep_text_, recv_data);
+					}
 
-                /* 破棄済みのソケットをリストから削除 */
-                sockets_recv_.RemoveAll(socket => socket.IsClosed);
+					RecvStart();
+				}
+			} catch {
+			}
+		}
 
-                /* アドレスリストからソケットを作成 */
-                foreach (var address in addresses) {
-                    if (sockets_recv_.Find(socket => socket.LocalEndPoint.Address.Equals(address)) == null) {
-                        var socket_new = CreateRecvSocket(address);
-
-                        if (socket_new != null) {
-                            sockets_recv_.Add(socket_new);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void SocketPoll(ref bool busy)
-        {
-            SocketSendPoll(ref busy);
-            SocketRecvPoll(ref busy);
-        }
-
-        private void SocketSendPoll(ref bool busy)
-        {
-            lock (sockets_send_) {
-                var send_size = 0;
-
-                /* 送信データ取得 */
-                send_size = GetSendData(send_buffer_, send_buffer_.Length);
- 
-                if (send_size > 0) {
-                    /* 送信データ生成 */
-                    var send_data = ClassUtil.CloneCopy(send_buffer_, send_size);
-
-                    /* 送信データをセットアップ */
-                    sockets_send_.ForEach(socket => socket.PushSendData(send_data));
-                }
-
-                /* 送信シーケンス実行 */
-                foreach (var socket in sockets_send_) {
-                    socket.Poll(ref busy);
-                }
-            }
-        }
-
-        private void SocketRecvPoll(ref bool busy)
-        {
-            lock (sockets_recv_) {
-                foreach (var socket in sockets_recv_) {
-                    socket.Poll(ref busy);
-                }
-            }
-        }
-
-        private SendSocket CreateSendSocket(IPAddress remote_addr)
-        {
-            try {
-                return (
-                    new SendSocket(
-                        this,
-                        new IPEndPoint(
-                            remote_addr,
-                            (int)devp_.RemotePortNo.Value),
-                        devp_.BindMode.Value));
-
-            } catch {
-                return (null);
-            }
-        }
-
-        private RecvSocket CreateRecvSocket(IPAddress local_addr)
-        {
-            try {
-                return (
-                    new RecvSocket(
-                        this,
-                        new IPEndPoint(
-                            local_addr,
-                            (int)devp_.LocalPortNo.Value),
-                        devp_.BindMode.Value));
-            } catch {
-                return (null);
-            }
-        }
-
-        public void NotifySend(string remote_ep_text, byte[] data)
-        {
-            NotifySendComplete("", "", remote_ep_text, data);
-        }
-
-        public void NotifyRecv(string remote_ep_text, byte[] data)
-        {
-            NotifyRecvComplete("", remote_ep_text, "", data);
-        }
+		private string GetEndPointString(IPEndPoint ep)
+		{
+			return (string.Format(
+							"{0:G}:{1:G}",
+							remote_ep_.Address.ToString(),
+							remote_ep_.Port.ToString()));
+		}
     }
 }

@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RtsCore.Resource</RootNamespace>
     <AssemblyName>RtsCore.Resource</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -80,6 +81,7 @@
     <Content Include="Images\app_logo_600x120.png" />
     <Content Include="Images\arrow_down_16x16.png" />
     <Content Include="Images\arrow_down_32x32.png" />
+    <None Include="Images\arrow_next_32x32.png" />
     <Content Include="Images\arrow_up_16x16.png" />
     <Content Include="Images\arrow_up_32x32.png" />
     <Content Include="Images\cancel.png" />

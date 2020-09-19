@@ -20,9 +20,14 @@ namespace RtsCore.Config.Types
 
         public bool LoadConfigData(XmlElement xml_own)
         {
-            Value = bool.Parse(xml_own.InnerText);
+            try {
+                Value = bool.Parse(xml_own.InnerText);
 
-            return (true);
+                return (true);
+
+            } catch {
+                return (false);
+            }
         }
 
         public bool SaveConfigData(XmlElement xml_own)

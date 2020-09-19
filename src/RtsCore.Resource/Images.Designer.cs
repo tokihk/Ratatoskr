@@ -153,6 +153,16 @@ namespace RtsCore.Resource {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        public static System.Drawing.Bitmap arrow_next_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_next_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         public static System.Drawing.Bitmap arrow_up_16x16 {
             get {
                 object obj = ResourceManager.GetObject("arrow_up_16x16", resourceCulture);

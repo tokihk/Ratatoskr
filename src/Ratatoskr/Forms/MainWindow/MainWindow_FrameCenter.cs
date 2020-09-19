@@ -18,14 +18,6 @@ namespace Ratatoskr.Forms.MainWindow
 {
     internal partial class MainWindow_FrameCenter : UserControl
     {
-        private class DockPanelTheme : VS2013LightTheme
-        {
-            public DockPanelTheme()
-            {
-            }
-        }
-
-
         private const string CONFIG_FILE_NAME = "setting-dock.xml";
 
         private enum DockContentsGroup
@@ -35,16 +27,15 @@ namespace Ratatoskr.Forms.MainWindow
         }
 
 
-        private MainWindow_SendDataListPanel  MFDC_SendDataListPanel_Control = null;
-		private MainWindow_SendFrameListPanel MFDC_SendFrameListPanel_Control = null;
-		private MainWindow_WatchListPanel     MFDC_WatchListPanel_Control = null;
+        private MainWindow_SendDataListPanel   MFDC_SendDataListPanel_Control = null;
+		private MainWindow_SendTrafficPanel    MFDC_SendTrafficPanel_Control = null;
+		private MainWindow_WatchListPanel      MFDC_WatchListPanel_Control = null;
 
 
         public MainWindow_FrameCenter()
         {
             InitializeComponent();
 
-            DockPanel_Main.Theme = new DockPanelTheme();
             DockPanel_Main.ShowDocumentIcon = true;
         }
 
@@ -74,14 +65,14 @@ namespace Ratatoskr.Forms.MainWindow
 
 #if DEBUG
 			DockPanel_Main.AddDockContent(
-				"MFDC_SendFrameListPanel_Control",
-				ConfigManager.Language.MainUI.FLPanel_Title.Value,
+				"MFDC_SendTrafficPanel_Control",
+				ConfigManager.Language.MainUI.STPanel_Title.Value,
 				(uint)DockContentsGroup.Fixed,
 				Icon.FromHandle(RtsCore.Resource.Images.memo_32x32.GetHicon()),
 				DockAreas.Document | DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
-				DockState.DockBottomAutoHide,
+				DockState.Document,
 				false,
-				MFDC_SendFrameListPanel_Control = new MainWindow_SendFrameListPanel());
+				MFDC_SendTrafficPanel_Control = new MainWindow_SendTrafficPanel());
 #endif
 
 			DockPanel_Main.AddDockContent(
@@ -96,7 +87,7 @@ namespace Ratatoskr.Forms.MainWindow
 
             MFDC_SendDataListPanel_Control.LoadConfig();
 #if DEBUG
-			MFDC_SendFrameListPanel_Control.LoadConfig();
+			MFDC_SendTrafficPanel_Control.LoadConfig();
 #endif
 			MFDC_WatchListPanel_Control.LoadConfig();
         }
@@ -139,7 +130,7 @@ namespace Ratatoskr.Forms.MainWindow
             PacketConverter_Main.BackupConfig();
             
             MFDC_SendDataListPanel_Control?.BackupConfig();
-			MFDC_SendFrameListPanel_Control?.BackupConfig();
+			MFDC_SendTrafficPanel_Control?.BackupConfig();
 			MFDC_WatchListPanel_Control?.BackupConfig();
 
             BackupDockConfig();

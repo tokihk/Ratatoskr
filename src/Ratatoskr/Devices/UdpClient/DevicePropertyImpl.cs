@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using RtsCore.Config.Types;
@@ -10,26 +11,57 @@ using RtsCore.Generic;
 
 namespace Ratatoskr.Devices.UdpClient
 {
+	internal enum AddressFamilyType
+	{
+		IPv4,
+		IPv6,
+	}
+
     internal enum BindModeType
     {
-        None,
-        Bind,
-        Multicast,
+		NotBind,
+		INADDR_ANY,
+		SelectAddress,
     }
+
+	internal enum AddressType
+	{
+		Unicast,
+		Broadcast,
+		Multicast,
+	}
 
     [Serializable]
     internal sealed class DevicePropertyImpl : DeviceProperty
     {
-        public EnumConfig<BindModeType> BindMode { get; } = new EnumConfig<BindModeType>(BindModeType.Bind);
+        public EnumConfig<AddressFamilyType> AddressFamily { get; } = new EnumConfig<AddressFamilyType>(AddressFamilyType.IPv4);
 
-        public StringConfig             LocalAddress { get; } = new StringConfig("localhost");
-        public IntegerConfig            LocalPortNo  { get; } = new IntegerConfig(50001);
+        public EnumConfig<BindModeType> LocalBindMode { get; } = new EnumConfig<BindModeType>(BindModeType.NotBind);
 
-        public StringConfig             RemoteAddress { get; } = new StringConfig("localhost");
-        public IntegerConfig            RemotePortNo  { get; } = new IntegerConfig(50002);
+        public IPAddressConfig          LocalIpAddress { get; } = new IPAddressConfig(IPAddress.None);
+        public IntegerConfig            LocalPortNo  { get; } = new IntegerConfig(1024);
+
+		public EnumConfig<AddressType>   RemoteAddressType { get; } = new EnumConfig<AddressType>(AddressType.Unicast);
+		public StringConfig				 RemoteAddress     { get; } = new StringConfig("localhost");
+		public IPAddressConfig			 RemoteIpAddress   { get; } = new IPAddressConfig(IPAddress.None);
+		public IntegerConfig			 RemotePortNo      { get; } = new IntegerConfig(1024);
+
+		public BoolConfig			Unicast_TTL       { get; } = new BoolConfig(false);
+		public IntegerConfig		Unicast_TTL_Value { get; } = new IntegerConfig(128);
+
+		public BoolConfig			Multicast_TTL		{ get; } = new BoolConfig(false);
+		public IntegerConfig		Multicast_TTL_Value { get; } = new IntegerConfig(1);
+
+		public BoolConfig			Multicast_Loopback { get; } = new BoolConfig(false);
+
+		public BoolConfig			Multicast_GroupAddress     { get; } = new BoolConfig(false);
+		public StringListConfig		Multicast_GroupAddressList { get; } = new StringListConfig();
+
+		public BoolConfig			Multicast_Interface       { get; } = new BoolConfig(false);
+		public StringConfig			Multicast_Interface_Value { get; } = new StringConfig("");
 
 
-        public override DeviceProperty Clone()
+		public override DeviceProperty Clone()
         {
             return (ClassUtil.Clone<DevicePropertyImpl>(this));
         }
@@ -38,9 +70,9 @@ namespace Ratatoskr.Devices.UdpClient
         {
             return (String.Format(
                 "Local {0:G}:{1:G}\nRemote {2:G}:{3:G}",
-                LocalAddress.Value,
+                LocalIpAddress.Value,
                 LocalPortNo.Value,
-                RemoteAddress.Value,
+                RemoteIpAddress.Value,
                 RemotePortNo.Value));
         }
 

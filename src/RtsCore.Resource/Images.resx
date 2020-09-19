@@ -145,6 +145,9 @@
   <data name="arrow_down_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Images\arrow_down_32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="arrow_next_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Images\arrow_next_32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="arrow_up_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Images\arrow_up_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

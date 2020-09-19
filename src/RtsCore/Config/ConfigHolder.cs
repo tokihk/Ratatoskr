@@ -44,11 +44,15 @@ namespace RtsCore.Config
 
             /* 読込用メソッドを取得 */
             var method = prop.PropertyType.GetMethod("LoadConfigData");
+            var result = false;
 
             /* 読込用メソッドを呼び出し */
-            method.Invoke(prop_obj, new object[]{ xml_child });
+            try {
+                result = (bool)method.Invoke(prop_obj, new object[]{ xml_child });
+            } catch {
+            }
 
-            return (true);
+            return (result);
         }
 
         public bool SaveConfigData(XmlElement xml_own)

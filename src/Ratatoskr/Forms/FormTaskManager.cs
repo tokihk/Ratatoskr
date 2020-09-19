@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Configs;
 using Ratatoskr.Gate;
+using RtsCore;
 using RtsCore.Framework.PacketConverter;
 using RtsCore.Framework.PacketView;
 using RtsCore.Packet;
@@ -287,7 +288,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.Ready:
                 {
-                    Debugger.DebugManager.MessageOut("RedrawSequence.Ready");
+                    Kernel.DebugMessage("RedrawSequence.Ready");
 
                     /* 高速描画モード開始 */
                     viewm_.HiSpeedDrawStart(false);
@@ -301,7 +302,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.PreprocessingStart:
                 {
-                    Debugger.DebugManager.MessageOut("RedrawSequence.PreprocessingStart");
+                    Kernel.DebugMessage("RedrawSequence.PreprocessingStart");
 
                     redraw_step_all_ = (ulong)(Math.Max(draw_packets_.Count, 1));
                     redraw_step_end_ = 0;
@@ -332,7 +333,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.DrawingStart:
                 {
-                    Debugger.DebugManager.MessageOut("RedrawSequence.DrawingStart");
+                    Kernel.DebugMessage("RedrawSequence.DrawingStart");
 
                     redraw_step_all_ = (ulong)Math.Max(viewm_.DrawPacketCount, 1);
                     redraw_step_end_ = 0;
@@ -375,7 +376,7 @@ namespace Ratatoskr.Forms
 
                     redraw_state_ = false;
 
-                    Debugger.DebugManager.MessageOut("RedrawSequence.Complete");
+                    Kernel.DebugMessage("RedrawSequence.Complete");
                 }
                     break;
 

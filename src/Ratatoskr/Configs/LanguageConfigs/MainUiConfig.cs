@@ -53,6 +53,6 @@ namespace Ratatoskr.Configs.LanguageConfigs
         public StringConfig WLPanel_Column_NtfPlan_Dialog { get; } = new StringConfig("Dialog");
         public StringConfig WLPanel_Column_NtfPlan_Mail   { get; } = new StringConfig("Mail");
 
-		public StringConfig FLPanel_Title { get; } = new StringConfig("Send frame list");
+		public StringConfig STPanel_Title { get; } = new StringConfig("Send traffic");
 	}
 }

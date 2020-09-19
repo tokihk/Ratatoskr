@@ -16,15 +16,8 @@ using RtsCore.Utility;
 
 namespace Ratatoskr.Forms.MainWindow
 {
-    internal partial class MainWindow_SendFrameListPanel : UserControl
+    internal partial class MainWindow_SendTrafficPanel : UserControl
     {
-        private enum ColumnId
-        {
-            ProtocolID,
-			FrameBitLength,
-			FrameBitData,
-        }
-
         private enum PlayStatus
         {
             Reset,
@@ -51,58 +44,16 @@ namespace Ratatoskr.Forms.MainWindow
         private uint  play_repeat_count_ = 0;
 
 
-        public MainWindow_SendFrameListPanel()
+        public MainWindow_SendTrafficPanel()
         {
             InitializeComponent();
 
             play_timer_.Tick += OnListPlayTimer;
         }
 
-		private void InitializeSendFrameList()
-		{
-			LView_SendFrameList.BeginUpdate();
-			{
-				/* 先にデータをすべて削除してからヘッダーを削除する */
-				LView_SendFrameList.ItemClear();
-				LView_SendFrameList.Columns.Clear();
-
-				/* メイン要素 */
-				LView_SendFrameList.Columns.Add(
-					new ColumnHeader() {
-						Text = "No.",
-						Width = 80
-					}
-				);
-
-				/* サブ要素 */
-				foreach (ColumnId id in Enum.GetValues(typeof(ColumnId))) {
-					var column = new ColumnHeader();
-
-					switch (id) {
-						case ColumnId.ProtocolID:
-							column.Text = "Protocol";
-							column.Width = 120;
-							break;
-						case ColumnId.FrameBitLength:
-							column.Text = "Bit Length";
-							column.Width = 120;
-							break;
-						case ColumnId.FrameBitData:
-							column.Text = "Bit Data";
-							column.Width = -1;
-							break;
-					}
-				}
-			}
-			LView_SendFrameList.EndUpdate();
-		}
-
 		public void LoadConfig()
         {
             load_config_busy_ = true;
-
-            /* ターゲット */
-            TBox_SendTarget.Text = ConfigManager.User.SendFrameListTarget.Value;
 
             /* 繰り返し回数 */
             Num_RepeatCount.Value = ConfigManager.User.SendFrameListRepeat.Value;
@@ -120,9 +71,6 @@ namespace Ratatoskr.Forms.MainWindow
 
         public void BackupConfig()
         {
-            /* ターゲット */
-            ConfigManager.User.SendFrameListTarget.Value = TBox_SendTarget.Text;
-
             /* フレームリスト */
             BackupConfig_SendFrameList();
 
@@ -202,9 +150,7 @@ namespace Ratatoskr.Forms.MainWindow
             /* コントロールの操作可能状態を更新 */
             var enable = play_state_ != PlayStatus.Busy;
 
-            TBox_SendTarget.Enabled = enable;
             Num_RepeatCount.Enabled = enable;
-            LView_SendFrameList.Enabled = enable;
         }
 
         private void Btn_Play_Click(object sender, EventArgs e)

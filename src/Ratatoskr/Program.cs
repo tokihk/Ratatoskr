@@ -13,6 +13,7 @@ using Ratatoskr.Gate.AutoLogger;
 using Ratatoskr.Plugin;
 using Ratatoskr.Scripts;
 using Ratatoskr.Update;
+using RtsCore;
 using RtsCore.Framework.Native;
 using RtsCore.Utility;
 
@@ -37,7 +38,7 @@ namespace Ratatoskr
             Application.SetCompatibleTextRenderingDefault(true);
 
             /* デバッグウィンドウ起動 */
-            Debugger.DebugManager.Startup();
+			Forms.DebugWindow.DebugWindow_Form.Startup();
 
 #if !DEBUG
             try {
@@ -123,7 +124,7 @@ namespace Ratatoskr
 
         private static void CommandLineParse(string[] cmdlines)
         {
-            Debugger.DebugManager.MessageOut("Program.CommandLineParse - Start");
+            Kernel.DebugMessage("Program.CommandLineParse - Start");
 
             foreach (var cmdline in cmdlines) {
                 var (name, value) = CommandLineParse(cmdline);
@@ -133,7 +134,7 @@ namespace Ratatoskr
                 CommandLineSetup(name, value);
             }
 
-            Debugger.DebugManager.MessageOut("Program.CommandLineParse - End");
+            Kernel.DebugMessage("Program.CommandLineParse - End");
         }
 
         private static (string name, string value) CommandLineParse(string cmdline)
@@ -277,9 +278,9 @@ namespace Ratatoskr
             }
 
             /* アプリケーションループ実行 */
-            Debugger.DebugManager.MessageOut("Application.Run - Start");
+            Kernel.DebugMessage("Application.Run - Start");
             Application.Run(app_context_);
-            Debugger.DebugManager.MessageOut("Application.Run - End");
+            Kernel.DebugMessage("Application.Run - End");
 
             /* 実行中スクリプトを停止 */
             ScriptManager.Shutdown();
@@ -287,7 +288,7 @@ namespace Ratatoskr
 
         private static bool Startup()
         {
-            Debugger.DebugManager.MessageOut("Program.Startup - Start");
+            Kernel.DebugMessage("Program.Startup - Start");
 
             /* 下層マネージャー初期化 */
             ConfigManager.Startup();
@@ -318,14 +319,14 @@ namespace Ratatoskr
             startup_state_ = true;
             restart_req_ = false;
 
-            Debugger.DebugManager.MessageOut("Program.Startup - End");
+            Kernel.DebugMessage("Program.Startup - End");
 
             return (true);
         }
 
         private static void Shutdown(bool profile_backup)
         {
-            Debugger.DebugManager.MessageOut("Program.Shutdown - Start");
+            Kernel.DebugMessage("Program.Shutdown - Start");
 
             /* 設定ファイル保存 */
             ConfigManager.SaveConfig(profile_backup);
@@ -343,7 +344,7 @@ namespace Ratatoskr
 
             startup_state_ = false;
 
-            Debugger.DebugManager.MessageOut("Program.Shutdown - End");
+            Kernel.DebugMessage("Program.Shutdown - End");
         }
 
         public static void ShutdownRequest(bool profile_backup = true)

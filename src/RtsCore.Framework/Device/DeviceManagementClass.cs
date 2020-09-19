@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
+using System.Threading;
 using System.Threading.Tasks;
 using RtsCore.Packet;
 
@@ -8,6 +10,10 @@ namespace RtsCore.Framework.Device
 {
     public class DeviceManagementClass
     {
+        private const int DEVICE_TIMER_IVAL_BASE    = 100;
+        private const int DEVICE_TIMER_CNTR_1000MS  = 1000 / DEVICE_TIMER_IVAL_BASE;
+
+
         private bool disposed_ = false;
 
         private List<DeviceClass>    devd_list_ = new List<DeviceClass>();
@@ -15,9 +21,19 @@ namespace RtsCore.Framework.Device
 
         private PacketManager pktm_;
 
+        private System.Timers.Timer         dev_timer_base_;
+        private int                         dev_timer_cntr_1000ms_ = 0;
+
+        internal AutoResetEvent             WaitHandle_1000ms { get; private set; }  = new AutoResetEvent(false);
+
 
         public DeviceManagementClass()
         {
+            dev_timer_base_ = new System.Timers.Timer();
+            dev_timer_base_.AutoReset = true;
+            dev_timer_base_.Interval = DEVICE_TIMER_IVAL_BASE;
+            dev_timer_base_.Elapsed += OnDeviceBaseTimer;
+            dev_timer_base_.Start();
         }
 
         ~DeviceManagementClass()
@@ -36,9 +52,19 @@ namespace RtsCore.Framework.Device
             if (disposed_)return;
 
             if (disposing) {
+                dev_timer_base_.Dispose();
             }
 
             disposed_ = true;
+        }
+
+        private void OnDeviceBaseTimer(Object sender, ElapsedEventArgs e)
+        {
+            dev_timer_cntr_1000ms_++;
+            if (dev_timer_cntr_1000ms_ >= DEVICE_TIMER_CNTR_1000MS) {
+                WaitHandle_1000ms.Set();
+                dev_timer_cntr_1000ms_ = 0;
+            }
         }
 
         public IEnumerable<DeviceClass> GetClasses()

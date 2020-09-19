@@ -76,7 +76,10 @@ namespace RtsCore.Protocol
                 LastInputDateTime = DateTime.UtcNow;
             }
 
-            OnInputData(input_dt, input_data);
+            try {
+                OnInputData(input_dt, input_data);
+            } catch {
+            }
 
             LastInputDateTime = input_dt;
 

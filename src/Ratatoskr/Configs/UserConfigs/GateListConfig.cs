@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using RtsCore;
 using RtsCore.Config;
 using RtsCore.Framework.Device;
 using Ratatoskr.Devices;
@@ -147,7 +148,7 @@ namespace Ratatoskr.Configs.UserConfigs
 
             if (devp == null) {
 				/* 該当デバイスが存在しないかプロパティが生成できない */
-				Debugger.DebugManager.MessageOut(string.Format("LoadDeviceProperty Error: {0}", class_id.ToString("D")));
+				Kernel.DebugMessage(string.Format("LoadDeviceProperty Error: {0}", class_id.ToString("D")));
 				return (null);
 			}
 

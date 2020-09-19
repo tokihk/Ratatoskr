@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using RtsCore;
 using RtsCore.Framework.Device;
 using RtsCore.Framework.Drivers.SerialPort;
 using RtsCore.Generic;
@@ -18,15 +19,21 @@ namespace Ratatoskr.Devices.SerialPort
 {
     internal unsafe sealed class DeviceInstanceImpl : DeviceInstance
     {
-        private const uint LOOP_CONTINUOUS_LIMIT = 10;
         private const uint RECV_BUFFER_SIZE = 8192;
+		private const int  SEND_TASK_IVAL   = 50;
 
         private DevicePropertyImpl prop_;
 
         private SerialPortController port_ = new SerialPortController();
 
-        private object  send_sync_ = new object();
-        private byte[]  send_buffer_;
+		private Task send_task_ = null;
+		private Task recv_task_ = null;
+
+		private ManualResetEvent exit_request_event_ = new ManualResetEvent(false);
+		private AutoResetEvent   send_request_event_ = new AutoResetEvent(false);
+
+        private byte[]    send_data_;
+		private byte[]	  recv_data_;
 
         private Stopwatch send_wait_timer_       = new Stopwatch();
         private uint      send_wait_time_        = 0;
@@ -64,11 +71,6 @@ namespace Ratatoskr.Devices.SerialPort
         private IntPtr           recv_event_end_;
         private bool             recv_async_busy_ = false;
         private uint             recv_size_ = 0;
-#else
-        private bool exit_req_ = false;
-
-        private IAsyncResult device_task_send_ar_;
-        private IAsyncResult device_task_recv_ar_;
 #endif
 
         public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
@@ -123,7 +125,8 @@ namespace Ratatoskr.Devices.SerialPort
             port_.Setup();
 
             /* === バッファ初期化 === */
-            send_buffer_ = null;
+            send_data_ = null;
+			recv_data_ = new byte[RECV_BUFFER_SIZE];
 
 #if ASYNC_MODE
             recv_buffer_ = new byte[RECV_BUFFER_SIZE];
@@ -146,17 +149,38 @@ namespace Ratatoskr.Devices.SerialPort
             /* 送信/受信タスク開始 */
             device_task_ar_ = (new DeviceTaskHandler(DeviceTask)).BeginInvoke(null, null);
 #else
-            exit_req_ = false;
+			exit_request_event_.Reset();
+			send_request_event_.Reset();
 
-            /* 送信/受信タスク開始 */
-            device_task_send_ar_ = (new DeviceTaskHandler(DeviceSendTask)).BeginInvoke(null, null);
-            device_task_recv_ar_ = (new DeviceTaskHandler(DeviceRecvTask)).BeginInvoke(null, null);
+			/* 送信タスク */
+			send_task_ = Task.Run(() =>
+			{
+				var events = new WaitHandle[] { exit_request_event_, send_request_event_ };
+
+				while (WaitHandle.WaitAny(events, SEND_TASK_IVAL) != 0) {
+					DeviceSendExec();
+				}
+			});
+
+			/* 受信タスク */
+			recv_task_ = Task.Run(() =>
+			{
+#if false
+				while (!exit_request_event_.WaitOne(RECV_TASK_IVAL)) {
+					DeviceRecvExec();
+				}
+#else
+				while (!exit_request_event_.WaitOne(0)) {
+					DeviceRecvExec();
+				}
+#endif
+			});
 #endif
         }
 
         protected override void OnDisconnectStart()
         {
-            Debugger.DebugManager.MessageOut("Serial Port - Disconnect Start");
+            Kernel.DebugMessage("Serial Port - Disconnect Start");
 #if ASYNC_MODE
             /* タスク停止イベント */
             NativeMethods.ResetEvent(exit_event_);
@@ -183,25 +207,38 @@ namespace Ratatoskr.Devices.SerialPort
             NativeMethods.CloseHandle(recv_event_end_);
             recv_event_end_ = IntPtr.Zero;
 #else
-            exit_req_ = true;
-
+			/* シリアルポート停止 */
             port_.Purge();
 
-            /* 受信タスク停止 */
-            while (   ((device_task_send_ar_ != null) && (!device_task_send_ar_.IsCompleted))
-                   || ((device_task_recv_ar_ != null) && (!device_task_recv_ar_.IsCompleted))
-            ) {
-                Thread.Sleep(1);
-            }
+			/* タスク停止要求 */
+			exit_request_event_.Set();
 #endif
 
-            /* ポートクローズ */
-            port_.Close();
-
-            Debugger.DebugManager.MessageOut("Serial Port - Disconnect Start - End");
+            Kernel.DebugMessage("Serial Port - Disconnect Start - End");
         }
 
-        protected override PollState OnPoll()
+		protected override EventResult OnDisconnectBusy()
+		{
+			/* 送信タスクの停止待ち */
+			if (!send_task_.IsCompleted) {
+				return (EventResult.Busy);
+			}
+
+			/* 受信タスクの停止待ち */
+			if (!recv_task_.IsCompleted) {
+				return (EventResult.Busy);
+			}
+
+			return (EventResult.Success);
+		}
+
+		protected override void OnDisconnected()
+		{
+            /* ポートクローズ */
+            port_.Close();
+		}
+
+		protected override PollState OnPoll()
         {
             if (port_.GetDeviceDetachStatus()) {
                 NotifyMessage(PacketPriority.Alert, "Device Event", "Device has been disconnected.");
@@ -211,16 +248,13 @@ namespace Ratatoskr.Devices.SerialPort
             return (PollState.Idle);
         }
 
-        protected override void OnSendRequest()
-        {
-#if ASYNC_MODE
-            NativeMethods.SetEvent(send_event_req_);
-#else
-            DeviceSendExec();
-#endif
-        }
+		protected override void OnSendRequest()
+		{
+			/* 即座に送信処理を開始 */
+			send_request_event_.Set();
+		}
 
-        private delegate void DeviceTaskHandler();
+		private delegate void DeviceTaskHandler();
 
 #if ASYNC_MODE
         private unsafe void DeviceTask()
@@ -388,99 +422,66 @@ namespace Ratatoskr.Devices.SerialPort
 
 #else
 
-        private void DeviceSendTask()
-        {
-            var busy = false;
-
-            while (!exit_req_) {
-                DeviceSendExec(ref busy);
-
-                if (!busy) {
-                    System.Threading.Thread.Sleep(10);
-                }
-            }
-        }
-
-        private void DeviceRecvTask()
-        {
-            var busy = false;
-
-            while (!exit_req_) {
-                DeviceRecvExec(ref busy);
-
-                if (!busy) {
-                    System.Threading.Thread.Sleep(10);
-                }
-            }
-        }
-
         private void DeviceSendExec()
         {
-            bool busy = false;
-
-            DeviceSendExec(ref busy);
-        }
-
-        private void DeviceSendExec(ref bool busy)
-        {
-            busy = false;
-
-            lock (send_sync_)
-            {
-                /* 送信遅延中であればスキップ */
-                if (send_wait_timer_.IsRunning) {
-                    if (send_wait_timer_.ElapsedMilliseconds >= send_wait_time_) {
-                        send_wait_timer_.Stop();
-                    }
+            /* 送信遅延中であればスキップ */
+            if (send_wait_timer_.IsRunning) {
+                if (send_wait_timer_.ElapsedMilliseconds >= send_wait_time_) {
+                    send_wait_timer_.Stop();
                 }
-
-                /* 受信中であればスキップ */
-                if (recv_hold_timer_.IsRunning) {
-                    if (recv_hold_timer_.ElapsedMilliseconds >= prop_.RecvHoldTimer.Value) {
-                        recv_hold_timer_.Stop();
-                    }
-                }
-
-                /* 送信中であればスキップ */
-                if (   (port_.IsWriteBusy)
-                    || (send_wait_timer_.IsRunning)
-                    || (recv_hold_timer_.IsRunning)
-                ) {
-                    return;
-                }
-
-                /* 送信データ読込 */
-                if (send_buffer_ == null) {
-                    send_buffer_ = GetSendData();
-                }
-
-                /* 送信データが存在しない */
-                if (send_buffer_ == null) {
-                    return;
-                }
-
-                var send_data = send_buffer_;
-
-                /* バイト単位の送信遅延が設定されている場合は1バイトずつ */
-                if (prop_.SendByteWaitTimer.Value > 0) {
-                    send_data = new byte[1] { send_buffer_[0] };
-                }
-
-                /* 送信開始 */
-                var send_size = port_.Write(send_data);
-
-                if (send_size == 0)return;
-
-                SendComplete(send_buffer_, send_size);
-
-                busy = true;
             }
+
+            /* 受信中であればスキップ */
+            if (recv_hold_timer_.IsRunning) {
+                if (recv_hold_timer_.ElapsedMilliseconds >= prop_.RecvHoldTimer.Value) {
+                    recv_hold_timer_.Stop();
+                }
+            }
+
+            /* 送信中であればスキップ */
+#if false
+            if (   (port_.IsWriteBusy)
+                || (send_wait_timer_.IsRunning)
+                || (recv_hold_timer_.IsRunning)
+            ) {
+                return;
+            }
+#else
+            if (   (send_wait_timer_.IsRunning)
+                || (recv_hold_timer_.IsRunning)
+            ) {
+                return;
+            }
+#endif
+
+            /* 送信データ読込 */
+            if (send_data_ == null) {
+                send_data_ = GetSendData();
+            }
+
+            /* 送信データが存在しない */
+            if (send_data_ == null) {
+                return;
+            }
+
+            var send_data = send_data_;
+
+            /* バイト単位の送信遅延が設定されている場合は1バイトずつ */
+            if (prop_.SendByteWaitTimer.Value > 0) {
+                send_data = new byte[1] { send_data_[0] };
+            }
+
+            /* 送信開始 */
+            var send_size = port_.Write(send_data);
+
+            if (send_size == 0)return;
+
+            SendComplete(send_size);
         }
 
-        private void DeviceRecvExec(ref bool busy)
+        private void DeviceRecvExec()
         {
-            busy = false;
-
+#if false
             /* 受信していなければスキップ */
             var recv_size = port_.RecvDataSize;
 
@@ -495,31 +496,34 @@ namespace Ratatoskr.Devices.SerialPort
 
             RecvComplete(recv_data, recv_size);
 
-            busy = true;
+#else
+			var recv_size = port_.Recv(recv_data_);
+
+            if (recv_size == 0)return;
+
+            RecvComplete(recv_data_, recv_size);
+#endif
+
         }
 #endif
 
-        private void CommEventComplete(uint event_flag)
-        {
-        }
-
-        private void SendComplete(byte[] send_data, uint send_size)
+        private void SendComplete(uint send_size)
         {
             var next_data = (byte[])null;
 
-            if (send_data.Length > send_size) {
-                send_data = ClassUtil.CloneCopy(send_buffer_, (int)send_size);
-                next_data = ClassUtil.CloneCopy(send_buffer_, (int)send_size, int.MaxValue);
+            if (send_data_.Length > send_size) {
+                send_data_ = ClassUtil.CloneCopy(send_data_, (int)send_size);
+                next_data = ClassUtil.CloneCopy(send_data_, (int)send_size, int.MaxValue);
             }
 
-            /* 通知 */
-            NotifySendComplete("", "", "", send_data);
+            /* 送信が完了したデータのみを通知 */
+            NotifySendComplete("", "", "", send_data_);
 
-            /* セットできたデータを削除 */
-            send_buffer_ = next_data;
+            /* 未送信データを送信データにセット */
+            send_data_ = next_data;
 
             /* 送信遅延を設定 */
-            send_wait_time_ = (uint)((send_buffer_ != null)
+            send_wait_time_ = (uint)((send_data_ != null)
                             ? (prop_.SendByteWaitTimer.Value)
                             : (prop_.SendPacketWaitTimer.Value));
 
@@ -535,7 +539,7 @@ namespace Ratatoskr.Devices.SerialPort
                 recv_data = ClassUtil.CloneCopy(recv_data, (int)recv_size);
             }
 
-            /* 通知 */
+            /* 受信したデータを通知 */
             NotifyRecvComplete("", "", "", recv_data);
 
             /* 受信ホールドタイマー */

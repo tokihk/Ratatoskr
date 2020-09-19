@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Gate;
+using RtsCore;
 using RtsCore.Framework.Device;
 using RtsCore.Packet;
 using RtsCore.Framework.BinaryText;
+using RtsCore.Utility;
 
 namespace Ratatoskr.Api
 {
@@ -77,6 +79,7 @@ namespace Ratatoskr.Api
             if (gates == null)return;
 
             /* 送信実行 */
+			RtsCore.Kernel.DebugMessage("API_SendData", SystemMessageAttr.User | SystemMessageAttr.SendAction);
             foreach (var obj in gates) {
                 obj.SendRequest(data);
             }

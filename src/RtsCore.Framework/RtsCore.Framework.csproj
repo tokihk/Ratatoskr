@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RtsCore.Framework</RootNamespace>
     <AssemblyName>RtsCore.Framework</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -196,12 +197,6 @@
     <Compile Include="Utility\ImageUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RtsCore\RtsCore.csproj">
-      <Project>{774e876e-b344-4b1b-bf11-d93ba86f4ce7}</Project>
-      <Name>RtsCore</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="BinaryText\BinaryTextParser.Language.analyzer.lex">
       <DependentUpon>BinaryTextParser.parser</DependentUpon>
     </None>
@@ -232,7 +227,12 @@
       <DependentUpon>PacketViewInstance.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\RtsCore\RtsCore.csproj">
+      <Project>{7bb441b5-c6f5-451d-b4d4-687d5cb590c1}</Project>
+      <Name>RtsCore</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" DependsOnTargets="YltBuildGen" />
   <Target Name="YltBuildGen" DependsOnTargets="GeneratePacketFilterParser;GenerateBinaryTextParser" />

@@ -32,8 +32,6 @@ namespace RtsPlugin.Pcap.Devices.EthernetCapture
         private PacketCommunicator pcap_comm_ = null;
 #endif
 
-        private object send_sync_ = new object();
-
 
         public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
             : base(devm, devconf, devd, devp)
@@ -165,30 +163,21 @@ namespace RtsPlugin.Pcap.Devices.EthernetCapture
             return ((busy) ? (PollState.Active) : (PollState.Idle));
         }
 
-        protected override void OnSendRequest()
-        {
-            var busy = false;
-
-            SendPoll(ref busy);
-        }
-
         private void SendPoll(ref bool busy)
         {
             if (!prop_.SendEnable.Value)return;
 
-            lock (send_sync_) {
-                var send_data = GetSendData();
+            var send_data = GetSendData();
 
-                if (send_data == null)return;
+            if (send_data == null)return;
 
 #if __SHARPPCAP__
-                pcap_dev_.SendPacket(send_data);
+            pcap_dev_.SendPacket(send_data);
 #elif __PCAPDOTNET__
-                pcap_comm_.SendPacket(new Packet(send_data, DateTime.Now, DataLinkKind.Ethernet));
+            pcap_comm_.SendPacket(new Packet(send_data, DateTime.Now, DataLinkKind.Ethernet));
 #endif
 
-                busy = true;
-            }
+            busy = true;
         }
 
         private void RecvPoll(ref bool busy)

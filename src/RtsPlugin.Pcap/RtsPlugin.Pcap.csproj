@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RtsPlugin.Pcap</RootNamespace>
     <AssemblyName>RtsPlugin.Pcap</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -93,6 +94,8 @@
     <Compile Include="Protocols\Elements\P_TcpFlags.cs" />
     <Compile Include="Protocols\EthernetII\ProtocolDecoderClassImpl.cs" />
     <Compile Include="Protocols\EthernetII\ProtocolDecoderInstanceImpl.cs" />
+    <Compile Include="Protocols\EthernetII\ProtocolEncoderClassImpl.cs" />
+    <Compile Include="Protocols\EthernetII\ProtocolEncoderInstanceImpl.cs" />
     <Compile Include="Utility\PcapPacketInfo.cs" />
     <Compile Include="Utility\SharpPcapPacketParser.cs" />
     <Compile Include="Utility\PcapPacketParserOption.cs" />
@@ -113,7 +116,7 @@
       <Name>RtsCore.Framework</Name>
     </ProjectReference>
     <ProjectReference Include="..\RtsCore\RtsCore.csproj">
-      <Project>{1432f3f6-7e7d-41ea-9ebd-7a861b7a1379}</Project>
+      <Project>{7bb441b5-c6f5-451d-b4d4-687d5cb590c1}</Project>
       <Name>RtsCore</Name>
     </ProjectReference>
   </ItemGroup>

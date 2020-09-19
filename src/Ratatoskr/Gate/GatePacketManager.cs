@@ -7,9 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Configs;
 using Ratatoskr.Forms;
-using RtsCore.Framework.FileFormat;
 using Ratatoskr.Gate.AutoTimeStamp;
 using Ratatoskr.Gate.AutoLogger;
+using RtsCore;
+using RtsCore.Framework.FileFormat;
 using RtsCore.Framework.PacketConverter;
 using RtsCore.Framework.Native;
 using RtsCore.Packet;
@@ -320,7 +321,7 @@ namespace Ratatoskr.Gate
             }
 
             if (info.Reader is PacketLogReader reader) {
-                Debugger.DebugManager.MessageOut(string.Format("LoadPacketFile - Start [{0}]", Path.GetFileName(info.FilePath)));
+                Kernel.DebugMessage(string.Format("LoadPacketFile - Start [{0}]", Path.GetFileName(info.FilePath)));
 
                 /* ファイルオープン */
                 if (!reader.Open(info.Option, info.FilePath)) {
@@ -335,7 +336,7 @@ namespace Ratatoskr.Gate
 
                 info.Reader.Close();
 
-                Debugger.DebugManager.MessageOut("LoadPacketFile - Complete");
+                Kernel.DebugMessage("LoadPacketFile - Complete");
             }
         }
 

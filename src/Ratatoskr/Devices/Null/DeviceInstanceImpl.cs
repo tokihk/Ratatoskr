@@ -14,9 +14,6 @@ namespace Ratatoskr.Devices.Null
 {
     internal unsafe sealed class DeviceInstanceImpl : DeviceInstance
     {
-        private object send_sync_ = new object();
-
-
         public DeviceInstanceImpl(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
             : base(devm, devconf, devd, devp)
         {
@@ -50,22 +47,15 @@ namespace Ratatoskr.Devices.Null
             return (state);
         }
 
-        protected override void OnSendRequest()
-        {
-            SendPoll();
-        }
-
         private bool SendPoll()
         {
-            lock (send_sync_) {
-                var send_data = GetSendData();
+            var send_data = GetSendData();
 
-                if (send_data == null)return (false);
+            if (send_data == null)return (false);
 
-                NotifySendComplete("", "", "", send_data);
+            NotifySendComplete("", "", "", send_data);
 
-                return (true);
-            }
+            return (true);
         }
     }
 }

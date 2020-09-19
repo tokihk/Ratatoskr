@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using RtsCore;
 using RtsCore.Framework.Device;
 using RtsCore.Utility;
 using Ratatoskr.Devices;
@@ -169,11 +170,11 @@ namespace Ratatoskr.Forms.Dialog
             if (CBox_DeviceType.SelectedItem is DeviceClass devc) {
                 devc_id_ = devc.ID;
 
-                Debugger.DebugManager.MessageOut("Gate Device Change Start");
+                Kernel.DebugMessage("Gate Device Change Start");
 
                 UpdateDevice();
 
-                Debugger.DebugManager.MessageOut("Gate Device Change End");
+                Kernel.DebugMessage("Gate Device Change End");
             }
         }
 

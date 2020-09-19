@@ -30,15 +30,19 @@
             this.DockPanel_Main = new Ratatoskr.Forms.Controls.DockPanelEx();
             this.PacketConverter_Main = new Ratatoskr.Forms.MainWindow.MainWindow_PacketConverterPanel();
             this.GatePanel_Main = new Ratatoskr.Forms.MainWindow.MainWindow_GatePanel();
+            ((System.ComponentModel.ISupportInitialize)(this.DockPanel_Main)).BeginInit();
             this.SuspendLayout();
             // 
             // DockPanel_Main
             // 
             this.DockPanel_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DockPanel_Main.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
             this.DockPanel_Main.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
-            this.DockPanel_Main.Location = new System.Drawing.Point(0, 70);
+            this.DockPanel_Main.Location = new System.Drawing.Point(0, 76);
             this.DockPanel_Main.Name = "DockPanel_Main";
-            this.DockPanel_Main.Size = new System.Drawing.Size(571, 337);
+            this.DockPanel_Main.Padding = new System.Windows.Forms.Padding(6);
+            this.DockPanel_Main.ShowAutoHideContentOnHover = false;
+            this.DockPanel_Main.Size = new System.Drawing.Size(571, 331);
             this.DockPanel_Main.TabIndex = 3;
             this.DockPanel_Main.DockContentClosed += new Ratatoskr.Forms.Controls.DockPanelEx.DockContentClosedHandler(this.DockPanel_Main_DockContentClosed);
             // 
@@ -48,7 +52,7 @@
             this.PacketConverter_Main.Dock = System.Windows.Forms.DockStyle.Top;
             this.PacketConverter_Main.Location = new System.Drawing.Point(0, 54);
             this.PacketConverter_Main.Name = "PacketConverter_Main";
-            this.PacketConverter_Main.Size = new System.Drawing.Size(571, 16);
+            this.PacketConverter_Main.Size = new System.Drawing.Size(571, 22);
             this.PacketConverter_Main.TabIndex = 2;
             // 
             // GatePanel_Main
@@ -69,6 +73,7 @@
             this.Controls.Add(this.GatePanel_Main);
             this.Name = "MainWindow_FrameCenter";
             this.Size = new System.Drawing.Size(571, 407);
+            ((System.ComponentModel.ISupportInitialize)(this.DockPanel_Main)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

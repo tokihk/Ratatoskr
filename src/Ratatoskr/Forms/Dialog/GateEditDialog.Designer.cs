@@ -82,7 +82,7 @@
             // Btn_Cancel
             // 
             this.Btn_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Btn_Cancel.Location = new System.Drawing.Point(821, 640);
+            this.Btn_Cancel.Location = new System.Drawing.Point(896, 687);
             this.Btn_Cancel.Name = "Btn_Cancel";
             this.Btn_Cancel.Size = new System.Drawing.Size(100, 30);
             this.Btn_Cancel.TabIndex = 4;
@@ -93,7 +93,7 @@
             // Btn_Ok
             // 
             this.Btn_Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Btn_Ok.Location = new System.Drawing.Point(715, 640);
+            this.Btn_Ok.Location = new System.Drawing.Point(790, 687);
             this.Btn_Ok.Name = "Btn_Ok";
             this.Btn_Ok.Size = new System.Drawing.Size(100, 30);
             this.Btn_Ok.TabIndex = 3;
@@ -111,7 +111,7 @@
             this.TabCtrl_Main.Location = new System.Drawing.Point(12, 12);
             this.TabCtrl_Main.Name = "TabCtrl_Main";
             this.TabCtrl_Main.SelectedIndex = 0;
-            this.TabCtrl_Main.Size = new System.Drawing.Size(909, 622);
+            this.TabCtrl_Main.Size = new System.Drawing.Size(984, 669);
             this.TabCtrl_Main.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.TabCtrl_Main.TabIndex = 5;
             // 
@@ -124,7 +124,7 @@
             this.TabPage_Device.Location = new System.Drawing.Point(4, 22);
             this.TabPage_Device.Name = "TabPage_Device";
             this.TabPage_Device.Padding = new System.Windows.Forms.Padding(3);
-            this.TabPage_Device.Size = new System.Drawing.Size(901, 596);
+            this.TabPage_Device.Size = new System.Drawing.Size(976, 643);
             this.TabPage_Device.TabIndex = 0;
             this.TabPage_Device.Text = "Device";
             this.TabPage_Device.UseVisualStyleBackColor = true;
@@ -167,7 +167,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.GBox_DeviceProperty.Location = new System.Drawing.Point(6, 54);
             this.GBox_DeviceProperty.Name = "GBox_DeviceProperty";
-            this.GBox_DeviceProperty.Size = new System.Drawing.Size(660, 536);
+            this.GBox_DeviceProperty.Size = new System.Drawing.Size(964, 583);
             this.GBox_DeviceProperty.TabIndex = 5;
             this.GBox_DeviceProperty.TabStop = false;
             this.GBox_DeviceProperty.Text = "Device parameter";
@@ -202,7 +202,7 @@
             this.TabPage_General.Location = new System.Drawing.Point(4, 22);
             this.TabPage_General.Name = "TabPage_General";
             this.TabPage_General.Padding = new System.Windows.Forms.Padding(3);
-            this.TabPage_General.Size = new System.Drawing.Size(901, 596);
+            this.TabPage_General.Size = new System.Drawing.Size(976, 596);
             this.TabPage_General.TabIndex = 1;
             this.TabPage_General.Text = "General";
             this.TabPage_General.UseVisualStyleBackColor = true;
@@ -478,15 +478,15 @@
             this.TBox_Alias.Size = new System.Drawing.Size(194, 19);
             this.TBox_Alias.TabIndex = 0;
             // 
-            // GateEditForm
+            // GateEditDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(933, 682);
+            this.ClientSize = new System.Drawing.Size(1008, 729);
             this.Controls.Add(this.TabCtrl_Main);
             this.Controls.Add(this.Btn_Ok);
             this.Controls.Add(this.Btn_Cancel);
-            this.Name = "GateEditForm";
+            this.Name = "GateEditDialog";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Gate setting";
