@@ -81,7 +81,6 @@ namespace RtsCore.Framework.Device
         public delegate void DataRateUpdatedHandler(object sender, ulong value);
         public event DataRateUpdatedHandler DataRateUpdated = delegate(object sender, ulong value) { };
 
-        private DeviceManagementClass  devm_ = null;
         private DeviceConfig   devconf_ = null;
         private DeviceClass    devd_ = null;
         private DeviceProperty devp_ = null;
@@ -120,9 +119,8 @@ namespace RtsCore.Framework.Device
         private AutoResetEvent      active_request_event_ = new AutoResetEvent(false);
 
 
-        public DeviceInstance(DeviceManagementClass devm, DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
+        public DeviceInstance(DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
         {
-            devm_ = devm;
             devconf_ = devconf;
             devd_ = devd;
             devp_ = devp;
@@ -132,7 +130,7 @@ namespace RtsCore.Framework.Device
             /* イベント初期化 */
             device_poll_events_ = new WaitHandle[Enum.GetValues(typeof(DevicePollEventID)).Length];
             device_poll_events_[(int)DevicePollEventID.ActiveRequest] = active_request_event_;
-            device_poll_events_[(int)DevicePollEventID.DataRateSampling] = devm_.WaitHandle_1000ms;
+            device_poll_events_[(int)DevicePollEventID.DataRateSampling] = DeviceManager.WaitHandle_1000ms;
         }
 
         public virtual void Dispose()
@@ -142,11 +140,6 @@ namespace RtsCore.Framework.Device
 
         protected virtual void OnDispose()
         {
-        }
-
-        public DeviceManagementClass Manager
-        {
-            get { return (devm_); }
         }
 
         public DeviceConfig Config
@@ -170,7 +163,7 @@ namespace RtsCore.Framework.Device
             set
             {
                 alias_ = value ?? "";
-                devm_.UpdateRedirectMap();
+                DeviceManager.UpdateRedirectMap();
             }
         }
 
@@ -180,7 +173,7 @@ namespace RtsCore.Framework.Device
             set
             {
                 alias_redirect_ = value ?? "";
-                devm_.UpdateRedirectMap();
+                DeviceManager.UpdateRedirectMap();
             }
         }
 
@@ -467,7 +460,7 @@ namespace RtsCore.Framework.Device
         public void NotifyPacket(PacketObject packet)
         {
             /* パケットを登録 */
-            devm_.SetupPacket(packet);
+            DeviceManager.SetupPacket(packet);
 
             /* データレートを計算 */
             DataRateValueUpdate(packet);

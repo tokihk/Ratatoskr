@@ -8,13 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.SystemConfigs;
+using Ratatoskr.Config;
 using Ratatoskr.Gate;
-using RtsCore.Packet;
-using RtsCore.Framework.PacketConverter;
-using RtsCore.Framework.PacketView;
-using RtsCore.Utility;
+using Ratatoskr.Plugin;
+using Ratatoskr.General.Packet;
+using Ratatoskr.Config.Data.System;
+using Ratatoskr.PacketConverter;
+using Ratatoskr.PacketView;
+using Ratatoskr.General;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -22,28 +23,30 @@ namespace Ratatoskr.Forms.MainWindow
     {
         public MainWindow_Form()
         {
+            Visible = false;
+
             InitializeComponent();
+
             InitializeMenuBar();
 
-            Icon = RtsCore.Resource.Icons.app_icon_48x48_icon;
+            Icon = Ratatoskr.Resource.Icons.app_icon_48x48_icon;
 
             SetStatusText("");
             SetProgressBar(false, 0, 0);
-
-            Visible = false;
         }
 
         private void InitializeMenuBar()
         {
             FormAction.SetupMenuAction<MainWindowActionId>(MBar_Main, OnMenuClick);
-
-            BuildPacketViewMenu(MenuBar_View_PacketViewAdd);
-            BuildPacketConverterMenu(MenuBar_View_PacketConverterAdd);
         }
 
         public void LoadConfig()
         {
             UpdateTitle();
+
+            LoadPacketViewMenu(MenuBar_View_PacketViewAdd);
+            LoadPacketConverterMenu(MenuBar_View_PacketConverterAdd);
+			LoadPluginMenu(MenuBar_Plugin);
 
             LoadMenuBarConfig();
 
@@ -52,9 +55,25 @@ namespace Ratatoskr.Forms.MainWindow
 
             LoadWindowConfig();
 
-            UpdateMenuBar();
-            UpdateStatusBar();
-            UpdateProfileList();
+            UpdateMenuBarStatus();
+            UpdateStatusBarStatus();
+            UpdateProfileListStatus();
+        }
+
+        private void LoadWindowConfig()
+        {
+            /* 最小/最大化を解除 */
+            WindowState = FormWindowState.Normal;
+
+            /* 設定を反映 */
+            Size = ConfigManager.System.MainWindow.Size.Value;
+            Location = ConfigManager.System.MainWindow.Position.Value;
+            WindowState = (ConfigManager.System.MainWindow.Maximize.Value) ? (FormWindowState.Maximized) : (FormWindowState.Normal);
+
+            Menu_DataRate_SendData.Checked = ConfigManager.User.DataRateTarget.Value.HasFlag(PacketDataRateTarget.SendData);
+            Menu_DataRate_RecvData.Checked = ConfigManager.User.DataRateTarget.Value.HasFlag(PacketDataRateTarget.RecvData);
+
+            ApplyDataRateTarget();
         }
 
         private void LoadMenuBarConfig()
@@ -77,20 +96,57 @@ namespace Ratatoskr.Forms.MainWindow
             MenuBar_Help_About.Text = ConfigManager.Language.MainUI.MenuBar_Help_About.Value;
         }
 
-        private void LoadWindowConfig()
+        private void LoadPacketConverterMenu(ToolStripMenuItem menu)
         {
-            /* 最小/最大化を解除 */
-            WindowState = FormWindowState.Normal;
+            /* 全メニューを削除 */
+            menu.DropDownItems.Clear();
 
-            /* 設定を反映 */
-            Size = ConfigManager.System.MainWindow.Size.Value;
-            Location = ConfigManager.System.MainWindow.Position.Value;
-            WindowState = (ConfigManager.System.MainWindow.Maximize.Value) ? (FormWindowState.Maximized) : (FormWindowState.Normal);
+            /* パケット変換器一覧からメニューを作成 */
+            foreach (var viewd in FormTaskManager.GetPacketConverterClasses()) {
+                var menu_sub = new ToolStripMenuItem()
+                {
+                    Text = viewd.Name,
+                    ToolTipText = viewd.Details,
+                    Tag = viewd,
+                };
 
-            Menu_DataRate_SendData.Checked = ConfigManager.User.DataRateTarget.Value.HasFlag(PacketDataRateTarget.SendData);
-            Menu_DataRate_RecvData.Checked = ConfigManager.User.DataRateTarget.Value.HasFlag(PacketDataRateTarget.RecvData);
+                menu_sub.Click += OnMenuClick_PacketConverterAdd;
 
-            ApplyDataRateTarget();
+                menu.DropDownItems.Add(menu_sub);
+            }
+        }
+
+        private void LoadPacketViewMenu(ToolStripMenuItem menu)
+        {
+            /* 全メニューを削除 */
+            menu.DropDownItems.Clear();
+
+            /* パケットビュー一覧からメニューを作成 */
+            foreach (var viewd in FormTaskManager.GetPacketViewClasses()) {
+                var menu_sub = new ToolStripMenuItem()
+                {
+                    Text = viewd.Name,
+                    ToolTipText = viewd.Details,
+                    Tag = viewd,
+                };
+
+                menu_sub.Click += OnMenuClick_PacketViewAdd;
+
+                menu.DropDownItems.Add(menu_sub);
+            }
+        }
+
+        private void LoadPluginMenu(ToolStripMenuItem menu)
+        {
+            /* 全メニューを削除 */
+            menu.DropDownItems.Clear();
+
+            /* プラグイン一覧からメニューを作成 */
+            foreach (var plgi in PluginManager.GetPluginList()) {
+				if (plgi.Interface.MenuBarItem != null) {
+					menu.DropDownItems.Add(plgi.Interface.MenuBarItem);
+				}
+            }
         }
 
         public void BackupConfig()
@@ -114,46 +170,6 @@ namespace Ratatoskr.Forms.MainWindow
 
             ConfigManager.System.MainWindow.Size.Value = Size;
             ConfigManager.System.MainWindow.Position.Value = Location;
-        }
-
-        private void BuildPacketConverterMenu(ToolStripMenuItem menu)
-        {
-            /* 全メニューを削除 */
-            menu.DropDownItems.Clear();
-
-            /* パケット変換器一覧からメニューを作成 */
-            foreach (var viewd in FormTaskManager.GetPacketConverterClasses()) {
-                var menu_sub = new ToolStripMenuItem()
-                {
-                    Text = viewd.Name,
-                    ToolTipText = viewd.Details,
-                    Tag = viewd,
-                };
-
-                menu_sub.Click += OnMenuClick_PacketConverterAdd;
-
-                menu.DropDownItems.Add(menu_sub);
-            }
-        }
-
-        private void BuildPacketViewMenu(ToolStripMenuItem menu)
-        {
-            /* 全メニューを削除 */
-            menu.DropDownItems.Clear();
-
-            /* パケットビュー一覧からメニューを作成 */
-            foreach (var viewd in FormTaskManager.GetPacketViewClasses()) {
-                var menu_sub = new ToolStripMenuItem()
-                {
-                    Text = viewd.Name,
-                    ToolTipText = viewd.Details,
-                    Tag = viewd,
-                };
-
-                menu_sub.Click += OnMenuClick_PacketViewAdd;
-
-                menu.DropDownItems.Add(menu_sub);
-            }
         }
 
         public string SendTarget
@@ -200,10 +216,10 @@ namespace Ratatoskr.Forms.MainWindow
             Text = title.ToString();
         }
 
-        public void UpdateMenuBar()
+        public void UpdateMenuBarStatus()
         {
             if (InvokeRequired) {
-                Invoke((MethodInvoker)UpdateMenuBar);
+                Invoke((MethodInvoker)UpdateMenuBarStatus);
                 return;
             }
 
@@ -214,10 +230,10 @@ namespace Ratatoskr.Forms.MainWindow
             MenuBar_Tool_ScriptManager.Checked = FormUiManager.ScriptWindowVisible();
         }
 
-        public void UpdateStatusBar()
+        public void UpdateStatusBarStatus()
         {
             if (InvokeRequired) {
-                Invoke((MethodInvoker)UpdateStatusBar);
+                Invoke((MethodInvoker)UpdateStatusBarStatus);
                 return;
             }
 
@@ -228,6 +244,17 @@ namespace Ratatoskr.Forms.MainWindow
                 Label_ViewDrawMode.Text = "Norm";
                 Label_ViewDrawMode.BackColor = Color.LightCyan;
             }
+        }
+
+        private void UpdateProfileListStatus()
+        {
+            MenuBar_ProfileList.BeginUpdate();
+            {
+                MenuBar_ProfileList.Items.Clear();
+                MenuBar_ProfileList.Items.AddRange(ConfigManager.GetProfileList().ToArray());
+                MenuBar_ProfileList.SelectedItem = ConfigManager.GetCurrentProfileID();
+            }
+            MenuBar_ProfileList.EndUpdate();
         }
 
         private delegate void FormKeyActionHandler(MainWindowActionId id);
@@ -298,7 +325,7 @@ namespace Ratatoskr.Forms.MainWindow
                     }
                     break;
                 case MainWindowActionId.ProfileExport:
-                    ConfigManager.SaveConfig(true);
+                    ConfigManager.SaveToFile(true);
                     ConfigManager.ExportProfile(ConfigManager.GetCurrentProfileID());
                     break;
 
@@ -357,17 +384,6 @@ namespace Ratatoskr.Forms.MainWindow
 
             /* 変換器のカウンターを更新 */
             Panel_Center.UpdatePacketConverterView();
-        }
-
-        private void UpdateProfileList()
-        {
-            MenuBar_ProfileList.BeginUpdate();
-            {
-                MenuBar_ProfileList.Items.Clear();
-                MenuBar_ProfileList.Items.AddRange(ConfigManager.GetProfileList().ToArray());
-                MenuBar_ProfileList.SelectedItem = ConfigManager.GetCurrentProfileID();
-            }
-            MenuBar_ProfileList.EndUpdate();
         }
 
         public void ClearPacketView()
@@ -446,13 +462,6 @@ namespace Ratatoskr.Forms.MainWindow
 
             ResumeLayout(false);
             PerformLayout();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-
-            ConfigManager.System.MainWindow.Maximize.Value = (WindowState == FormWindowState.Maximized);
         }
 
         private void OnMenuClick(object sender, EventArgs e)
@@ -535,7 +544,7 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void MenuBar_ProfileList_DropDown(object sender, EventArgs e)
         {
-            UpdateProfileList();
+            UpdateProfileListStatus();
         }
 
         private void MenuBar_ProfileList_SelectedIndexChanged(object sender, EventArgs e)

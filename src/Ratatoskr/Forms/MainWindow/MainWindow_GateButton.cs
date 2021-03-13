@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Gate;
-using RtsCore.Framework.Device;
+using Ratatoskr.Device;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -76,13 +76,13 @@ namespace Ratatoskr.Forms.MainWindow
 
         private Image GetGateStatusImage(GateObject gate)
         {
-            var image = RtsCore.Resource.Images.connect_off;
+            var image = Ratatoskr.Resource.Images.connect_off;
 
             if (gate != null) {
                 switch (gate.ConnectStatus) {
-                    case ConnectState.Connected:    image = RtsCore.Resource.Images.connect_on;    break;
-                    case ConnectState.Disconnected: image = RtsCore.Resource.Images.connect_off;   break;
-                    default:                        image = RtsCore.Resource.Images.connect_busy;  break;
+                    case ConnectState.Connected:    image = Ratatoskr.Resource.Images.connect_on;    break;
+                    case ConnectState.Disconnected: image = Ratatoskr.Resource.Images.connect_off;   break;
+                    default:                        image = Ratatoskr.Resource.Images.connect_busy;  break;
                 }
             }
 

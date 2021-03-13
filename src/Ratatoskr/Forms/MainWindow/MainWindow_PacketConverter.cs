@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using RtsCore.Framework.PacketConverter;
+using Ratatoskr.PacketConverter;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -88,16 +88,16 @@ namespace Ratatoskr.Forms.MainWindow
 
             if ((text != null) && (text.Length > 0)) {
                 TBox_FilterValue.BackColor = (filter_check)
-                                           ? (RtsCore.Parameter.COLOR_OK)
-                                           : (RtsCore.Parameter.COLOR_NG);
+                                           ? (Ratatoskr.Resource.AppColors.Ok)
+                                           : (Ratatoskr.Resource.AppColors.Ng);
             } else {
                 TBox_FilterValue.BackColor = Color.White;
             }
 
             if (filter_enable) {
-                Btn_Filter.Image = (filter_check) ? (RtsCore.Resource.Images.target_ok_22x22) : (RtsCore.Resource.Images.target_ng_22x22);
+                Btn_Filter.Image = (filter_check) ? (Ratatoskr.Resource.Images.target_ok_22x22) : (Ratatoskr.Resource.Images.target_ng_22x22);
             } else {
-                Btn_Filter.Image = RtsCore.Resource.Images.target_22x22;
+                Btn_Filter.Image = Ratatoskr.Resource.Images.target_22x22;
             }
 
             panel_.UpdateView();

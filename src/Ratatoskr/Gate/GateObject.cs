@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Devices;
-using RtsCore.Generic;
-using RtsCore.Utility;
-using RtsCore.Framework.Device;
+using Ratatoskr.Device;
+using Ratatoskr.General;
 
 namespace Ratatoskr.Gate
 {
@@ -151,7 +149,7 @@ namespace Ratatoskr.Gate
                 || (devc_id != devi_.Class.ID)
                 || (!ClassUtil.Compare(devi_.Property, devp))
             ) {
-                SetupDevice(DeviceManager.CreateDeviceObject(devconf, devc_id, devp));
+                SetupDevice(DeviceManager.Instance.CreateDeviceObject(devconf, devc_id, devp));
             }
 
             ApplyGateProperty();

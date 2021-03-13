@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\build\Microsoft.CodeAnalysis.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\build\Microsoft.CodeAnalysis.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -84,251 +84,248 @@
     <Compile Include="Api\ApiTask_SendFile.cs" />
     <Compile Include="Api\ApiTask_WaitPacket.cs" />
     <Compile Include="Api\IApiTask.cs" />
-    <Compile Include="AutoLogger\AutoLogManager.cs" />
-    <Compile Include="AutoLogger\AutoLogObject.cs" />
-    <Compile Include="AutoLogger\AutoLogObject_FileSize.cs" />
-    <Compile Include="AutoLogger\AutoLogObject_Interval.cs" />
-    <Compile Include="AutoLogger\AutoLogObject_PacketCount.cs" />
-    <Compile Include="Configs\ConfigManager.cs" />
-    <Compile Include="Configs\FixedConfigs\FixedConfig.cs" />
-    <Compile Include="Configs\LanguageConfigs\LanguageConfig.cs" />
-    <Compile Include="Configs\LanguageConfigs\MainMessageConfig.cs" />
-    <Compile Include="Configs\LanguageConfigs\MainUiConfig.cs" />
-    <Compile Include="Configs\LanguageConfigs\PacketViewConfig.cs" />
-    <Compile Include="Configs\SystemConfigs\ApplicationCoreConfig.cs" />
-    <Compile Include="Configs\SystemConfigs\AutoPacketSaveConfig.cs" />
-    <Compile Include="Configs\SystemConfigs\AutoTimeStampConfig.cs" />
-    <Compile Include="Configs\SystemConfigs\MainWindowConfig.cs" />
-    <Compile Include="Configs\SystemConfigs\ProfileConfig.cs" />
-    <Compile Include="Configs\SystemConfigs\ScriptWindowConfig.cs" />
-    <Compile Include="Configs\SystemConfigs\SystemConfig.cs" />
-    <Compile Include="Configs\UserConfigs\GateListConfig.cs" />
-    <Compile Include="Configs\UserConfigs\OptionConfig.cs" />
-    <Compile Include="Configs\UserConfigs\PacketConverterConfig.cs" />
-    <Compile Include="Configs\UserConfigs\PacketListConfig.cs" />
-    <Compile Include="Configs\UserConfigs\PacketViewConfig.cs" />
-    <Compile Include="Configs\UserConfigs\SendDataListConfig.cs" />
-    <Compile Include="Configs\UserConfigs\SendFrameListConfig.cs" />
-    <Compile Include="Configs\UserConfigs\UserConfig.cs" />
-    <Compile Include="Configs\UserConfigs\WatchDataListConfig.cs" />
-    <Compile Include="Forms\DebugWindow\DebugWindow_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\DebugWindow\DebugWindow_Form.Designer.cs">
-      <DependentUpon>DebugWindow_Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Devices\AudioFile\DeviceClassImpl.cs" />
-    <Compile Include="Devices\AudioFile\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\AudioFile\DevicePropertyEditorImpl.cs">
+    <Compile Include="Config\Data\System\ExternalPathConfig.cs" />
+    <Compile Include="Config\Types\ColumnListConfig.cs" />
+    <Compile Include="Device\UsbCapture\DeviceInstanceImplByDirect.cs" />
+    <Compile Include="Device\UsbCapture\USBPcapPacket.cs" />
+    <Compile Include="Device\UsbCapture\USBPcapParser.cs" />
+    <Compile Include="FileFormat\PacketLog_Pcap\FileFormatWriterImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Pcap\FileFormatReaderOptionImpl.cs" />
+    <Compile Include="Gate\AutoLogger\AutoLogManager.cs" />
+    <Compile Include="Gate\AutoLogger\AutoLogObject.cs" />
+    <Compile Include="Gate\AutoLogger\AutoLogObject_FileSize.cs" />
+    <Compile Include="Gate\AutoLogger\AutoLogObject_Interval.cs" />
+    <Compile Include="Gate\AutoLogger\AutoLogObject_PacketCount.cs" />
+    <Compile Include="Config\ConfigEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Devices\AudioFile\DevicePropertyEditorImpl.Designer.cs">
+    <Compile Include="Config\ConfigEditor.Designer.cs">
+      <DependentUpon>ConfigEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\ConfigHolder.cs" />
+    <Compile Include="Config\ConfigManager.cs" />
+    <Compile Include="Config\ConfigObject.cs" />
+    <Compile Include="Config\ConfigRoot.cs" />
+    <Compile Include="Config\Data\Fixed\FixedConfig.cs" />
+    <Compile Include="Config\Data\Language\LanguageConfig.cs" />
+    <Compile Include="Config\Data\Language\MainMessageConfig.cs" />
+    <Compile Include="Config\Data\Language\MainUiConfig.cs" />
+    <Compile Include="Config\Data\Language\PacketViewConfig.cs" />
+    <Compile Include="Config\Data\System\ApplicationCoreConfig.cs" />
+    <Compile Include="Config\Data\System\AutoPacketSaveConfig.cs" />
+    <Compile Include="Config\Data\System\AutoTimeStampConfig.cs" />
+    <Compile Include="Config\Data\System\MainWindowConfig.cs" />
+    <Compile Include="Config\Data\System\ProfileConfig.cs" />
+    <Compile Include="Config\Data\System\ScriptWindowConfig.cs" />
+    <Compile Include="Config\Data\System\SystemConfig.cs" />
+    <Compile Include="Config\Data\User\GateListConfig.cs" />
+    <Compile Include="Config\Data\User\OptionConfig.cs" />
+    <Compile Include="Config\Data\User\PacketConverterConfig.cs" />
+    <Compile Include="Config\Data\User\PacketListConfig.cs" />
+    <Compile Include="Config\Data\User\PacketViewConfig.cs" />
+    <Compile Include="Config\Data\User\PluginListConfig.cs" />
+    <Compile Include="Config\Data\User\SendDataListConfig.cs" />
+    <Compile Include="Config\Data\User\SendFrameListConfig.cs" />
+    <Compile Include="Config\Data\User\UserConfig.cs" />
+    <Compile Include="Config\Data\User\WatchDataListConfig.cs" />
+    <Compile Include="Config\IConfigData.cs" />
+    <Compile Include="Config\IConfigDataHolder.cs" />
+    <Compile Include="Config\IConfigDataReadOnly.cs" />
+    <Compile Include="Config\IConfigReader.cs" />
+    <Compile Include="Config\IConfigRoot.cs" />
+    <Compile Include="Config\IConfigWriter.cs" />
+    <Compile Include="Config\Types\BoolConfig.cs" />
+    <Compile Include="Config\Types\ColorConfig.cs" />
+    <Compile Include="Config\Types\DateTimeConfig.cs" />
+    <Compile Include="Config\Types\EnumConfig.cs" />
+    <Compile Include="Config\Types\EnumListConfig.cs" />
+    <Compile Include="Config\Types\GuidConfig.cs" />
+    <Compile Include="Config\Types\IntegerConfig.cs" />
+    <Compile Include="Config\Types\IPAddressConfig.cs" />
+    <Compile Include="Config\Types\KeyConfig.cs" />
+    <Compile Include="Config\Types\MailListConfig.cs" />
+    <Compile Include="Config\Types\PointConfig.cs" />
+    <Compile Include="Config\Types\SizeConfig.cs" />
+    <Compile Include="Config\Types\StringConfig.cs" />
+    <Compile Include="Config\Types\StringListConfig.cs" />
+    <Compile Include="Config\Types\WindowDockStateConfig.cs" />
+    <Compile Include="Device\AudioDevice\DeviceClassImpl.cs" />
+    <Compile Include="Device\AudioDevice\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\AudioDevice\DevicePropertyEditorImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Device\AudioDevice\DevicePropertyEditorImpl.Designer.cs">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Devices\AudioFile\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\AudioFile\MicDeviceInfo.cs" />
-    <Compile Include="Devices\DeviceManager.cs" />
-    <Compile Include="Devices\AudioDevice\DeviceClassImpl.cs" />
-    <Compile Include="Devices\AudioDevice\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\AudioDevice\DevicePropertyEditorImpl.cs">
+    <Compile Include="Device\AudioDevice\DevicePropertyImpl.cs" />
+    <Compile Include="Device\AudioDevice\MicDeviceInfo.cs" />
+    <Compile Include="Device\AudioFile\DeviceClassImpl.cs" />
+    <Compile Include="Device\AudioFile\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\AudioFile\DevicePropertyEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Devices\AudioDevice\DevicePropertyEditorImpl.Designer.cs">
+    <Compile Include="Device\AudioFile\DevicePropertyEditorImpl.Designer.cs">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Devices\AudioDevice\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\AudioDevice\MicDeviceInfo.cs" />
-    <Compile Include="Devices\Null\DeviceClassImpl.cs" />
-    <Compile Include="Devices\Null\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\Null\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\SerialPort\DeviceClassImpl.cs" />
-    <Compile Include="Devices\SerialPort\DeviceControlPanelImpl.cs">
+    <Compile Include="Device\AudioFile\DevicePropertyImpl.cs" />
+    <Compile Include="Device\AudioFile\MicDeviceInfo.cs" />
+    <Compile Include="Device\DeviceClass.cs" />
+    <Compile Include="Device\DeviceConfig.cs" />
+    <Compile Include="Device\DeviceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Devices\SerialPort\DeviceControlPanelImpl.Designer.cs">
+    <Compile Include="Device\DeviceControlPanel.Designer.cs">
+      <DependentUpon>DeviceControlPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Device\DeviceInstance.cs" />
+    <Compile Include="Device\DeviceManager.cs" />
+    <Compile Include="Device\DeviceProperty.cs" />
+    <Compile Include="Device\DevicePropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Device\DevicePropertyEditor.Designer.cs">
+      <DependentUpon>DevicePropertyEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Device\EthernetCapture\DeviceClassImpl.cs" />
+    <Compile Include="Device\EthernetCapture\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\EthernetCapture\DevicePropertyEditorImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Device\EthernetCapture\DevicePropertyEditorImpl.Designer.cs">
+      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Device\EthernetCapture\DevicePropertyImpl.cs" />
+    <Compile Include="Device\EthernetCapture\PcapPacketInfo.cs" />
+    <Compile Include="Device\EthernetCapture\PcapPacketParserOption.cs" />
+    <Compile Include="Device\EthernetCapture\SharpPcapPacketParser.cs" />
+    <Compile Include="Device\Null\DeviceClassImpl.cs" />
+    <Compile Include="Device\Null\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\Null\DevicePropertyImpl.cs" />
+    <Compile Include="Device\SerialPort\DeviceClassImpl.cs" />
+    <Compile Include="Device\SerialPort\DeviceControlPanelImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Device\SerialPort\DeviceControlPanelImpl.Designer.cs">
       <DependentUpon>DeviceControlPanelImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Devices\SerialPort\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\SerialPort\DevicePropertyEditorImpl.cs">
+    <Compile Include="Device\SerialPort\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\SerialPort\DevicePropertyEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Devices\SerialPort\DevicePropertyEditorImpl.Designer.cs">
+    <Compile Include="Device\SerialPort\DevicePropertyEditorImpl.Designer.cs">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Devices\SerialPort\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\TcpClient\DeviceClassImpl.cs" />
-    <Compile Include="Devices\TcpClient\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\TcpClient\DevicePropertyEditorImpl.cs">
+    <Compile Include="Device\SerialPort\DevicePropertyImpl.cs" />
+    <Compile Include="Device\TcpClient\DeviceClassImpl.cs" />
+    <Compile Include="Device\TcpClient\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\TcpClient\DevicePropertyEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Devices\TcpClient\DevicePropertyEditorImpl.Designer.cs">
+    <Compile Include="Device\TcpClient\DevicePropertyEditorImpl.Designer.cs">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Devices\TcpClient\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\TcpServer\TcpClientObject.cs" />
-    <Compile Include="Devices\TcpServer\DeviceClassImpl.cs" />
-    <Compile Include="Devices\TcpServer\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\TcpServer\DevicePropertyEditorImpl.cs">
+    <Compile Include="Device\TcpClient\DevicePropertyImpl.cs" />
+    <Compile Include="Device\TcpServer\DeviceClassImpl.cs" />
+    <Compile Include="Device\TcpServer\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\TcpServer\DevicePropertyEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Devices\TcpServer\DevicePropertyEditorImpl.Designer.cs">
+    <Compile Include="Device\TcpServer\DevicePropertyEditorImpl.Designer.cs">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Devices\TcpServer\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\UdpClient\DeviceClassImpl.cs" />
-    <Compile Include="Devices\UdpClient\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\UdpClient\DevicePropertyEditorImpl.cs">
+    <Compile Include="Device\TcpServer\DevicePropertyImpl.cs" />
+    <Compile Include="Device\TcpServer\TcpClientObject.cs" />
+    <Compile Include="Device\UdpClient\DeviceClassImpl.cs" />
+    <Compile Include="Device\UdpClient\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\UdpClient\DevicePropertyEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Devices\UdpClient\DevicePropertyEditorImpl.Designer.cs">
+    <Compile Include="Device\UdpClient\DevicePropertyEditorImpl.Designer.cs">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Devices\UdpClient\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\UsbComm\DeviceClassImpl.cs" />
-    <Compile Include="Devices\UsbComm\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\UsbComm\DevicePropertyEditorImpl.cs">
+    <Compile Include="Device\UdpClient\DevicePropertyImpl.cs" />
+    <Compile Include="Device\UsbCapture\DeviceClassImpl.cs" />
+    <Compile Include="Device\UsbCapture\DevicePropertyEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Devices\UsbComm\DevicePropertyEditorImpl.Designer.cs">
+    <Compile Include="Device\UsbCapture\DevicePropertyEditorImpl.Designer.cs">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Devices\UsbComm\DevicePropertyImpl.cs" />
-    <Compile Include="FileFormats\FileFormatManager.cs" />
-    <Compile Include="FileFormats\FileFormatOptionForm.cs">
+    <Compile Include="Device\UsbCapture\DevicePropertyImpl.cs" />
+    <Compile Include="Device\UsbCapture\UsbPcapDeviceObject.cs" />
+    <Compile Include="Device\UsbCapture\UsbPcapManager.cs" />
+    <Compile Include="Device\UsbCapture\UsbPcapRecordParser.cs" />
+    <Compile Include="Device\UsbComm\DeviceClassImpl.cs" />
+    <Compile Include="Device\UsbComm\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\UsbComm\DevicePropertyEditorImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Device\UsbComm\DevicePropertyEditorImpl.Designer.cs">
+      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Device\UsbComm\DevicePropertyImpl.cs" />
+    <Compile Include="Driver\SerialPort\SerialPortController.cs" />
+    <Compile Include="Driver\SerialPort\SerialPortInfo.cs" />
+    <Compile Include="Driver\SerialPort\SerialPortManager.cs" />
+    <Compile Include="FileFormat\FileFormatClass.cs" />
+    <Compile Include="FileFormat\FileFormatManager.cs" />
+    <Compile Include="FileFormat\FileFormatOption.cs" />
+    <Compile Include="FileFormat\FileFormatOptionEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FileFormat\FileFormatOptionEditor.Designer.cs">
+      <DependentUpon>FileFormatOptionEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileFormat\FileFormatOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FileFormats\FileFormatOptionForm.Designer.cs">
+    <Compile Include="FileFormat\FileFormatOptionForm.Designer.cs">
       <DependentUpon>FileFormatOptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FileFormats\FileFormatSelectDialog.cs">
+    <Compile Include="FileFormat\FileFormatReader.cs" />
+    <Compile Include="FileFormat\FileFormatSelectDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FileFormats\FileFormatSelectDialog.Designer.cs">
+    <Compile Include="FileFormat\FileFormatSelectDialog.Designer.cs">
       <DependentUpon>FileFormatSelectDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="FileFormats\FileManager.cs" />
-    <Compile Include="FileFormats\PacketLog_Binary\FileFormatClassImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Binary\FileFormatReaderImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Binary\FileFormatReaderOptionEditorImpl.cs">
+    <Compile Include="FileFormat\FileFormatWriter.cs" />
+    <Compile Include="FileFormat\FileManager.cs" />
+    <Compile Include="FileFormat\FileReadTargetInfo.cs" />
+    <Compile Include="FileFormat\FileWriteTargetInfo.cs" />
+    <Compile Include="FileFormat\PacketLogReader.cs" />
+    <Compile Include="FileFormat\PacketLogWriter.cs" />
+    <Compile Include="FileFormat\PacketLog_Binary\FileFormatClassImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Binary\FileFormatReaderImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Binary\FileFormatReaderOptionEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FileFormats\PacketLog_Binary\FileFormatReaderOptionImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Binary\FileFormatWriterImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Binary\FileFormatWriterOptionEditorImpl.cs">
+    <Compile Include="FileFormat\PacketLog_Binary\FileFormatReaderOptionImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Binary\FileFormatWriterImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Binary\FileFormatWriterOptionEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FileFormats\PacketLog_Binary\FileFormatWriterOptionImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Csv\FileFormatClassImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Csv\FileFormatOptionEditorImpl.cs">
+    <Compile Include="FileFormat\PacketLog_Binary\FileFormatWriterOptionImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Csv\FileFormatClassImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Csv\FileFormatOptionEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FileFormats\PacketLog_Csv\FileFormatOptionImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Csv\FileFormatReaderImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Csv\FileFormatWriterImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Rtcap\FileFormatClassImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Rtcap\FileFormatReaderImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Rtcap\FileFormatWriterImpl.cs" />
-    <Compile Include="FileFormats\UserConfigData.cs" />
-    <Compile Include="FileFormats\UserConfigReader.cs" />
-    <Compile Include="FileFormats\UserConfigWriter.cs" />
-    <Compile Include="FileFormats\UserConfigWriterOption.cs" />
-    <Compile Include="FileFormats\UserConfig_Rtcfg\FileFormatClassImpl.cs" />
-    <Compile Include="FileFormats\UserConfig_Rtcfg\FileFormatReaderImpl.cs" />
-    <Compile Include="FileFormats\UserConfig_Rtcfg\FileFormatWriterImpl.cs" />
-    <Compile Include="Forms\Controls\BinEditBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\BinEditBox.Designer.cs">
-      <DependentUpon>BinEditBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\ButtonEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\CodeEditorEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\DataGridViewEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\DataGridViewEx.Designer.cs">
-      <DependentUpon>DataGridViewEx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\DnsAddressSelectBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\DnsAddressSelectBox.Designer.cs">
-      <DependentUpon>DnsAddressSelectBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\DockPanelEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\FileExplorerEx.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\FileExplorerEx.Designer.cs">
-      <DependentUpon>FileExplorerEx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\HexNumericUpDown.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\HostAddressSelectBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\HostAddressSelectBox.Designer.cs">
-      <DependentUpon>HostAddressSelectBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\PacketFilterBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\PacketFilterBox.Designer.cs">
-      <DependentUpon>PacketFilterBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\PanelEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\PreviewLabel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\PreviewLabel.Designer.cs">
-      <DependentUpon>PreviewLabel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\PreviewTextBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\PreviewTextBox.Designer.cs">
-      <DependentUpon>PreviewTextBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\RadioButtonListBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\RadioButtonListBox.Designer.cs">
-      <DependentUpon>RadioButtonListBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\RoundTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\SplashScreen.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\SplashScreen.Designer.cs">
-      <DependentUpon>SplashScreen.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\TextViewEx.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\TextViewEx.Designer.cs">
-      <DependentUpon>TextViewEx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\TrafficEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\TrafficEditor.Designer.cs">
-      <DependentUpon>TrafficEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Controls\TreeListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\TreeListViewNode.cs" />
+    <Compile Include="FileFormat\PacketLog_Csv\FileFormatOptionImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Csv\FileFormatReaderImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Csv\FileFormatWriterImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Pcap\FileFormatClassImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Pcap\FileFormatWriterOptionImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Pcap\FileFormatReaderImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Rtcap\FileFormatClassImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Rtcap\FileFormatReaderImpl.cs" />
+    <Compile Include="FileFormat\PacketLog_Rtcap\FileFormatWriterImpl.cs" />
+    <Compile Include="FileFormat\UserConfigData.cs" />
+    <Compile Include="FileFormat\UserConfigReader.cs" />
+    <Compile Include="FileFormat\UserConfigWriter.cs" />
+    <Compile Include="FileFormat\UserConfigWriterOption.cs" />
+    <Compile Include="FileFormat\UserConfig_Rtcfg\FileFormatClassImpl.cs" />
+    <Compile Include="FileFormat\UserConfig_Rtcfg\FileFormatReaderImpl.cs" />
+    <Compile Include="FileFormat\UserConfig_Rtcfg\FileFormatWriterImpl.cs" />
     <Compile Include="Forms\Dialog\GateEditDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -487,6 +484,7 @@
       <DependentUpon>MainWindow_WatchListPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\OptionEditForm\OptionDataMap.cs" />
+    <Compile Include="Forms\OptionEditForm\OptionEditData.cs" />
     <Compile Include="Forms\OptionEditForm\OptionEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -595,90 +593,225 @@
     <Compile Include="Gate\GatePacketManager.cs" />
     <Compile Include="Gate\GateProperty.cs" />
     <Compile Include="Gate\GateTransferManager.cs" />
-    <Compile Include="PacketConverters\Convert\DataChange\AlgorithmObjectImpl.cs">
+    <Compile Include="PacketConverter\Convert\AlgorithmObject.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PacketConverters\Convert\DataChange\AlgorithmProperty.cs" />
-    <Compile Include="PacketConverters\Convert\DataRemove\AlgorithmObjectImpl.cs">
+    <Compile Include="PacketConverter\Convert\AlgorithmObject.Designer.cs">
+      <DependentUpon>AlgorithmObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PacketConverter\Convert\ChangeAlias\AlgorithmObjectImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PacketConverters\Convert\DataRemove\AlgorithmProperty.cs" />
-    <Compile Include="PacketConverters\Grouping\ConvertMethodClass.cs">
+    <Compile Include="PacketConverter\Convert\ChangeAlias\AlgorithmProperty.cs" />
+    <Compile Include="PacketConverter\Convert\CodeExtentionDecode\AlgorithmObjectImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PacketConverters\Grouping\ConvertMethodClass.Designer.cs">
+    <Compile Include="PacketConverter\Convert\CodeExtentionDecode\AlgorithmProperty.cs" />
+    <Compile Include="PacketConverter\Convert\CodeExtentionEncode\AlgorithmObjectImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverter\Convert\CodeExtentionEncode\AlgorithmProperty.cs" />
+    <Compile Include="PacketConverter\Convert\DataChange\AlgorithmObjectImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverter\Convert\DataChange\AlgorithmProperty.cs" />
+    <Compile Include="PacketConverter\Convert\DataRemove\AlgorithmObjectImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverter\Convert\DataRemove\AlgorithmProperty.cs" />
+    <Compile Include="PacketConverter\Convert\PacketConverterClassImpl.cs" />
+    <Compile Include="PacketConverter\Convert\PacketConverterInstanceImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverter\Convert\PacketConverterPropertyImpl.cs" />
+    <Compile Include="PacketConverter\Filter\PacketConverterClassImpl.cs" />
+    <Compile Include="PacketConverter\Filter\PacketConverterInstanceImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverter\Filter\PacketConverterPropertyImpl.cs" />
+    <Compile Include="PacketConverter\Grouping\ConvertMethodClass.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverter\Grouping\ConvertMethodClass.Designer.cs">
       <DependentUpon>ConvertMethodClass.cs</DependentUpon>
     </Compile>
-    <Compile Include="PacketConverters\Grouping\ConvertMethodInstance.cs" />
-    <Compile Include="PacketConverters\Grouping\DataContentsMatch\ConvertMethodClassImpl.cs">
+    <Compile Include="PacketConverter\Grouping\ConvertMethodInstance.cs" />
+    <Compile Include="PacketConverter\Grouping\DataContentsMatch\ConvertMethodClassImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PacketConverters\Grouping\DataContentsMatch\ConvertMethodInstanceImpl.cs" />
-    <Compile Include="PacketConverters\Grouping\DataContentsMatch\ConvertMethodProperty.cs" />
-    <Compile Include="PacketConverters\Grouping\DataLengthMatch\ConvertMethodClassImpl.cs">
+    <Compile Include="PacketConverter\Grouping\DataContentsMatch\ConvertMethodInstanceImpl.cs" />
+    <Compile Include="PacketConverter\Grouping\DataContentsMatch\ConvertMethodProperty.cs" />
+    <Compile Include="PacketConverter\Grouping\DataLengthMatch\ConvertMethodClassImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PacketConverters\Grouping\DataLengthMatch\ConvertMethodInstanceImpl.cs" />
-    <Compile Include="PacketConverters\Grouping\DataLengthMatch\ConvertMethodProperty.cs" />
-    <Compile Include="PacketConverters\Grouping\MSecPassingFromFirstPacket\ConvertMethodClassImpl.cs">
+    <Compile Include="PacketConverter\Grouping\DataLengthMatch\ConvertMethodInstanceImpl.cs" />
+    <Compile Include="PacketConverter\Grouping\DataLengthMatch\ConvertMethodProperty.cs" />
+    <Compile Include="PacketConverter\Grouping\MSecPassingFromFirstPacket\ConvertMethodClassImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PacketConverters\Grouping\MSecPassingFromFirstPacket\ConvertMethodInstanceImpl.cs" />
-    <Compile Include="PacketConverters\Grouping\MSecPassingFromFirstPacket\ConvertMethodProperty.cs" />
-    <Compile Include="PacketConverters\Grouping\MSecPassingFromPrevPacket\ConvertMethodClassImpl.cs">
+    <Compile Include="PacketConverter\Grouping\MSecPassingFromFirstPacket\ConvertMethodInstanceImpl.cs" />
+    <Compile Include="PacketConverter\Grouping\MSecPassingFromFirstPacket\ConvertMethodProperty.cs" />
+    <Compile Include="PacketConverter\Grouping\MSecPassingFromPrevPacket\ConvertMethodClassImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PacketConverters\Grouping\MSecPassingFromPrevPacket\ConvertMethodInstanceImpl.cs" />
-    <Compile Include="PacketConverters\Grouping\MSecPassingFromPrevPacket\ConvertMethodProperty.cs" />
-    <Compile Include="PacketConverters\Grouping\PacketConverterClassImpl.cs" />
-    <Compile Include="PacketConverters\Grouping\PacketConverterInstanceImpl.cs">
+    <Compile Include="PacketConverter\Grouping\MSecPassingFromPrevPacket\ConvertMethodInstanceImpl.cs" />
+    <Compile Include="PacketConverter\Grouping\MSecPassingFromPrevPacket\ConvertMethodProperty.cs" />
+    <Compile Include="PacketConverter\Grouping\PacketConverterClassImpl.cs" />
+    <Compile Include="PacketConverter\Grouping\PacketConverterInstanceImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PacketConverters\Grouping\PacketConverterPropertyImpl.cs" />
-    <Compile Include="PacketViews\Graph\Configs\ChannelListConfig.cs" />
-    <Compile Include="PacketViews\Graph\DataCollectModules\DataCollectModule.cs" />
-    <Compile Include="PacketViews\Graph\DataCollectModules\DataCollect_Count.cs" />
-    <Compile Include="PacketViews\Graph\DataCollectModules\DataCollect_Value.cs" />
-    <Compile Include="PacketViews\Graph\DataCollectModules\DataCollect_ValueSum.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormatModule.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormat_IEEE754_Double.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormat_IEEE754_Float.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormat_SignedByte.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormat_SignedDword.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormat_SignedQword.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormat_SignedWord.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormat_UnsignedByte.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormat_UnsignedDword.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormat_UnsignedQword.cs" />
-    <Compile Include="PacketViews\Graph\DataFormatModules\DataFormat_UnsignedWord.cs" />
-    <Compile Include="PacketViews\Graph\DisplayModules\DisplayInfo.cs" />
-    <Compile Include="PacketViews\Graph\DisplayModules\DisplayLayerParam.cs" />
-    <Compile Include="PacketViews\Graph\DisplayModules\DisplayModule.cs" />
-    <Compile Include="PacketViews\Graph\DisplayModules\DisplayParam.cs" />
-    <Compile Include="PacketViews\Graph\DisplayModules\Display_Oscillo.cs" />
-    <Compile Include="PacketViews\Graph\DisplayModules\Display_Spectrum.cs" />
-    <Compile Include="PacketViews\Graph\GraphControlPanel.cs">
+    <Compile Include="PacketConverter\Grouping\PacketConverterPropertyImpl.cs" />
+    <Compile Include="PacketConverter\PacketConverterClass.cs" />
+    <Compile Include="PacketConverter\PacketConverterInstance.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PacketViews\Graph\GraphControlPanel.Designer.cs">
+    <Compile Include="PacketConverter\PacketConverterInstance.Designer.cs">
+      <DependentUpon>PacketConverterInstance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PacketConverter\PacketConvertManager.cs" />
+    <Compile Include="PacketConverter\PacketConverterProperty.cs" />
+    <Compile Include="PacketConverter\Transfer\AlgorithmObject.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverter\Transfer\AlgorithmObject.Designer.cs">
+      <DependentUpon>AlgorithmObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PacketConverter\Transfer\File\AlgorithmObjectImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverter\Transfer\File\AlgorithmProperty.cs" />
+    <Compile Include="PacketConverter\Transfer\PacketConverterClassImpl.cs" />
+    <Compile Include="PacketConverter\Transfer\PacketConverterInstanceImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketConverter\Transfer\PacketConverterPropertyImpl.cs" />
+    <Compile Include="PacketView\Graph\Configs\ChannelListConfig.cs" />
+    <Compile Include="PacketView\Graph\DataCollectModules\DataCollectModule.cs" />
+    <Compile Include="PacketView\Graph\DataCollectModules\DataCollect_Count.cs" />
+    <Compile Include="PacketView\Graph\DataCollectModules\DataCollect_Value.cs" />
+    <Compile Include="PacketView\Graph\DataCollectModules\DataCollect_ValueSum.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormatModule.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_IEEE754_Double.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_IEEE754_Float.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_SignedByte.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_SignedDword.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_SignedQword.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_SignedWord.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_UnsignedByte.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_UnsignedDword.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_UnsignedQword.cs" />
+    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_UnsignedWord.cs" />
+    <Compile Include="PacketView\Graph\DisplayModules\DisplayInfo.cs" />
+    <Compile Include="PacketView\Graph\DisplayModules\DisplayLayerParam.cs" />
+    <Compile Include="PacketView\Graph\DisplayModules\DisplayModule.cs" />
+    <Compile Include="PacketView\Graph\DisplayModules\DisplayParam.cs" />
+    <Compile Include="PacketView\Graph\DisplayModules\Display_Oscillo.cs" />
+    <Compile Include="PacketView\Graph\DisplayModules\Display_Spectrum.cs" />
+    <Compile Include="PacketView\Graph\GraphControlPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketView\Graph\GraphControlPanel.Designer.cs">
       <DependentUpon>GraphControlPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="PacketViews\Packet\Controls\SelectPacketStatusView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PacketViews\Protocol\Configs\EventListColumnListConfig.cs" />
-    <Compile Include="PacketViews\Protocol\ViewClassImpl.cs" />
-    <Compile Include="PacketViews\Protocol\ViewInstanceImpl.cs">
+    <Compile Include="PacketView\Graph\PacketViewClassImpl.cs" />
+    <Compile Include="PacketView\Graph\PacketViewInstanceImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PacketViews\Protocol\ViewPropertyImpl.cs" />
-    <Compile Include="PacketViews\Sequential\ViewTextBox.cs">
+    <Compile Include="PacketView\Graph\PacketViewPropertyImpl.cs" />
+    <Compile Include="PacketView\PacketViewClass.cs" />
+    <Compile Include="PacketView\PacketViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketView\PacketViewControl.Designer.cs">
+      <DependentUpon>PacketViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PacketView\PacketViewInstance.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketView\PacketViewInstance.Designer.cs">
+      <DependentUpon>PacketViewInstance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PacketView\PacketViewManager.cs" />
+    <Compile Include="PacketView\PacketViewProperty.cs" />
+    <Compile Include="PacketView\Packet\Configs\ColumnListConfig.cs" />
+    <Compile Include="PacketView\Packet\Controls\SelectPacketStatusView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PacketView\Packet\Forms\ColumnHeaderEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PacketView\Packet\Forms\ColumnHeaderEditForm.Designer.cs">
+      <DependentUpon>ColumnHeaderEditForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PacketView\Packet\PacketViewClassImpl.cs" />
+    <Compile Include="PacketView\Packet\PacketViewInstanceImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketView\Packet\PacketViewLanguageConfig.cs" />
+    <Compile Include="PacketView\Packet\PacketViewPropertyImpl.cs" />
+    <Compile Include="PacketView\Protocol\PacketViewClassImpl.cs" />
+    <Compile Include="PacketView\Protocol\PacketViewInstanceImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketView\Protocol\PacketViewInstanceImpl.Designer.cs">
+      <DependentUpon>PacketViewInstanceImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PacketView\Protocol\PacketViewPropertyImpl.cs" />
+    <Compile Include="ProtocolParser\Ethernet\ProtocolParserClassImpl.cs" />
+    <Compile Include="ProtocolParser\Ethernet\ProtocolParserInstanceImpl.cs" />
+    <Compile Include="ProtocolParser\ProtocolParseInfo.cs" />
+    <Compile Include="ProtocolParser\ProtocolParserClass.cs" />
+    <Compile Include="ProtocolParser\ProtocolParsePacketInfo.cs" />
+    <Compile Include="ProtocolParser\ProtocolParserInstance.cs" />
+    <Compile Include="PacketView\Protocol\PcapLibLinkType.cs" />
+    <Compile Include="PacketView\Sequential\PacketViewClassImpl.cs" />
+    <Compile Include="PacketView\Sequential\PacketViewInstanceImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketView\Sequential\PacketViewPropertyImpl.cs" />
+    <Compile Include="PacketView\Sequential\ViewTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PacketView\Wireshark\PacketViewClassImpl.cs" />
+    <Compile Include="PacketView\Wireshark\PacketViewInstanceImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketView\Wireshark\PacketViewInstanceImpl.Designer.cs">
+      <DependentUpon>PacketViewInstanceImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PacketView\Wireshark\PacketViewPropertyImpl.cs" />
+    <Compile Include="PacketView\Wireshark\WiresharkLinkType.cs" />
+    <Compile Include="Plugin\PluginClass.cs" />
+    <Compile Include="Plugin\PluginContext.cs" />
     <Compile Include="Plugin\PluginEgnoreList.cs" />
     <Compile Include="Plugin\PluginInfo.cs" />
+    <Compile Include="Plugin\PluginInstance.cs" />
+    <Compile Include="Plugin\PluginInterface.cs" />
     <Compile Include="Plugin\PluginManager.cs" />
-    <Compile Include="Protocol\ProtocolManager.cs" />
+    <Compile Include="Plugin\PluginProperty.cs" />
+    <Compile Include="Plugin\PluginPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Plugin\PluginPropertyEditor.Designer.cs">
+      <DependentUpon>PluginPropertyEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProtocolParser\ProtocolParserManager.cs" />
+    <Compile Include="ProtocolParser\ProtocolParseStreamInfo.cs" />
+    <Compile Include="Protocol\ProtocolDecodeChannel.cs" />
+    <Compile Include="Protocol\ProtocolDecodeEvent.cs" />
+    <Compile Include="Protocol\ProtocolDecodeEvent_BitData.cs" />
+    <Compile Include="Protocol\ProtocolDecodeEvent_Frame.cs" />
+    <Compile Include="Protocol\ProtocolDecodeEvent_Message.cs" />
+    <Compile Include="Protocol\ProtocolDecodeEvent_Value.cs" />
+    <Compile Include="Protocol\ProtocolDecoderClass.cs" />
+    <Compile Include="Protocol\ProtocolDecoderInstance.cs" />
+    <Compile Include="Protocol\ProtocolEncoderClass.cs" />
+    <Compile Include="Protocol\ProtocolEncoderInstance.cs" />
+    <Compile Include="Protocol\ProtocolFrameElement.cs" />
+    <Compile Include="Protocol\ProtocolFrameElement_BitData.cs" />
+    <Compile Include="Protocol\ProtocolFrameElement_Enum.cs" />
+    <Compile Include="Protocol\ProtocolFrameElement_Integer.cs" />
+    <Compile Include="Protocol\ProtocolProperty.cs" />
     <Compile Include="Scripts\ScriptController.cs" />
     <Compile Include="Scripts\ScriptEngines\IScriptRunner.cs" />
     <Compile Include="Scripts\ScriptEngines\ScriptCodeRunner.cs" />
@@ -687,72 +820,6 @@
     <Compile Include="Scripts\ScriptFileController.cs" />
     <Compile Include="Scripts\ScriptManager.cs" />
     <Compile Include="Scripts\ScriptMessageData.cs" />
-    <Compile Include="PacketConverters\Convert\AlgorithmObject.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Convert\AlgorithmObject.Designer.cs">
-      <DependentUpon>AlgorithmObject.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PacketConverters\Convert\ChangeAlias\AlgorithmObjectImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Convert\ChangeAlias\AlgorithmProperty.cs" />
-    <Compile Include="PacketConverters\Convert\CodeExtentionDecode\AlgorithmObjectImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Convert\CodeExtentionDecode\AlgorithmProperty.cs" />
-    <Compile Include="PacketConverters\Convert\CodeExtentionEncode\AlgorithmObjectImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Convert\CodeExtentionEncode\AlgorithmProperty.cs" />
-    <Compile Include="PacketConverters\Convert\PacketConverterClassImpl.cs" />
-    <Compile Include="PacketConverters\Convert\PacketConverterInstanceImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Convert\PacketConverterPropertyImpl.cs" />
-    <Compile Include="PacketConverters\Filter\PacketConverterClassImpl.cs" />
-    <Compile Include="PacketConverters\Filter\PacketConverterInstanceImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Filter\PacketConverterPropertyImpl.cs" />
-    <Compile Include="PacketConverters\Transfer\AlgorithmObject.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Transfer\AlgorithmObject.Designer.cs">
-      <DependentUpon>AlgorithmObject.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PacketConverters\Transfer\File\AlgorithmObjectImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Transfer\File\AlgorithmProperty.cs" />
-    <Compile Include="PacketConverters\Transfer\PacketConverterClassImpl.cs" />
-    <Compile Include="PacketConverters\Transfer\PacketConverterInstanceImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverters\Transfer\PacketConverterPropertyImpl.cs" />
-    <Compile Include="PacketViews\Graph\ViewClassImpl.cs" />
-    <Compile Include="PacketViews\Graph\ViewInstanceImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketViews\Graph\ViewPropertyImpl.cs" />
-    <Compile Include="PacketViews\Packet\Configs\ColumnListConfig.cs" />
-    <Compile Include="PacketViews\Packet\Forms\ColumnHeaderEditForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PacketViews\Packet\Forms\ColumnHeaderEditForm.Designer.cs">
-      <DependentUpon>ColumnHeaderEditForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PacketViews\Packet\ViewClassImpl.cs" />
-    <Compile Include="PacketViews\Packet\ViewInstanceImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketViews\Packet\ViewLanguageConfig.cs" />
-    <Compile Include="PacketViews\Packet\ViewPropertyImpl.cs" />
-    <Compile Include="PacketViews\Sequential\ViewClassImpl.cs" />
-    <Compile Include="PacketViews\Sequential\ViewInstanceImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketViews\Sequential\ViewPropertyImpl.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -760,85 +827,50 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TransferProtocols\None\TransferProtocolClassImpl.cs" />
-    <Compile Include="TransferProtocols\None\TransferProtocolInstanceImpl.cs" />
-    <Compile Include="TransferProtocols\TransferProtocolClass.cs" />
-    <Compile Include="TransferProtocols\TransferProtocolInstance.cs" />
-    <Compile Include="TransferProtocols\TransferProtocolManager.cs" />
     <Compile Include="Update\UpdateManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\DebugWindow\DebugWindow_Form.resx">
-      <DependentUpon>DebugWindow_Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Devices\AudioFile\DevicePropertyEditorImpl.resx">
+    <EmbeddedResource Include="Device\AudioDevice\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Devices\AudioDevice\DevicePropertyEditorImpl.resx">
+    <EmbeddedResource Include="Device\AudioFile\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Devices\SerialPort\DeviceControlPanelImpl.resx">
+    <EmbeddedResource Include="Device\EthernetCapture\DevicePropertyEditorImpl.resx">
+      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Device\SerialPort\DeviceControlPanelImpl.resx">
       <DependentUpon>DeviceControlPanelImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Devices\SerialPort\DevicePropertyEditorImpl.resx">
+    <EmbeddedResource Include="Device\SerialPort\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Devices\TcpClient\DevicePropertyEditorImpl.resx">
+    <EmbeddedResource Include="Device\TcpClient\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Devices\TcpServer\DevicePropertyEditorImpl.resx">
+    <EmbeddedResource Include="Device\TcpServer\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Devices\UdpClient\DevicePropertyEditorImpl.resx">
+    <EmbeddedResource Include="Device\UdpClient\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Devices\UsbComm\DevicePropertyEditorImpl.resx">
+    <EmbeddedResource Include="Device\UsbCapture\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FileFormats\FileFormatOptionForm.resx">
+    <EmbeddedResource Include="Device\UsbComm\DevicePropertyEditorImpl.resx">
+      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileFormat\FileFormatOptionForm.resx">
       <DependentUpon>FileFormatOptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FileFormats\FileFormatSelectDialog.resx">
+    <EmbeddedResource Include="FileFormat\FileFormatSelectDialog.resx">
       <DependentUpon>FileFormatSelectDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FileFormats\PacketLog_Binary\FileFormatReaderOptionEditorImpl.resx">
+    <EmbeddedResource Include="FileFormat\PacketLog_Binary\FileFormatReaderOptionEditorImpl.resx">
       <DependentUpon>FileFormatReaderOptionEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FileFormats\PacketLog_Binary\FileFormatWriterOptionEditorImpl.resx">
+    <EmbeddedResource Include="FileFormat\PacketLog_Binary\FileFormatWriterOptionEditorImpl.resx">
       <DependentUpon>FileFormatWriterOptionEditorImpl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\BinEditBox.resx">
-      <DependentUpon>BinEditBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\DnsAddressSelectBox.resx">
-      <DependentUpon>DnsAddressSelectBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\FileExplorerEx.resx">
-      <DependentUpon>FileExplorerEx.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\HostAddressSelectBox.resx">
-      <DependentUpon>HostAddressSelectBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\PacketFilterBox.resx">
-      <DependentUpon>PacketFilterBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\PreviewLabel.resx">
-      <DependentUpon>PreviewLabel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\PreviewTextBox.resx">
-      <DependentUpon>PreviewTextBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\RadioButtonListBox.resx">
-      <DependentUpon>RadioButtonListBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\SplashScreen.resx">
-      <DependentUpon>SplashScreen.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\TextViewEx.resx">
-      <DependentUpon>TextViewEx.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\TrafficEditor.resx">
-      <DependentUpon>TrafficEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialog\GateEditDialog.resx">
       <DependentUpon>GateEditDialog.cs</DependentUpon>
@@ -963,65 +995,74 @@
     <EmbeddedResource Include="Forms\TransmissionWindow\TransmissionWindow_Protocol.resx">
       <DependentUpon>TransmissionWindow_Protocol.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Convert\ChangeAlias\AlgorithmObjectImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Convert\ChangeAlias\AlgorithmObjectImpl.resx">
       <DependentUpon>AlgorithmObjectImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Convert\CodeExtentionDecode\AlgorithmObjectImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Convert\CodeExtentionDecode\AlgorithmObjectImpl.resx">
       <DependentUpon>AlgorithmObjectImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Convert\CodeExtentionEncode\AlgorithmObjectImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Convert\CodeExtentionEncode\AlgorithmObjectImpl.resx">
       <DependentUpon>AlgorithmObjectImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Convert\DataChange\AlgorithmObjectImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Convert\DataChange\AlgorithmObjectImpl.resx">
       <DependentUpon>AlgorithmObjectImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Convert\DataRemove\AlgorithmObjectImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Convert\DataRemove\AlgorithmObjectImpl.resx">
       <DependentUpon>AlgorithmObjectImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Convert\PacketConverterInstanceImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Convert\PacketConverterInstanceImpl.resx">
       <DependentUpon>PacketConverterInstanceImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Filter\PacketConverterInstanceImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Filter\PacketConverterInstanceImpl.resx">
       <DependentUpon>PacketConverterInstanceImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Grouping\DataContentsMatch\ConvertMethodClassImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Grouping\DataContentsMatch\ConvertMethodClassImpl.resx">
       <DependentUpon>ConvertMethodClassImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Grouping\DataLengthMatch\ConvertMethodClassImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Grouping\DataLengthMatch\ConvertMethodClassImpl.resx">
       <DependentUpon>ConvertMethodClassImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Grouping\MSecPassingFromFirstPacket\ConvertMethodClassImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Grouping\MSecPassingFromFirstPacket\ConvertMethodClassImpl.resx">
       <DependentUpon>ConvertMethodClassImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Grouping\MSecPassingFromPrevPacket\ConvertMethodClassImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Grouping\MSecPassingFromPrevPacket\ConvertMethodClassImpl.resx">
       <DependentUpon>ConvertMethodClassImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Grouping\PacketConverterInstanceImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Grouping\PacketConverterInstanceImpl.resx">
       <DependentUpon>PacketConverterInstanceImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Transfer\File\AlgorithmObjectImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Transfer\File\AlgorithmObjectImpl.resx">
       <DependentUpon>AlgorithmObjectImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketConverters\Transfer\PacketConverterInstanceImpl.resx">
+    <EmbeddedResource Include="PacketConverter\Transfer\PacketConverterInstanceImpl.resx">
       <DependentUpon>PacketConverterInstanceImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketViews\Graph\GraphControlPanel.resx">
+    <EmbeddedResource Include="PacketView\Graph\GraphControlPanel.resx">
       <DependentUpon>GraphControlPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketViews\Graph\ViewInstanceImpl.resx">
-      <DependentUpon>ViewInstanceImpl.cs</DependentUpon>
+    <EmbeddedResource Include="PacketView\Graph\PacketViewInstanceImpl.resx">
+      <DependentUpon>PacketViewInstanceImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketViews\Protocol\ViewInstanceImpl.resx">
-      <DependentUpon>ViewInstanceImpl.cs</DependentUpon>
+    <EmbeddedResource Include="PacketView\PacketViewControl.resx">
+      <DependentUpon>PacketViewControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketViews\Packet\Forms\ColumnHeaderEditForm.resx">
+    <EmbeddedResource Include="PacketView\PacketViewInstance.resx">
+      <DependentUpon>PacketViewInstance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PacketView\Packet\Forms\ColumnHeaderEditForm.resx">
       <DependentUpon>ColumnHeaderEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketViews\Packet\ViewInstanceImpl.resx">
-      <DependentUpon>ViewInstanceImpl.cs</DependentUpon>
+    <EmbeddedResource Include="PacketView\Packet\PacketViewInstanceImpl.resx">
+      <DependentUpon>PacketViewInstanceImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PacketViews\Sequential\ViewInstanceImpl.resx">
-      <DependentUpon>ViewInstanceImpl.cs</DependentUpon>
+    <EmbeddedResource Include="PacketView\Protocol\PacketViewInstanceImpl.resx">
+      <DependentUpon>PacketViewInstanceImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PacketView\Sequential\PacketViewInstanceImpl.resx">
+      <DependentUpon>PacketViewInstanceImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PacketView\Wireshark\PacketViewInstanceImpl.resx">
+      <DependentUpon>PacketViewInstanceImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -1030,22 +1071,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Icons\packet_view_layout_0.png" />
-    <None Include="Resources\Icons\packet_view_layout_1.png" />
-    <None Include="Resources\Icons\packet_view_layout_2.png" />
-    <None Include="Resources\Icons\packet_view_16x16.png" />
-    <None Include="Resources\Icons\list_deails_24x24.png" />
-    <None Include="Resources\Icons\list_simple_24x24.png" />
     <Content Include="Resources\Scripts\Sample.txt" />
-    <None Include="Resources\Icons\file_config_24x24.png" />
-    <None Include="Resources\Icons\file_16x16.png" />
-    <None Include="Resources\Icons\folder_16x16.png" />
-    <None Include="Resources\Icons\folder_32x32.png" />
-    <None Include="Resources\Icons\program_16x16.png" />
-    <None Include="Resources\Icons\program_32x32.png" />
-    <None Include="Resources\Icons\program_24x24_icon.ico" />
-    <None Include="Resources\Icons\user_add_16x16.png" />
-    <None Include="Resources\Icons\user_delete_16x16.png" />
     <EmbeddedResource Include="Forms\AboutForm\LicenseList.xml" />
     <Content Include="app_icon_48x48.ico" />
   </ItemGroup>
@@ -1057,44 +1083,57 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RtsCore.Framework\RtsCore.Framework.csproj">
-      <Project>{772db229-7d06-44ae-9ceb-ff65907ab10c}</Project>
-      <Name>RtsCore.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RtsCore.Resource\RtsCore.Resource.csproj">
-      <Project>{0b6f43ef-e187-4979-89fe-f88e6c40fba9}</Project>
-      <Name>RtsCore.Resource</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RtsCore\RtsCore.csproj">
-      <Project>{7bb441b5-c6f5-451d-b4d4-687d5cb590c1}</Project>
-      <Name>RtsCore</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="LibUsbDotNet.LibUsbDotNet, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c677239abe1e02a9, processorArchitecture=MSIL">
       <HintPath>..\packages\LibUsbDotNet.2.2.29\lib\net45\LibUsbDotNet.LibUsbDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis, Version=3.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.3.3.1\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.3.9.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=3.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.3.3.1\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.3.9.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp.Scripting, Version=3.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.Scripting.3.3.1\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Scripting, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.Scripting.3.9.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.Scripting, Version=3.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Scripting.Common.3.3.1\lib\netstandard2.0\Microsoft.CodeAnalysis.Scripting.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.Scripting, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Scripting.Common.3.9.0\lib\netstandard2.0\Microsoft.CodeAnalysis.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.9.0\lib\net35\NAudio.dll</HintPath>
+    <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio, Version=2.0.0.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.2.0.0\lib\netstandard2.0\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Asio, Version=2.0.0.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.Asio.2.0.0\lib\netstandard2.0\NAudio.Asio.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.Core.2.0.0\lib\netstandard2.0\NAudio.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Midi, Version=2.0.0.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.Midi.2.0.0\lib\netstandard2.0\NAudio.Midi.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Wasapi, Version=2.0.0.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.Wasapi.2.0.0\lib\netstandard2.0\NAudio.Wasapi.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.WinForms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.WinForms.2.0.0\lib\net472\NAudio.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.WinMM, Version=2.0.0.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.WinMM.2.0.0\lib\netstandard2.0\NAudio.WinMM.dll</HintPath>
+    </Reference>
+    <Reference Include="PacketDotNet, Version=1.2.0.0, Culture=neutral, PublicKeyToken=451414c7667b2a58, processorArchitecture=MSIL">
+      <HintPath>..\packages\PacketDotNet.1.2.0\lib\net45\PacketDotNet.dll</HintPath>
     </Reference>
     <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpPcap, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.5.4.0\lib\netstandard2.0\SharpPcap.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.dll</HintPath>
@@ -1105,12 +1144,13 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Collections.Immutable, Version=1.2.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.6.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    <Reference Include="System.Collections.Immutable, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.5.0.0\lib\net461\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Console, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Console.4.3.1\lib\net46\System.Console.dll</HintPath>
       <Private>True</Private>
@@ -1161,7 +1201,7 @@
     </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -1172,16 +1212,16 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Reflection.Metadata, Version=1.4.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reflection.Metadata.1.7.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
+    <Reference Include="System.Reflection.Metadata, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.Metadata.5.0.0\lib\net461\System.Reflection.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.6.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Extensions, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.Extensions.4.3.1\lib\net462\System.Runtime.Extensions.dll</HintPath>
@@ -1192,6 +1232,9 @@
       <HintPath>..\packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.AccessControl, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.5.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
     </Reference>
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
@@ -1213,11 +1256,14 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Encoding.CodePages, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encoding.CodePages.4.6.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.5.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.3\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Thread, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Thread.4.3.0\lib\net46\System.Threading.Thread.dll</HintPath>
@@ -1227,6 +1273,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml" />
@@ -1260,17 +1307,38 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+    <ProjectReference Include="..\Ratatoskr.Debugger\Ratatoskr.Debugger.csproj">
+      <Project>{6638e858-b298-4100-ac92-bfc4922ed164}</Project>
+      <Name>Ratatoskr.Debugger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ratatoskr.Forms\Ratatoskr.Forms.csproj">
+      <Project>{af0cf934-19cc-4600-8f2c-201991fc837b}</Project>
+      <Name>Ratatoskr.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ratatoskr.General\Ratatoskr.General.csproj">
+      <Project>{57c31baf-7383-4975-849f-a4e14f4ecd3b}</Project>
+      <Name>Ratatoskr.General</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ratatoskr.Native\Ratatoskr.Native.csproj">
+      <Project>{e6298f4f-aadf-4015-8bc5-dac08feba611}</Project>
+      <Name>Ratatoskr.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ratatoskr.Resource\Ratatoskr.Resource.csproj">
+      <Project>{c0acf7ae-53ca-4e7b-b2a4-3df99d529d4d}</Project>
+      <Name>Ratatoskr.Resource</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Drivers\" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\build\Microsoft.CodeAnalysis.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\build\Microsoft.CodeAnalysis.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets'))" />
   </Target>
+  <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets')" />
 </Project>

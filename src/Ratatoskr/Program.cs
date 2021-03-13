@@ -5,17 +5,18 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
-using Ratatoskr.Devices;
+using Ratatoskr.Config;
+using Ratatoskr.Device;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
 using Ratatoskr.Gate.AutoLogger;
+using Ratatoskr.General;
+using Ratatoskr.Native.Windows;
+using Ratatoskr.PacketView;
 using Ratatoskr.Plugin;
+using Ratatoskr.ProtocolParser;
 using Ratatoskr.Scripts;
 using Ratatoskr.Update;
-using RtsCore;
-using RtsCore.Framework.Native;
-using RtsCore.Utility;
 
 namespace Ratatoskr
 {
@@ -38,7 +39,12 @@ namespace Ratatoskr
             Application.SetCompatibleTextRenderingDefault(true);
 
             /* デバッグウィンドウ起動 */
-			Forms.DebugWindow.DebugWindow_Form.Startup();
+			Debugger.DebugSystem.Start();
+
+			/* マネージャー初期化 */
+			DeviceManager.Initialize();
+			PacketViewManager.Initialize();
+			ProtocolParserManager.Initialize();
 
 #if !DEBUG
             try {
@@ -124,7 +130,7 @@ namespace Ratatoskr
 
         private static void CommandLineParse(string[] cmdlines)
         {
-            Kernel.DebugMessage("Program.CommandLineParse - Start");
+            Debugger.DebugSystem.MessageOut("Program.CommandLineParse - Start");
 
             foreach (var cmdline in cmdlines) {
                 var (name, value) = CommandLineParse(cmdline);
@@ -134,7 +140,7 @@ namespace Ratatoskr
                 CommandLineSetup(name, value);
             }
 
-            Kernel.DebugMessage("Program.CommandLineParse - End");
+            Debugger.DebugSystem.MessageOut("Program.CommandLineParse - End");
         }
 
         private static (string name, string value) CommandLineParse(string cmdline)
@@ -211,7 +217,7 @@ namespace Ratatoskr
         private static void LoadAppInfo()
         {
             /* バージョン情報取得 */
-            Version = new RtsCore.Utility.ModuleVersion(AppInfo.Version);
+            Version = new Ratatoskr.General.ModuleVersion(AppInfo.Version);
         }
 
         public static byte GetStartupProgressAverage()
@@ -259,9 +265,6 @@ namespace Ratatoskr
             gc_control_timer_.Interval = GC_CONTROL_INTERVAL;
             gc_control_timer_.Start();
 
-			/* マネージャー初期化 */
-			DeviceManager.Initialize();
-
 			/* プラグイン読み込み開始 */
 			PluginManager.Startup();
 
@@ -278,9 +281,9 @@ namespace Ratatoskr
             }
 
             /* アプリケーションループ実行 */
-            Kernel.DebugMessage("Application.Run - Start");
+            Debugger.DebugSystem.MessageOut("Application.Run - Start");
             Application.Run(app_context_);
-            Kernel.DebugMessage("Application.Run - End");
+            Debugger.DebugSystem.MessageOut("Application.Run - End");
 
             /* 実行中スクリプトを停止 */
             ScriptManager.Shutdown();
@@ -288,20 +291,20 @@ namespace Ratatoskr
 
         private static bool Startup()
         {
-            Kernel.DebugMessage("Program.Startup - Start");
+            Debugger.DebugSystem.MessageOut("Program.Startup - Start");
 
             /* 下層マネージャー初期化 */
             ConfigManager.Startup();
             GatePacketManager.Startup();
 
             /* マネージャー初期化 */
-            DeviceManager.Startup();
+            DeviceManager.Instance.Startup();
             FormUiManager.Startup();
             FormTaskManager.Startup();
 //            UpdateManager.Startup();
 
             /* 設定ファイル読み込み */
-            ConfigManager.LoadConfig(profile_id_load_);
+            ConfigManager.LoadFromFile(profile_id_load_);
 
             /* パケットコンテナサイズ補正のため初期化 */
             GatePacketManager.ClearPacket();
@@ -319,17 +322,17 @@ namespace Ratatoskr
             startup_state_ = true;
             restart_req_ = false;
 
-            Kernel.DebugMessage("Program.Startup - End");
+            Debugger.DebugSystem.MessageOut("Program.Startup - End");
 
             return (true);
         }
 
         private static void Shutdown(bool profile_backup)
         {
-            Kernel.DebugMessage("Program.Shutdown - Start");
+            Debugger.DebugSystem.MessageOut("Program.Shutdown - Start");
 
             /* 設定ファイル保存 */
-            ConfigManager.SaveConfig(profile_backup);
+            ConfigManager.SaveToFile(profile_backup);
 
             /* イベント処理停止 */
             GatePacketManager.Shutdown();
@@ -339,12 +342,12 @@ namespace Ratatoskr
 //            UpdateManager.Shutdown();
             FormUiManager.Shutdown();
             FormTaskManager.Shutdown();
-            DeviceManager.Shutdown();
+            DeviceManager.Instance.Shutdown();
             ConfigManager.Shutdown();
 
             startup_state_ = false;
 
-            Kernel.DebugMessage("Program.Shutdown - End");
+            Debugger.DebugSystem.MessageOut("Program.Shutdown - End");
         }
 
         public static void ShutdownRequest(bool profile_backup = true)
@@ -385,7 +388,7 @@ namespace Ratatoskr
 
             /* タスク処理 */
             if (startup_state_) {
-                DeviceManager.Poll();
+                DeviceManager.Instance.Poll();
                 GatePacketManager.Poll();
                 FormUiManager.Poll();
                 FormTaskManager.Poll();

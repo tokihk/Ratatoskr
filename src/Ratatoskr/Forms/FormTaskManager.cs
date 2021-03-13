@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
+using Ratatoskr.Config;
 using Ratatoskr.Gate;
 using RtsCore;
-using RtsCore.Framework.PacketConverter;
-using RtsCore.Framework.PacketView;
-using RtsCore.Packet;
+using Ratatoskr.PacketConverter;
+using Ratatoskr.PacketView;
+using Ratatoskr.General.Packet;
 
 namespace Ratatoskr.Forms
 {
@@ -37,9 +37,6 @@ namespace Ratatoskr.Forms
         }
 
 
-        private static PacketViewManager viewm_;
-        private static PacketConverterManager pcvtm_;
-
         private static ulong  packet_count_all_ = 0;
         private static ulong  packet_count_draw_ = 0;
 
@@ -65,21 +62,13 @@ namespace Ratatoskr.Forms
 
         public static void Startup()
         {
-            /* パケットビューマネージャー作成 */
-            viewm_ = new PacketViewManager(GatePacketManager.BasePacketManager);
-            viewm_.InstanceUpdated += OnViewInstanceUpdated;
-            viewm_.RedrawRequest += OnViewRedrawRequest;
-            viewm_.StatusUpdated += OnViewStatusUpdated;
+            /* パケットビューイベントに登録 */
+            PacketViewManager.Instance.InstanceUpdated += OnViewInstanceUpdated;
+            PacketViewManager.Instance.RedrawRequest += OnViewRedrawRequest;
+            PacketViewManager.Instance.StatusUpdated += OnViewStatusUpdated;
 
             /* パケットコンバーターマネージャー作成 */
-            pcvtm_ = new PacketConverterManager();
-            pcvtm_.ConvertStatusUpdated += OnUpdateConverter;
-
-            /* 基本パケットビューインストール */
-            InstallPacketView();
-
-            /* 基本コンバーターインストール */
-            InstallPacketConverter();
+            PacketConvertManager.Instance.ConvertStatusUpdated += OnUpdateConverter;
 
             /* パケット初期化 */
             draw_packets_ = new Queue<IEnumerable<PacketObject>>();
@@ -98,15 +87,15 @@ namespace Ratatoskr.Forms
             UpdatePacketCount();
 
             /* 自動スクロール設定を更新 */
-            viewm_.AutoScroll = ConfigManager.System.AutoScroll.Value;
+            PacketViewManager.Instance.AutoScroll = ConfigManager.System.AutoScroll.Value;
 
             /* 描画待ちパケットが一定以上になったら強制的に高速描画モードに移行 */
-            if (viewm_.DrawPacketCount >= ConfigManager.System.ApplicationCore.AutoHighSpeedDrawLimit.Value) {
-                viewm_.HiSpeedDrawStart(true);
+            if (PacketViewManager.Instance.DrawPacketCount >= ConfigManager.System.ApplicationCore.AutoHighSpeedDrawLimit.Value) {
+                PacketViewManager.Instance.HiSpeedDrawStart(true);
             }
 
             /* パケットビュータスク */
-            viewm_.Poll();
+            PacketViewManager.Instance.Poll();
         }
 
         private static void OnViewInstanceUpdated()
@@ -133,36 +122,24 @@ namespace Ratatoskr.Forms
             RedrawPacketRequest();
         }
 
-        private static void InstallPacketView()
-        {
-            viewm_.AddView(new PacketViews.Packet.PacketViewClassImpl());
-            viewm_.AddView(new PacketViews.Sequential.PacketViewClassImpl());
-            viewm_.AddView(new PacketViews.Graph.PacketViewClassImpl());
-
-#if DEBUG
-            viewm_.AddView(new PacketViews.Protocol.PacketViewClassImpl());
-#endif
-//            viewm_.AddView(new PacketViews.DeviceEmurator.PacketViewClassImpl());
-        }
-
         public static IEnumerable<PacketViewClass> GetPacketViewClasses()
         {
-            return (viewm_.GetClasses());
+            return (PacketViewManager.Instance.GetClassList());
         }
 
         public static IEnumerable<PacketViewControl> GetPacketViewControls()
         {
-            return (viewm_.GetInstances());
+            return (PacketViewManager.Instance.GetInstanceList());
         }
 
         public static bool CanAddPacketView
         {
-            get { return (viewm_.GetInstances().Count() < PACKET_VIEW_LIMIT); }
+            get { return (PacketViewManager.Instance.GetInstanceList().Count() < PACKET_VIEW_LIMIT); }
         }
 
         public static PacketViewControl CreatePacketView(Guid class_id, Guid obj_id, PacketViewProperty viewp)
         {
-            return (viewm_.CreateControl(class_id, obj_id, viewp));
+            return (PacketViewManager.Instance.CreateControl(class_id, obj_id, viewp));
         }
 
         public static PacketViewControl CreatePacketView(Guid class_id, PacketViewProperty viewp)
@@ -172,77 +149,70 @@ namespace Ratatoskr.Forms
 
         public static void RemovePacketView(PacketViewControl viewi)
         {
-            viewm_.RemoveInstance(viewi);
+            PacketViewManager.Instance.RemoveInstance(viewi);
         }
 
         public static void ClearPacketViewScreen()
         {
-            viewm_.ClearPacket();
+            PacketViewManager.Instance.ClearPacket();
         }
 
         public static PacketViewProperty CreatePacketPacketViewProperty(Guid class_id)
         {
-            return (viewm_.CreateProperty(class_id));
-        }
-
-        private static void InstallPacketConverter()
-        {
-            pcvtm_.AddClass(new PacketConverters.Filter.PacketConverterClassImpl());
-            pcvtm_.AddClass(new PacketConverters.Grouping.PacketConverterClassImpl());
-            pcvtm_.AddClass(new PacketConverters.Convert.PacketConverterClassImpl());
+            return (PacketViewManager.Instance.CreateProperty(class_id));
         }
 
         public static IEnumerable<PacketConverterClass> GetPacketConverterClasses()
         {
-            return (pcvtm_.GetClasses());
+            return (PacketConvertManager.Instance.GetClassList());
         }
 
         public static IEnumerable<PacketConverterInstance> GetPacketConverterInstances()
         {
-            return (pcvtm_.GetInstances());
+            return (PacketConvertManager.Instance.GetInstanceList());
         }
 
         public static bool CanAddPacketConverter
         {
-            get { return (pcvtm_.GetInstances().Count() < PACKET_CONVERTER_LIMIT); }
+            get { return (PacketConvertManager.Instance.GetInstanceList().Count() < PACKET_CONVERTER_LIMIT); }
         }
 
         public static IEnumerable<PacketConverterInstance> GetPacketConverterClone()
         {
-            return (pcvtm_.GetCloneInstances());
+            return (PacketConvertManager.Instance.GetCloneInstances());
         }
 
         public static PacketConverterInstance CreatePacketConverter(Guid class_id, PacketConverterProperty pcvtp)
         {
-            return (pcvtm_.CreateInstance(class_id, Guid.NewGuid(), pcvtp));
+            return (PacketConvertManager.Instance.CreateInstance(class_id, Guid.NewGuid(), pcvtp));
         }
 
         public static void RemovePacketConverter(PacketConverterInstance pcvti)
         {
-            pcvtm_.RemoveInstance(pcvti);
+            PacketConvertManager.Instance.RemoveInstance(pcvti);
         }
 
         public static void SetPacketConverterIndex(PacketConverterInstance pcvti, int index)
         {
-            pcvtm_.SetInstanceIndex(pcvti, index);
+            PacketConvertManager.Instance.SetInstanceIndex(pcvti, index);
         }
 
         public static PacketConverterProperty CreatePacketConverterProperty(Guid class_id)
         {
-            return (pcvtm_.CreateProperty(class_id));
+            return (PacketConvertManager.Instance.CreateProperty(class_id));
         }
 
         public static bool IsHispeedDraw
         {
-            get { return (viewm_.IsHighSpeedDraw); }
+            get { return (PacketViewManager.Instance.IsHighSpeedDraw); }
         }
 
         public static void HiSpeedDrawToggle()
         {
-            if (viewm_.IsHighSpeedDraw) {
-                viewm_.HiSpeedDrawStop();
+            if (PacketViewManager.Instance.IsHighSpeedDraw) {
+                PacketViewManager.Instance.HiSpeedDrawStop();
             } else {
-                viewm_.HiSpeedDrawStart(true);
+                PacketViewManager.Instance.HiSpeedDrawStart(true);
             }
         }
 
@@ -288,10 +258,10 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.Ready:
                 {
-                    Kernel.DebugMessage("RedrawSequence.Ready");
+                    Debugger.DebugSystem.MessageOut("RedrawSequence.Ready");
 
                     /* 高速描画モード開始 */
-                    viewm_.HiSpeedDrawStart(false);
+                    PacketViewManager.Instance.HiSpeedDrawStart(false);
 
                     /* 現在のパケットを全て描画パケットにセットアップ */
                     DrawPacketPush(GatePacketManager.GetPackets());
@@ -302,7 +272,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.PreprocessingStart:
                 {
-                    Kernel.DebugMessage("RedrawSequence.PreprocessingStart");
+                    Debugger.DebugSystem.MessageOut("RedrawSequence.PreprocessingStart");
 
                     redraw_step_all_ = (ulong)(Math.Max(draw_packets_.Count, 1));
                     redraw_step_end_ = 0;
@@ -333,9 +303,9 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.DrawingStart:
                 {
-                    Kernel.DebugMessage("RedrawSequence.DrawingStart");
+                    Debugger.DebugSystem.MessageOut("RedrawSequence.DrawingStart");
 
-                    redraw_step_all_ = (ulong)Math.Max(viewm_.DrawPacketCount, 1);
+                    redraw_step_all_ = (ulong)Math.Max(PacketViewManager.Instance.DrawPacketCount, 1);
                     redraw_step_end_ = 0;
                     redraw_progress_ = 0;
 
@@ -349,7 +319,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.DrawingBusy:
                 {
-                    redraw_step_end_ = Math.Min(redraw_step_all_, redraw_step_all_ - (ulong)viewm_.DrawPacketCount);
+                    redraw_step_end_ = Math.Min(redraw_step_all_, redraw_step_all_ - (ulong)PacketViewManager.Instance.DrawPacketCount);
                     redraw_step_end_ = Math.Max(redraw_step_end_, 1);
                     redraw_progress_ = Math.Min((byte)(redraw_step_end_ * 100 / redraw_step_all_), (byte)100);
 
@@ -368,7 +338,7 @@ namespace Ratatoskr.Forms
                     GatePacketManager.Enable = true;
 
                     /* 高速描画モード終了 */
-                    viewm_.HiSpeedDrawStop();
+                    PacketViewManager.Instance.HiSpeedDrawStop();
 
                     /* プログレスバーを最終値に設定 */
                     FormUiManager.SetStatusText(StatusTextID.ReloadScreen, "");
@@ -376,7 +346,7 @@ namespace Ratatoskr.Forms
 
                     redraw_state_ = false;
 
-                    Kernel.DebugMessage("RedrawSequence.Complete");
+                    Debugger.DebugSystem.MessageOut("RedrawSequence.Complete");
                 }
                     break;
 
@@ -401,10 +371,10 @@ namespace Ratatoskr.Forms
             }
 
             /* 変換器をクリア */
-            pcvtm_.InputStatusClear();
+            PacketConvertManager.Instance.InputStatusClear();
 
             /* パケットビューをクリア */
-            viewm_.ClearPacket();
+            PacketViewManager.Instance.ClearPacket();
 
             /* パケット数を更新 */
             packet_count_all_ = 0;
@@ -502,7 +472,7 @@ namespace Ratatoskr.Forms
         private static bool DrawConvertPacketPoll()
         {
             /* 変換器が自動生成したパケットを取得 */
-            var packets = pcvtm_.InputPoll();
+            var packets = PacketConvertManager.Instance.InputPoll();
 
             /* パケットが存在しなければ次の処理に渡す */
             if ((packets == null) || (packets.Count() == 0))return (false);
@@ -519,7 +489,7 @@ namespace Ratatoskr.Forms
             foreach (var packets in packets_list) {
                 foreach (var packet in packets) {
                     /* 変換して表示*/
-                    DrawPacketExec(pcvtm_.InputPacket(packet));
+                    DrawPacketExec(PacketConvertManager.Instance.InputPacket(packet));
 
                     /* キャンセル処理 */
                     if (redraw_req_)return;
@@ -533,7 +503,7 @@ namespace Ratatoskr.Forms
             packet_count_draw_ += (ulong)packets.Count();
 
             /* パケットビューに設定(パケットセットのみ) */
-            viewm_.DrawPacket(packets);
+            PacketViewManager.Instance.DrawPacket(packets);
 
             /* イベント通知 */
             if (!redraw_state_) {
@@ -544,7 +514,7 @@ namespace Ratatoskr.Forms
 
         private static void UpdatePacketCount()
         {
-            FormUiManager.SetPacketCounter(GatePacketManager.PacketCount, packet_count_all_, packet_count_draw_, viewm_.DrawPacketCount);
+            FormUiManager.SetPacketCounter(GatePacketManager.PacketCount, packet_count_all_, packet_count_draw_, PacketViewManager.Instance.DrawPacketCount);
         }
     }
 }

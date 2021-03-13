@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.UserConfigs;
-using RtsCore.Framework.FileFormat;
+using Ratatoskr.Config;
+using Ratatoskr.Config.Data.User;
+using Ratatoskr.FileFormat;
+using Ratatoskr.Forms;
 using Ratatoskr.Forms.Dialog;
-using Ratatoskr.FileFormats;
 using Ratatoskr.Gate;
 using Ratatoskr.Plugin;
 
@@ -52,6 +52,8 @@ namespace Ratatoskr.Forms
 
         public static void Startup()
         {
+			MainFrame = new MainWindow.MainWindow_Form();
+
             status_busy_ = new FormStatus();
             status_new_ = new FormStatus();
             status_text_ = new string[Enum.GetValues(typeof(StatusTextID)).Length];
@@ -95,7 +97,7 @@ namespace Ratatoskr.Forms
             ScriptWindow?.BackupConfig();
         }
 
-        private static Controls.SplashScreen          SplashScreen { get; set; }
+        private static SplashScreen          SplashScreen { get; set; }
         private static MainWindow.MainWindow_Form     MainFrame    { get; set; }
         private static ScriptWindow.ScriptWindow_Form ScriptWindow { get; set; }
 
@@ -118,12 +120,6 @@ namespace Ratatoskr.Forms
 
         public static void MainFormVisible(bool show)
         {
-            /* フォーム作成 */
-            if (MainFrame == null) {
-                MainFrame = new MainWindow.MainWindow_Form();
-                MainFrame.LoadConfig();
-            }
-
             if (!MainFrame.Visible) {
                 /* 非表示→表示 */
                 MainFrame.Activate();
@@ -169,7 +165,7 @@ namespace Ratatoskr.Forms
         public static void SplashScreen_SetValue(string text, byte value)
         {
             if (SplashScreen == null) {
-                SplashScreen = new Controls.SplashScreen()
+                SplashScreen = new SplashScreen()
                 {
                     Visible = true
                 };
@@ -190,12 +186,12 @@ namespace Ratatoskr.Forms
         public static void MainFrameMenuBarUpdate()
         {
             MainFrame.UpdateTitle();
-            MainFrame.UpdateMenuBar();
+            MainFrame.UpdateMenuBarStatus();
         }
 
         public static void MainFrameStatusBarUpdate()
         {
-            MainFrame.UpdateStatusBar();
+            MainFrame.UpdateStatusBarStatus();
         }
 
         private static void StartupTaskPoll()

@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.Config;
+using Ratatoskr.Config.Data.User;
 using Ratatoskr.Gate;
-using RtsCore.Framework.Device;
+using Ratatoskr.Device;
 
 namespace Ratatoskr.Forms.MainWindow
 {

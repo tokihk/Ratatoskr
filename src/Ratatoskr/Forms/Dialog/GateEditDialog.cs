@@ -8,9 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using RtsCore;
-using RtsCore.Framework.Device;
-using RtsCore.Utility;
-using Ratatoskr.Devices;
+using Ratatoskr.Device;
+using Ratatoskr.General;
 using Ratatoskr.Gate;
 
 namespace Ratatoskr.Forms.Dialog
@@ -56,7 +55,7 @@ namespace Ratatoskr.Forms.Dialog
                 CBox_DeviceType.Items.Clear();
 
                 /* デバイスを追加 */
-                CBox_DeviceType.Items.AddRange(DeviceManager.GetDeviceList());
+                CBox_DeviceType.Items.AddRange(DeviceManager.Instance.GetDeviceList().ToArray());
             }
             CBox_DeviceType.EndUpdate();
         }
@@ -69,7 +68,7 @@ namespace Ratatoskr.Forms.Dialog
         private void UpdateDevice()
         {
             /* デバイスクラス読み込み */
-            devc_ = DeviceManager.FindDeviceClass(devc_id_);
+            devc_ = DeviceManager.Instance.FindClass(devc_id_);
 
             /* 管理者権限専用の場合は注意文を表示 */
             if ((devc_ != null) && (devc_.AdminOnly) && (!Program.IsAdministratorMode)) {
@@ -158,8 +157,8 @@ namespace Ratatoskr.Forms.Dialog
 
             if (exp.Length > 0) {
                 TBox_ConnectCommand.BackColor = (HexTextEncoder.ToByteArray(exp) != null)
-                                              ? (RtsCore.Parameter.COLOR_OK)
-                                              : (RtsCore.Parameter.COLOR_NG);
+                                              ? (Ratatoskr.Resource.AppColors.Ok)
+                                              : (Ratatoskr.Resource.AppColors.Ng);
             } else {
                 TBox_ConnectCommand.BackColor = Color.White;
             }
@@ -170,11 +169,11 @@ namespace Ratatoskr.Forms.Dialog
             if (CBox_DeviceType.SelectedItem is DeviceClass devc) {
                 devc_id_ = devc.ID;
 
-                Kernel.DebugMessage("Gate Device Change Start");
+                Debugger.DebugSystem.MessageOut("Gate Device Change Start");
 
                 UpdateDevice();
 
-                Kernel.DebugMessage("Gate Device Change End");
+                Debugger.DebugSystem.MessageOut("Gate Device Change End");
             }
         }
 

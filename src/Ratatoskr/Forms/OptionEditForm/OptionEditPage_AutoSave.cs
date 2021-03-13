@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.SystemConfigs;
+using Ratatoskr.Config;
+using Ratatoskr.Config.Data.System;
 
 namespace Ratatoskr.Forms.OptionEditForm
 {

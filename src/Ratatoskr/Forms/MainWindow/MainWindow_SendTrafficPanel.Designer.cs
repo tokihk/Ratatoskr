@@ -36,7 +36,7 @@
             this.Label_RepeatCount = new System.Windows.Forms.Label();
             this.Num_RepeatCount = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
-            this.trafficEditor1 = new Ratatoskr.Forms.Controls.TrafficEditor();
+            this.trafficEditor1 = new Ratatoskr.Forms.TrafficEditor();
             this.flowLayoutPanel1.SuspendLayout();
             this.GBox_NumberOfRepeat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Num_RepeatCount)).BeginInit();
@@ -186,6 +186,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label Label_RepeatCount;
         private System.Windows.Forms.Label label2;
-		private Controls.TrafficEditor trafficEditor1;
+		private TrafficEditor trafficEditor1;
 	}
 }

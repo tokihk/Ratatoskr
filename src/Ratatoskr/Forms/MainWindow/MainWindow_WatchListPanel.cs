@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.Config;
+using Ratatoskr.Config.Data.User;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using RtsCore.Generic;
-using RtsCore.Packet;
-using RtsCore.Framework.PacketFilter;
+using Ratatoskr.General;
+using Ratatoskr.General.Packet;
+using Ratatoskr.General.Packet.Filter;
 
 namespace Ratatoskr.Forms.MainWindow
 {

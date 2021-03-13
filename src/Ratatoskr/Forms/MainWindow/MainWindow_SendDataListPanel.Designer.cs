@@ -111,7 +111,7 @@
             // 
             this.RBtn_Style_Details.Appearance = System.Windows.Forms.Appearance.Button;
             this.RBtn_Style_Details.AutoSize = true;
-            this.RBtn_Style_Details.Image = RtsCore.Resource.Images.list_deails_24x24;
+            this.RBtn_Style_Details.Image = Ratatoskr.Resource.Images.list_deails_24x24;
             this.RBtn_Style_Details.Location = new System.Drawing.Point(42, 12);
             this.RBtn_Style_Details.Name = "RBtn_Style_Details";
             this.RBtn_Style_Details.Size = new System.Drawing.Size(30, 30);
@@ -124,7 +124,7 @@
             // 
             this.RBtn_Style_Simple.Appearance = System.Windows.Forms.Appearance.Button;
             this.RBtn_Style_Simple.AutoSize = true;
-            this.RBtn_Style_Simple.Image = RtsCore.Resource.Images.list_simple_24x24;
+            this.RBtn_Style_Simple.Image = Ratatoskr.Resource.Images.list_simple_24x24;
             this.RBtn_Style_Simple.Location = new System.Drawing.Point(6, 12);
             this.RBtn_Style_Simple.Name = "RBtn_Style_Simple";
             this.RBtn_Style_Simple.Size = new System.Drawing.Size(30, 30);
@@ -167,7 +167,7 @@
             // 
             this.Btn_Play.FlatAppearance.BorderSize = 0;
             this.Btn_Play.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_Play.Image = RtsCore.Resource.Images.play_32x32;
+            this.Btn_Play.Image = Ratatoskr.Resource.Images.play_32x32;
             this.Btn_Play.Location = new System.Drawing.Point(225, 3);
             this.Btn_Play.Name = "Btn_Play";
             this.Btn_Play.Size = new System.Drawing.Size(54, 54);
@@ -182,7 +182,7 @@
             // 
             this.Btn_Stop.FlatAppearance.BorderSize = 0;
             this.Btn_Stop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_Stop.Image = RtsCore.Resource.Images.stop_32x32;
+            this.Btn_Stop.Image = Ratatoskr.Resource.Images.stop_32x32;
             this.Btn_Stop.Location = new System.Drawing.Point(285, 3);
             this.Btn_Stop.Name = "Btn_Stop";
             this.Btn_Stop.Size = new System.Drawing.Size(54, 54);

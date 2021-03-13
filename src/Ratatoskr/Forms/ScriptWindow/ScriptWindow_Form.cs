@@ -9,11 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.SystemConfigs;
-using Ratatoskr.Forms.Controls;
+using Ratatoskr.Config;
+using Ratatoskr.Forms;
 using Ratatoskr.Scripts;
 using Ratatoskr.Scripts.ScriptEngines;
+using Ratatoskr.Config.Data.System;
 
 namespace Ratatoskr.Forms.ScriptWindow
 {
@@ -81,7 +81,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 "DC_FileExplorer",
                 "File Explorer",
                 0,
-                Icon.FromHandle(RtsCore.Resource.Images.memo_32x32.GetHicon()),
+                Icon.FromHandle(Ratatoskr.Resource.Images.memo_32x32.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockLeft,
                 false,
@@ -96,7 +96,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 "DC_Console",
                 "Output",
                 0,
-                Icon.FromHandle(RtsCore.Resource.Images.program_16x16.GetHicon()),
+                Icon.FromHandle(Ratatoskr.Resource.Images.program_16x16.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottom,
                 false,
@@ -113,7 +113,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 "DC_ScriptList",
                 "Running Script List",
                 0,
-                Icon.FromHandle(RtsCore.Resource.Images.memo_32x32.GetHicon()),
+                Icon.FromHandle(Ratatoskr.Resource.Images.memo_32x32.GetHicon()),
                 DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottom,
                 false,
@@ -210,7 +210,7 @@ namespace Ratatoskr.Forms.ScriptWindow
                 "DC_CodeEditor",
                 (path != null) ? (Path.GetFileName(path)) : ("(Temp)"),
                 0,
-                Icon.FromHandle(RtsCore.Resource.Images.memo_32x32.GetHicon()),
+                Icon.FromHandle(Ratatoskr.Resource.Images.memo_32x32.GetHicon()),
                 DockAreas.Document,
                 DockState.Document,
                 true,

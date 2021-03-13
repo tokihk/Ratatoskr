@@ -47,7 +47,7 @@
             // 
             this.Label_Handle.BackColor = System.Drawing.SystemColors.Control;
             this.Label_Handle.Cursor = System.Windows.Forms.Cursors.NoMoveVert;
-            this.Label_Handle.Image = RtsCore.Resource.Images.item_change_16x16;
+            this.Label_Handle.Image = Ratatoskr.Resource.Images.item_change_16x16;
             this.Label_Handle.Location = new System.Drawing.Point(20, 0);
             this.Label_Handle.Name = "Label_Handle";
             this.Label_Handle.Size = new System.Drawing.Size(23, 24);
@@ -110,7 +110,7 @@
             // 
             this.Btn_Filter.FlatAppearance.BorderSize = 0;
             this.Btn_Filter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_Filter.Image = RtsCore.Resource.Images.target_22x22;
+            this.Btn_Filter.Image = Ratatoskr.Resource.Images.target_22x22;
             this.Btn_Filter.Location = new System.Drawing.Point(180, 1);
             this.Btn_Filter.Name = "Btn_Filter";
             this.Btn_Filter.Size = new System.Drawing.Size(23, 23);
@@ -121,7 +121,7 @@
             // Label_OutputIcon
             // 
             this.Label_OutputIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label_OutputIcon.Image = RtsCore.Resource.Images.output_16x16;
+            this.Label_OutputIcon.Image = Ratatoskr.Resource.Images.output_16x16;
             this.Label_OutputIcon.Location = new System.Drawing.Point(771, 0);
             this.Label_OutputIcon.Name = "Label_OutputIcon";
             this.Label_OutputIcon.Size = new System.Drawing.Size(24, 24);
@@ -133,7 +133,7 @@
             this.Btn_Remove.FlatAppearance.BorderSize = 0;
             this.Btn_Remove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Btn_Remove.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Btn_Remove.Image = RtsCore.Resource.Images.close_16x16;
+            this.Btn_Remove.Image = Ratatoskr.Resource.Images.close_16x16;
             this.Btn_Remove.Location = new System.Drawing.Point(867, 0);
             this.Btn_Remove.Name = "Btn_Remove";
             this.Btn_Remove.Size = new System.Drawing.Size(24, 24);

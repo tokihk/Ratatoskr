@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.SystemConfigs;
-using RtsCore.Packet;
+using Ratatoskr.Config;
+using Ratatoskr.Config.Data.System;
+using Ratatoskr.General.Packet;
 
 namespace Ratatoskr.Gate.AutoTimeStamp
 {

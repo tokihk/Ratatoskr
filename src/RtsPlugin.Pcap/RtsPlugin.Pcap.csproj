@@ -35,17 +35,27 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PacketDotNet, Version=0.30.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PacketDotNet.0.30.3\lib\net45\PacketDotNet.dll</HintPath>
+    <Reference Include="PacketDotNet, Version=1.0.5.0, Culture=neutral, PublicKeyToken=451414c7667b2a58, processorArchitecture=MSIL">
+      <HintPath>..\packages\PacketDotNet.1.0.5\lib\net45\PacketDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="SharpPcap, Version=4.6.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpPcap.4.6.1\lib\netstandard2.0\SharpPcap.dll</HintPath>
+    <Reference Include="SharpPcap, Version=5.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.5.2.0\lib\netstandard2.0\SharpPcap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.6.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -56,91 +66,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Devices\EthernetCapture\DeviceClassImpl.cs" />
-    <Compile Include="Devices\EthernetCapture\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\EthernetCapture\DevicePropertyEditorImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Devices\EthernetCapture\DevicePropertyEditorImpl.Designer.cs">
-      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Devices\EthernetCapture\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\UsbCapture\DeviceClassImpl.cs" />
-    <Compile Include="Devices\UsbCapture\DeviceInstanceImpl.cs" />
-    <Compile Include="Devices\UsbCapture\DevicePropertyEditorImpl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Devices\UsbCapture\DevicePropertyEditorImpl.Designer.cs">
-      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Devices\UsbCapture\DevicePropertyImpl.cs" />
-    <Compile Include="Devices\UsbCapture\USBPcapCMDManager.cs" />
-    <Compile Include="Devices\UsbCapture\UsbPcapDeviceObject.cs" />
-    <Compile Include="Devices\UsbCapture\UsbPcapManager.cs" />
-    <Compile Include="Devices\UsbCapture\UsbPcapRecordParser.cs" />
-    <Compile Include="FileFormats\PacketLog_Pcap\FileFormatClassImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Pcap\FileFormatOptionImpl.cs" />
-    <Compile Include="FileFormats\PacketLog_Pcap\FileFormatReaderImpl.cs" />
-    <Compile Include="PluginClassImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resource.Designer.cs" />
-    <Compile Include="Protocols\Elements\ILayerPacket.cs" />
-    <Compile Include="Protocols\Elements\L2_ARP.cs" />
-    <Compile Include="Protocols\Elements\L2_EthernetII.cs" />
-    <Compile Include="Protocols\Elements\L3_ICMPv4.cs" />
-    <Compile Include="Protocols\Elements\L3_ICMPv6.cs" />
-    <Compile Include="Protocols\Elements\L3_IGMP.cs" />
-    <Compile Include="Protocols\Elements\L3_IEEE8021Q.cs" />
-    <Compile Include="Protocols\Elements\L3_IPv4.cs" />
-    <Compile Include="Protocols\Elements\L3_IPv6.cs" />
-    <Compile Include="Protocols\Elements\L4_TCP.cs" />
-    <Compile Include="Protocols\Elements\L4_UDP.cs" />
-    <Compile Include="Protocols\Elements\LayerPacket.cs" />
-    <Compile Include="Protocols\Elements\PcapFrame.cs" />
-    <Compile Include="Protocols\Elements\P_CheckSum16.cs" />
-    <Compile Include="Protocols\Elements\P_EtherType.cs" />
-    <Compile Include="Protocols\Elements\P_IpAddressV4.cs" />
-    <Compile Include="Protocols\Elements\P_IpFragmentFlags.cs" />
-    <Compile Include="Protocols\Elements\P_IpFragmentOffset.cs" />
-    <Compile Include="Protocols\Elements\P_IpHeaderLength.cs" />
-    <Compile Include="Protocols\Elements\P_IpTypeOfService.cs" />
-    <Compile Include="Protocols\Elements\P_MacAddress.cs" />
-    <Compile Include="Protocols\Elements\P_TcpDataOffset.cs" />
-    <Compile Include="Protocols\Elements\P_TcpFlags.cs" />
-    <Compile Include="Protocols\EthernetII\ProtocolDecoderClassImpl.cs" />
-    <Compile Include="Protocols\EthernetII\ProtocolDecoderInstanceImpl.cs" />
-    <Compile Include="Protocols\EthernetII\ProtocolEncoderClassImpl.cs" />
-    <Compile Include="Protocols\EthernetII\ProtocolEncoderInstanceImpl.cs" />
-    <Compile Include="Utility\PcapPacketInfo.cs" />
-    <Compile Include="Utility\SharpPcapPacketParser.cs" />
-    <Compile Include="Utility\PcapPacketParserOption.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Devices\EthernetCapture\DevicePropertyEditorImpl.resx">
-      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Devices\UsbCapture\DevicePropertyEditorImpl.resx">
-      <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resource.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\Icons\wireshark_16x16.png" />
-    <Content Include="Resources\Icons\wireshark_32x32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RtsCore.Framework\RtsCore.Framework.csproj">
-      <Project>{772db229-7d06-44ae-9ceb-ff65907ab10c}</Project>
-      <Name>RtsCore.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RtsCore\RtsCore.csproj">
-      <Project>{7bb441b5-c6f5-451d-b4d4-687d5cb590c1}</Project>
-      <Name>RtsCore</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\Icons\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

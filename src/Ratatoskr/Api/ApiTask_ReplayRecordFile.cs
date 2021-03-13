@@ -4,11 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.FileFormats;
+using Ratatoskr.FileFormat;
 using Ratatoskr.Gate;
-using RtsCore.Framework.FileFormat;
-using RtsCore.Framework.PacketFilter;
-using RtsCore.Packet;
+using Ratatoskr.General.Packet.Filter;
+using Ratatoskr.General.Packet;
 
 namespace Ratatoskr.Api
 {

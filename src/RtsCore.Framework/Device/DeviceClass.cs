@@ -43,15 +43,15 @@ namespace RtsCore.Framework.Device
             return (base.Equals(obj));
         }
 
-        internal DeviceInstance CreateInstance(DeviceManagementClass devm, DeviceConfig devconf, DeviceProperty devp)
+        internal DeviceInstance CreateInstance(DeviceConfig devconf, DeviceProperty devp)
         {
             if (devp == null)return (null);
             if (devp.GetType() != GetPropertyType())return (null);
 
-            return (OnCreateInstance(devm, devconf, devp));
+            return (OnCreateInstance(devconf, devp));
         }
 
-        protected virtual DeviceInstance OnCreateInstance(DeviceManagementClass devm, DeviceConfig devconf, DeviceProperty devp)
+        protected virtual DeviceInstance OnCreateInstance(DeviceConfig devconf, DeviceProperty devp)
         {
             return (null);
         }

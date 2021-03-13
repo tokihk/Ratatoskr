@@ -48,26 +48,14 @@ namespace RtsPlugin.Pcap
             }
         }
 
-        protected override DeviceClass[] OnLoadDeviceClasses()
+        protected override PluginInstance OnCreateInstance()
         {
-            return (new DeviceClass[] {
-                new Devices.EthernetCapture.DeviceClassImpl(),
-                new Devices.UsbCapture.DeviceClassImpl()
-            });
+            return (new PluginInstanceImpl(this));
         }
 
-        protected override FileFormatClass[] OnLoadPacketLogFormatClasses()
+        protected override PluginProperty OnCreateProperty()
         {
-            return (new FileFormatClass[] {
-                new FileFormats.PacketLog_Pcap.FileFormatClassImpl(),
-            });
-        }
-
-        protected override ProtocolDecoderClass[] OnLoadProtocolDecoderClasses()
-        {
-            return (new ProtocolDecoderClass[] {
-                new Protocols.EthenetII.ProtocolDecoderClassImpl()
-            });
+            return (new PluginPropertyImpl());
         }
     }
 }

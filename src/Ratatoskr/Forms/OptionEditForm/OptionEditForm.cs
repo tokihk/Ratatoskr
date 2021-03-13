@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using RtsCore.Config.Types;
+using Ratatoskr.Config.Types;
 
 namespace Ratatoskr.Forms.OptionEditForm
 {
@@ -47,7 +47,7 @@ namespace Ratatoskr.Forms.OptionEditForm
         public OptionDataMap Config { get; private set; }
 
 
-        public OptionEditForm()
+        private OptionEditForm()
         {
             InitializeComponent();
             InitializePageMenu();

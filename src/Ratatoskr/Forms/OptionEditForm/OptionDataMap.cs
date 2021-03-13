@@ -4,11 +4,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RtsCore.Config.Types;
-using Ratatoskr.Configs.SystemConfigs;
-using Ratatoskr.Configs.UserConfigs;
-using Ratatoskr.Configs.LanguageConfigs;
-using RtsCore.Generic;
+using Ratatoskr.Config.Types;
+using Ratatoskr.Config.Data.User;
+using Ratatoskr.Config.Data.Language;
+using Ratatoskr.Config.Data.System;
+using Ratatoskr.General;
 
 namespace Ratatoskr.Forms.OptionEditForm
 {

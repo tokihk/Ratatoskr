@@ -5,21 +5,21 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.FileFormats;
-using Ratatoskr.Protocol;
-using Ratatoskr.Devices;
-using RtsCore;
-using RtsCore.Framework.Device;
-using RtsCore.Framework.FileFormat;
-using RtsCore.Framework.Plugin;
-using RtsCore.Protocol;
+using System.Windows.Forms;
+using Ratatoskr.Config;
+using Ratatoskr.FileFormat;
+using Ratatoskr.Forms;
+using Ratatoskr.Gate;
+using Ratatoskr.Device;
+using Ratatoskr.Plugin;
+using Ratatoskr.PacketView;
 
 namespace Ratatoskr.Plugin
 {
     internal static class PluginManager
     {
-        private static List<PluginClass> plugin_list_ = new List<PluginClass>();
-        private static readonly object   plugin_sync_ = new object();
+        private static List<PluginInstance> plugin_list_ = new List<PluginInstance>();
+        private static readonly object      plugin_sync_ = new object();
 
         private static IAsyncResult ar_load_plugin_ = null;
 
@@ -47,12 +47,56 @@ namespace Ratatoskr.Plugin
             }
         }
 
-        public static IEnumerable<PluginClass> GetPluginList()
+		public static void LoadConfig()
+		{
+			lock (plugin_sync_) {
+				foreach (var plgi in plugin_list_) {
+					var config = ConfigManager.User.Plugins.Value.Find(item => item.PluginClassID == plgi.Class.ID);
+					var prop = (PluginProperty)null;
+
+					/* 設定ファイルからプロパティを取得 */
+					if (config != null) {
+						prop = config.PluginProperty;
+					}
+
+					/* 設定ファイルからプロパティを復元できない場合はデフォルト値で生成 */
+					if (prop == null) {
+						prop = plgi.Class.CreateProperty();
+					}
+
+					plgi.LoadProperty(prop);
+				}
+			}
+		}
+
+		public static void BackupConfig()
+		{
+			ConfigManager.User.Plugins.Value.Clear();
+
+			lock (plugin_sync_) {
+				foreach (var plgi in plugin_list_) {
+					ConfigManager.User.Plugins.Value.Add(new Config.Data.User.PluginObjectConfig(plgi.Class.ID, plgi.Property));
+				}
+			}
+		}
+
+        public static PluginInstance[] GetPluginList()
         {
             lock (plugin_sync_) {
                 return (plugin_list_.ToArray());
             }
         }
+
+		public static PluginProperty CreatePluginPropery(Guid class_id)
+		{
+			lock (plugin_sync_) {
+				var plgi = plugin_list_.Find(plugin => plugin.Class.ID == class_id);
+
+				if (plgi == null)return (null);
+
+				return (plgi.Class.CreateProperty());
+			}
+		}
 
         private static string GetPluginPath()
         {
@@ -80,7 +124,7 @@ namespace Ratatoskr.Plugin
         private delegate void LoadAllPluginTaskDelegate(string path_plugin);
         private static void LoadAllPluginTask(string path_plugin)
         {
-            Kernel.DebugMessage(string.Format("LoadAllPlugin - Start: [{0}]", path_plugin));
+            Debugger.DebugSystem.MessageOut(string.Format("LoadAllPlugin - Start: [{0}]", path_plugin));
 
             /* プラグイン検索 */
             try {
@@ -90,7 +134,7 @@ namespace Ratatoskr.Plugin
 								select path;
 
                 foreach (var asm_path in asm_paths.Select((v, i) => (v, i))) {
-                    Kernel.DebugMessage(string.Format("CheckDLL [{0:D4}: {1}]", asm_path.i, asm_path.v));
+                    Debugger.DebugSystem.MessageOut(string.Format("CheckDLL [{0:D4}: {1}]", asm_path.i, asm_path.v));
 
                     LoadPlugin(asm_path.v);
 
@@ -101,7 +145,7 @@ namespace Ratatoskr.Plugin
 
             Program.SetStartupProgress(Program.StartupTaskID.LoadPlugin, 100);
 
-            Kernel.DebugMessage("LoadAllPlugin - End");
+            Debugger.DebugSystem.MessageOut("LoadAllPlugin - End");
         }
 
         private static void LoadPlugin(string asm_path)
@@ -118,7 +162,7 @@ namespace Ratatoskr.Plugin
                     if (   (!asm_type.IsClass)
                         || (!asm_type.IsPublic)
                         || (asm_type.IsAbstract)
-                        || (!asm_type.IsSubclassOf(typeof(RtsCore.Framework.Plugin.PluginClass)))
+                        || (!asm_type.IsSubclassOf(typeof(Ratatoskr.Plugin.PluginClass)))
                     ) {
                         continue;
                     }
@@ -133,52 +177,54 @@ namespace Ratatoskr.Plugin
         {
             if (info == null)return;
 
-            var plugin = info.LoadModule() as PluginClass;
+            var plgc = info.LoadModule() as PluginClass;
 
-            if (plugin == null)return;
+            if (plgc == null)return;
+
+			var plgi = plgc.CreateInstance();
+
+			if (plgi == null)return;
 
             lock (plugin_sync_) {
-                Kernel.DebugMessage(string.Format("LoadPlugin [{0}]", info.AssemblyPath));
+                Debugger.DebugSystem.MessageOut(string.Format("LoadPlugin [{0}]", info.AssemblyPath));
 
-                plugin_list_.Add(plugin);
+                plugin_list_.Add(plgi);
 
-                LoadPlugin_Device(plugin.LoadDeviceClasses());
-                LoadPlugin_PacketLogFormat(plugin.LoadPacketLogFormatClasses());
-                LoadPlugin_ProtocolDecoder(plugin.LoadProtocolDecoderClasses());
+				LoadPluginInterface(plgi.Interface);
             }
         }
 
-        private static void LoadPlugin_Device(IEnumerable<DeviceClass> devs)
-        {
-            if (devs == null)return;
+		private static void LoadPluginInterface(PluginInterface plgif)
+		{
+			if (plgif.DevicePacketCaptureHandlers != null) {
+				foreach (var handler in plgif.DevicePacketCaptureHandlers) {
+					GatePacketManager.RawPacketEntried += handler;
+				}
+			}
 
-            foreach (var dev in devs) {
-                DeviceManager.AddDevice(dev);
-            }
-        }
+            if (plgif.DeviceClasses != null) {
+				foreach (var devc in plgif.DeviceClasses) {
+					DeviceManager.Instance.AddDevice(devc);
+				}
+			}
 
-        private static void LoadPlugin_PacketLogFormat(IEnumerable<FileFormatClass> formats)
-        {
-            if (formats == null)return;
+            if (plgif.PacketViewClasses != null) {
+				foreach (var viewc in plgif.PacketViewClasses) {
+					PacketViewManager.Instance.AddView(viewc);
+				}
+			}
 
-            foreach (var format in formats) {
-                if (format.CanRead) {
-                    FileManager.FileOpen.Formats.Add(format);
-                    FileManager.PacketLogOpen.Formats.Add(format);
-                }
-                if (format.CanWrite) {
-                    FileManager.PacketLogSave.Formats.Add(format);
-                }
-            }
-        }
-
-        private static void LoadPlugin_ProtocolDecoder(IEnumerable<ProtocolDecoderClass> prdcs)
-        {
-            if (prdcs == null)return;
-
-            foreach (var prdc in prdcs) {
-                ProtocolManager.AddDecoder(prdc);
-            }
-        }
+            if (plgif.PacketLogFormatClasses != null) {
+				foreach (var format in plgif.PacketLogFormatClasses) {
+					if (format.CanRead) {
+						FileManager.FileOpen.Formats.Add(format);
+						FileManager.PacketLogOpen.Formats.Add(format);
+					}
+					if (format.CanWrite) {
+						FileManager.PacketLogSave.Formats.Add(format);
+					}
+				}
+			}
+		}
     }
 }

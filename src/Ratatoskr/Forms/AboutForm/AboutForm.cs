@@ -9,10 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
+using Ratatoskr.Config;
+using Ratatoskr.General;
 using Ratatoskr.Plugin;
-using RtsCore.Framework.Plugin;
-using RtsCore.Utility;
 
 namespace Ratatoskr.Forms.AboutForm
 {
@@ -33,8 +32,8 @@ namespace Ratatoskr.Forms.AboutForm
                 FONT_LICENSE_DEFAULT.Dispose();
             };
 
-            PictBox_Icon.Image = RtsCore.Resource.Images.app_icon_128x128;
-            PictBox_Logo.Image = RtsCore.Resource.Images.app_logo_300x60;
+            PictBox_Icon.Image = Ratatoskr.Resource.Images.app_icon_128x128;
+            PictBox_Logo.Image = Ratatoskr.Resource.Images.app_logo_300x60;
 
             Text = ConfigManager.Language.MainUI.AboutForm_Title.Value;
             LLabel_HomePage.Text = ConfigManager.Fixed.HomePage.Value;
@@ -77,7 +76,7 @@ namespace Ratatoskr.Forms.AboutForm
             {
                 TView_PluginList.Nodes.Clear();
                 foreach (var plugin in PluginManager.GetPluginList()) {
-                    TView_PluginList.Nodes.Add(CreateNodeFromPlugin(plugin));
+                    TView_PluginList.Nodes.Add(CreateNodeFromPlugin(plugin.Class));
                 }
             }
             TView_PluginList.EndUpdate();

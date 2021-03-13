@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using RtsCore.Framework.Config.Types;
+using Ratatoskr.Config.Types;
 
 namespace Ratatoskr.Forms
 {

@@ -29,10 +29,10 @@
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Btn_Send = new System.Windows.Forms.Button();
-            this.CBox_LogList = new RtsCore.Framework.Controls.RoundComboBox();
+            this.CBox_LogList = new Ratatoskr.Forms.RoundComboBox();
             this.Btn_FileSelect = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.CBox_PlayDataType = new RtsCore.Framework.Controls.RoundComboBox();
+            this.CBox_PlayDataType = new Ratatoskr.Forms.RoundComboBox();
             this.Label_FileSize = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -201,7 +201,7 @@
         private System.Windows.Forms.ProgressBar PBar_Progress;
         private System.Windows.Forms.Label Label_TransSize;
         private System.Windows.Forms.Button Btn_Send;
-        private RtsCore.Framework.Controls.RoundComboBox CBox_LogList;
-        private RtsCore.Framework.Controls.RoundComboBox CBox_PlayDataType;
+        private Ratatoskr.Forms.RoundComboBox CBox_LogList;
+        private Ratatoskr.Forms.RoundComboBox CBox_PlayDataType;
     }
 }

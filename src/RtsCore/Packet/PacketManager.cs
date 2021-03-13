@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace RtsCore.Packet
 {
+    public delegate void PacketEventHandler(IEnumerable<PacketObject> packets);
+
+
     [Flags]
     public enum PacketDataRateTarget
     {

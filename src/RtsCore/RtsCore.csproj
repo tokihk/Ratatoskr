@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,11 +30,19 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LibUsbDotNet.LibUsbDotNet, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c677239abe1e02a9, processorArchitecture=MSIL">
+      <HintPath>..\packages\LibUsbDotNet.2.2.29\lib\net45\LibUsbDotNet.LibUsbDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio, Version=1.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.10.0\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,69 +51,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config\ConfigHolder.cs" />
-    <Compile Include="Config\ConfigManagerBase.cs" />
-    <Compile Include="Config\ConfigObject.cs" />
-    <Compile Include="Config\IConfigData.cs" />
-    <Compile Include="Config\IConfigDataHolder.cs" />
-    <Compile Include="Config\IConfigDataReadOnly.cs" />
-    <Compile Include="Config\IConfigReader.cs" />
-    <Compile Include="Config\IConfigWriter.cs" />
-    <Compile Include="Config\Types\BoolConfig.cs" />
-    <Compile Include="Config\Types\IPAddressConfig.cs" />
-    <Compile Include="Config\Types\DateTimeConfig.cs" />
-    <Compile Include="Config\Types\EnumConfig.cs" />
-    <Compile Include="Config\Types\EnumListConfig.cs" />
-    <Compile Include="Config\Types\GuidConfig.cs" />
-    <Compile Include="Config\Types\IntegerConfig.cs" />
-    <Compile Include="Config\Types\MailListConfig.cs" />
-    <Compile Include="Config\Types\PointConfig.cs" />
-    <Compile Include="Config\Types\SizeConfig.cs" />
-    <Compile Include="Config\Types\StringConfig.cs" />
-    <Compile Include="Config\Types\StringListConfig.cs" />
-    <Compile Include="Generic\ClassUtil.cs" />
-    <Compile Include="Generic\SkipList.cs" />
     <Compile Include="Kernel.cs" />
-    <Compile Include="Packet\IPacketContainer.cs" />
-    <Compile Include="Packet\IPacketContainerReadOnly.cs" />
-    <Compile Include="Packet\PacketBuilder.cs" />
-    <Compile Include="Packet\PacketContainerLarge.cs" />
-    <Compile Include="Packet\PacketContainerNormal.cs" />
-    <Compile Include="Packet\PacketConverter.cs" />
-    <Compile Include="Packet\PacketManager.cs" />
-    <Compile Include="Packet\PacketObject.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protocol\ProtocolDecodeChannel.cs" />
-    <Compile Include="Protocol\ProtocolDecodeEvent.cs" />
-    <Compile Include="Protocol\ProtocolDecodeEvent_BitData.cs" />
-    <Compile Include="Protocol\ProtocolDecodeEvent_Frame.cs" />
-    <Compile Include="Protocol\ProtocolDecodeEvent_Message.cs" />
-    <Compile Include="Protocol\ProtocolDecodeEvent_Value.cs" />
-    <Compile Include="Protocol\ProtocolDecoderClass.cs" />
-    <Compile Include="Protocol\ProtocolDecoderInstance.cs" />
-    <Compile Include="Protocol\ProtocolEncoderClass.cs" />
-    <Compile Include="Protocol\ProtocolEncoderInstance.cs" />
-    <Compile Include="Protocol\ProtocolFrameElement.cs" />
-    <Compile Include="Protocol\ProtocolFrameElement_BitData.cs" />
-    <Compile Include="Protocol\ProtocolFrameElement_Enum.cs" />
-    <Compile Include="Protocol\ProtocolFrameElement_Integer.cs" />
-    <Compile Include="Protocol\ProtocolProperty.cs" />
-    <Compile Include="Utility\BitConverterEx.cs" />
-    <Compile Include="Utility\BitData.cs" />
-    <Compile Include="Utility\CryptoUtil.cs" />
-    <Compile Include="Utility\HexTextEncoder.cs" />
-    <Compile Include="Utility\HighResolutionDateTime.cs" />
-    <Compile Include="Utility\LicenseFileParser.cs" />
-    <Compile Include="Utility\LicenseInfo.cs" />
-    <Compile Include="Utility\ModuleInfo.cs" />
-    <Compile Include="Utility\ModuleVersion.cs" />
-    <Compile Include="Utility\StructEncoder.cs" />
-    <Compile Include="Utility\SystemInfo.cs" />
-    <Compile Include="Utility\SystemMessageInfo.cs" />
-    <Compile Include="Utility\TextUtil.cs" />
-    <Compile Include="Utility\WebDownloader.cs" />
-    <Compile Include="Utility\Wildcard.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RtsCore.Resource\RtsCore.Resource.csproj">
+      <Project>{0b6f43ef-e187-4979-89fe-f88e6c40fba9}</Project>
+      <Name>RtsCore.Resource</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

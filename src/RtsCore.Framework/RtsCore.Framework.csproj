@@ -63,169 +63,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BinaryText\BinaryTextCompiler.cs" />
-    <Compile Include="BinaryText\BinaryTextData.cs" />
-    <Compile Include="BinaryText\BinaryTextMacro.cs" />
-    <Compile Include="BinaryText\BinaryTextParser.Parser.Generated.cs">
-      <DependentUpon>BinaryTextParser.Language.grammar.y</DependentUpon>
-    </Compile>
-    <Compile Include="BinaryText\BinaryTextParser.Scanner.Generated.cs">
-      <DependentUpon>BinaryTextParser.Language.analyzer.lex</DependentUpon>
-    </Compile>
-    <Compile Include="Config\Types\ColorConfig.cs" />
-    <Compile Include="Config\Types\KeyConfig.cs" />
-    <Compile Include="Controls\ComboBoxEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\ListViewEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\ProtocolDataValueView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ProtocolDataValueView.Designer.cs">
-      <DependentUpon>ProtocolDataValueView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ProtocolFrameChartView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ProtocolFrameChartView.Designer.cs">
-      <DependentUpon>ProtocolFrameChartView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ProtocolFrameDetailView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ProtocolFrameDetailView.Designer.cs">
-      <DependentUpon>ProtocolFrameDetailView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\RoundComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\RoundTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\TreeListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\TreeListView.Designer.cs">
-      <DependentUpon>TreeListView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Device\DeviceClass.cs" />
-    <Compile Include="Device\DeviceConfig.cs" />
-    <Compile Include="Device\DeviceControlPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Device\DeviceControlPanel.Designer.cs">
-      <DependentUpon>DeviceControlPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Device\DeviceInstance.cs" />
-    <Compile Include="Device\DeviceManagementClass.cs" />
-    <Compile Include="Device\DeviceProperty.cs" />
-    <Compile Include="Device\DevicePropertyEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Device\DevicePropertyEditor.Designer.cs">
-      <DependentUpon>DevicePropertyEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Drivers\SerialPort\SerialPortController.cs" />
-    <Compile Include="Drivers\SerialPort\SerialPortInfo.cs" />
-    <Compile Include="Drivers\SerialPort\SerialPortManager.cs" />
-    <Compile Include="FileFormat\FileFormatClass.cs" />
-    <Compile Include="FileFormat\FileFormatOption.cs" />
-    <Compile Include="FileFormat\FileFormatOptionEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FileFormat\FileFormatOptionEditor.Designer.cs">
-      <DependentUpon>FileFormatOptionEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FileFormat\FileFormatReader.cs" />
-    <Compile Include="FileFormat\FileFormatWriter.cs" />
-    <Compile Include="FileFormat\FileReadTargetInfo.cs" />
-    <Compile Include="FileFormat\FileWriteTargetInfo.cs" />
-    <Compile Include="FileFormat\PacketLogReader.cs" />
-    <Compile Include="FileFormat\PacketLogWriter.cs" />
-    <Compile Include="Native\Shell.cs" />
-    <Compile Include="Native\WinAPI.cs" />
-    <Compile Include="Native\WinErrorCode.cs" />
-    <Compile Include="PacketConverter\PacketConverterClass.cs" />
-    <Compile Include="PacketConverter\PacketConverterInstance.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketConverter\PacketConverterInstance.Designer.cs">
-      <DependentUpon>PacketConverterInstance.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PacketConverter\PacketConverterManager.cs" />
-    <Compile Include="PacketConverter\PacketConverterProperty.cs" />
-    <Compile Include="PacketView\PacketViewClass.cs" />
-    <Compile Include="PacketView\PacketViewControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketView\PacketViewControl.Designer.cs">
-      <DependentUpon>PacketViewControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PacketView\PacketViewInstance.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PacketView\PacketViewInstance.Designer.cs">
-      <DependentUpon>PacketViewInstance.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PacketView\PacketViewManager.cs" />
-    <Compile Include="PacketView\PacketViewProperty.cs" />
-    <Compile Include="Plugin\PluginClass.cs" />
-    <Compile Include="ThirdParty\YaccLexTools\GplexBuffers.cs" />
-    <Compile Include="PacketFilter\PacketFilterCallStack.cs" />
-    <Compile Include="PacketFilter\PacketFilterController.cs" />
-    <Compile Include="PacketFilter\PacketFilterObject.cs" />
-    <Compile Include="PacketFilter\PacketFilterParser.Parser.Generated.cs">
-      <DependentUpon>PacketFilterParser.Language.grammar.y</DependentUpon>
-    </Compile>
-    <Compile Include="PacketFilter\PacketFilterParser.Scanner.Generated.cs">
-      <DependentUpon>PacketFilterParser.Language.analyzer.lex</DependentUpon>
-    </Compile>
-    <Compile Include="PacketFilter\Terms\Term.cs" />
-    <Compile Include="PacketFilter\Terms\Term_Binary.cs" />
-    <Compile Include="PacketFilter\Terms\Term_Bool.cs" />
-    <Compile Include="PacketFilter\Terms\Term_DateTime.cs" />
-    <Compile Include="PacketFilter\Terms\Term_DateTimeOffset.cs" />
-    <Compile Include="PacketFilter\Terms\Term_Number.cs" />
-    <Compile Include="PacketFilter\Terms\Term_Regex.cs" />
-    <Compile Include="PacketFilter\Terms\Term_Status.cs" />
-    <Compile Include="PacketFilter\Terms\Term_Text.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ThirdParty\YaccLexTools\ShiftReduceParserCode.cs" />
-    <Compile Include="Utility\ClipboardUtil.cs" />
-    <Compile Include="Utility\ImageUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="BinaryText\BinaryTextParser.Language.analyzer.lex">
-      <DependentUpon>BinaryTextParser.parser</DependentUpon>
-    </None>
-    <None Include="BinaryText\BinaryTextParser.Language.grammar.y">
-      <DependentUpon>BinaryTextParser.parser</DependentUpon>
-    </None>
-    <None Include="BinaryText\BinaryTextParser.parser" />
     <None Include="packages.config" />
-    <None Include="PacketFilter\PacketFilterParser.Language.analyzer.lex">
-      <DependentUpon>PacketFilterParser.parser</DependentUpon>
-    </None>
-    <None Include="PacketFilter\PacketFilterParser.Language.grammar.y">
-      <DependentUpon>PacketFilterParser.parser</DependentUpon>
-    </None>
-    <None Include="PacketFilter\PacketFilterParser.parser" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Controls\ListViewEx.resx">
-      <DependentUpon>ListViewEx.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\TreeListView.resx">
-      <DependentUpon>TreeListView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PacketView\PacketViewControl.resx">
-      <DependentUpon>PacketViewControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PacketView\PacketViewInstance.resx">
-      <DependentUpon>PacketViewInstance.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RtsCore\RtsCore.csproj">
@@ -233,6 +74,7 @@
       <Name>RtsCore</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" DependsOnTargets="YltBuildGen" />
   <Target Name="YltBuildGen" DependsOnTargets="GeneratePacketFilterParser;GenerateBinaryTextParser" />

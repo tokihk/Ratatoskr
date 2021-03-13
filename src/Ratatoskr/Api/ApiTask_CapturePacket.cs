@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
-using RtsCore.Packet;
-using RtsCore.Framework.PacketFilter;
+using Ratatoskr.General.Packet;
+using Ratatoskr.General.Packet.Filter;
 
 namespace Ratatoskr.Api
 {

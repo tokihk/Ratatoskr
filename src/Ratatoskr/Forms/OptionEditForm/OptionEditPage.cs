@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.Config.Data.User;
 
 namespace Ratatoskr.Forms.OptionEditForm
 {
@@ -28,6 +28,11 @@ namespace Ratatoskr.Forms.OptionEditForm
         {
             OnFlushConfig();
         }
+
+		public void Active(bool active)
+		{
+
+		}
 
         protected virtual void OnLoadConfig()
         {

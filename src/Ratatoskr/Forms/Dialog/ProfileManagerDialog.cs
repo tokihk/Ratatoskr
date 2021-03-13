@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
+using Ratatoskr.Config;
 
 namespace Ratatoskr.Forms.Dialog
 {

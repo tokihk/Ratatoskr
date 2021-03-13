@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RtsCore.Packet;
+using Ratatoskr.General.Packet;
 
 namespace Ratatoskr.Api
 {

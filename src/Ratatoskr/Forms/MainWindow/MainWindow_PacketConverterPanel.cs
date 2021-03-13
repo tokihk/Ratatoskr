@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.Config;
+using Ratatoskr.Config.Data.User;
 using RtsCore;
-using RtsCore.Framework.PacketConverter;
+using Ratatoskr.PacketConverter;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -30,7 +30,7 @@ namespace Ratatoskr.Forms.MainWindow
             Btn_Collapse.TextAlign = ContentAlignment.MiddleLeft;
             Btn_Collapse.Font = new Font("Segoe UI", 10);
             Btn_Collapse.ForeColor = SystemColors.GrayText;
-            Btn_Collapse.Image = RtsCore.Resource.Images.collapse_16x16;
+            Btn_Collapse.Image = Ratatoskr.Resource.Images.collapse_16x16;
             Btn_Collapse.ImageAlign = ContentAlignment.MiddleLeft;
             Btn_Collapse.TextImageRelation = TextImageRelation.ImageBeforeText;
             Btn_Collapse.Height = Btn_Collapse.Image.Height + Btn_Collapse.Margin.Vertical;
@@ -87,8 +87,8 @@ namespace Ratatoskr.Forms.MainWindow
             Panel_ConverterList.Visible = ConfigManager.System.MainWindow.PacketConverterVisible.Value;
 
             Btn_Collapse.Image = (ConfigManager.System.MainWindow.PacketConverterVisible.Value)
-                               ? (RtsCore.Resource.Images.expand_16x16)
-                               : (RtsCore.Resource.Images.collapse_16x16);
+                               ? (Ratatoskr.Resource.Images.expand_16x16)
+                               : (Ratatoskr.Resource.Images.collapse_16x16);
 
             AdjustControlSize();
         }
@@ -168,7 +168,7 @@ namespace Ratatoskr.Forms.MainWindow
             var index_new = GetConverterIndex(Panel_ConverterList.PointToClient(pos_screen));
 
             if (index_new != index_old) {
-                Kernel.DebugMessage(string.Format("MoveConverterIndex {0} => {1}", index_new, index_old));
+                Debugger.DebugSystem.MessageOut(string.Format("MoveConverterIndex {0} => {1}", index_new, index_old));
 
                 /* コントロールを入れ替え */
                 Panel_ConverterList.Controls.SetChildIndex(control, (int)index_new);

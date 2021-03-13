@@ -9,10 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
-using Ratatoskr.Forms.Controls;
-using RtsCore.Framework.BinaryText;
-using RtsCore.Utility;
+using Ratatoskr.Config;
+using Ratatoskr.General.BinaryText;
+using Ratatoskr.General;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -123,8 +122,8 @@ namespace Ratatoskr.Forms.MainWindow
 #endif
 
                 CBox_ExpList.BackColor = (send_data_bin_ != null)
-                                       ? (RtsCore.Parameter.COLOR_OK)
-                                       : (RtsCore.Parameter.COLOR_NG);
+                                       ? (Ratatoskr.Resource.AppColors.Ok)
+                                       : (Ratatoskr.Resource.AppColors.Ng);
             } else {
                 send_data_bin_ = null;
 

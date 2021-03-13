@@ -91,6 +91,7 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_Profile_Export = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.MenuBar_Plugin = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -284,6 +285,7 @@
             this.MenuBar_View,
             this.MenuBar_Gate,
             this.MenuBar_Tool,
+            this.MenuBar_Plugin,
             this.MenuBar_Help,
             this.MenuBar_Profile_Remove,
             this.MenuBar_Profile_Add,
@@ -305,20 +307,20 @@
             this.toolStripSeparator1,
             this.MenuBar_File_Exit});
             this.MenuBar_File.Name = "MenuBar_File";
-            this.MenuBar_File.Size = new System.Drawing.Size(36, 25);
+            this.MenuBar_File.Size = new System.Drawing.Size(37, 25);
             this.MenuBar_File.Text = "File";
             // 
             // MenuBar_File_Open
             // 
             this.MenuBar_File_Open.Name = "MenuBar_File_Open";
-            this.MenuBar_File_Open.Size = new System.Drawing.Size(111, 22);
+            this.MenuBar_File_Open.Size = new System.Drawing.Size(180, 22);
             this.MenuBar_File_Open.Tag = "FileOpen";
             this.MenuBar_File_Open.Text = "Open";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(108, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // MenuBar_File_Save
             // 
@@ -326,21 +328,21 @@
             this.MenuBar_File_Save_Original,
             this.MenuBar_File_Save_Shaping});
             this.MenuBar_File_Save.Name = "MenuBar_File_Save";
-            this.MenuBar_File_Save.Size = new System.Drawing.Size(111, 22);
+            this.MenuBar_File_Save.Size = new System.Drawing.Size(180, 22);
             this.MenuBar_File_Save.Text = "Save";
             this.MenuBar_File_Save.Click += new System.EventHandler(this.OnMenuClick);
             // 
             // MenuBar_File_Save_Original
             // 
             this.MenuBar_File_Save_Original.Name = "MenuBar_File_Save_Original";
-            this.MenuBar_File_Save_Original.Size = new System.Drawing.Size(136, 22);
+            this.MenuBar_File_Save_Original.Size = new System.Drawing.Size(139, 22);
             this.MenuBar_File_Save_Original.Tag = "PacketSaveConvertOff";
             this.MenuBar_File_Save_Original.Text = "Raw packets";
             // 
             // MenuBar_File_Save_Shaping
             // 
             this.MenuBar_File_Save_Shaping.Name = "MenuBar_File_Save_Shaping";
-            this.MenuBar_File_Save_Shaping.Size = new System.Drawing.Size(136, 22);
+            this.MenuBar_File_Save_Shaping.Size = new System.Drawing.Size(139, 22);
             this.MenuBar_File_Save_Shaping.Tag = "PacketSaveConvertOn";
             this.MenuBar_File_Save_Shaping.Text = "View packet";
             // 
@@ -350,32 +352,32 @@
             this.MenuBar_File_SaveAs_Original,
             this.MenuBar_File_SaveAs_Shaping});
             this.MenuBar_File_SaveAs.Name = "MenuBar_File_SaveAs";
-            this.MenuBar_File_SaveAs.Size = new System.Drawing.Size(111, 22);
+            this.MenuBar_File_SaveAs.Size = new System.Drawing.Size(180, 22);
             this.MenuBar_File_SaveAs.Text = "Save as";
             // 
             // MenuBar_File_SaveAs_Original
             // 
             this.MenuBar_File_SaveAs_Original.Name = "MenuBar_File_SaveAs_Original";
-            this.MenuBar_File_SaveAs_Original.Size = new System.Drawing.Size(145, 22);
+            this.MenuBar_File_SaveAs_Original.Size = new System.Drawing.Size(151, 22);
             this.MenuBar_File_SaveAs_Original.Tag = "PacketSaveAsConvertOff";
             this.MenuBar_File_SaveAs_Original.Text = "Raw packets...";
             // 
             // MenuBar_File_SaveAs_Shaping
             // 
             this.MenuBar_File_SaveAs_Shaping.Name = "MenuBar_File_SaveAs_Shaping";
-            this.MenuBar_File_SaveAs_Shaping.Size = new System.Drawing.Size(145, 22);
+            this.MenuBar_File_SaveAs_Shaping.Size = new System.Drawing.Size(151, 22);
             this.MenuBar_File_SaveAs_Shaping.Tag = "PacketSaveAsConvertOn";
             this.MenuBar_File_SaveAs_Shaping.Text = "View packets...";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(108, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // MenuBar_File_Exit
             // 
             this.MenuBar_File_Exit.Name = "MenuBar_File_Exit";
-            this.MenuBar_File_Exit.Size = new System.Drawing.Size(111, 22);
+            this.MenuBar_File_Exit.Size = new System.Drawing.Size(180, 22);
             this.MenuBar_File_Exit.Tag = "ApplicationExit";
             this.MenuBar_File_Exit.Text = "Exit";
             // 
@@ -384,13 +386,13 @@
             this.MenuBar_Edit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MenuBar_Edit_EventClear});
             this.MenuBar_Edit.Name = "MenuBar_Edit";
-            this.MenuBar_Edit.Size = new System.Drawing.Size(37, 25);
+            this.MenuBar_Edit.Size = new System.Drawing.Size(39, 25);
             this.MenuBar_Edit.Text = "Edit";
             // 
             // MenuBar_Edit_EventClear
             // 
             this.MenuBar_Edit_EventClear.Name = "MenuBar_Edit_EventClear";
-            this.MenuBar_Edit_EventClear.Size = new System.Drawing.Size(131, 22);
+            this.MenuBar_Edit_EventClear.Size = new System.Drawing.Size(134, 22);
             this.MenuBar_Edit_EventClear.Tag = "PacketClear";
             this.MenuBar_Edit_EventClear.Text = "Buffer clear";
             // 
@@ -404,42 +406,42 @@
             this.toolStripSeparator4,
             this.MenuBar_View_AutoScroll});
             this.MenuBar_View.Name = "MenuBar_View";
-            this.MenuBar_View.Size = new System.Drawing.Size(42, 25);
+            this.MenuBar_View.Size = new System.Drawing.Size(44, 25);
             this.MenuBar_View.Text = "View";
             // 
             // MenuBar_View_PacketConverterAdd
             // 
             this.MenuBar_View_PacketConverterAdd.Name = "MenuBar_View_PacketConverterAdd";
-            this.MenuBar_View_PacketConverterAdd.Size = new System.Drawing.Size(155, 22);
+            this.MenuBar_View_PacketConverterAdd.Size = new System.Drawing.Size(161, 22);
             this.MenuBar_View_PacketConverterAdd.Text = "Add converter";
             // 
             // MenuBar_View_PacketViewAdd
             // 
             this.MenuBar_View_PacketViewAdd.Name = "MenuBar_View_PacketViewAdd";
-            this.MenuBar_View_PacketViewAdd.Size = new System.Drawing.Size(155, 22);
+            this.MenuBar_View_PacketViewAdd.Size = new System.Drawing.Size(161, 22);
             this.MenuBar_View_PacketViewAdd.Text = "Add packet view";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(152, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(158, 6);
             // 
             // MenuBar_View_PacketViewRedraw
             // 
             this.MenuBar_View_PacketViewRedraw.Name = "MenuBar_View_PacketViewRedraw";
-            this.MenuBar_View_PacketViewRedraw.Size = new System.Drawing.Size(155, 22);
+            this.MenuBar_View_PacketViewRedraw.Size = new System.Drawing.Size(161, 22);
             this.MenuBar_View_PacketViewRedraw.Tag = "PacketRedraw";
             this.MenuBar_View_PacketViewRedraw.Text = "Redraw";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(152, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(158, 6);
             // 
             // MenuBar_View_AutoScroll
             // 
             this.MenuBar_View_AutoScroll.Name = "MenuBar_View_AutoScroll";
-            this.MenuBar_View_AutoScroll.Size = new System.Drawing.Size(155, 22);
+            this.MenuBar_View_AutoScroll.Size = new System.Drawing.Size(161, 22);
             this.MenuBar_View_AutoScroll.Tag = "AutoScrollToggle";
             this.MenuBar_View_AutoScroll.Text = "Auto scroll";
             // 
@@ -452,41 +454,41 @@
             this.MenuBar_Gate_Connect4,
             this.MenuBar_Gate_Connect5});
             this.MenuBar_Gate.Name = "MenuBar_Gate";
-            this.MenuBar_Gate.Size = new System.Drawing.Size(41, 25);
+            this.MenuBar_Gate.Size = new System.Drawing.Size(43, 25);
             this.MenuBar_Gate.Text = "Gate";
             // 
             // MenuBar_Gate_Connect1
             // 
             this.MenuBar_Gate_Connect1.Name = "MenuBar_Gate_Connect1";
-            this.MenuBar_Gate_Connect1.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_Gate_Connect1.Size = new System.Drawing.Size(215, 22);
             this.MenuBar_Gate_Connect1.Tag = "Gate1_Connect";
             this.MenuBar_Gate_Connect1.Text = "Gate1 Connect/Disconnect";
             // 
             // MenuBar_Gate_Connect2
             // 
             this.MenuBar_Gate_Connect2.Name = "MenuBar_Gate_Connect2";
-            this.MenuBar_Gate_Connect2.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_Gate_Connect2.Size = new System.Drawing.Size(215, 22);
             this.MenuBar_Gate_Connect2.Tag = "Gate2_Connect";
             this.MenuBar_Gate_Connect2.Text = "Gate2 Connect/Disconnect";
             // 
             // MenuBar_Gate_Connect3
             // 
             this.MenuBar_Gate_Connect3.Name = "MenuBar_Gate_Connect3";
-            this.MenuBar_Gate_Connect3.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_Gate_Connect3.Size = new System.Drawing.Size(215, 22);
             this.MenuBar_Gate_Connect3.Tag = "Gate3_Connect";
             this.MenuBar_Gate_Connect3.Text = "Gate3 Connect/Disconnect";
             // 
             // MenuBar_Gate_Connect4
             // 
             this.MenuBar_Gate_Connect4.Name = "MenuBar_Gate_Connect4";
-            this.MenuBar_Gate_Connect4.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_Gate_Connect4.Size = new System.Drawing.Size(215, 22);
             this.MenuBar_Gate_Connect4.Tag = "Gate4_Connect";
             this.MenuBar_Gate_Connect4.Text = "Gate4 Connect/Disconnect";
             // 
             // MenuBar_Gate_Connect5
             // 
             this.MenuBar_Gate_Connect5.Name = "MenuBar_Gate_Connect5";
-            this.MenuBar_Gate_Connect5.Size = new System.Drawing.Size(209, 22);
+            this.MenuBar_Gate_Connect5.Size = new System.Drawing.Size(215, 22);
             this.MenuBar_Gate_Connect5.Tag = "Gate5_Connect";
             this.MenuBar_Gate_Connect5.Text = "Gate5 Connect/Disconnect";
             // 
@@ -500,44 +502,44 @@
             this.toolStripSeparator7,
             this.MenuBar_Tool_Option});
             this.MenuBar_Tool.Name = "MenuBar_Tool";
-            this.MenuBar_Tool.Size = new System.Drawing.Size(39, 25);
+            this.MenuBar_Tool.Size = new System.Drawing.Size(41, 25);
             this.MenuBar_Tool.Text = "Tool";
             // 
             // MenuBar_Edit_TimeStamp
             // 
             this.MenuBar_Edit_TimeStamp.Name = "MenuBar_Edit_TimeStamp";
-            this.MenuBar_Edit_TimeStamp.Size = new System.Drawing.Size(158, 22);
+            this.MenuBar_Edit_TimeStamp.Size = new System.Drawing.Size(180, 22);
             this.MenuBar_Edit_TimeStamp.Tag = "TimeStamp";
             this.MenuBar_Edit_TimeStamp.Text = "Time stamp";
             // 
             // MenuBar_Tool_AutoTimeStamp
             // 
             this.MenuBar_Tool_AutoTimeStamp.Name = "MenuBar_Tool_AutoTimeStamp";
-            this.MenuBar_Tool_AutoTimeStamp.Size = new System.Drawing.Size(158, 22);
+            this.MenuBar_Tool_AutoTimeStamp.Size = new System.Drawing.Size(180, 22);
             this.MenuBar_Tool_AutoTimeStamp.Tag = "AutoTimeStampToggle";
             this.MenuBar_Tool_AutoTimeStamp.Text = "Auto Time stamp";
             // 
             // toolStripSeparator11
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(155, 6);
+            this.toolStripSeparator11.Size = new System.Drawing.Size(177, 6);
             // 
             // MenuBar_Tool_ScriptManager
             // 
             this.MenuBar_Tool_ScriptManager.Name = "MenuBar_Tool_ScriptManager";
-            this.MenuBar_Tool_ScriptManager.Size = new System.Drawing.Size(158, 22);
+            this.MenuBar_Tool_ScriptManager.Size = new System.Drawing.Size(180, 22);
             this.MenuBar_Tool_ScriptManager.Tag = "ShowScriptWindow";
             this.MenuBar_Tool_ScriptManager.Text = "Script Manager...";
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(155, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
             // 
             // MenuBar_Tool_Option
             // 
             this.MenuBar_Tool_Option.Name = "MenuBar_Tool_Option";
-            this.MenuBar_Tool_Option.Size = new System.Drawing.Size(158, 22);
+            this.MenuBar_Tool_Option.Size = new System.Drawing.Size(180, 22);
             this.MenuBar_Tool_Option.Tag = "ShowOptionDialog";
             this.MenuBar_Tool_Option.Text = "Options...";
             // 
@@ -548,25 +550,25 @@
             this.toolStripSeparator10,
             this.MenuBar_Help_About});
             this.MenuBar_Help.Name = "MenuBar_Help";
-            this.MenuBar_Help.Size = new System.Drawing.Size(40, 25);
+            this.MenuBar_Help.Size = new System.Drawing.Size(44, 25);
             this.MenuBar_Help.Text = "Help";
             // 
             // MenuBar_Help_Document
             // 
             this.MenuBar_Help_Document.Name = "MenuBar_Help_Document";
-            this.MenuBar_Help_Document.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_Help_Document.Size = new System.Drawing.Size(171, 22);
             this.MenuBar_Help_Document.Tag = "ShowAppDocument";
             this.MenuBar_Help_Document.Text = "Contents";
             // 
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(168, 6);
             // 
             // MenuBar_Help_About
             // 
             this.MenuBar_Help_About.Name = "MenuBar_Help_About";
-            this.MenuBar_Help_About.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_Help_About.Size = new System.Drawing.Size(171, 22);
             this.MenuBar_Help_About.Tag = "ShowAppInformation";
             this.MenuBar_Help_About.Text = "About Application";
             // 
@@ -574,7 +576,7 @@
             // 
             this.MenuBar_Profile_Remove.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.MenuBar_Profile_Remove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.MenuBar_Profile_Remove.Image = RtsCore.Resource.Images.database_remove_32x32;
+            this.MenuBar_Profile_Remove.Image = ((System.Drawing.Image)(resources.GetObject("MenuBar_Profile_Remove.Image")));
             this.MenuBar_Profile_Remove.Name = "MenuBar_Profile_Remove";
             this.MenuBar_Profile_Remove.Size = new System.Drawing.Size(28, 25);
             this.MenuBar_Profile_Remove.Tag = "ProfileRemove";
@@ -585,7 +587,7 @@
             // 
             this.MenuBar_Profile_Add.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.MenuBar_Profile_Add.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.MenuBar_Profile_Add.Image = RtsCore.Resource.Images.database_add_32x32;
+            this.MenuBar_Profile_Add.Image = ((System.Drawing.Image)(resources.GetObject("MenuBar_Profile_Add.Image")));
             this.MenuBar_Profile_Add.Name = "MenuBar_Profile_Add";
             this.MenuBar_Profile_Add.Size = new System.Drawing.Size(28, 25);
             this.MenuBar_Profile_Add.Tag = "ProfileAdd";
@@ -611,7 +613,7 @@
             this.MenuBar_Profile_Edit,
             this.toolStripSeparator5,
             this.MenuBar_Profile_Export});
-            this.MenuBar_Profile.Image = RtsCore.Resource.Images.user_24x24;
+            this.MenuBar_Profile.Image = ((System.Drawing.Image)(resources.GetObject("MenuBar_Profile.Image")));
             this.MenuBar_Profile.Name = "MenuBar_Profile";
             this.MenuBar_Profile.Size = new System.Drawing.Size(28, 25);
             this.MenuBar_Profile.Text = "Profile";
@@ -619,19 +621,19 @@
             // MenuBar_Profile_Edit
             // 
             this.MenuBar_Profile_Edit.Name = "MenuBar_Profile_Edit";
-            this.MenuBar_Profile_Edit.Size = new System.Drawing.Size(145, 22);
+            this.MenuBar_Profile_Edit.Size = new System.Drawing.Size(154, 22);
             this.MenuBar_Profile_Edit.Tag = "ProfileEdit";
             this.MenuBar_Profile_Edit.Text = "Edit profile...";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(142, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(151, 6);
             // 
             // MenuBar_Profile_Export
             // 
             this.MenuBar_Profile_Export.Name = "MenuBar_Profile_Export";
-            this.MenuBar_Profile_Export.Size = new System.Drawing.Size(145, 22);
+            this.MenuBar_Profile_Export.Size = new System.Drawing.Size(154, 22);
             this.MenuBar_Profile_Export.Tag = "ProfileExport";
             this.MenuBar_Profile_Export.Text = "Export profile...";
             // 
@@ -646,6 +648,12 @@
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1, 0);
             this.toolStrip1.TabIndex = 1;
+            // 
+            // MenuBar_Plugin
+            // 
+            this.MenuBar_Plugin.Name = "MenuBar_Plugin";
+            this.MenuBar_Plugin.Size = new System.Drawing.Size(53, 25);
+            this.MenuBar_Plugin.Text = "&Plugin";
             // 
             // MainWindow_Form
             // 
@@ -743,5 +751,6 @@
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect4;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect5;
         private System.Windows.Forms.ToolStripStatusLabel Label_PktCount_Cache;
-    }
+		private System.Windows.Forms.ToolStripMenuItem MenuBar_Plugin;
+	}
 }

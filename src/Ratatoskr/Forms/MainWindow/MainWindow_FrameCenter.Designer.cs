@@ -27,7 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.DockPanel_Main = new Ratatoskr.Forms.Controls.DockPanelEx();
+            this.DockPanel_Main = new Ratatoskr.Forms.DockPanelEx();
             this.PacketConverter_Main = new Ratatoskr.Forms.MainWindow.MainWindow_PacketConverterPanel();
             this.GatePanel_Main = new Ratatoskr.Forms.MainWindow.MainWindow_GatePanel();
             ((System.ComponentModel.ISupportInitialize)(this.DockPanel_Main)).BeginInit();
@@ -44,7 +44,7 @@
             this.DockPanel_Main.ShowAutoHideContentOnHover = false;
             this.DockPanel_Main.Size = new System.Drawing.Size(571, 331);
             this.DockPanel_Main.TabIndex = 3;
-            this.DockPanel_Main.DockContentClosed += new Ratatoskr.Forms.Controls.DockPanelEx.DockContentClosedHandler(this.DockPanel_Main_DockContentClosed);
+            this.DockPanel_Main.DockContentClosed += new Ratatoskr.Forms.DockPanelEx.DockContentClosedHandler(this.DockPanel_Main_DockContentClosed);
             // 
             // PacketConverter_Main
             // 
@@ -83,6 +83,6 @@
 
         private MainWindow_GatePanel GatePanel_Main;
         private MainWindow_PacketConverterPanel PacketConverter_Main;
-        private Controls.DockPanelEx DockPanel_Main;
+        private DockPanelEx DockPanel_Main;
     }
 }

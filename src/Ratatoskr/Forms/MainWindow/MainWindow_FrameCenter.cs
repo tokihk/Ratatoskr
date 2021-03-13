@@ -9,10 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.UserConfigs;
-using RtsCore.Framework.PacketConverter;
-using RtsCore.Framework.PacketView;
+using Ratatoskr.Config;
+using Ratatoskr.Config.Data.User;
+using Ratatoskr.PacketConverter;
+using Ratatoskr.PacketView;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -57,7 +57,7 @@ namespace Ratatoskr.Forms.MainWindow
                 "MFDC_SendDataListPanel_Control",
                 ConfigManager.Language.MainUI.MCmdPanel_Title.Value,
                 (uint)DockContentsGroup.Fixed,
-                Icon.FromHandle(RtsCore.Resource.Images.memo_32x32.GetHicon()),
+                Icon.FromHandle(Ratatoskr.Resource.Images.memo_32x32.GetHicon()),
                 DockAreas.Document | DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottomAutoHide,
                 false,
@@ -68,7 +68,7 @@ namespace Ratatoskr.Forms.MainWindow
 				"MFDC_SendTrafficPanel_Control",
 				ConfigManager.Language.MainUI.STPanel_Title.Value,
 				(uint)DockContentsGroup.Fixed,
-				Icon.FromHandle(RtsCore.Resource.Images.memo_32x32.GetHicon()),
+				Icon.FromHandle(Ratatoskr.Resource.Images.memo_32x32.GetHicon()),
 				DockAreas.Document | DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
 				DockState.Document,
 				false,
@@ -79,7 +79,7 @@ namespace Ratatoskr.Forms.MainWindow
                 "MFDC_WatchListPanel",
                 ConfigManager.Language.MainUI.WLPanel_Title.Value,
                 (uint)DockContentsGroup.Fixed,
-                Icon.FromHandle(RtsCore.Resource.Images.watch_32x32.GetHicon()),
+                Icon.FromHandle(Ratatoskr.Resource.Images.watch_32x32.GetHicon()),
                 DockAreas.Document | DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
                 DockState.DockBottomAutoHide,
                 false,
@@ -191,7 +191,7 @@ namespace Ratatoskr.Forms.MainWindow
 //                                viewc.Instance.ID.ToString() + (new Random()).Next(0, 99999).ToString(),
                                 viewc.Instance.Class.Name,
                                 (uint)DockContentsGroup.PacketView,
-                                Icon.FromHandle(RtsCore.Resource.Images.packet_view_16x16.GetHicon()),
+                                Icon.FromHandle(Ratatoskr.Resource.Images.packet_view_16x16.GetHicon()),
                                 DockAreas.Document,
                                 DockState.Document,
                                 true,

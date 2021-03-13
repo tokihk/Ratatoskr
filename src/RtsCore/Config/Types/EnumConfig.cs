@@ -8,7 +8,7 @@ using System.Xml;
 namespace RtsCore.Config.Types
 {
     [Serializable]
-    public sealed class EnumConfig<T> : ConfigObject, IConfigData<T>, IConfigReader, IConfigWriter
+    public class EnumConfig<T> : ConfigObject, IConfigData<T>, IConfigReader, IConfigWriter
         where T : struct
     {
         public T Value { get; set; }

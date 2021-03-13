@@ -33,7 +33,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.Label_CodeRowNo = new System.Windows.Forms.ToolStripStatusLabel();
             this.Label_CodeColumnNo = new System.Windows.Forms.ToolStripStatusLabel();
-            this.DockPanel_Main = new Ratatoskr.Forms.Controls.DockPanelEx();
+            this.DockPanel_Main = new Ratatoskr.Forms.DockPanelEx();
             this.MenuBar_Root = new System.Windows.Forms.MenuStrip();
             this.MenuBar_File = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_File_OpenScriptDir = new System.Windows.Forms.ToolStripMenuItem();
@@ -124,8 +124,8 @@
             this.DockPanel_Main.ShowAutoHideContentOnHover = false;
             this.DockPanel_Main.Size = new System.Drawing.Size(872, 449);
             this.DockPanel_Main.TabIndex = 0;
-            this.DockPanel_Main.DockContentClosing += new Ratatoskr.Forms.Controls.DockPanelEx.DockContentClosingHandler(this.DockPanel_Main_DockContentClosing);
-            this.DockPanel_Main.DockContentClosed += new Ratatoskr.Forms.Controls.DockPanelEx.DockContentClosedHandler(this.DockPanel_Main_DockContentClosed);
+            this.DockPanel_Main.DockContentClosing += new Ratatoskr.Forms.DockPanelEx.DockContentClosingHandler(this.DockPanel_Main_DockContentClosing);
+            this.DockPanel_Main.DockContentClosed += new Ratatoskr.Forms.DockPanelEx.DockContentClosedHandler(this.DockPanel_Main_DockContentClosed);
             this.DockPanel_Main.ActiveDocumentChanged += new System.EventHandler(this.DockPanel_Main_ActiveDocumentChanged);
             // 
             // MenuBar_Root
@@ -285,6 +285,6 @@
         private System.Windows.Forms.ToolStripMenuItem MenuBar_File_OpenScriptDir;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_File_Exit;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private Controls.DockPanelEx DockPanel_Main;
+		private DockPanelEx DockPanel_Main;
 	}
 }

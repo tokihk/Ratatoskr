@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Gate;
-using RtsCore.Framework.Device;
+using Ratatoskr.Device;
 
 namespace Ratatoskr.Api
 {

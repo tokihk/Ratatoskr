@@ -9,8 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Api;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.Config;
+using Ratatoskr.Config.Data.User;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -94,8 +94,8 @@ namespace Ratatoskr.Forms.MainWindow
 
             if (file_path.Length > 0) {
                 CBox_LogList.BackColor = (File.Exists(file_path))
-                                        ? (RtsCore.Parameter.COLOR_OK)
-                                        : (RtsCore.Parameter.COLOR_NG);
+                                        ? (Ratatoskr.Resource.AppColors.Ok)
+                                        : (Ratatoskr.Resource.AppColors.Ng);
             } else {
                 CBox_LogList.BackColor = Color.White;
             }

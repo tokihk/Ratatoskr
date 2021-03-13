@@ -64,7 +64,7 @@
             // 
             this.button1.FlatAppearance.BorderSize = 0;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Image = RtsCore.Resource.Images.play_32x32;
+            this.button1.Image = Ratatoskr.Resource.Images.play_32x32;
             this.button1.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.button1.Location = new System.Drawing.Point(3, 3);
             this.button1.Name = "button1";
@@ -79,7 +79,7 @@
             // 
             this.button2.FlatAppearance.BorderSize = 0;
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Image = RtsCore.Resource.Images.stop_32x32;
+            this.button2.Image = Ratatoskr.Resource.Images.stop_32x32;
             this.button2.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.button2.Location = new System.Drawing.Point(79, 3);
             this.button2.Name = "button2";

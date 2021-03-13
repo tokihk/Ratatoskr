@@ -5,15 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.Configs;
+using Ratatoskr.Config;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate.AutoTimeStamp;
 using Ratatoskr.Gate.AutoLogger;
 using RtsCore;
-using RtsCore.Framework.FileFormat;
-using RtsCore.Framework.PacketConverter;
-using RtsCore.Framework.Native;
-using RtsCore.Packet;
+using Ratatoskr.FileFormat;
+using Ratatoskr.PacketConverter;
+using Ratatoskr.Native.Windows;
+using Ratatoskr.General.Packet;
 
 namespace Ratatoskr.Gate
 {
@@ -31,10 +31,7 @@ namespace Ratatoskr.Gate
         public static PacketManager BasePacketManager { get; private set; }
 
 
-        public delegate void EventHandler();
-        public delegate void PacketEventHandler(IEnumerable<PacketObject> packets);
-
-        public static event EventHandler       RawPacketCleared = delegate() { };
+        public static event Action             RawPacketCleared = delegate() { };
         public static event PacketEventHandler RawPacketEntried = delegate(IEnumerable<PacketObject> packets) { };
 
 
@@ -321,7 +318,7 @@ namespace Ratatoskr.Gate
             }
 
             if (info.Reader is PacketLogReader reader) {
-                Kernel.DebugMessage(string.Format("LoadPacketFile - Start [{0}]", Path.GetFileName(info.FilePath)));
+                Debugger.DebugSystem.MessageOut(string.Format("LoadPacketFile - Start [{0}]", Path.GetFileName(info.FilePath)));
 
                 /* ファイルオープン */
                 if (!reader.Open(info.Option, info.FilePath)) {
@@ -336,7 +333,7 @@ namespace Ratatoskr.Gate
 
                 info.Reader.Close();
 
-                Kernel.DebugMessage("LoadPacketFile - Complete");
+                Debugger.DebugSystem.MessageOut("LoadPacketFile - Complete");
             }
         }
 
@@ -376,13 +373,13 @@ namespace Ratatoskr.Gate
                     var count = (ulong)0;
 
                     /* 変換器リセット */
-                    PacketConverterManager.InputStatusClear(pcvt_list);
+                    PacketConvertManager.InputStatusClear(pcvt_list);
 
                     var task_packets = (IEnumerable<PacketObject>)null;
 
                     foreach (var packet in packets_) {
                         /* ベースパケットをパケット変換 */
-                        task_packets = PacketConverterManager.InputPacket(pcvt_list, packet);
+                        task_packets = PacketConvertManager.InputPacket(pcvt_list, packet);
 
                         /* 直前の出力の完了待ち */
                         if (task_result != null) {
@@ -397,7 +394,7 @@ namespace Ratatoskr.Gate
                     }
 
                     /* 変換器内の残りパケットを処理 */
-                    task_packets = PacketConverterManager.InputBreakOff(pcvt_list);
+                    task_packets = PacketConvertManager.InputBreakOff(pcvt_list);
                     if (task_packets != null) {
                         /* 書込みタスクの完了待ち */
                         if (task_result != null) {

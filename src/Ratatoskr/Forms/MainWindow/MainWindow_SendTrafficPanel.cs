@@ -9,10 +9,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.UserConfigs;
-using RtsCore.Framework.BinaryText;
-using RtsCore.Utility;
+using Ratatoskr.Config;
+using Ratatoskr.Config.Data.User;
+using Ratatoskr.General.BinaryText;
+using Ratatoskr.General;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -26,8 +26,8 @@ namespace Ratatoskr.Forms.MainWindow
         }
 
         private readonly Color COLOR_BUSY_COMMAND      = Color.LightSkyBlue;
-        private readonly Color COLOR_COMMAND_FORMAT_OK = RtsCore.Parameter.COLOR_OK;
-        private readonly Color COLOR_COMMAND_FORMAT_NG = RtsCore.Parameter.COLOR_NG;
+        private readonly Color COLOR_COMMAND_FORMAT_OK = Ratatoskr.Resource.AppColors.Ok;
+        private readonly Color COLOR_COMMAND_FORMAT_NG = Ratatoskr.Resource.AppColors.Ng;
 
 
         private bool           load_config_busy_ = false;
@@ -139,8 +139,8 @@ namespace Ratatoskr.Forms.MainWindow
         {
             /* Play/Pause/Stopボタン */
             Btn_Play.Image = (play_state_ == PlayStatus.Busy)
-                           ? (RtsCore.Resource.Images.pause_32x32)
-                           : (RtsCore.Resource.Images.play_32x32);
+                           ? (Ratatoskr.Resource.Images.pause_32x32)
+                           : (Ratatoskr.Resource.Images.play_32x32);
             Btn_Play.Text = (play_state_ == PlayStatus.Busy)
                           ? ("Pause")
                           : ("Play");

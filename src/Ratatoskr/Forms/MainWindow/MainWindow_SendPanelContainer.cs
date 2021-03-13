@@ -8,11 +8,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs;
-using Ratatoskr.Configs.UserConfigs;
+using Ratatoskr.Config;
+using Ratatoskr.Config.Data.User;
 using Ratatoskr.Gate;
-using RtsCore.Framework.Controls;
-using RtsCore.Framework.Device;
+using Ratatoskr.Device;
 
 namespace Ratatoskr.Forms.MainWindow
 {
@@ -170,10 +169,10 @@ namespace Ratatoskr.Forms.MainWindow
             /* 表示更新 */
             if (CBox_TargetList.Text.Length > 0) {
                 CBox_TargetList.BackColor = (GateManager.FindGateObjectFromWildcardAlias(CBox_TargetList.Text).Any(gate => gate.ConnectStatus == ConnectState.Connected))
-                                          ? (RtsCore.Parameter.COLOR_OK)
-                                          : (RtsCore.Parameter.COLOR_WARNING);
+                                          ? (Ratatoskr.Resource.AppColors.Ok)
+                                          : (Ratatoskr.Resource.AppColors.Warning);
             } else {
-                CBox_TargetList.BackColor = RtsCore.Parameter.COLOR_NG;
+                CBox_TargetList.BackColor = Ratatoskr.Resource.AppColors.Ng;
             }
         }
 

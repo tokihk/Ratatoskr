@@ -7,8 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.FileFormats;
-using RtsCore.Framework.FileFormat;
+using Ratatoskr.FileFormat;
 
 namespace Ratatoskr.Forms.Dialog
 {

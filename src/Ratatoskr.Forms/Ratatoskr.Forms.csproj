@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AF0CF934-19CC-4600-8F2C-201991FC837B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ratatoskr.Forms</RootNamespace>
+    <AssemblyName>Ratatoskr.Forms</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\build\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\build\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>.\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015">
+      <HintPath>.\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BinEditBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BinEditBox.Designer.cs">
+      <DependentUpon>BinEditBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ButtonEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CodeEditorEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ComboBoxEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataGridViewEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataGridViewEx.Designer.cs">
+      <DependentUpon>DataGridViewEx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DnsAddressSelectBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DnsAddressSelectBox.Designer.cs">
+      <DependentUpon>DnsAddressSelectBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DockPanelEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FileExplorerEx.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FileExplorerEx.Designer.cs">
+      <DependentUpon>FileExplorerEx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HostAddressSelectBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HostAddressSelectBox.Designer.cs">
+      <DependentUpon>HostAddressSelectBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ListViewEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PacketFilterBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PacketFilterBox.Designer.cs">
+      <DependentUpon>PacketFilterBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PanelEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PreviewLabel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PreviewLabel.Designer.cs">
+      <DependentUpon>PreviewLabel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PreviewTextBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PreviewTextBox.Designer.cs">
+      <DependentUpon>PreviewTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtocolDataValueView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProtocolDataValueView.Designer.cs">
+      <DependentUpon>ProtocolDataValueView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProtocolFrameChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProtocolFrameChartView.Designer.cs">
+      <DependentUpon>ProtocolFrameChartView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProtocolFrameDetailView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProtocolFrameDetailView.Designer.cs">
+      <DependentUpon>ProtocolFrameDetailView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RadioButtonListBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RadioButtonListBox.Designer.cs">
+      <DependentUpon>RadioButtonListBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RoundComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RoundTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SplashScreen.Designer.cs">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextViewEx.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TextViewEx.Designer.cs">
+      <DependentUpon>TextViewEx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TrafficEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TrafficEditor.Designer.cs">
+      <DependentUpon>TrafficEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TreeListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TreeListViewNode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BinEditBox.resx">
+      <DependentUpon>BinEditBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DnsAddressSelectBox.resx">
+      <DependentUpon>DnsAddressSelectBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileExplorerEx.resx">
+      <DependentUpon>FileExplorerEx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HostAddressSelectBox.resx">
+      <DependentUpon>HostAddressSelectBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListViewEx.resx">
+      <DependentUpon>ListViewEx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PacketFilterBox.resx">
+      <DependentUpon>PacketFilterBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PreviewLabel.resx">
+      <DependentUpon>PreviewLabel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PreviewTextBox.resx">
+      <DependentUpon>PreviewTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RadioButtonListBox.resx">
+      <DependentUpon>RadioButtonListBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplashScreen.resx">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextViewEx.resx">
+      <DependentUpon>TextViewEx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TrafficEditor.resx">
+      <DependentUpon>TrafficEditor.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ratatoskr.General\Ratatoskr.General.csproj">
+      <Project>{57c31baf-7383-4975-849f-a4e14f4ecd3b}</Project>
+      <Name>Ratatoskr.General</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ratatoskr.Native\Ratatoskr.Native.csproj">
+      <Project>{e6298f4f-aadf-4015-8bc5-dac08feba611}</Project>
+      <Name>Ratatoskr.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ratatoskr.Resource\Ratatoskr.Resource.csproj">
+      <Project>{c0acf7ae-53ca-4e7b-b2a4-3df99d529d4d}</Project>
+      <Name>Ratatoskr.Resource</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

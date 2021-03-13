@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using RtsCore.Utility;
+using Ratatoskr.Config.Data.User;
 
 namespace Ratatoskr.Forms.OptionEditForm
 {
@@ -43,7 +43,7 @@ namespace Ratatoskr.Forms.OptionEditForm
         private ColorDialog CreateColorDialog(Color color)
         {
             var dialog = new ColorDialog();
-            var config_def = new Configs.UserConfigs.UserConfig();
+            var config_def = new UserConfig();
 
             dialog.Color = color;
             dialog.AllowFullOpen = true;

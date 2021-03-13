@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Forms.Dialog;
 using Ratatoskr.Gate;
-using RtsCore.Utility;
+using Ratatoskr.General;
 
 namespace Ratatoskr.Forms.MainWindow
 {

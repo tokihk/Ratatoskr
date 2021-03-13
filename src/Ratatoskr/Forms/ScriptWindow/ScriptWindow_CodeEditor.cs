@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Configs.SystemConfigs;
 using Ratatoskr.Scripts;
 using Ratatoskr.Scripts.ScriptEngines;
+using Ratatoskr.Config.Data.System;
 using ScintillaNET;
 
 namespace Ratatoskr.Forms.ScriptWindow
@@ -26,8 +26,8 @@ namespace Ratatoskr.Forms.ScriptWindow
         }
 
 
-        private Controls.CodeEditorEx   CEditor_Main;
-        private RichTextBox             RTBox_Status;
+        private CodeEditorEx   CEditor_Main;
+        private RichTextBox    RTBox_Status;
 
         private string script_path_ = "";
 
@@ -56,7 +56,7 @@ namespace Ratatoskr.Forms.ScriptWindow
 
         private void InitializeComponent()
         {
-            CEditor_Main = new Forms.Controls.CodeEditorEx();
+            CEditor_Main = new Forms.CodeEditorEx();
             CEditor_Main.Dock = DockStyle.Fill;
             CEditor_Main.BorderStyle = BorderStyle.None;
             CEditor_Main.Resize += CEditor_Main_Resize;
