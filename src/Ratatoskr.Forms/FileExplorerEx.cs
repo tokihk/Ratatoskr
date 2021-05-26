@@ -147,5 +147,10 @@ namespace Ratatoskr.Forms
         {
 
         }
+
+        private void Btn_OpenRootDir_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

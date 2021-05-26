@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.FileFormat.PacketLog_Binary
 {
+	[Serializable]
     internal sealed class FileFormatReaderOptionImpl : FileFormatOption
     {
         public string PacketAlias    { get; set; } = "External";
@@ -19,7 +20,7 @@ namespace Ratatoskr.FileFormat.PacketLog_Binary
 
         public override FileFormatOptionEditor GetEditor()
         {
-            return (new FileFormatReaderOptionEditorImpl(this));
+            return (new FileFormatReaderOptionEditorImpl());
         }
     }
 }

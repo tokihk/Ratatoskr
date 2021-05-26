@@ -208,6 +208,7 @@ namespace Ratatoskr.Device.UsbCapture
 
 			var stage_raw = reader.ReadBytes(1);
 
+			ControlHeader = new USBPCAP_BUFFER_CONTROL_HEADER();
 			ControlHeader.stage = (USBPCAP_CONTROL_STAGE)stage_raw[0];
 		}
 	}

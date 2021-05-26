@@ -15,6 +15,7 @@ namespace Ratatoskr.FileFormat.PacketLog_Csv
         UnicodeL,
     }
 
+	[Serializable]
     internal sealed class FileFormatOptionImpl : FileFormatOption
     {
         public TextCharCode          CharCode  { get; set; } = TextCharCode.UTF8;

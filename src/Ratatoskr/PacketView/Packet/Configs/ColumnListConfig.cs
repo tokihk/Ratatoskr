@@ -15,8 +15,8 @@ namespace Ratatoskr.PacketView.Packet.Configs
             switch (type) {
                 case ColumnType.Class:                  return (80);
                 case ColumnType.Alias:                  return (80);
-                case ColumnType.Datetime_UTC:           return (150);
-                case ColumnType.Datetime_Local:         return (150);
+                case ColumnType.Datetime_UTC:           return (160);
+                case ColumnType.Datetime_Local:         return (160);
                 case ColumnType.Information:            return (140);
                 case ColumnType.Source:                 return (100);
                 case ColumnType.Destination:            return (100);

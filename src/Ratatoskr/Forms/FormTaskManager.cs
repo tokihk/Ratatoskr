@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Config;
+using Ratatoskr.Debugger;
 using Ratatoskr.Gate;
-using RtsCore;
 using Ratatoskr.PacketConverter;
 using Ratatoskr.PacketView;
 using Ratatoskr.General.Packet;
@@ -22,7 +22,9 @@ namespace Ratatoskr.Forms
 //        private const int PACKET_BLOCK_CAPACITY = 2000;
 //        private const int PACKET_BLOCK_CAPACITY = 4000;
 //        private const int PACKET_BLOCK_CAPACITY = 8000;
-          private const int PACKET_BLOCK_CAPACITY = 15000;
+//        private const int PACKET_BLOCK_CAPACITY = 10000;
+        private const int PACKET_BLOCK_CAPACITY = 12000;
+//        private const int PACKET_BLOCK_CAPACITY = 15000;
 
         private enum RedrawSequence
         {
@@ -258,7 +260,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.Ready:
                 {
-                    Debugger.DebugSystem.MessageOut("RedrawSequence.Ready");
+                    DebugManager.MessageOut(DebugMessageSender.Form, "RedrawSequence.Ready");
 
                     /* 高速描画モード開始 */
                     PacketViewManager.Instance.HiSpeedDrawStart(false);
@@ -272,7 +274,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.PreprocessingStart:
                 {
-                    Debugger.DebugSystem.MessageOut("RedrawSequence.PreprocessingStart");
+                    DebugManager.MessageOut(DebugMessageSender.Form, "RedrawSequence.PreprocessingStart");
 
                     redraw_step_all_ = (ulong)(Math.Max(draw_packets_.Count, 1));
                     redraw_step_end_ = 0;
@@ -303,7 +305,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.DrawingStart:
                 {
-                    Debugger.DebugSystem.MessageOut("RedrawSequence.DrawingStart");
+                    DebugManager.MessageOut(DebugMessageSender.Form, "RedrawSequence.DrawingStart");
 
                     redraw_step_all_ = (ulong)Math.Max(PacketViewManager.Instance.DrawPacketCount, 1);
                     redraw_step_end_ = 0;
@@ -346,7 +348,7 @@ namespace Ratatoskr.Forms
 
                     redraw_state_ = false;
 
-                    Debugger.DebugSystem.MessageOut("RedrawSequence.Complete");
+                    DebugManager.MessageOut(DebugMessageSender.Form, "RedrawSequence.Complete");
                 }
                     break;
 

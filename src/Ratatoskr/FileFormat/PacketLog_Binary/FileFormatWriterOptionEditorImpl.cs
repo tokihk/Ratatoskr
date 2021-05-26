@@ -37,20 +37,14 @@ namespace Ratatoskr.FileFormat.PacketLog_Binary
             }
         }
 
-        public FileFormatWriterOptionImpl Option { get; }
-
         private System.Windows.Forms.GroupBox GBox_SaveDataType;
         private System.Windows.Forms.ComboBox CBox_SaveDataType;
 
 
-        public FileFormatWriterOptionEditorImpl(FileFormatWriterOptionImpl option)
+        public FileFormatWriterOptionEditorImpl()
         {
-            Option = option;
-
             InitializeComponent();
             InitializeSaveDataType();
-
-            SelectSaveDataType(Option.SaveData);
         }
 
         private void InitializeComponent()
@@ -102,14 +96,18 @@ namespace Ratatoskr.FileFormat.PacketLog_Binary
             CBox_SaveDataType.EndUpdate();
         }
 
-        private void SelectSaveDataType(SaveDataType type)
-        {
-            CBox_SaveDataType.SelectedItem = type;
-        }
+		protected override void OnLoadOption(FileFormatOption option)
+		{
+			if (option is FileFormatWriterOptionImpl option_i) {
+				CBox_SaveDataType.SelectedItem = option_i.SaveData;
+			}
+		}
 
-        public override void Flush()
-        {
-            Option.SaveData = (CBox_SaveDataType.SelectedItem as CBoxItem_SaveDataType).Value;
-        }
+		protected override void OnBackupOption(FileFormatOption option)
+		{
+			if (option is FileFormatWriterOptionImpl option_i) {
+				option_i.SaveData = (CBox_SaveDataType.SelectedItem as CBoxItem_SaveDataType).Value;
+			}
+		}
     }
 }

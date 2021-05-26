@@ -295,7 +295,7 @@ namespace Ratatoskr.General.Packet
 
                 /* Message (2 + xx Byte) */
                 var msg_data = Encoding.UTF8.GetBytes(packet.Message);
-                var msg_data_len = (byte)Math.Min(dst_data.Length, 0xFFFF);
+                var msg_data_len = (byte)Math.Min(msg_data.Length, 0xFFFF);
 
                 writer.Write((ushort)msg_data_len);
                 writer.Write(msg_data);
@@ -322,6 +322,7 @@ namespace Ratatoskr.General.Packet
                         switch (format) {
                             case SerializeFormat.V000:  return (Deserialize_V000(reader));
                             case SerializeFormat.V001:  return (Deserialize_V001(reader));
+                            case SerializeFormat.V002:  return (Deserialize_V002(reader));
                             default:                    return (null);
                         }
                     }
@@ -588,7 +589,7 @@ namespace Ratatoskr.General.Packet
             }
         }
 
-        private static PacketObject Deserialize_V001(BinaryReader reader)
+        private static PacketObject Deserialize_V002(BinaryReader reader)
         {
             /* Facility (1 Byte) */
             var facility = (Packet.PacketFacility)reader.ReadByte();
@@ -625,7 +626,7 @@ namespace Ratatoskr.General.Packet
 
             var dt = new DateTime(dt_year, dt_month, dt_day, dt_hour, dt_min, dt_sec, DateTimeKind.Utc);
 
-            dt.AddTicks(dt_usec * 10);
+            dt = dt.AddTicks(dt_usec * 10);
 
             /* Information (2 + xx Byte) */
             var info_len = (ushort)0;

@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
 using Ratatoskr.Config;
+using Ratatoskr.Debugger;
 using Ratatoskr.Device;
 using Ratatoskr.Forms;
 using Ratatoskr.Gate;
@@ -39,7 +40,7 @@ namespace Ratatoskr
             Application.SetCompatibleTextRenderingDefault(true);
 
             /* デバッグウィンドウ起動 */
-			Debugger.DebugSystem.Start();
+			DebugManager.Start();
 
 			/* マネージャー初期化 */
 			DeviceManager.Initialize();
@@ -130,7 +131,7 @@ namespace Ratatoskr
 
         private static void CommandLineParse(string[] cmdlines)
         {
-            Debugger.DebugSystem.MessageOut("Program.CommandLineParse - Start");
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.Startup, "Program.CommandLineParse - Start");
 
             foreach (var cmdline in cmdlines) {
                 var (name, value) = CommandLineParse(cmdline);
@@ -140,7 +141,7 @@ namespace Ratatoskr
                 CommandLineSetup(name, value);
             }
 
-            Debugger.DebugSystem.MessageOut("Program.CommandLineParse - End");
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.Startup, "Program.CommandLineParse - End");
         }
 
         private static (string name, string value) CommandLineParse(string cmdline)
@@ -281,9 +282,9 @@ namespace Ratatoskr
             }
 
             /* アプリケーションループ実行 */
-            Debugger.DebugSystem.MessageOut("Application.Run - Start");
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.Startup, "Application.Run - Start");
             Application.Run(app_context_);
-            Debugger.DebugSystem.MessageOut("Application.Run - End");
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.Startup, "Application.Run - End");
 
             /* 実行中スクリプトを停止 */
             ScriptManager.Shutdown();
@@ -291,7 +292,7 @@ namespace Ratatoskr
 
         private static bool Startup()
         {
-            Debugger.DebugSystem.MessageOut("Program.Startup - Start");
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.Startup, "Program.Startup - Start");
 
             /* 下層マネージャー初期化 */
             ConfigManager.Startup();
@@ -322,14 +323,14 @@ namespace Ratatoskr
             startup_state_ = true;
             restart_req_ = false;
 
-            Debugger.DebugSystem.MessageOut("Program.Startup - End");
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.Startup, "Program.Startup - End");
 
             return (true);
         }
 
         private static void Shutdown(bool profile_backup)
         {
-            Debugger.DebugSystem.MessageOut("Program.Shutdown - Start");
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.Shutdown, "Program.Shutdown - Start");
 
             /* 設定ファイル保存 */
             ConfigManager.SaveToFile(profile_backup);
@@ -347,7 +348,7 @@ namespace Ratatoskr
 
             startup_state_ = false;
 
-            Debugger.DebugSystem.MessageOut("Program.Shutdown - End");
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.Shutdown, "Program.Shutdown - End");
         }
 
         public static void ShutdownRequest(bool profile_backup = true)
@@ -401,9 +402,6 @@ namespace Ratatoskr
                 && (!startup_state_)
                 && (!shutdown_state_)
             ) {
-                /* for Debug */
-                System.Diagnostics.Debug.WriteLine("ExitThread");
-
                 shutdown_state_ = true;
 
                 app_context_.ExitThread();

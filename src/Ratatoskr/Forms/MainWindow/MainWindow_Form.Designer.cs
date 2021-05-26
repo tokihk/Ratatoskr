@@ -76,9 +76,8 @@
             this.MenuBar_Edit_TimeStamp = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_Tool_AutoTimeStamp = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            this.MenuBar_Tool_ScriptManager = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_Tool_Option = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuBar_Plugin = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_Help = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar_Help_Document = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -91,7 +90,8 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuBar_Profile_Export = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.MenuBar_Plugin = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -313,14 +313,14 @@
             // MenuBar_File_Open
             // 
             this.MenuBar_File_Open.Name = "MenuBar_File_Open";
-            this.MenuBar_File_Open.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_File_Open.Size = new System.Drawing.Size(112, 22);
             this.MenuBar_File_Open.Tag = "FileOpen";
             this.MenuBar_File_Open.Text = "Open";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(109, 6);
             // 
             // MenuBar_File_Save
             // 
@@ -328,7 +328,7 @@
             this.MenuBar_File_Save_Original,
             this.MenuBar_File_Save_Shaping});
             this.MenuBar_File_Save.Name = "MenuBar_File_Save";
-            this.MenuBar_File_Save.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_File_Save.Size = new System.Drawing.Size(112, 22);
             this.MenuBar_File_Save.Text = "Save";
             this.MenuBar_File_Save.Click += new System.EventHandler(this.OnMenuClick);
             // 
@@ -352,7 +352,7 @@
             this.MenuBar_File_SaveAs_Original,
             this.MenuBar_File_SaveAs_Shaping});
             this.MenuBar_File_SaveAs.Name = "MenuBar_File_SaveAs";
-            this.MenuBar_File_SaveAs.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_File_SaveAs.Size = new System.Drawing.Size(112, 22);
             this.MenuBar_File_SaveAs.Text = "Save as";
             // 
             // MenuBar_File_SaveAs_Original
@@ -372,12 +372,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(109, 6);
             // 
             // MenuBar_File_Exit
             // 
             this.MenuBar_File_Exit.Name = "MenuBar_File_Exit";
-            this.MenuBar_File_Exit.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_File_Exit.Size = new System.Drawing.Size(112, 22);
             this.MenuBar_File_Exit.Tag = "ApplicationExit";
             this.MenuBar_File_Exit.Text = "Exit";
             // 
@@ -448,6 +448,8 @@
             // MenuBar_Gate
             // 
             this.MenuBar_Gate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enableToolStripMenuItem,
+            this.toolStripSeparator6,
             this.MenuBar_Gate_Connect1,
             this.MenuBar_Gate_Connect2,
             this.MenuBar_Gate_Connect3,
@@ -498,8 +500,6 @@
             this.MenuBar_Edit_TimeStamp,
             this.MenuBar_Tool_AutoTimeStamp,
             this.toolStripSeparator11,
-            this.MenuBar_Tool_ScriptManager,
-            this.toolStripSeparator7,
             this.MenuBar_Tool_Option});
             this.MenuBar_Tool.Name = "MenuBar_Tool";
             this.MenuBar_Tool.Size = new System.Drawing.Size(41, 25);
@@ -508,40 +508,35 @@
             // MenuBar_Edit_TimeStamp
             // 
             this.MenuBar_Edit_TimeStamp.Name = "MenuBar_Edit_TimeStamp";
-            this.MenuBar_Edit_TimeStamp.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_Edit_TimeStamp.Size = new System.Drawing.Size(163, 22);
             this.MenuBar_Edit_TimeStamp.Tag = "TimeStamp";
             this.MenuBar_Edit_TimeStamp.Text = "Time stamp";
             // 
             // MenuBar_Tool_AutoTimeStamp
             // 
             this.MenuBar_Tool_AutoTimeStamp.Name = "MenuBar_Tool_AutoTimeStamp";
-            this.MenuBar_Tool_AutoTimeStamp.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_Tool_AutoTimeStamp.Size = new System.Drawing.Size(163, 22);
             this.MenuBar_Tool_AutoTimeStamp.Tag = "AutoTimeStampToggle";
             this.MenuBar_Tool_AutoTimeStamp.Text = "Auto Time stamp";
             // 
             // toolStripSeparator11
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(177, 6);
-            // 
-            // MenuBar_Tool_ScriptManager
-            // 
-            this.MenuBar_Tool_ScriptManager.Name = "MenuBar_Tool_ScriptManager";
-            this.MenuBar_Tool_ScriptManager.Size = new System.Drawing.Size(180, 22);
-            this.MenuBar_Tool_ScriptManager.Tag = "ShowScriptWindow";
-            this.MenuBar_Tool_ScriptManager.Text = "Script Manager...";
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator11.Size = new System.Drawing.Size(160, 6);
             // 
             // MenuBar_Tool_Option
             // 
             this.MenuBar_Tool_Option.Name = "MenuBar_Tool_Option";
-            this.MenuBar_Tool_Option.Size = new System.Drawing.Size(180, 22);
+            this.MenuBar_Tool_Option.Size = new System.Drawing.Size(163, 22);
             this.MenuBar_Tool_Option.Tag = "ShowOptionDialog";
             this.MenuBar_Tool_Option.Text = "Options...";
+            // 
+            // MenuBar_Plugin
+            // 
+            this.MenuBar_Plugin.Name = "MenuBar_Plugin";
+            this.MenuBar_Plugin.Size = new System.Drawing.Size(53, 25);
+            this.MenuBar_Plugin.Text = "&Plugin";
+            this.MenuBar_Plugin.Visible = false;
             // 
             // MenuBar_Help
             // 
@@ -649,11 +644,16 @@
             this.toolStrip1.Size = new System.Drawing.Size(1, 0);
             this.toolStrip1.TabIndex = 1;
             // 
-            // MenuBar_Plugin
+            // enableToolStripMenuItem
             // 
-            this.MenuBar_Plugin.Name = "MenuBar_Plugin";
-            this.MenuBar_Plugin.Size = new System.Drawing.Size(53, 25);
-            this.MenuBar_Plugin.Text = "&Plugin";
+            this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
+            this.enableToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.enableToolStripMenuItem.Text = "Enable";
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(212, 6);
             // 
             // MainWindow_Form
             // 
@@ -739,8 +739,6 @@
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Help_Document;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
-        private System.Windows.Forms.ToolStripMenuItem MenuBar_Tool_ScriptManager;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_Remove;
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Profile_Add;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
@@ -752,5 +750,7 @@
         private System.Windows.Forms.ToolStripMenuItem MenuBar_Gate_Connect5;
         private System.Windows.Forms.ToolStripStatusLabel Label_PktCount_Cache;
 		private System.Windows.Forms.ToolStripMenuItem MenuBar_Plugin;
+		private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 	}
 }

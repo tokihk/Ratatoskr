@@ -249,6 +249,24 @@ namespace Ratatoskr.Native.Windows
         public const Int32 SW_FORCEMINIMIZE    = 11;
         public const Int32 SW_MAX              = 11;
 
+        public const UInt32 SRCCOPY            = 0x00CC0020; /* dest = source                   */
+        public const UInt32 SRCPAINT           = 0x00EE0086; /* dest = source OR dest           */
+        public const UInt32 SRCAND             = 0x008800C6; /* dest = source AND dest          */
+        public const UInt32 SRCINVERT          = 0x00660046; /* dest = source XOR dest          */
+        public const UInt32 SRCERASE           = 0x00440328; /* dest = source AND (NOT dest )   */
+        public const UInt32 NOTSRCCOPY         = 0x00330008; /* dest = (NOT source)             */
+        public const UInt32 NOTSRCERASE        = 0x001100A6; /* dest = (NOT src) AND (NOT dest) */
+        public const UInt32 MERGECOPY          = 0x00C000CA; /* dest = (source AND pattern)     */
+        public const UInt32 MERGEPAINT         = 0x00BB0226; /* dest = (NOT source) OR dest     */
+        public const UInt32 PATCOPY            = 0x00F00021; /* dest = pattern                  */
+        public const UInt32 PATPAINT           = 0x00FB0A09; /* dest = DPSnoo                   */
+        public const UInt32 PATINVERT          = 0x005A0049; /* dest = pattern XOR dest         */
+        public const UInt32 DSTINVERT          = 0x00550009; /* dest = (NOT dest)               */
+        public const UInt32 BLACKNESS          = 0x00000042; /* dest = BLACK                    */
+        public const UInt32 WHITENESS          = 0x00FF0062; /* dest = WHITE                    */
+        public const UInt32 NOMIRRORBITMAP     = 0x80000000; /* Do not Mirror the bitmap in this call */
+        public const UInt32 CAPTUREBLT         = 0x40000000; /* Include layered windows */
+
         public const UInt32 MA_ACTIVATE         = 1;
         public const UInt32 MA_ACTIVATEANDEAT   = 2;
         public const UInt32 MA_NOACTIVATE       = 3;
@@ -655,6 +673,15 @@ namespace Ratatoskr.Native.Windows
         {
             public Int32 x;
             public Int32 y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+             public Int32 Left;
+             public Int32 Top;
+             public Int32 Right;
+             public Int32 Bottom;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -1724,9 +1751,25 @@ namespace Ratatoskr.Native.Windows
         );
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+        public static extern bool MoveWindow(IntPtr hWnd, Int32 X, Int32 Y, Int32 nWidth, Int32 nHeight, bool bRepaint);
 
         [DllImport("user32.dll")]
         public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool SetWindowText(IntPtr hwnd, String lpString);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetWindowDC(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+        [DllImport("user32.dll", SetLastError=true)]
+        public static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+
+        [DllImport("gdi32.dll", EntryPoint = "BitBlt", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool BitBlt([In] IntPtr hdc, Int32 nXDest, Int32 nYDest, Int32 nWidth, Int32 nHeight, [In] IntPtr hdcSrc, Int32 nXSrc, Int32 nYSrc, UInt32 dwRop);
     }
 }

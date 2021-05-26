@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Ratatoskr.Debugger;
 using Ratatoskr.General;
 using Ratatoskr.General.Packet;
 
@@ -71,14 +72,11 @@ namespace Ratatoskr.Device
         }
 
 
-        public delegate void StatusChangedDelegate();
-        public event StatusChangedDelegate StatusChanged = delegate() { };
+        public event EventHandler StatusChanged;
+        public event EventHandler SendDataRequest;
 
-        public delegate void SendDataRequstDelegate();
-        public event SendDataRequstDelegate SendDataRequest = delegate() { };
-
-        public delegate void DataRateUpdatedHandler(object sender, ulong value);
-        public event DataRateUpdatedHandler DataRateUpdated = delegate(object sender, ulong value) { };
+        public delegate void DataRateUpdatedHandler(object sender, ulong send_rate, ulong recv_rate);
+        public event DataRateUpdatedHandler DataRateUpdated;
 
         private DeviceConfig   devconf_ = null;
         private DeviceClass    devd_ = null;
@@ -87,9 +85,12 @@ namespace Ratatoskr.Device
         private Thread devt_;
 
         private string alias_ = "";
-        private string alias_redirect_ = "";
+        private string alias_send_redirect_ = "";
+        private string alias_recv_redirect_ = "";
 
-        private DeviceInstance[] redirect_list_ = null;
+		private object redirect_list_sync_= new object();
+        private DeviceInstance[] send_redirect_list_ = null;
+        private DeviceInstance[] recv_redirect_list_ = null;
 
         private bool shutdown_req_   = false;
         private bool shutdown_state_ = false;
@@ -109,13 +110,15 @@ namespace Ratatoskr.Device
         private volatile ConnectState    connect_state_ = ConnectState.Disconnected;
 
         private Stopwatch       data_rate_timer_ = new Stopwatch();
-        private ulong           data_rate_value_busy_ = 0;
+        private ulong           send_data_rate_value_busy_ = 0;
+        private ulong           recv_data_rate_value_busy_ = 0;
 
         private WaitHandle[]        device_poll_events_ = null;
         private int                 device_poll_ival_ = 0;
 
         private ManualResetEvent    shutdown_event_ = new ManualResetEvent(false);
         private AutoResetEvent      active_request_event_ = new AutoResetEvent(false);
+        private AutoResetEvent      data_rate_sampling_request_event_ = new AutoResetEvent(false);
 
 
         public DeviceInstance(DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
@@ -129,7 +132,7 @@ namespace Ratatoskr.Device
             /* イベント初期化 */
             device_poll_events_ = new WaitHandle[Enum.GetValues(typeof(DevicePollEventID)).Length];
             device_poll_events_[(int)DevicePollEventID.ActiveRequest] = active_request_event_;
-            device_poll_events_[(int)DevicePollEventID.DataRateSampling] = DeviceManager.WaitHandle_1000ms;
+            device_poll_events_[(int)DevicePollEventID.DataRateSampling] = data_rate_sampling_request_event_;
         }
 
         public virtual void Dispose()
@@ -166,18 +169,28 @@ namespace Ratatoskr.Device
             }
         }
 
-        public string RedirectAlias
+        public string SendRedirectAlias
         {
-            get { return (alias_redirect_); }
+            get { return (alias_recv_redirect_); }
             set
             {
-                alias_redirect_ = value ?? "";
-                DeviceManager.Instance.UpdateRedirectMap();
+                alias_send_redirect_ = value ?? "";
+                UpdateRedirectMap();
             }
         }
 
-        public DeviceDataRateTarget DataRateTarget { get; set; } = 0;
-        public ulong                DataRateValue  { get; private set; } = 0;
+        public string RecvRedirectAlias
+        {
+            get { return (alias_recv_redirect_); }
+            set
+            {
+                alias_recv_redirect_ = value ?? "";
+                UpdateRedirectMap();
+            }
+        }
+
+        public ulong SendDataRate { get; private set; } = 0;
+        public ulong RecvDataRate { get; private set; } = 0;
 
         public bool IsShutdown
         {
@@ -260,7 +273,7 @@ namespace Ratatoskr.Device
         private (bool discard_req, SendRequestStatus status) PushSendData(Queue<byte[]> data_queue, uint queue_limit, byte[] data)
         {
             if (   (data == null)           // データが存在しない
-                || (!Config.SendEnable)     // 送信禁止状態
+                || (!Config.DataSendEnable)     // 送信禁止状態
                 || (!connect_req_)          // 切断要求
             ) {
                 return (true, SendRequestStatus.Ignore);
@@ -276,7 +289,7 @@ namespace Ratatoskr.Device
                 data_queue.Enqueue(data);
             }
 
-            Debugger.DebugSystem.MessageOut("DeviceInstance.OnSendRequest", Debugger.DebugMessageAttr.System | Debugger.DebugMessageAttr.SendAction);
+            DebugManager.MessageOut(DebugMessageSender.Application ,DebugMessageType.SendEvent, "DeviceInstance.OnSendRequest");
 
             /* 送信要求に対する最速の通知 */
             OnSendRequest();
@@ -289,12 +302,12 @@ namespace Ratatoskr.Device
 
         public (bool discard_req, SendRequestStatus status) PushSendUserData(byte[] data)
         {
-            return (PushSendData(send_queue_user_, Config.SendDataQueueLimit, data));
+            return (PushSendData(send_queue_user_, Config.DataSendQueueLimit, data));
         }
 
         public (bool discard_req, SendRequestStatus status) PushRedirectData(byte[] data)
         {
-            return (PushSendData(send_queue_redirect_, Config.RedirectDataQueueLimit, data));
+            return (PushSendData(send_queue_redirect_, Config.DataRedirectQueueLimit, data));
         }
 
         protected void ActiveReqeust()
@@ -361,7 +374,7 @@ namespace Ratatoskr.Device
                     send_data_busy_ = null;
                 }
 
-                Debugger.DebugSystem.MessageOut("DeviceInstance.GetSendData", Debugger.DebugMessageAttr.Device | Debugger.DebugMessageAttr.SendAction);
+                DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.SendEvent, "DeviceInstance.GetSendData");
 
                 return (send_size);
             }
@@ -391,7 +404,7 @@ namespace Ratatoskr.Device
                 send_data_busy_ = null;
                 send_data_offset_ = 0;
 
-                Debugger.DebugSystem.MessageOut("DeviceInstance.GetSendData", Debugger.DebugMessageAttr.Device | Debugger.DebugMessageAttr.SendAction);
+                DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.SendEvent, "DeviceInstance.GetSendData");
 
                 return (send_data);
             }
@@ -399,29 +412,48 @@ namespace Ratatoskr.Device
 
         internal void UpdateRedirectMap(IEnumerable<DeviceInstance> devi_list_all)
         {
-            var alias_list = RedirectAlias.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			lock (redirect_list_sync_) {
+				var send_alias_list = SendRedirectAlias.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+				var recv_alias_list = RecvRedirectAlias.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-            /* パターン一致するデバイスを検索 */
-            var devi_list = from alias in alias_list
-                            from devi in devi_list_all
-                            where devi != this
-                            where !devi.IsShutdown
-                            where alias == devi.Alias
-                            select devi;
+				var send_devi_list = new List<DeviceInstance>();
+				var recv_devi_list = new List<DeviceInstance>();
 
-            if (   (devi_list != null)
-                && (devi_list.Count() > 0)
-            ) {
-                redirect_list_ = devi_list.ToArray();
-            } else {
-                redirect_list_ = null;
-            }
+				/* パターン一致するデバイスを検索 */
+				foreach (var devi in devi_list_all) {
+					if ((devi == this) || (devi.IsShutdown))continue;
+
+					/* 送信データのリダイレクト先を取得 */
+					foreach (var send_alias in send_alias_list) {
+						if (devi.Alias == send_alias) {
+							send_devi_list.Add(devi);
+							break;
+						}
+					}
+
+					/* 受信データのリダイレクト先を取得 */
+					foreach (var recv_alias in recv_alias_list) {
+						if (devi.Alias == recv_alias) {
+							recv_devi_list.Add(devi);
+							break;
+						}
+					}
+				}
+
+				send_redirect_list_ = (send_devi_list.Count > 0) ? (send_devi_list.ToArray()) : (null);
+				recv_redirect_list_ = (recv_devi_list.Count > 0) ? (recv_devi_list.ToArray()) : (null);
+			}
         }
 
-        private void RedirectRequest(byte[] data)
+		private void UpdateRedirectMap()
+		{
+			UpdateRedirectMap(DeviceManager.Instance.GetInstances());
+		}
+
+        private void RedirectRequest(in DeviceInstance[] devi_list, byte[] data)
         {
             /* 途中でリダイレクト先が変化しないようにバックアップで処理 */
-            var redirect_list = redirect_list_;
+            var redirect_list = devi_list;
 
             if (redirect_list == null)return;
 
@@ -430,30 +462,43 @@ namespace Ratatoskr.Device
             }
         }
 
+        private void SendRedirectRequest(byte[] data)
+        {
+			RedirectRequest(send_redirect_list_, data);
+        }
+
+        private void RecvRedirectRequest(byte[] data)
+        {
+			RedirectRequest(recv_redirect_list_, data);
+        }
+
+		public void DataRateSamplingRequest()
+		{
+			data_rate_sampling_request_event_.Set();
+		}
+
         private void DataRateSampling()
         {
             if (data_rate_timer_.ElapsedMilliseconds >= 1000) {
                 data_rate_timer_.Restart();
 
-                DataRateValue = data_rate_value_busy_;
-                data_rate_value_busy_ = 0;
+				SendDataRate = send_data_rate_value_busy_;
+				RecvDataRate = recv_data_rate_value_busy_;
 
-                DataRateUpdated(this, DataRateValue);
+				send_data_rate_value_busy_ = 0;
+				recv_data_rate_value_busy_ = 0;
+
+                DataRateUpdated?.Invoke(this, SendDataRate, RecvDataRate);
             }
         }
 
         private void DataRateValueUpdate(PacketObject packet)
         {
-            if (DataRateTarget == 0)return;
-
-            /* 通信レート計算 */
-            if (packet.Attribute == PacketAttribute.Data) {
-                if (   ((packet.Direction == PacketDirection.Recv) && (DataRateTarget.HasFlag(DeviceDataRateTarget.RecvData)))
-                    || ((packet.Direction == PacketDirection.Send) && (DataRateTarget.HasFlag(DeviceDataRateTarget.SendData)))
-                ) {
-                    data_rate_value_busy_ += (ulong)packet.DataLength;
-                }
-            }
+			if (packet.Direction == PacketDirection.Send) {
+				send_data_rate_value_busy_ += (ulong)packet.DataLength;
+			} else {
+				recv_data_rate_value_busy_ += (ulong)packet.DataLength;
+			}
         }
 
         public void NotifyPacket(PacketObject packet)
@@ -484,8 +529,22 @@ namespace Ratatoskr.Device
                     null));
         }
 
+        public void NotifyDeviceConnect(PacketPriority prio, string info, string message)
+        {
+            /* 通知禁止状態のときは無視 */
+            if (!Config.DeviceConnectNotify)return;
+
+			NotifyMessage(prio, info, message);
+        }
+
         public void NotifySendComplete(DateTime dt_utc, string info, string src, string dst, byte[] data)
         {
+            /* リダイレクト要求 */
+            SendRedirectRequest(data);
+
+            /* 通知禁止状態のときは無視 */
+            if (!Config.DataSendCompletedNotify)return;
+
             NotifyPacket(
                 new PacketObject(
                     Class.DescID,
@@ -510,11 +569,11 @@ namespace Ratatoskr.Device
 
         public void NotifyRecvComplete(DateTime dt_utc, string info, string src, string dst, byte[] data)
         {
-            /* 受信禁止状態のときは無視 */
-            if (!Config.RecvEnable)return;
-
             /* リダイレクト要求 */
-            RedirectRequest(data);
+            RecvRedirectRequest(data);
+
+            /* 通知禁止状態のときは無視 */
+            if (!Config.DataRecvCompletedNotify)return;
 
             NotifyPacket(
                 new PacketObject(
@@ -545,7 +604,7 @@ namespace Ratatoskr.Device
 
 #if DEBUG
             if (wait_result == (int)DevicePollEventID.ActiveRequest) {
-                Debugger.DebugSystem.MessageOut(string.Format("DeviceInstance.Poll = {0}", wait_result), Debugger.DebugMessageAttr.Device);
+                DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.PollEvent, string.Format("DeviceInstance.Poll = {0}", wait_result));
             }
 #endif
 
@@ -595,7 +654,7 @@ namespace Ratatoskr.Device
 
             if (connect_state_ != connect_state) {
                 connect_state_ = connect_state;
-                StatusChanged();
+                StatusChanged?.Invoke(this, EventArgs.Empty);
             }
 
             return (state);
@@ -608,7 +667,7 @@ namespace Ratatoskr.Device
             switch (connect_seq_) {
                 case ConnectSequence.ConnectStart:
                 {
-                    NotifyMessage(PacketPriority.Notice, "<< Connect Start >>", "");
+                    NotifyDeviceConnect(PacketPriority.Notice, "<< Connect Start >>", "");
                     OnConnectStart();
                     connect_seq_++;
                     state = PollState.Active;
@@ -618,7 +677,7 @@ namespace Ratatoskr.Device
                 case ConnectSequence.ConnectBusy:
                 {
                     if (OnConnectBusy() == EventResult.Success) {
-                        NotifyMessage(PacketPriority.Notice, "<< Connected >>", "");
+                        NotifyDeviceConnect(PacketPriority.Notice, "<< Connected >>", "");
                         OnConnected();
                         connect_seq_++;
                         state = PollState.Active;
@@ -630,7 +689,7 @@ namespace Ratatoskr.Device
                 {
                     /* データが存在しないときは送信データを要求する */
                     if (send_data_busy_ == null) {
-                        SendDataRequest();
+                        SendDataRequest?.Invoke(this, EventArgs.Empty);
                     }
 
                     state = OnPoll();
@@ -652,7 +711,7 @@ namespace Ratatoskr.Device
             switch (connect_seq_) {
                 case ConnectSequence.DisconnectStart:
                 {
-                    NotifyMessage(PacketPriority.Notice, "<< Disconnect Start >>", "");
+                    NotifyDeviceConnect(PacketPriority.Notice, "<< Disconnect Start >>", "");
                     OnDisconnectStart();
                     connect_seq_--;
                     state = PollState.Active;
@@ -662,7 +721,7 @@ namespace Ratatoskr.Device
                 case ConnectSequence.DisconnectBusy:
                 {
                     if (OnDisconnectBusy() == EventResult.Success) {
-                        NotifyMessage(PacketPriority.Notice, "<< Disconnected >>", "");
+                        NotifyDeviceConnect(PacketPriority.Notice, "<< Disconnected >>", "");
                         OnDisconnected();
                         connect_seq_--;
                         state = PollState.Active;

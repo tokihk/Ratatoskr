@@ -17,6 +17,38 @@ namespace Ratatoskr.PacketView.Wireshark
 {
     internal partial class PacketViewInstanceImpl : PacketViewInstance
     {
+		private class RefreshRateItem
+		{
+			public RefreshRateItem(int value, string text)
+			{
+				Value = value;
+				Text = text;
+			}
+
+			public int    Value { get; }
+			public string Text  { get; }
+
+			public override bool Equals(object obj)
+			{
+				if (obj is Decimal objc) {
+					return (objc == Value);
+				}
+
+				return base.Equals(obj);
+			}
+
+			public override int GetHashCode()
+			{
+				return base.GetHashCode();
+			}
+
+			public override string ToString()
+			{
+				return (Text);
+			}
+		}
+
+
         private readonly string WIRESHARK_PATH         = "C:\\Program Files\\Wireshark\\Wireshark.exe";
         private readonly string WIRESHARK_STARTUP_ARGS = "-k -i -";
 
@@ -26,8 +58,6 @@ namespace Ratatoskr.PacketView.Wireshark
 
         private const uint PCAP_LINKTYPE = 147;
 
-		private const int  FIRST_SIZE_ADJUST_DELAY = 5000;
-
 		private PacketViewPropertyImpl viewp_;
 
         private object			wireshark_sync_ = new object();
@@ -35,9 +65,6 @@ namespace Ratatoskr.PacketView.Wireshark
         private Process         wireshark_process_;
         private BinaryWriter    wireshark_stdin_;
         private bool            wireshark_ready_ = false;
-		private bool			wireshark_visible_ = false;
-
-		private Timer			size_adjust_timer_ = new Timer();
 
 		private bool			initialize_ = false;
 
@@ -56,11 +83,8 @@ namespace Ratatoskr.PacketView.Wireshark
 
             Disposed += OnDisposed;
 
-			size_adjust_timer_.Interval = FIRST_SIZE_ADJUST_DELAY;
-			size_adjust_timer_.Tick += WiresharkSizeAdjustOnTimer;
-
-			ChkBox_InnterWindowMode.Checked = viewp_.InnerWindowMode.Value;
 			Num_LinkType.Value = viewp_.LibPcapLinkType.Value;
+			ChkBox_TransferWithPcapHeader.Checked = viewp_.TransferWithPcapHeader.Value;
 			ChkBox_Capture_SendPacket.Checked = viewp_.SendPacketCapture.Value;
 			ChkBox_Capture_RecvPacket.Checked = viewp_.RecvPacketCapture.Value;
 
@@ -88,7 +112,6 @@ namespace Ratatoskr.PacketView.Wireshark
 
 		protected override void OnBackupProperty()
 		{
-			viewp_.InnerWindowMode.Value = ChkBox_InnterWindowMode.Checked;
 			viewp_.LibPcapLinkType.Value = Num_LinkType.Value;
 			viewp_.SendPacketCapture.Value = ChkBox_Capture_SendPacket.Checked;
 			viewp_.RecvPacketCapture.Value = ChkBox_Capture_RecvPacket.Checked;
@@ -110,7 +133,6 @@ namespace Ratatoskr.PacketView.Wireshark
                 wireshark_process_.StartInfo.RedirectStandardInput = true;
                 wireshark_process_.StartInfo.RedirectStandardOutput = true;
                 wireshark_process_.StartInfo.RedirectStandardError = true;
-				wireshark_process_.Exited += WiresharkExited;
 
                 /* Wireshark起動 */
                 wireshark_process_.Start();
@@ -120,6 +142,7 @@ namespace Ratatoskr.PacketView.Wireshark
 
                 wireshark_process_.OutputDataReceived += WiresharkOutputDataReceived;
                 wireshark_process_.ErrorDataReceived += WiresharkErrorDataReceived;
+				wireshark_process_.Exited += WiresharkExited;
 
                 /* Wiresharkの準備待ち */
                 while (wireshark_process_.MainWindowHandle == IntPtr.Zero) { }
@@ -128,31 +151,9 @@ namespace Ratatoskr.PacketView.Wireshark
                 /* pcap file headerをセット */
                 WritePcapFileHeader(wireshark_stdin_);
 
-				if (viewp_.InnerWindowMode.Value) {
-					/* Wiresharkのウィンドウスタイルと親ウィンドウの変更 */
-					var ws_style = WinAPI.GetWindowLongPtr(wireshark_process_.MainWindowHandle, WinAPI.GWL_STYLE);
-
-//					ws_style = 0;
-//                  ws_style &= (~(WinAPI.WS_CAPTION | WinAPI.WS_SYSMENU | WinAPI.WS_MINIMIZEBOX | WinAPI.WS_MAXIMIZEBOX | WinAPI.WS_DLGFRAME));
-//                  ws_style |= WinAPI.WS_VISIBLE | WinAPI.WS_POPUPWINDOW;
-					ws_style = WinAPI.WS_POPUPWINDOW;
-
-					WinAPI.SetWindowLongPtr(wireshark_process_.MainWindowHandle, WinAPI.GWL_STYLE, ws_style);
-
-					WinAPI.SetParent(wireshark_process_.MainWindowHandle, Panel_Wireshark.Handle);
-				}
-
                 wireshark_ready_ = true;
-				wireshark_visible_ = false;
             }
-
-            WiresharkSizeAdjustRequest();
         }
-
-		private void WiresharkExited(object sender, EventArgs e)
-		{
-			wireshark_process_ = null;
-		}
 
 		private void WiresharkErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
@@ -163,6 +164,10 @@ namespace Ratatoskr.PacketView.Wireshark
         {
             System.Diagnostics.Debug.WriteLine(e.Data);
         }
+
+		private void WiresharkExited(object sender, EventArgs e)
+		{
+		}
 
         private void WiresharkStop()
         {
@@ -209,43 +214,6 @@ namespace Ratatoskr.PacketView.Wireshark
 			}
 
 			return (value);
-		}
-
-        private void WiresharkSizeAdjust()
-        {
-			if (!viewp_.InnerWindowMode.Value)return;
-
-            lock (wireshark_sync_) {
-				if (wireshark_process_ != null) {
-					var client_size = Panel_Wireshark.ClientSize;
-
-					WinAPI.MoveWindow(wireshark_process_.MainWindowHandle, 0, 0, client_size.Width, client_size.Height, true);
-					WinAPI.ShowWindow(wireshark_process_.MainWindowHandle, WinAPI.SW_SHOWMAXIMIZED);
-				}
-            }
-
-			wireshark_visible_ = true;
-        }
-
-		private void WiresharkSizeAdjustRequest()
-		{
-			if (!viewp_.InnerWindowMode.Value)return;
-
-			if (wireshark_visible_) {
-				WiresharkSizeAdjust();
-
-			} else {
-				if (!size_adjust_timer_.Enabled) {
-					size_adjust_timer_.Start();
-				}
-			}
-		}
-
-		private void WiresharkSizeAdjustOnTimer(object sender, EventArgs e)
-		{
-			WiresharkSizeAdjust();
-
-			size_adjust_timer_.Stop();
 		}
 
         protected override void OnClearPacket()
@@ -341,58 +309,55 @@ namespace Ratatoskr.PacketView.Wireshark
             };
             */
 
-            /* DateTime -> Unix Epoch */
-            var dt_epoch = dt - UNIX_EPOCH_TIME;
+			if (viewp_.TransferWithPcapHeader.Value) {
+				/* DateTime -> Unix Epoch */
+				var dt_epoch = dt - UNIX_EPOCH_TIME;
 
-            /* ts-sec (4 byte) */
-            var ts_sec = (UInt32)(dt_epoch.Ticks / 10000000);
+				/* ts-sec (4 byte) */
+				var ts_sec = (UInt32)(dt_epoch.Ticks / 10000000);
 
-            writer.Write((byte)((ts_sec >> 24) & 0xFFu));
-            writer.Write((byte)((ts_sec >> 16) & 0xFFu));
-            writer.Write((byte)((ts_sec >>  8) & 0xFFu));
-            writer.Write((byte)((ts_sec >>  0) & 0xFFu));
+				writer.Write((byte)((ts_sec >> 24) & 0xFFu));
+				writer.Write((byte)((ts_sec >> 16) & 0xFFu));
+				writer.Write((byte)((ts_sec >>  8) & 0xFFu));
+				writer.Write((byte)((ts_sec >>  0) & 0xFFu));
 
-            /* ts-usec (4 byte) */
-            var ts_usec = (UInt32)((dt_epoch.Ticks % 10000000) / 10);
+				/* ts-usec (4 byte) */
+				var ts_usec = (UInt32)((dt_epoch.Ticks % 10000000) / 10);
 
-            writer.Write((byte)((ts_usec >> 24) & 0xFFu));
-            writer.Write((byte)((ts_usec >> 16) & 0xFFu));
-            writer.Write((byte)((ts_usec >>  8) & 0xFFu));
-            writer.Write((byte)((ts_usec >>  0) & 0xFFu));
+				writer.Write((byte)((ts_usec >> 24) & 0xFFu));
+				writer.Write((byte)((ts_usec >> 16) & 0xFFu));
+				writer.Write((byte)((ts_usec >>  8) & 0xFFu));
+				writer.Write((byte)((ts_usec >>  0) & 0xFFu));
 
-            /* caplen (4 byte) */
-            writer.Write((byte)(((uint)data.Length >> 24) & 0xFFu));
-            writer.Write((byte)(((uint)data.Length >> 16) & 0xFFu));
-            writer.Write((byte)(((uint)data.Length >>  8) & 0xFFu));
-            writer.Write((byte)(((uint)data.Length >>  0) & 0xFFu));
+				/* caplen (4 byte) */
+				writer.Write((byte)(((uint)data.Length >> 24) & 0xFFu));
+				writer.Write((byte)(((uint)data.Length >> 16) & 0xFFu));
+				writer.Write((byte)(((uint)data.Length >>  8) & 0xFFu));
+				writer.Write((byte)(((uint)data.Length >>  0) & 0xFFu));
             
-            /* len (4 byte) */
-            writer.Write((byte)(((uint)data.Length >> 24) & 0xFFu));
-            writer.Write((byte)(((uint)data.Length >> 16) & 0xFFu));
-            writer.Write((byte)(((uint)data.Length >>  8) & 0xFFu));
-            writer.Write((byte)(((uint)data.Length >>  0) & 0xFFu));
+				/* len (4 byte) */
+				writer.Write((byte)(((uint)data.Length >> 24) & 0xFFu));
+				writer.Write((byte)(((uint)data.Length >> 16) & 0xFFu));
+				writer.Write((byte)(((uint)data.Length >>  8) & 0xFFu));
+				writer.Write((byte)(((uint)data.Length >>  0) & 0xFFu));
+			}
 
             /* Data (x byte) */
             writer.Write(data);
         }
-
-        private void Panel_Wireshark_Resize(object sender, EventArgs e)
-        {
-            WiresharkSizeAdjustRequest();
-        }
-
-		private void ChkBox_InnterWindowMode_CheckedChanged(object sender, EventArgs e)
-		{
-			viewp_.InnerWindowMode.Value = ChkBox_InnterWindowMode.Checked;
-
-			RedrawPacket();
-		}
 
 		private void Num_LinkType_ValueChanged(object sender, EventArgs e)
 		{
 			CBox_LinkType.SelectedItem = WiresharkLinkType_ValueToType((int)Num_LinkType.Value);
 
 			viewp_.LibPcapLinkType.Value = Num_LinkType.Value;
+
+			RedrawPacket();
+		}
+
+		private void ChkBox_TransferWithPcapHeader_CheckedChanged(object sender, EventArgs e)
+		{
+			viewp_.TransferWithPcapHeader.Value = ChkBox_TransferWithPcapHeader.Checked;
 
 			RedrawPacket();
 		}

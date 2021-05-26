@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.FileFormat
 {
+	[Serializable]
     internal abstract class FileFormatOption
     {
         public abstract FileFormatOptionEditor GetEditor();
-    }
+
+		public override string ToString()
+		{
+			return ("-");
+		}
+	}
 }

@@ -20,10 +20,10 @@ namespace Ratatoskr.Config.Data.Language
         public StringConfig MenuBar_File_Open            { get; } = new StringConfig("Open");
         public StringConfig MenuBar_File_Save            { get; } = new StringConfig("Save");
         public StringConfig MenuBar_File_Save_Original   { get; } = new StringConfig("Raw packets");
-        public StringConfig MenuBar_File_Save_Shaping    { get; } = new StringConfig("View packets");
+        public StringConfig MenuBar_File_Save_Shaping    { get; } = new StringConfig("Converted packets");
         public StringConfig MenuBar_File_SaveAs          { get; } = new StringConfig("Save as");
         public StringConfig MenuBar_File_SaveAs_Original { get; } = new StringConfig("Raw packets...");
-        public StringConfig MenuBar_File_SaveAs_Shaping  { get; } = new StringConfig("View packets...");
+        public StringConfig MenuBar_File_SaveAs_Shaping  { get; } = new StringConfig("Converted packets...");
         public StringConfig MenuBar_File_Exit            { get; } = new StringConfig("Exit");
 
         public StringConfig MenuBar_Edit                 { get; } = new StringConfig("Edit");

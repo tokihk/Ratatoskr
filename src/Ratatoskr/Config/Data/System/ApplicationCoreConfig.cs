@@ -15,6 +15,8 @@ namespace Ratatoskr.Config.Data.System
 
         public BoolConfig NewVersionAutoUpdate { get; } = new BoolConfig(false);
 
+		public IntegerConfig GateNum { get; } = new IntegerConfig(5);
+
         public IntegerConfig RawPacketCountLimit         { get; } = new IntegerConfig(999999);
 
         public IntegerConfig Packet_ViewPacketCountLimit     { get; } = new IntegerConfig(999999);

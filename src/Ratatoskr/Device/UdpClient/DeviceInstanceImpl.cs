@@ -25,9 +25,12 @@ namespace Ratatoskr.Device.UdpClient
 
         private byte[]			send_data_ = null;
 		private IAsyncResult	send_task_ar_ = null;
+		private bool			send_task_busy_ = false;
 
 		private IPEndPoint		recv_remote_ep_ = new IPEndPoint(IPAddress.Any, 0);
 		private IAsyncResult	recv_task_ar_ = null;
+
+		private bool debug_flag = false;
 
 
 		public DeviceInstanceImpl(DeviceConfig devconf, DeviceClass devd, DeviceProperty devp)
@@ -39,6 +42,8 @@ namespace Ratatoskr.Device.UdpClient
         protected override void OnConnectStart()
         {
 			send_task_ar_ = null;
+			send_task_busy_ = false;
+
 			recv_task_ar_ = null;
         }
 
@@ -193,7 +198,7 @@ namespace Ratatoskr.Device.UdpClient
 			udp_client_ = null;
         }
 
-        protected override PollState OnPoll()
+		protected override PollState OnPoll()
         {
             var busy = false;
 
@@ -205,9 +210,14 @@ namespace Ratatoskr.Device.UdpClient
 		private void SendPoll(ref bool busy)
 		{
 			/* 送信状態であればアクティブ状態でスキップ */
-			if ((send_task_ar_ != null) && (!send_task_ar_.IsCompleted)) {
+//			if ((send_task_ar_ != null) && (!send_task_ar_.IsCompleted)) {
+			if (send_task_busy_) {
 				busy = true;
 				return;
+			}
+
+			if (debug_flag) {
+				var i = 0;
 			}
 
 			/* 送信ブロック取得 */
@@ -222,6 +232,8 @@ namespace Ratatoskr.Device.UdpClient
 			}
 
 			/* 送信開始 */
+			debug_flag = true;
+			send_task_busy_ = true;
 			send_task_ar_ = udp_client_.BeginSend(send_data_, send_data_.Length, remote_ep_, SendTaskComplete, udp_client_);
 
 			/* 送信完了通知(リクエストが完了したときに通知する場合) */
@@ -232,6 +244,10 @@ namespace Ratatoskr.Device.UdpClient
 
 		private void SendTaskComplete(IAsyncResult ar)
 		{
+			if (!debug_flag) {
+				var i = 0;
+			}
+
 			try {
 				if (ar.AsyncState is System.Net.Sockets.UdpClient udp_client) {
 					/* 送信処理完了 */
@@ -252,6 +268,9 @@ namespace Ratatoskr.Device.UdpClient
 				}
 			} catch {
 			}
+
+			debug_flag = false;
+			send_task_busy_ = false;
 		}
 
 		private void RecvStart()

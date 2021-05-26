@@ -16,17 +16,10 @@ namespace Ratatoskr.FileFormat.PacketLog_Binary
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
 
-        public FileFormatReaderOptionImpl Option { get; }
 
-
-        public FileFormatReaderOptionEditorImpl(FileFormatReaderOptionImpl option)
+        public FileFormatReaderOptionEditorImpl()
         {
-            Option = option;
-
             InitializeComponent();
-
-            Num_PacketDataSize.Value = option.PacketDataSize;
-            Num_PacketInterval.Value = option.PacketInterval;
         }
 
         private void InitializeComponent()
@@ -160,11 +153,22 @@ namespace Ratatoskr.FileFormat.PacketLog_Binary
 
         }
 
-        public override void Flush()
-        {
-            Option.PacketAlias = TBox_PacketAlias.Text;
-            Option.PacketDataSize = (uint)Num_PacketDataSize.Value;
-            Option.PacketInterval = (uint)Num_PacketInterval.Value;
+		protected override void OnLoadOption(FileFormatOption option)
+		{
+			if (option is FileFormatReaderOptionImpl option_i) {
+				TBox_PacketAlias.Text = option_i.PacketAlias;
+				Num_PacketDataSize.Value = option_i.PacketDataSize;
+				Num_PacketInterval.Value = option_i.PacketInterval;
+			}
+		}
+
+		protected override void OnBackupOption(FileFormatOption option)
+		{
+			if (option is FileFormatReaderOptionImpl option_i) {
+				option_i.PacketAlias = TBox_PacketAlias.Text;
+				option_i.PacketDataSize = (uint)Num_PacketDataSize.Value;
+				option_i.PacketInterval = (uint)Num_PacketInterval.Value;
+			}
         }
     }
 }

@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ratatoskr.General;
 
 namespace Ratatoskr.Device
 {
     [Serializable]
     internal class DeviceConfig
     {
-        public bool SendEnable     { get; set; } = true;
-        public bool RecvEnable     { get; set; } = true;
-        public bool RedirectEnable { get; set; } = true;
+		public bool DataSendCompletedNotify { get; set; } = true;
+		public bool DataRecvCompletedNotify { get; set; } = true;
+		public bool DeviceConnectNotify   { get; set; } = true;
 
-        public uint SendDataQueueLimit     { get; set; } = 1;
-        public uint RedirectDataQueueLimit { get; set; } = 1000;
+        public bool DataSendEnable     { get; set; } = true;
+        public uint DataSendQueueLimit { get; set; } = 1;
+
+        public bool DataRedirectEnable     { get; set; } = true;
+        public uint DataRedirectQueueLimit { get; set; } = 1000;
 
 
         public override int GetHashCode()
@@ -24,17 +28,11 @@ namespace Ratatoskr.Device
 
         public override bool Equals(object obj)
         {
-            var obj_c = obj as DeviceConfig;
-
-            if (obj_c != null) {
-                return (   (SendEnable == obj_c.SendEnable)
-                        && (RecvEnable == obj_c.RecvEnable)
-                        && (RedirectEnable == obj_c.RedirectEnable)
-                        && (SendDataQueueLimit == obj_c.SendDataQueueLimit)
-                        && (RedirectDataQueueLimit == obj_c.RedirectDataQueueLimit));
+            if (obj is DeviceConfig obj_c) {
+				return (ClassUtil.Compare(this, obj_c));
             }
 
-            return base.Equals(obj);
+            return (base.Equals(obj));
         }
     }
 }

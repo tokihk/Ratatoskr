@@ -40,9 +40,12 @@
             this.ChkBox_Info_EndPoint = new System.Windows.Forms.CheckBox();
             this.ChkBox_Info_UsbDeviceID = new System.Windows.Forms.CheckBox();
             this.ChkBox_Info_FuncType = new System.Windows.Forms.CheckBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.CBox_DataContentsType = new System.Windows.Forms.ComboBox();
             this.GBox_DeviceList.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // GBox_DeviceList
@@ -186,10 +189,31 @@
             this.ChkBox_Info_FuncType.UseVisualStyleBackColor = true;
             this.ChkBox_Info_FuncType.CheckedChanged += new System.EventHandler(this.ChkBox_Info_FuncType_CheckedChanged);
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.CBox_DataContentsType);
+            this.groupBox3.Location = new System.Drawing.Point(210, 189);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(200, 44);
+            this.groupBox3.TabIndex = 9;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Data contents";
+            // 
+            // CBox_DataContentsType
+            // 
+            this.CBox_DataContentsType.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CBox_DataContentsType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBox_DataContentsType.FormattingEnabled = true;
+            this.CBox_DataContentsType.Location = new System.Drawing.Point(3, 15);
+            this.CBox_DataContentsType.Name = "CBox_DataContentsType";
+            this.CBox_DataContentsType.Size = new System.Drawing.Size(194, 20);
+            this.CBox_DataContentsType.TabIndex = 0;
+            // 
             // DevicePropertyEditorImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.GBox_DeviceList);
@@ -200,6 +224,7 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -218,5 +243,7 @@
         private System.Windows.Forms.CheckBox ChkBox_Info_UsbDeviceID;
         private System.Windows.Forms.CheckBox ChkBox_Info_FuncType;
         private System.Windows.Forms.CheckBox ChkBox_Info_FuncParam;
-    }
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.ComboBox CBox_DataContentsType;
+	}
 }

@@ -72,7 +72,7 @@ namespace Ratatoskr.Forms.ScriptWindow
             /* スクリプトディレクトリが存在しない場合はテンプレートを出力 */
             if (!Directory.Exists(root_path)) {
                 Directory.CreateDirectory(root_path);
-                File.WriteAllText(GetScriptFilePath("SampleScript.gds"), Properties.Resources.Sample);
+                File.WriteAllText(GetScriptFilePath("SampleScript.gds"), Ratatoskr.Properties.Resources.Sample);
             }
 
             DC_FileExplorer.RootUrl = root_path;

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.FileFormat;
-using RtsPlugin.Pcap.Utility;
+using Ratatoskr.General.Pcap;
 
 namespace Ratatoskr.FileFormat.PacketLog_Pcap
 {
+	[Serializable]
     internal sealed class FileFormatWriterOptionImpl : FileFormatOption
     {
         public string              Filter              { get; set; } = "";

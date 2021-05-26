@@ -9,9 +9,9 @@ using Ratatoskr.FileFormat;
 
 namespace Ratatoskr.FileFormat.PacketLog_Pcap
 {
-    internal sealed class FileFormatClassImpl : FileFormatClass
+    internal sealed class FileFormatClassImpl : PacketLogFormatClass
     {
-        public override string   Name          { get; } = "pcap format";
+        public override string   Name          { get; } = "Wireshark/tcpdump";
 
         public override string[] FileExtension { get; } = new [] { ".pcap", ".cap" };
 

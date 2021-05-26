@@ -18,184 +18,106 @@ namespace Ratatoskr.Forms.MainWindow
 {
     internal partial class MainWindow_FrameCenter : UserControl
     {
-        private const string CONFIG_FILE_NAME = "setting-dock.xml";
-
-        private enum DockContentsGroup
-        {
-            Fixed,
-            PacketView,
-        }
+		private enum TabPageId
+		{
+			PacketView,
+			ScriptEditor,
+		}
 
 
-        private MainWindow_SendDataListPanel   MFDC_SendDataListPanel_Control = null;
-		private MainWindow_SendTrafficPanel    MFDC_SendTrafficPanel_Control = null;
-		private MainWindow_WatchListPanel      MFDC_WatchListPanel_Control = null;
+		private MainWindow_PacketView				TabContent_PacketView;
+		private ScriptWindow.ScriptWindow_Control	TabContent_ScriptEditor;
 
 
         public MainWindow_FrameCenter()
         {
             InitializeComponent();
 
-            DockPanel_Main.ShowDocumentIcon = true;
+			TabContent_PacketView = new MainWindow_PacketView();
+			TabContent_PacketView.Dock = DockStyle.Fill;
+
+			TabContent_ScriptEditor = new ScriptWindow.ScriptWindow_Control();
+			TabContent_ScriptEditor.Dock = DockStyle.Fill;
+
+			InitializeTabList();
+
+			UpdateTabView();
         }
+
+		private void InitializeTabList()
+		{
+			var page_list = new []
+			{
+				new { text = "Packet View",   id = TabPageId.PacketView   },
+//				new { text = "Script Editor", id = TabPageId.ScriptEditor },
+			};
+
+			TabPage page;
+
+			foreach (var page_data in page_list) {
+				page = new TabPage();
+				page.Text = page_data.text;
+				page.Tag  = page_data.id;
+				
+				Tab_Frame.TabPages.Add(page);
+			}
+
+			Tab_Frame.SelectedIndex = 0;
+		}
 
         public void LoadConfig()
         {
             GatePanel_Main.LoadConfig();
-            PacketConverter_Main.LoadConfig();
 
-            LoadDockPanelConfig();
-            LoadPacketViewConfig();
-            LoadDockConfig();
-        }
-
-        public void LoadDockPanelConfig()
-        {
-            DockPanel_Main.ClearDockContents();
-
-            DockPanel_Main.AddDockContent(
-                "MFDC_SendDataListPanel_Control",
-                ConfigManager.Language.MainUI.MCmdPanel_Title.Value,
-                (uint)DockContentsGroup.Fixed,
-                Icon.FromHandle(Ratatoskr.Resource.Images.memo_32x32.GetHicon()),
-                DockAreas.Document | DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
-                DockState.DockBottomAutoHide,
-                false,
-                MFDC_SendDataListPanel_Control = new MainWindow_SendDataListPanel());
-
-#if DEBUG
-			DockPanel_Main.AddDockContent(
-				"MFDC_SendTrafficPanel_Control",
-				ConfigManager.Language.MainUI.STPanel_Title.Value,
-				(uint)DockContentsGroup.Fixed,
-				Icon.FromHandle(Ratatoskr.Resource.Images.memo_32x32.GetHicon()),
-				DockAreas.Document | DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
-				DockState.Document,
-				false,
-				MFDC_SendTrafficPanel_Control = new MainWindow_SendTrafficPanel());
-#endif
-
-			DockPanel_Main.AddDockContent(
-                "MFDC_WatchListPanel",
-                ConfigManager.Language.MainUI.WLPanel_Title.Value,
-                (uint)DockContentsGroup.Fixed,
-                Icon.FromHandle(Ratatoskr.Resource.Images.watch_32x32.GetHicon()),
-                DockAreas.Document | DockAreas.DockLeft | DockAreas.DockRight | DockAreas.DockBottom | DockAreas.Float,
-                DockState.DockBottomAutoHide,
-                false,
-                MFDC_WatchListPanel_Control = new MainWindow_WatchListPanel());
-
-            MFDC_SendDataListPanel_Control.LoadConfig();
-#if DEBUG
-			MFDC_SendTrafficPanel_Control.LoadConfig();
-#endif
-			MFDC_WatchListPanel_Control.LoadConfig();
-        }
-
-        private void LoadPacketViewConfig()
-        {
-            /* 全ビュー解放 */
-            ClearPacketView();
-
-            /* コンフィグからパケットビューを復元 */
-            ConfigManager.User.PacketView.Value.ForEach(
-                config => AddPacketView(
-                    config.ViewClassID, config.ViewObjectID, config.ViewProperty, false));
-        }
-
-        private void LoadDockConfig()
-        {
-            /* 設定ファイルから復元 */
-            try {
-                DockPanel_Main.ShowContents(ConfigManager.GetCurrentProfileFilePath(CONFIG_FILE_NAME, true));
-            } catch (Exception) {
-            }
-
-            /* 設定ファイルから復元できなかったものはデフォルト値で初期化 */
-//            foreach (var content in DockPanel_Main.GetDockContents()) {
-//                if (content.DockState == DockState.Unknown) {
-//                    content.Show(DockPanel_Main, content.DefaultDockState);
-//                }
-//            }
-
-            /* --- 自前で初期化 --- */
-//            MFDC_CmdListPanel.Show(DockPanel_Main, DockState.DockBottomAutoHide);
-//            MFDC_RedirectListPanel.Show(DockPanel_Main, DockState.DockBottomAutoHide);
-//            MFDC_DataListPanel.Show(DockPanel_Main, DockState.DockBottomAutoHide);
+			TabContent_PacketView.LoadConfig();
+			TabContent_ScriptEditor.LoadConfig();
         }
 
         public void BackupConfig()
         {
             GatePanel_Main.BackupConfig();
-            PacketConverter_Main.BackupConfig();
-            
-            MFDC_SendDataListPanel_Control?.BackupConfig();
-			MFDC_SendTrafficPanel_Control?.BackupConfig();
-			MFDC_WatchListPanel_Control?.BackupConfig();
-
-            BackupDockConfig();
-            BackupPacketViewConfig();
+            TabContent_PacketView.BackupConfig();
+			TabContent_ScriptEditor.BackupConfig();
         }
 
-        private void BackupDockConfig()
-        {
-            var config_dock = ConfigManager.GetCurrentProfileFilePath(CONFIG_FILE_NAME);
+		private void UpdateTabView()
+		{
+			var tab = Tab_Frame.SelectedTab;
 
-            if (config_dock != null) {
-                Directory.CreateDirectory(Path.GetDirectoryName(config_dock));
-                DockPanel_Main.SaveAsXml(config_dock);
-            }
-        }
+			if (tab == null)return;
 
-        private void BackupPacketViewConfig()
-        {
-            /* 全設定を削除 */
-            ConfigManager.User.PacketView.Value.Clear();
+			var control_old = (Panel_Frame.Controls.Count == 0) ? (null) : (Panel_Frame.Controls[0]);
+			var control_new = control_old;
 
-            /* パケットビューのみをスキャン */
-            foreach (var viewc in FormTaskManager.GetPacketViewControls()) {
-                viewc.BackupProperty();
+			switch ((TabPageId)tab.Tag) {
+				case TabPageId.PacketView:		control_new = TabContent_PacketView;	break;
+				case TabPageId.ScriptEditor:	control_new = TabContent_ScriptEditor;	break;
+			}
 
-                ConfigManager.User.PacketView.Value.Add(
-                    new PacketViewObjectConfig(
-                        viewc.Instance.Class.ID,
-                        viewc.Instance.ID,
-                        viewc.Instance.Property));
-            }
-        }
+			if (control_new == control_old)return;
+
+			Panel_Frame.Controls.Clear();
+			Panel_Frame.Controls.Add(control_new);
+		}
 
         public void UpdatePacketConverterView()
         {
-            PacketConverter_Main.UpdateView();
+			TabContent_PacketView.UpdatePacketConverterView();
         }
 
         public void AddPacketConverter(Guid class_id, PacketConverterProperty pcvtp)
         {
-            PacketConverter_Main.AddPacketConverter(class_id, pcvtp);
+			TabContent_PacketView.AddPacketConverter(class_id, pcvtp);
         }
 
         public void ClearPacketView()
         {
-            DockPanel_Main.RemoveDockContents((uint)DockContentsGroup.PacketView);
+			TabContent_PacketView.ClearPacketView();
         }
 
         private void AddPacketView(Guid class_id, Guid obj_id, PacketViewProperty viewp, bool init)
         {
-            var viewc = FormTaskManager.CreatePacketView(class_id, obj_id, viewp);
-
-            if (viewc == null)return;
-
-            /* Graphオブジェクトのレイアウトが何故か復元できないので、とりあえずパケットビューだけ復元対象から外す */
-            DockPanel_Main.AddDockContent(
-                                viewc.Instance.ID.ToString(),
-//                                viewc.Instance.ID.ToString() + (new Random()).Next(0, 99999).ToString(),
-                                viewc.Instance.Class.Name,
-                                (uint)DockContentsGroup.PacketView,
-                                Icon.FromHandle(Ratatoskr.Resource.Images.packet_view_16x16.GetHicon()),
-                                DockAreas.Document,
-                                DockState.Document,
-                                true,
-                                viewc);
+			TabContent_PacketView.AddPacketView(class_id, obj_id, viewp, init);
         }
 
         public void AddPacketView(Guid class_id, PacketViewProperty viewp)
@@ -208,18 +130,12 @@ namespace Ratatoskr.Forms.MainWindow
 
         public void ClearPacketConverter()
         {
-            PacketConverter_Main.ClearPacketConverter();
+			TabContent_PacketView.ClearPacketConverter();
         }
 
-        private void DockPanel_Main_DockContentClosed(object sender, Control control, FormClosedEventArgs e)
-        {
-            var viewc = control as PacketViewControl;
-
-            if (viewc == null)return;
-
-            FormTaskManager.RemovePacketView(viewc);
-
-            viewc.Dispose();
-        }
-    }
+		private void Tab_Frame_Selected(object sender, TabControlEventArgs e)
+		{
+			UpdateTabView();
+		}
+	}
 }

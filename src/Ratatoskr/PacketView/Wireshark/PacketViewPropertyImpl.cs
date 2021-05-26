@@ -11,9 +11,8 @@ namespace Ratatoskr.PacketView.Wireshark
 {
     internal class PacketViewPropertyImpl : PacketViewProperty
     {
-		public BoolConfig		InnerWindowMode { get; } = new BoolConfig(true);
-
-        public IntegerConfig	LibPcapLinkType	{ get; } = new IntegerConfig(1);
+        public IntegerConfig	LibPcapLinkType		   { get; } = new IntegerConfig(1);
+		public BoolConfig		TransferWithPcapHeader { get; } = new BoolConfig(true);
 
 		public BoolConfig		SendPacketCapture { get; } = new BoolConfig(false);
 		public BoolConfig		RecvPacketCapture { get; } = new BoolConfig(true);

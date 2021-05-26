@@ -58,9 +58,9 @@ namespace Ratatoskr.PacketView
             AddView(new PacketView.Packet.PacketViewClassImpl());
             AddView(new PacketView.Sequential.PacketViewClassImpl());
             AddView(new PacketView.Graph.PacketViewClassImpl());
-			AddView(new PacketView.Protocol.PacketViewClassImpl());
 
 #if DEBUG
+			AddView(new PacketView.Protocol.PacketViewClassImpl());
             AddView(new PacketView.Wireshark.PacketViewClassImpl());
 #endif
 

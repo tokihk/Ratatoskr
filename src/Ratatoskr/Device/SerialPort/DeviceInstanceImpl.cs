@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using RtsCore.Driver.SerialPort;
+using Ratatoskr.Debugger;
 using Ratatoskr.General;
 using Ratatoskr.General.Packet;
 
@@ -178,7 +179,7 @@ namespace Ratatoskr.Device.SerialPort
 
         protected override void OnDisconnectStart()
         {
-            Debugger.DebugSystem.MessageOut("Serial Port - Disconnect Start");
+            DebugManager.MessageOut(DebugMessageSender.Device, DebugMessageType.ControlEvent, "Serial Port - Disconnect Start");
 #if ASYNC_MODE
             /* タスク停止イベント */
             NativeMethods.ResetEvent(exit_event_);
@@ -212,7 +213,7 @@ namespace Ratatoskr.Device.SerialPort
 			exit_request_event_.Set();
 #endif
 
-            Debugger.DebugSystem.MessageOut("Serial Port - Disconnect Start - End");
+            DebugManager.MessageOut(DebugMessageSender.Device, DebugMessageType.ControlEvent, "Serial Port - Disconnect Start - End");
         }
 
 		protected override EventResult OnDisconnectBusy()

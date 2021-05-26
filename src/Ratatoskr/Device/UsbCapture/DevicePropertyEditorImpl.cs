@@ -27,6 +27,8 @@ namespace Ratatoskr.Device.UsbCapture
             devp_ = devp as DevicePropertyImpl;
 
             InitializeDeviceList();
+			InitializeDataContentsType();
+
             SelectDevice(devp_.DeviceName.Value);
 
             ChkBox_Filter_ControlTransfer.Checked     = devp_.Filter_ControlTransfer.Value;
@@ -39,6 +41,8 @@ namespace Ratatoskr.Device.UsbCapture
             ChkBox_Info_IrpID.Checked = devp_.InfoOut_IrpID.Value;
             ChkBox_Info_FuncType.Checked = devp_.InfoOut_FunctionType.Value;
             ChkBox_Info_FuncParam.Checked = devp_.InfoOut_FunctionParam.Value;
+
+			CBox_DataContentsType.SelectedItem = devp_.DataContentsType.Value;
         }
 
         private void InitializeDeviceList()
@@ -54,6 +58,18 @@ namespace Ratatoskr.Device.UsbCapture
             }
             CBox_DeviceList.EndUpdate();
         }
+
+		private void InitializeDataContentsType()
+		{
+			CBox_DataContentsType.BeginUpdate();
+			{
+				foreach (UsbCaptureDataContentsType item in Enum.GetValues(typeof(UsbCaptureDataContentsType))) {
+					CBox_DataContentsType.Items.Add(item);
+				}
+				CBox_DataContentsType.SelectedIndex = 0;
+			}
+			CBox_DataContentsType.EndUpdate();
+		}
 
         private void UpdateView()
         {
@@ -86,6 +102,8 @@ namespace Ratatoskr.Device.UsbCapture
             devp_.InfoOut_IrpID.Value = ChkBox_Info_IrpID.Checked;
             devp_.InfoOut_FunctionType.Value = ChkBox_Info_FuncType.Checked;
             devp_.InfoOut_FunctionParam.Value = ChkBox_Info_FuncParam.Checked;
+
+			devp_.DataContentsType.Value = (UsbCaptureDataContentsType)CBox_DataContentsType.SelectedItem;
         }
 
         private void CBox_DeviceList_SelectedIndexChanged(object sender, EventArgs e)

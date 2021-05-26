@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.FileFormat.PacketLog_Binary
 {
-    internal sealed class FileFormatClassImpl : FileFormatClass
+    internal sealed class FileFormatClassImpl : PacketLogFormatClass
     {
         public override string   Name          { get; } = "Binary format";
 

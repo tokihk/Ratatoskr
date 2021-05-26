@@ -45,9 +45,28 @@
     <BinaryTextParser>$(ProjectDir)BinaryText\BinaryTextParser</BinaryTextParser>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PacketDotNet, Version=1.2.0.0, Culture=neutral, PublicKeyToken=451414c7667b2a58, processorArchitecture=MSIL">
+      <HintPath>..\packages\PacketDotNet.1.2.0\lib\net45\PacketDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpPcap, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.5.4.0\lib\netstandard2.0\SharpPcap.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -100,6 +119,11 @@
     <Compile Include="Packet\Filter\Terms\Term_Text.cs" />
     <Compile Include="Packet\PacketManager.cs" />
     <Compile Include="Packet\PacketObject.cs" />
+    <Compile Include="Pcap\PcapPacketInfo.cs" />
+    <Compile Include="Pcap\PcapPacketParserOption.cs" />
+    <Compile Include="Pcap\SharpPcap\SharpPcapParser.cs" />
+    <Compile Include="Pcap\PcapLinkType.cs" />
+    <Compile Include="Pcap\PcapPacketParser.cs" />
     <Compile Include="ThirdParty\YaccLexTools\GplexBuffers.cs" />
     <Compile Include="HexTextEncoder.cs" />
     <Compile Include="HighResolutionDateTime.cs" />
@@ -118,6 +142,7 @@
     <Compile Include="Wildcard.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="BinaryText\BinaryTextParser.Language.analyzer.lex">
       <DependentUpon>BinaryTextParser.parser</DependentUpon>
     </None>

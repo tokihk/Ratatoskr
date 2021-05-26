@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Ratatoskr.Debugger;
 using Ratatoskr.Plugin;
 
 namespace Ratatoskr.Config.Data.User
@@ -81,7 +82,7 @@ namespace Ratatoskr.Config.Data.User
 
             if (plgp == null) {
 				/* 該当IDのプラグインがインストールされていない場合は無視 */
-				Debugger.DebugSystem.MessageOut(string.Format("LoadPluginProperty Error: {0}", class_id.ToString("D")));
+				DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.ConfigEvent, string.Format("LoadPluginProperty Error: {0}", class_id.ToString("D")));
 				return (null);
 			}
 

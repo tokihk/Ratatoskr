@@ -49,7 +49,7 @@
     <Compile Include="DebugMessageMonitor.Designer.cs">
       <DependentUpon>DebugMessageMonitor.cs</DependentUpon>
     </Compile>
-    <Compile Include="DebugSystem.cs" />
+    <Compile Include="DebugManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DebugMessageInfo.cs" />
   </ItemGroup>

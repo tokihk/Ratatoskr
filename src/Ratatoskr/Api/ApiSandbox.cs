@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Gate;
 using RtsCore;
+using Ratatoskr.Debugger;
 using Ratatoskr.Device;
 using Ratatoskr.General.Packet;
 using Ratatoskr.General.BinaryText;
@@ -79,7 +80,7 @@ namespace Ratatoskr.Api
             if (gates == null)return;
 
             /* 送信実行 */
-			Debugger.DebugSystem.MessageOut("API_SendData", Debugger.DebugMessageAttr.User | Debugger.DebugMessageAttr.SendAction);
+			DebugManager.MessageOut(DebugMessageSender.User, DebugMessageType.SendEvent, "API_SendData");
             foreach (var obj in gates) {
                 obj.SendRequest(data);
             }

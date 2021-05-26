@@ -136,6 +136,23 @@ namespace Ratatoskr.Forms.MainWindow
             }
         }
 
+		private void LoadGateControlMenu(ToolStripMenuItem menu)
+		{
+			/* 全メニューを削除 */
+			menu.DropDownItems.Clear();
+
+			/* Connect */
+			for (var index = 0; index < ConfigManager.System.ApplicationCore.GateNum.Value; index++) {
+				var menu_sub = new ToolStripMenuItem();
+
+				menu_sub.Text = String.Format("Gate {0}", index + 1);
+				menu_sub.Tag  = ((uint)MainWindowActionId.Gate_ConnectToggle_Begin + index);
+				menu_sub.Click += OnMenuClick;
+
+				menu.DropDownItems.Add(menu_sub);
+			}
+		}
+
         private void LoadPluginMenu(ToolStripMenuItem menu)
         {
             /* 全メニューを削除 */
@@ -172,7 +189,7 @@ namespace Ratatoskr.Forms.MainWindow
             ConfigManager.System.MainWindow.Position.Value = Location;
         }
 
-        public string SendTarget
+		public string SendTarget
         {
             get { return (SingleCmdPanel_Main.SendTarget); }
         }
@@ -227,7 +244,6 @@ namespace Ratatoskr.Forms.MainWindow
             MenuBar_View_PacketViewAdd.Enabled = FormTaskManager.CanAddPacketView;
             MenuBar_View_AutoScroll.Checked = ConfigManager.System.AutoScroll.Value;
             MenuBar_Tool_AutoTimeStamp.Checked = ConfigManager.System.AutoTimeStamp.Enable.Value;
-            MenuBar_Tool_ScriptManager.Checked = FormUiManager.ScriptWindowVisible();
         }
 
         public void UpdateStatusBarStatus()
@@ -283,19 +299,19 @@ namespace Ratatoskr.Forms.MainWindow
                     break;
 
                 case MainWindowActionId.PacketSaveConvertOff:
-                    FormUiManager.PacketSave(true, false);
+                    FormUiManager.SavePacketLog(true, false);
                     break;
 
                 case MainWindowActionId.PacketSaveConvertOn:
-                    FormUiManager.PacketSave(true, true);
+                    FormUiManager.SavePacketLog(true, true);
                     break;
 
                 case MainWindowActionId.PacketSaveAsConvertOff:
-                    FormUiManager.PacketSave(false, false);
+                    FormUiManager.SavePacketLog(false, false);
                     break;
 
                 case MainWindowActionId.PacketSaveAsConvertOn:
-                    FormUiManager.PacketSave(false, true);
+                    FormUiManager.SavePacketLog(false, true);
                     break;
 
                 case MainWindowActionId.FileOpen:
@@ -325,8 +341,7 @@ namespace Ratatoskr.Forms.MainWindow
                     }
                     break;
                 case MainWindowActionId.ProfileExport:
-                    ConfigManager.SaveToFile(true);
-                    ConfigManager.ExportProfile(ConfigManager.GetCurrentProfileID());
+                    FormUiManager.SaveUserConfig();
                     break;
 
                 case MainWindowActionId.Gate1_Connect:
@@ -467,9 +482,24 @@ namespace Ratatoskr.Forms.MainWindow
         private void OnMenuClick(object sender, EventArgs e)
         {
             if (sender is ToolStripMenuItem menu) {
-                if (menu.Tag is MainWindowActionId) {
-                    FormKeyAction((MainWindowActionId)menu.Tag);
-                }
+				var action_id = MainWindowActionId.None;
+
+				switch (menu.Tag) {
+					case MainWindowActionId value:
+						action_id = value;
+						break;
+					case uint value:
+						action_id = (MainWindowActionId)value;
+						break;
+					case int value:
+						action_id = (MainWindowActionId)value;
+						break;
+					case string value:
+						Enum.TryParse(value, out action_id);
+						break;
+				}
+
+                FormKeyAction(action_id);
             }
         }
 

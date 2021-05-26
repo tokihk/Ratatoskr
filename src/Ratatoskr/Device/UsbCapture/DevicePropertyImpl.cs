@@ -10,6 +10,13 @@ using Ratatoskr.General;
 
 namespace Ratatoskr.Device.UsbCapture
 {
+	public enum UsbCaptureDataContentsType
+	{
+		Raw,
+		Payload,
+	}
+
+
     [Serializable]
     internal sealed class DevicePropertyImpl : DeviceProperty
     {
@@ -24,6 +31,9 @@ namespace Ratatoskr.Device.UsbCapture
         public BoolConfig   InfoOut_IrpID         { get; } = new BoolConfig(false);
         public BoolConfig   InfoOut_FunctionType  { get; } = new BoolConfig(true);
         public BoolConfig   InfoOut_FunctionParam { get; } = new BoolConfig(true);
+
+		public EnumConfig<UsbCaptureDataContentsType> DataContentsType { get; } = new EnumConfig<UsbCaptureDataContentsType>(UsbCaptureDataContentsType.Payload);
+
 
         public override DeviceProperty Clone()
         {

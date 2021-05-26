@@ -17,13 +17,26 @@ namespace Ratatoskr.FileFormat
         public virtual string Detail { get { return (Name); } }
         public virtual Image  Icon   { get { return (null); } }
 
-        public virtual bool CanRead  { get; } = true;
-        public virtual bool CanWrite { get; } = true;
+        public virtual bool CanRead  { get; } = false;
+        public virtual bool CanWrite { get; } = false;
 
-        public virtual FileFormatOption CreateReaderOption() { return (null); }
         public virtual FileFormatReader CreateReader() { return (null); }
+        public virtual FileFormatOption CreateReaderOption() { return (null); }
 
         public virtual FileFormatOption CreateWriterOption() { return (null); }
         public virtual FileFormatWriter CreateWriter() { return (null); }
-    }
+
+		public override string ToString()
+		{
+			var str = new StringBuilder();
+
+			str.Append(Name);
+
+			if (FileExtension != null) {
+				str.AppendFormat(" ({0})", String.Join(";", FileExtension.Select(ext => "*" + ext)));
+			}
+
+			return (str.ToString());
+		}
+	}
 }

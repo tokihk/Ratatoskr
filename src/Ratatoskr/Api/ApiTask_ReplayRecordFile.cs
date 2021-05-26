@@ -61,10 +61,17 @@ namespace Ratatoskr.Api
             ProgressNow = 1;
 
             /* 送信ログファイル取得 */
-            var info = FileManager.PacketLogOpen.GetReadTargetFromPath(FilePath);
+            var info = FileManager.PacketLogOpen.GetReadControllerFromPath(FilePath);
 
-            if (info == null)return;
-            if (info.FilePath == null)return;
+            if ((info == null) || (info.Format == null))return;
+
+			var reader = info.Format.CreateReader() as PacketLogReader;
+
+			if (reader == null)return;
+
+			if (!reader.Open(info.Option, info.FilePath)) {
+				return;
+			}
 
             /* フィルターモジュール生成 */
             var filter_obj = PacketFilterController.Build(Filter);
@@ -78,7 +85,7 @@ namespace Ratatoskr.Api
 
             /* 送信タスク開始 */
             ar_task_ = (new ExecTaskHandler(ExecTask)).BeginInvoke(
-                gate_objs, filter_obj, info, null, null);
+                gate_objs, filter_obj, reader, null, null);
         }
 
         public void Stop()
@@ -112,22 +119,16 @@ namespace Ratatoskr.Api
             return (Success);
         }
 
-        private delegate void ExecTaskHandler(GateObject[] gates, PacketFilterController filter, FileReadTargetInfo info);
-        private void ExecTask(GateObject[] gates, PacketFilterController filter, FileReadTargetInfo info)
+        private delegate void ExecTaskHandler(GateObject[] gates, PacketFilterController filter, PacketLogReader reader);
+        private void ExecTask(GateObject[] gates, PacketFilterController filter, PacketLogReader reader)
         {
-            PlayRecord(gates, filter, info);
+            PlayRecord(gates, filter, reader);
 
             Success = (!cancel_req_);
         }
 
-        private void PlayRecord(GateObject[] gates, PacketFilterController filter, FileReadTargetInfo info)
+        private void PlayRecord(GateObject[] gates, PacketFilterController filter, PacketLogReader reader)
         {
-            var reader = info.Reader as PacketLogReader;
-
-            if (reader == null)return;
-
-            if (!reader.Open(info.Option, info.FilePath))return;
-
             ProgressMax = (uint)reader.ProgressMax;
             ProgressNow = (uint)reader.ProgressNow;
 

@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -32,7 +31,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -42,6 +41,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>7.2</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -89,19 +89,28 @@
     <Compile Include="Device\UsbCapture\DeviceInstanceImplByDirect.cs" />
     <Compile Include="Device\UsbCapture\USBPcapPacket.cs" />
     <Compile Include="Device\UsbCapture\USBPcapParser.cs" />
+    <Compile Include="FileFormat\FileControlParam.cs" />
+    <Compile Include="FileFormat\UserConfigFormatClass.cs" />
+    <Compile Include="FileFormat\PacketLogFormatClass.cs" />
     <Compile Include="FileFormat\PacketLog_Pcap\FileFormatWriterImpl.cs" />
     <Compile Include="FileFormat\PacketLog_Pcap\FileFormatReaderOptionImpl.cs" />
+    <Compile Include="Forms\MainWindow\MainWindow_PacketView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MainWindow\MainWindow_PacketView.Designer.cs">
+      <DependentUpon>MainWindow_PacketView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ScriptWindow\ScriptWindow_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\ScriptWindow\ScriptWindow_Control.Designer.cs">
+      <DependentUpon>ScriptWindow_Control.cs</DependentUpon>
+    </Compile>
     <Compile Include="Gate\AutoLogger\AutoLogManager.cs" />
     <Compile Include="Gate\AutoLogger\AutoLogObject.cs" />
     <Compile Include="Gate\AutoLogger\AutoLogObject_FileSize.cs" />
     <Compile Include="Gate\AutoLogger\AutoLogObject_Interval.cs" />
     <Compile Include="Gate\AutoLogger\AutoLogObject_PacketCount.cs" />
-    <Compile Include="Config\ConfigEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Config\ConfigEditor.Designer.cs">
-      <DependentUpon>ConfigEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Config\ConfigHolder.cs" />
     <Compile Include="Config\ConfigManager.cs" />
     <Compile Include="Config\ConfigObject.cs" />
@@ -186,18 +195,15 @@
     <Compile Include="Device\DevicePropertyEditor.Designer.cs">
       <DependentUpon>DevicePropertyEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Device\EthernetCapture\DeviceClassImpl.cs" />
-    <Compile Include="Device\EthernetCapture\DeviceInstanceImpl.cs" />
-    <Compile Include="Device\EthernetCapture\DevicePropertyEditorImpl.cs">
+    <Compile Include="Device\Ethernet\DeviceClassImpl.cs" />
+    <Compile Include="Device\Ethernet\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\Ethernet\DevicePropertyEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Device\EthernetCapture\DevicePropertyEditorImpl.Designer.cs">
+    <Compile Include="Device\Ethernet\DevicePropertyEditorImpl.Designer.cs">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Device\EthernetCapture\DevicePropertyImpl.cs" />
-    <Compile Include="Device\EthernetCapture\PcapPacketInfo.cs" />
-    <Compile Include="Device\EthernetCapture\PcapPacketParserOption.cs" />
-    <Compile Include="Device\EthernetCapture\SharpPcapPacketParser.cs" />
+    <Compile Include="Device\Ethernet\DevicePropertyImpl.cs" />
     <Compile Include="Device\Null\DeviceClassImpl.cs" />
     <Compile Include="Device\Null\DeviceInstanceImpl.cs" />
     <Compile Include="Device\Null\DevicePropertyImpl.cs" />
@@ -255,15 +261,15 @@
     <Compile Include="Device\UsbCapture\UsbPcapDeviceObject.cs" />
     <Compile Include="Device\UsbCapture\UsbPcapManager.cs" />
     <Compile Include="Device\UsbCapture\UsbPcapRecordParser.cs" />
-    <Compile Include="Device\UsbComm\DeviceClassImpl.cs" />
-    <Compile Include="Device\UsbComm\DeviceInstanceImpl.cs" />
-    <Compile Include="Device\UsbComm\DevicePropertyEditorImpl.cs">
+    <Compile Include="Device\UsbCommHost\DeviceClassImpl.cs" />
+    <Compile Include="Device\UsbCommHost\DeviceInstanceImpl.cs" />
+    <Compile Include="Device\UsbCommHost\DevicePropertyEditorImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Device\UsbComm\DevicePropertyEditorImpl.Designer.cs">
+    <Compile Include="Device\UsbCommHost\DevicePropertyEditorImpl.Designer.cs">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Device\UsbComm\DevicePropertyImpl.cs" />
+    <Compile Include="Device\UsbCommHost\DevicePropertyImpl.cs" />
     <Compile Include="Driver\SerialPort\SerialPortController.cs" />
     <Compile Include="Driver\SerialPort\SerialPortInfo.cs" />
     <Compile Include="Driver\SerialPort\SerialPortManager.cs" />
@@ -276,23 +282,17 @@
     <Compile Include="FileFormat\FileFormatOptionEditor.Designer.cs">
       <DependentUpon>FileFormatOptionEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FileFormat\FileFormatOptionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FileFormat\FileFormatOptionForm.Designer.cs">
-      <DependentUpon>FileFormatOptionForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="FileFormat\FileFormatReader.cs" />
-    <Compile Include="FileFormat\FileFormatSelectDialog.cs">
+    <Compile Include="Forms\Dialog\OpenFileSetupDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FileFormat\FileFormatSelectDialog.Designer.cs">
-      <DependentUpon>FileFormatSelectDialog.cs</DependentUpon>
+    <Compile Include="Forms\Dialog\OpenFileSetupDialog.Designer.cs">
+      <DependentUpon>OpenFileSetupDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FileFormat\FileFormatWriter.cs" />
     <Compile Include="FileFormat\FileManager.cs" />
-    <Compile Include="FileFormat\FileReadTargetInfo.cs" />
-    <Compile Include="FileFormat\FileWriteTargetInfo.cs" />
+    <Compile Include="FileFormat\FileReadController.cs" />
+    <Compile Include="FileFormat\FileWriteController.cs" />
     <Compile Include="FileFormat\PacketLogReader.cs" />
     <Compile Include="FileFormat\PacketLogWriter.cs" />
     <Compile Include="FileFormat\PacketLog_Binary\FileFormatClassImpl.cs" />
@@ -483,58 +483,45 @@
     <Compile Include="Forms\MainWindow\MainWindow_WatchListPanel.Designer.cs">
       <DependentUpon>MainWindow_WatchListPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionDataMap.cs" />
-    <Compile Include="Forms\OptionEditForm\OptionEditData.cs" />
-    <Compile Include="Forms\OptionEditForm\OptionEditForm.cs">
+    <Compile Include="Forms\ConfigEditor\ConfigEditorData.cs" />
+    <Compile Include="Forms\ConfigEditor\ConfigEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditForm.Designer.cs">
-      <DependentUpon>OptionEditForm.cs</DependentUpon>
+    <Compile Include="Forms\ConfigEditor\ConfigEditorForm.Designer.cs">
+      <DependentUpon>ConfigEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage.cs">
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_AutoSave.cs">
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_AutoSave.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_AutoSave.Designer.cs">
-      <DependentUpon>OptionEditPage_AutoSave.cs</DependentUpon>
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_AutoSave.Designer.cs">
+      <DependentUpon>ConfigEditorPage_AutoSave.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_AutoTimeStamp.cs">
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_AutoTimeStamp.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_AutoTimeStamp.Designer.cs">
-      <DependentUpon>OptionEditPage_AutoTimeStamp.cs</DependentUpon>
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_AutoTimeStamp.Designer.cs">
+      <DependentUpon>ConfigEditorPage_AutoTimeStamp.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_AutoUpdate.cs">
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_AutoUpdate.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_AutoUpdate.Designer.cs">
-      <DependentUpon>OptionEditPage_AutoUpdate.cs</DependentUpon>
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_AutoUpdate.Designer.cs">
+      <DependentUpon>ConfigEditorPage_AutoUpdate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_Color.cs">
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_Color.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_Color.Designer.cs">
-      <DependentUpon>OptionEditPage_Color.cs</DependentUpon>
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_Color.Designer.cs">
+      <DependentUpon>ConfigEditorPage_Color.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_Language.cs">
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_Language.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_Language.Designer.cs">
-      <DependentUpon>OptionEditPage_Language.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_NotifyMail.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_NotifyMail.Designer.cs">
-      <DependentUpon>OptionEditPage_NotifyMail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_NotifyMailList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_NotifyMailList.Designer.cs">
-      <DependentUpon>OptionEditPage_NotifyMailList.cs</DependentUpon>
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_Language.Designer.cs">
+      <DependentUpon>ConfigEditorPage_Language.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Dialog\ConfigParamSelectDialog.cs">
       <SubType>Form</SubType>
@@ -551,11 +538,11 @@
     <Compile Include="Forms\AboutForm\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_System.cs">
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_System.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\OptionEditForm\OptionEditPage_System.Designer.cs">
-      <DependentUpon>OptionEditPage_System.cs</DependentUpon>
+    <Compile Include="Forms\ConfigEditor\ConfigEditorPage_System.Designer.cs">
+      <DependentUpon>ConfigEditorPage_System.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ScriptWindow\ScriptWindow_CodeEditor.cs">
       <SubType>Component</SubType>
@@ -797,21 +784,10 @@
     </Compile>
     <Compile Include="ProtocolParser\ProtocolParserManager.cs" />
     <Compile Include="ProtocolParser\ProtocolParseStreamInfo.cs" />
-    <Compile Include="Protocol\ProtocolDecodeChannel.cs" />
-    <Compile Include="Protocol\ProtocolDecodeEvent.cs" />
-    <Compile Include="Protocol\ProtocolDecodeEvent_BitData.cs" />
-    <Compile Include="Protocol\ProtocolDecodeEvent_Frame.cs" />
-    <Compile Include="Protocol\ProtocolDecodeEvent_Message.cs" />
-    <Compile Include="Protocol\ProtocolDecodeEvent_Value.cs" />
-    <Compile Include="Protocol\ProtocolDecoderClass.cs" />
-    <Compile Include="Protocol\ProtocolDecoderInstance.cs" />
-    <Compile Include="Protocol\ProtocolEncoderClass.cs" />
-    <Compile Include="Protocol\ProtocolEncoderInstance.cs" />
-    <Compile Include="Protocol\ProtocolFrameElement.cs" />
-    <Compile Include="Protocol\ProtocolFrameElement_BitData.cs" />
-    <Compile Include="Protocol\ProtocolFrameElement_Enum.cs" />
-    <Compile Include="Protocol\ProtocolFrameElement_Integer.cs" />
-    <Compile Include="Protocol\ProtocolProperty.cs" />
+    <Compile Include="Protocol\ProtocolPacket.cs" />
+    <Compile Include="Protocol\ProtocolPacketProperty.cs" />
+    <Compile Include="Protocol\ProtocolParser.cs" />
+    <Compile Include="Protocol\Types\ProtocolTypeList.cs" />
     <Compile Include="Scripts\ScriptController.cs" />
     <Compile Include="Scripts\ScriptEngines\IScriptRunner.cs" />
     <Compile Include="Scripts\ScriptEngines\ScriptCodeRunner.cs" />
@@ -836,7 +812,7 @@
     <EmbeddedResource Include="Device\AudioFile\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Device\EthernetCapture\DevicePropertyEditorImpl.resx">
+    <EmbeddedResource Include="Device\Ethernet\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Device\SerialPort\DeviceControlPanelImpl.resx">
@@ -857,14 +833,11 @@
     <EmbeddedResource Include="Device\UsbCapture\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Device\UsbComm\DevicePropertyEditorImpl.resx">
+    <EmbeddedResource Include="Device\UsbCommHost\DevicePropertyEditorImpl.resx">
       <DependentUpon>DevicePropertyEditorImpl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FileFormat\FileFormatOptionForm.resx">
-      <DependentUpon>FileFormatOptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FileFormat\FileFormatSelectDialog.resx">
-      <DependentUpon>FileFormatSelectDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Dialog\OpenFileSetupDialog.resx">
+      <DependentUpon>OpenFileSetupDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FileFormat\PacketLog_Binary\FileFormatReaderOptionEditorImpl.resx">
       <DependentUpon>FileFormatReaderOptionEditorImpl.cs</DependentUpon>
@@ -926,6 +899,9 @@
     <EmbeddedResource Include="Forms\MainWindow\MainWindow_PacketConverterPanel.resx">
       <DependentUpon>MainWindow_PacketConverterPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow_PacketView.resx">
+      <DependentUpon>MainWindow_PacketView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainWindow\MainWindow_SendDataListPanel.resx">
       <DependentUpon>MainWindow_SendDataListPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -947,29 +923,23 @@
     <EmbeddedResource Include="Forms\MainWindow\MainWindow_WatchListPanel.resx">
       <DependentUpon>MainWindow_WatchListPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditForm.resx">
-      <DependentUpon>OptionEditForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ConfigEditor\ConfigEditorForm.resx">
+      <DependentUpon>ConfigEditorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_AutoSave.resx">
-      <DependentUpon>OptionEditPage_AutoSave.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ConfigEditor\ConfigEditorPage_AutoSave.resx">
+      <DependentUpon>ConfigEditorPage_AutoSave.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_AutoTimeStamp.resx">
-      <DependentUpon>OptionEditPage_AutoTimeStamp.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ConfigEditor\ConfigEditorPage_AutoTimeStamp.resx">
+      <DependentUpon>ConfigEditorPage_AutoTimeStamp.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_AutoUpdate.resx">
-      <DependentUpon>OptionEditPage_AutoUpdate.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ConfigEditor\ConfigEditorPage_AutoUpdate.resx">
+      <DependentUpon>ConfigEditorPage_AutoUpdate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_Color.resx">
-      <DependentUpon>OptionEditPage_Color.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ConfigEditor\ConfigEditorPage_Color.resx">
+      <DependentUpon>ConfigEditorPage_Color.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_Language.resx">
-      <DependentUpon>OptionEditPage_Language.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_NotifyMail.resx">
-      <DependentUpon>OptionEditPage_NotifyMail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_NotifyMailList.resx">
-      <DependentUpon>OptionEditPage_NotifyMailList.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ConfigEditor\ConfigEditorPage_Language.resx">
+      <DependentUpon>ConfigEditorPage_Language.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dialog\ConfigParamSelectDialog.resx">
       <DependentUpon>ConfigParamSelectDialog.cs</DependentUpon>
@@ -977,14 +947,17 @@
     <EmbeddedResource Include="Forms\AboutForm\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OptionEditForm\OptionEditPage_System.resx">
-      <DependentUpon>OptionEditPage_System.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ConfigEditor\ConfigEditorPage_System.resx">
+      <DependentUpon>ConfigEditorPage_System.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScriptWindow\ScriptWindow_CodeEditor.resx">
       <DependentUpon>ScriptWindow_CodeEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScriptWindow\ScriptWindow_Console.resx">
       <DependentUpon>ScriptWindow_Console.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ScriptWindow\ScriptWindow_Control.resx">
+      <DependentUpon>ScriptWindow_Control.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScriptWindow\ScriptWindow_Form.resx">
       <DependentUpon>ScriptWindow_Form.cs</DependentUpon>
@@ -1086,21 +1059,6 @@
     <Reference Include="LibUsbDotNet.LibUsbDotNet, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c677239abe1e02a9, processorArchitecture=MSIL">
       <HintPath>..\packages\LibUsbDotNet.2.2.29\lib\net45\LibUsbDotNet.LibUsbDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.3.9.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.3.9.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp.Scripting, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.Scripting.3.9.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.Scripting, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Scripting.Common.3.9.0\lib\netstandard2.0\Microsoft.CodeAnalysis.Scripting.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
@@ -1138,67 +1096,15 @@
     <Reference Include="System">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.dll</HintPath>
     </Reference>
-    <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Collections.Immutable, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.5.0.0\lib\net461\System.Collections.Immutable.dll</HintPath>
-    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Console, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Console.4.3.1\lib\net46\System.Console.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Diagnostics.FileVersionInfo, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.FileVersionInfo.4.3.0\lib\net46\System.Diagnostics.FileVersionInfo.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Diagnostics.StackTrace, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.StackTrace.4.3.0\lib\net46\System.Diagnostics.StackTrace.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Linq, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Linq.Expressions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
@@ -1207,97 +1113,21 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Reflection.Metadata, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reflection.Metadata.5.0.0\lib\net461\System.Reflection.Metadata.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.Extensions, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.Extensions.4.3.1\lib\net462\System.Runtime.Extensions.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Security.AccessControl, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.AccessControl.5.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
     </Reference>
-    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Encoding.CodePages, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encoding.CodePages.5.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Thread, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Thread.4.3.0\lib\net46\System.Threading.Thread.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Xml.ReaderWriter.4.3.1\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml.XmlDocument, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Xml.XmlDocument.4.3.0\lib\net46\System.Xml.XmlDocument.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml.XPath, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Xml.XPath.4.3.0\lib\net46\System.Xml.XPath.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml.XPath.XDocument, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Xml.XPath.XDocument.4.3.0\lib\net46\System.Xml.XPath.XDocument.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
@@ -1329,16 +1159,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+    <Folder Include="Protocol\Packet\" />
+    <Folder Include="Protocol\Parser\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets'))" />
-  </Target>
-  <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets')" />
 </Project>

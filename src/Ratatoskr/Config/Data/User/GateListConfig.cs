@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Ratatoskr.Debugger;
 using Ratatoskr.Device;
 using Ratatoskr.Gate;
 
@@ -45,11 +46,6 @@ namespace Ratatoskr.Config.Data.User
 
         public GateListConfig()
         {
-            Value.Add(new GateObjectConfig("GATE_001", Color.LightGoldenrodYellow));
-            Value.Add(new GateObjectConfig("GATE_002", Color.LightBlue));
-            Value.Add(new GateObjectConfig("GATE_003", Color.LightPink));
-            Value.Add(new GateObjectConfig("GATE_004", Color.LightGreen));
-            Value.Add(new GateObjectConfig("GATE_005", Color.LightSalmon));
         }
 
         public bool LoadConfigData(XmlElement xml_own)
@@ -84,32 +80,35 @@ namespace Ratatoskr.Config.Data.User
             /* connect */
             newobj.GateProperty.ConnectRequest = bool.Parse(GetAttribute(xml_node, "connect", "false"));
 
-            /* send-enable */
-            newobj.DeviceConfig.SendEnable = bool.Parse(GetAttribute(xml_node, "send-enable", "true"));
+            /* data-send-completed-notify */
+            newobj.DeviceConfig.DataSendCompletedNotify = bool.Parse(GetAttribute(xml_node, "data-send-completed-notify", "true"));
 
-            /* recv-enable */
-            newobj.DeviceConfig.RecvEnable = bool.Parse(GetAttribute(xml_node, "recv-enable", "true"));
+            /* data-recv-completed-notify */
+            newobj.DeviceConfig.DataRecvCompletedNotify = bool.Parse(GetAttribute(xml_node, "data-recv-completed-notify", "true"));
 
-            /* redirect-enable */
-            newobj.DeviceConfig.RedirectEnable = bool.Parse(GetAttribute(xml_node, "redirect-enable", "true"));
+            /* device-connect-notify */
+            newobj.DeviceConfig.DeviceConnectNotify = bool.Parse(GetAttribute(xml_node, "device-connect-notify", "true"));
 
-            /* send-data-queue-limit */
-            newobj.DeviceConfig.SendDataQueueLimit = uint.Parse(GetAttribute(xml_node, "send-data-queue-limit", "0"));
+            /* data-send-enable */
+            newobj.DeviceConfig.DataSendEnable = bool.Parse(GetAttribute(xml_node, "data-send-enable", "true"));
 
-            /* redirect-data-queue-limit */
-            newobj.DeviceConfig.RedirectDataQueueLimit = uint.Parse(GetAttribute(xml_node, "redirect-data-queue-limit", "0"));
+            /* data-send-queue-limit */
+            newobj.DeviceConfig.DataSendQueueLimit = uint.Parse(GetAttribute(xml_node, "data-send-queue-limit", "0"));
 
-            /* redirect-alias */
-            newobj.GateProperty.RedirectAlias = GetAttribute(xml_node, "redirect-alias", "");
+            /* data-redirect-enable */
+            newobj.DeviceConfig.DataRedirectEnable = bool.Parse(GetAttribute(xml_node, "data-redirect-enable", "true"));
+
+            /* data-redirect-queue-limit */
+            newobj.DeviceConfig.DataRedirectQueueLimit = uint.Parse(GetAttribute(xml_node, "data-redirect-queue-limit", "0"));
+
+            /* send-data-redirect-alias */
+            newobj.GateProperty.SendRedirectAlias = GetAttribute(xml_node, "send-data-redirect-alias", "");
+
+            /* recv-data-redirect-alias */
+            newobj.GateProperty.RecvRedirectAlias = GetAttribute(xml_node, "recv-data-redirect-alias", "");
 
             /* connect-command */
             newobj.GateProperty.ConnectCommand = GetAttribute(xml_node, "connect-command", "");
-
-            /* data-rate-target */
-            newobj.GateProperty.DataRateTarget = (DeviceDataRateTarget)Enum.Parse(typeof(DeviceDataRateTarget), GetAttribute(xml_node, "data-rate-target", "0"));
-
-            /* data-rate-graph-limit */
-            newobj.GateProperty.DataRateGraphLimit = ulong.Parse(GetAttribute(xml_node, "data-rate-graph-limit", "1000000"));
 
             /* device-class-id */
             newobj.DeviceClassID = Guid.Parse(GetAttribute(xml_node, "device-class-id", Guid.Empty.ToString()));
@@ -145,7 +144,7 @@ namespace Ratatoskr.Config.Data.User
 
             if (devp == null) {
 				/* 該当デバイスが存在しないかプロパティが生成できない */
-				Debugger.DebugSystem.MessageOut(string.Format("LoadDeviceProperty Error: {0}", class_id.ToString("D")));
+				DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.ConfigEvent, string.Format("LoadDeviceProperty Error: {0}", class_id.ToString("D")));
 				return (null);
 			}
 
@@ -169,32 +168,35 @@ namespace Ratatoskr.Config.Data.User
                 /* connect */
                 xml_data.SetAttribute("connect", config.GateProperty.ConnectRequest.ToString());
 
-                /* send-enable */
-                xml_data.SetAttribute("send-enable", config.DeviceConfig.SendEnable.ToString());
+                /* data-send-completed-notify */
+                xml_data.SetAttribute("data-send-completed-notify", config.DeviceConfig.DataSendCompletedNotify.ToString());
 
-                /* recv-enable */
-                xml_data.SetAttribute("recv-enable", config.DeviceConfig.RecvEnable.ToString());
+                /* data-recv-completed-notify */
+                xml_data.SetAttribute("data-recv-completed-notify", config.DeviceConfig.DataRecvCompletedNotify.ToString());
 
-                /* redirect-enable */
-                xml_data.SetAttribute("redirect-enable", config.DeviceConfig.RedirectEnable.ToString());
+                /* device-connect-notify */
+                xml_data.SetAttribute("device-connect-notify", config.DeviceConfig.DeviceConnectNotify.ToString());
+
+                /* data-send-enable */
+                xml_data.SetAttribute("data-send-enable", config.DeviceConfig.DataSendEnable.ToString());
+
+                /* data-send-queue-limit */
+                xml_data.SetAttribute("data-send-queue-limit", config.DeviceConfig.DataSendQueueLimit.ToString());
+
+                /* data-redirect-enable */
+                xml_data.SetAttribute("data-redirect-enable", config.DeviceConfig.DataRedirectEnable.ToString());
                 
-                /* send-data-queue-limit */
-                xml_data.SetAttribute("send-data-queue-limit", config.DeviceConfig.SendDataQueueLimit.ToString());
+                /* data-redirect-queue-limit */
+                xml_data.SetAttribute("data-redirect-queue-limit", config.DeviceConfig.DataRedirectQueueLimit.ToString());
 
-                /* redirect-data-queue-limit */
-                xml_data.SetAttribute("redirect-data-queue-limit", config.DeviceConfig.RedirectDataQueueLimit.ToString());
+                /* send-data-redirect-alias */
+                xml_data.SetAttribute("send-data-redirect-alias", config.GateProperty.SendRedirectAlias);
 
-                /* redirect-alias */
-                xml_data.SetAttribute("redirect-alias", config.GateProperty.RedirectAlias);
+                /* recv-data-redirect-alias */
+                xml_data.SetAttribute("recv-data-redirect-alias", config.GateProperty.RecvRedirectAlias);
 
                 /* connect-command */
                 xml_data.SetAttribute("connect-command", config.GateProperty.ConnectCommand);
-
-                /* data-rate-target */
-                xml_data.SetAttribute("data-rate-target", config.GateProperty.DataRateTarget.ToString());
-
-                /* data-rate-graph-limit */
-                xml_data.SetAttribute("data-rate-graph-limit", config.GateProperty.DataRateGraphLimit.ToString());
 
                 /* device-class-id */
                 xml_data.SetAttribute("device-class-id", config.DeviceClassID.ToString());

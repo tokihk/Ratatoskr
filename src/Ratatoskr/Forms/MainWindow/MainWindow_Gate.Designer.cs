@@ -57,7 +57,7 @@
             this.PBox_DataRate.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.PBox_DataRate.Location = new System.Drawing.Point(0, 32);
             this.PBox_DataRate.Name = "PBox_DataRate";
-            this.PBox_DataRate.Size = new System.Drawing.Size(160, 22);
+            this.PBox_DataRate.Size = new System.Drawing.Size(160, 38);
             this.PBox_DataRate.TabIndex = 1;
             this.PBox_DataRate.TabStop = false;
             this.PBox_DataRate.Paint += new System.Windows.Forms.PaintEventHandler(this.PBox_DataRate_Paint);
@@ -71,7 +71,7 @@
             this.Font = new System.Drawing.Font("ＭＳ ゴシック", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.Name = "MainWindow_Gate";
-            this.Size = new System.Drawing.Size(160, 54);
+            this.Size = new System.Drawing.Size(160, 70);
             ((System.ComponentModel.ISupportInitialize)(this.PBox_DataRate)).EndInit();
             this.ResumeLayout(false);
 

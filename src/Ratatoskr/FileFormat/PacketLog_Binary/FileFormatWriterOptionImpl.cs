@@ -13,6 +13,7 @@ namespace Ratatoskr.FileFormat.PacketLog_Binary
         RecvAndSendData,
     }
 
+	[Serializable]
     internal sealed class FileFormatWriterOptionImpl : FileFormatOption
     {
         public SaveDataType SaveData { get; set; } = SaveDataType.RecvDataOnly;
@@ -24,7 +25,7 @@ namespace Ratatoskr.FileFormat.PacketLog_Binary
 
         public override FileFormatOptionEditor GetEditor()
         {
-            return (new FileFormatWriterOptionEditorImpl(this));
+            return (new FileFormatWriterOptionEditorImpl());
         }
     }
 }

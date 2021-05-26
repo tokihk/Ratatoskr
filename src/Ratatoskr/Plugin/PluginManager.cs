@@ -7,11 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Config;
+using Ratatoskr.Debugger;
 using Ratatoskr.FileFormat;
-using Ratatoskr.Forms;
 using Ratatoskr.Gate;
 using Ratatoskr.Device;
-using Ratatoskr.Plugin;
 using Ratatoskr.PacketView;
 
 namespace Ratatoskr.Plugin
@@ -124,7 +123,7 @@ namespace Ratatoskr.Plugin
         private delegate void LoadAllPluginTaskDelegate(string path_plugin);
         private static void LoadAllPluginTask(string path_plugin)
         {
-            Debugger.DebugSystem.MessageOut(string.Format("LoadAllPlugin - Start: [{0}]", path_plugin));
+            DebugManager.MessageOut(DebugMessageSender.Plugin, string.Format("LoadAllPlugin - Start: [{0}]", path_plugin));
 
             /* プラグイン検索 */
             try {
@@ -134,7 +133,7 @@ namespace Ratatoskr.Plugin
 								select path;
 
                 foreach (var asm_path in asm_paths.Select((v, i) => (v, i))) {
-                    Debugger.DebugSystem.MessageOut(string.Format("CheckDLL [{0:D4}: {1}]", asm_path.i, asm_path.v));
+                    DebugManager.MessageOut(string.Format("CheckDLL [{0:D4}: {1}]", asm_path.i, asm_path.v));
 
                     LoadPlugin(asm_path.v);
 
@@ -145,7 +144,7 @@ namespace Ratatoskr.Plugin
 
             Program.SetStartupProgress(Program.StartupTaskID.LoadPlugin, 100);
 
-            Debugger.DebugSystem.MessageOut("LoadAllPlugin - End");
+            DebugManager.MessageOut(DebugMessageSender.Plugin, "LoadAllPlugin - End");
         }
 
         private static void LoadPlugin(string asm_path)
@@ -186,7 +185,7 @@ namespace Ratatoskr.Plugin
 			if (plgi == null)return;
 
             lock (plugin_sync_) {
-                Debugger.DebugSystem.MessageOut(string.Format("LoadPlugin [{0}]", info.AssemblyPath));
+                DebugManager.MessageOut(DebugMessageSender.Plugin, string.Format("LoadPlugin [{0}]", info.AssemblyPath));
 
                 plugin_list_.Add(plgi);
 

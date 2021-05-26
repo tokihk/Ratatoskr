@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.FileFormat.PacketLog_Csv
 {
-    internal sealed class FileFormatClassImpl : FileFormatClass
+    internal sealed class FileFormatClassImpl : PacketLogFormatClass
     {
-        public override string   Name          { get; } = "CSV format";
+        public override string   Name          { get; } = "CSV";
 
         public override string[] FileExtension { get; } = new [] { ".csv" };
 

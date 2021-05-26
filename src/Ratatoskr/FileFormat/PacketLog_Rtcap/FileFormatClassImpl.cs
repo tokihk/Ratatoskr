@@ -9,12 +9,12 @@ using Ratatoskr.Config;
 
 namespace Ratatoskr.FileFormat.PacketLog_Rtcap
 {
-    internal sealed class FileFormatClassImpl : FileFormatClass
+    internal sealed class FileFormatClassImpl : PacketLogFormatClass
     {
         public static readonly byte[] FORMATCODE = new byte[]{ 0x65, 0x0C, 0xF9, 0x30, 0xCE, 0x4B, 0x43, 0x8B };
 
 
-        public override string   Name          { get; } = ConfigManager.Fixed.ApplicationName.Value + " format";
+        public override string   Name          { get; } = ConfigManager.Fixed.ApplicationName.Value + " Packet";
 
         public override string[] FileExtension { get; } = new [] { "." + ConfigManager.Fixed.ApplicationID.Value + "cap" };
 

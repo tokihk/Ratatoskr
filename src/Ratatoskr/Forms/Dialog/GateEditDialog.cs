@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using RtsCore;
+using Ratatoskr.Debugger;
 using Ratatoskr.Device;
 using Ratatoskr.General;
 using Ratatoskr.Gate;
@@ -38,13 +38,22 @@ namespace Ratatoskr.Forms.Dialog
             /* 初期値設定 */
             TBox_Alias.Text = gatep.Alias;
             CBox_DeviceType.SelectedItem = devc_id;
-            Num_SendQueueLimit.Value = devconf.SendDataQueueLimit;
-            Num_RedirectQueueLimit.Value = devconf.RedirectDataQueueLimit;
+
+			Btn_SelectColor.BackColor = gatep_.Color;
+
+			ChkBox_Notify_DataSendCompleted.Checked = devconf.DataSendCompletedNotify;
+			ChkBox_Notify_DataRecvCompleted.Checked = devconf.DataRecvCompletedNotify;
+			ChkBox_Notify_DeviceConnect.Checked = devconf.DeviceConnectNotify;
+
+			ChkBox_DataSendEnable.Checked = devconf.DataSendEnable;
+            Num_DataSendQueueLimit.Value = devconf.DataSendQueueLimit;
+
+			ChkBox_DataRedirectEnable.Checked = devconf.DataRedirectEnable;
+            Num_DataRedirectQueueLimit.Value = devconf.DataRedirectQueueLimit;
+            TBox_SendDataRedirectTargetAlias.Text = gatep.SendRedirectAlias;
+            TBox_RecvDataRedirectTargetAlias.Text = gatep.RecvRedirectAlias;
+
             TBox_ConnectCommand.Text = gatep.ConnectCommand;
-            TBox_RedirectTargetAlias.Text = gatep.RedirectAlias;
-            ChkBox_DaraRateTarget_Send.Checked = gatep.DataRateTarget.HasFlag(DeviceDataRateTarget.SendData);
-            ChkBox_DaraRateTarget_Recv.Checked = gatep.DataRateTarget.HasFlag(DeviceDataRateTarget.RecvData);
-            Num_DataRate_GraphLimit.Value = gatep.DataRateGraphLimit;
         }
 
         private void InitializeDeviceType()
@@ -82,11 +91,6 @@ namespace Ratatoskr.Forms.Dialog
 
             /* デバイスクラスに応じてチェックボックスの状態を設定 */
             UpdateOperationPermission();
-        }
-
-        private void UpdateDeviceStatus()
-        {
-
         }
 
         private void UpdateDeviceProperty()
@@ -128,18 +132,15 @@ namespace Ratatoskr.Forms.Dialog
             }
 
             var can_send = false;
-            var can_recv = false;
             var can_redirect = false;
 
             if (devc_ != null) {
                 can_send = devc_.CanSend;
-                can_recv = devc_.CanRecv;
                 can_redirect = devc_.CanRedirect;
             }
 
-            UpdateOperationPermission(ChkBox_SendEnable, can_send, devconf_.SendEnable);
-            UpdateOperationPermission(ChkBox_RecvEnable, can_recv, devconf_.RecvEnable);
-            UpdateOperationPermission(ChkBox_RedirectEnable, can_redirect, devconf_.RedirectEnable);
+            UpdateOperationPermission(ChkBox_DataSendEnable, can_send, devconf_.DataSendEnable);
+            UpdateOperationPermission(ChkBox_DataRedirectEnable, can_redirect, devconf_.DataRedirectEnable);
         }
 
         private void UpdateOperationPermission(CheckBox chkbox, bool can_flag, bool state_flag)
@@ -169,11 +170,11 @@ namespace Ratatoskr.Forms.Dialog
             if (CBox_DeviceType.SelectedItem is DeviceClass devc) {
                 devc_id_ = devc.ID;
 
-                Debugger.DebugSystem.MessageOut("Gate Device Change Start");
+                DebugManager.MessageOut(DebugMessageSender.User, DebugMessageType.ControlEvent, "Gate Device Change Start");
 
                 UpdateDevice();
 
-                Debugger.DebugSystem.MessageOut("Gate Device Change End");
+                DebugManager.MessageOut(DebugMessageSender.User, DebugMessageType.ControlEvent, "Gate Device Change End");
             }
         }
 
@@ -188,16 +189,21 @@ namespace Ratatoskr.Forms.Dialog
 
             /* 基本設定の設定値をオブジェクトに反映 */
             gatep_.Alias = TBox_Alias.Text;
+			gatep_.Color = Btn_SelectColor.BackColor;
             gatep_.ConnectCommand = TBox_ConnectCommand.Text;
-            gatep_.RedirectAlias = TBox_RedirectTargetAlias.Text;
-            gatep_.DataRateTarget = ((ChkBox_DaraRateTarget_Send.Checked) ? (DeviceDataRateTarget.SendData) : (0))
-                                  | ((ChkBox_DaraRateTarget_Recv.Checked) ? (DeviceDataRateTarget.RecvData) : (0));
-            gatep_.DataRateGraphLimit = (ulong)Num_DataRate_GraphLimit.Value;
-            devconf_.RecvEnable = (ChkBox_RecvEnable.CheckState != CheckState.Unchecked);
-            devconf_.SendEnable = (ChkBox_SendEnable.CheckState != CheckState.Unchecked);
-            devconf_.RedirectEnable = (ChkBox_RedirectEnable.CheckState != CheckState.Unchecked);
-            devconf_.SendDataQueueLimit = (uint)Num_SendQueueLimit.Value;
-            devconf_.RedirectDataQueueLimit = (uint)Num_RedirectQueueLimit.Value;
+
+            gatep_.SendRedirectAlias = TBox_SendDataRedirectTargetAlias.Text;
+            gatep_.RecvRedirectAlias = TBox_RecvDataRedirectTargetAlias.Text;
+
+			devconf_.DataSendCompletedNotify = ChkBox_Notify_DataSendCompleted.Checked;
+			devconf_.DataRecvCompletedNotify = ChkBox_Notify_DataRecvCompleted.Checked;
+			devconf_.DeviceConnectNotify     = ChkBox_Notify_DeviceConnect.Checked;
+
+            devconf_.DataSendEnable = (ChkBox_DataSendEnable.CheckState != CheckState.Unchecked);
+            devconf_.DataSendQueueLimit = (uint)Num_DataSendQueueLimit.Value;
+
+            devconf_.DataRedirectEnable = (ChkBox_DataRedirectEnable.CheckState != CheckState.Unchecked);
+            devconf_.DataRedirectQueueLimit = (uint)Num_DataRedirectQueueLimit.Value;
 
             /* プロパティエディタの設定値をオブジェクトに反映 */
             if (devpe_ != null) {
@@ -217,27 +223,35 @@ namespace Ratatoskr.Forms.Dialog
             DialogResult = DialogResult.Cancel;
         }
 
-        private void ChkBox_SendEnable_Click(object sender, EventArgs e)
-        {
-            devconf_.SendEnable = !devconf_.SendEnable;
+		private void ChkBox_DataSendEnable_Click(object sender, EventArgs e)
+		{
+            devconf_.DataSendEnable = !devconf_.DataSendEnable;
             UpdateOperationPermission();
-        }
+		}
 
-        private void ChkBox_RecvEnable_Click(object sender, EventArgs e)
-        {
-            devconf_.RecvEnable = !devconf_.RecvEnable;
+		private void ChkBox_DataRedirectEnable_Click(object sender, EventArgs e)
+		{
+            devconf_.DataRedirectEnable = !devconf_.DataRedirectEnable;
             UpdateOperationPermission();
-        }
-
-        private void ChkBox_RedirectEnable_Click(object sender, EventArgs e)
-        {
-            devconf_.RedirectEnable = !devconf_.RedirectEnable;
-            UpdateOperationPermission();
-        }
+		}
 
         private void TBox_ConnectCommand_TextChanged(object sender, EventArgs e)
         {
             UpdateConnectCommand();
         }
-    }
+
+		private void Btn_SelectColor_Click(object sender, EventArgs e)
+		{
+			var dialog = new ColorDialog();
+
+			dialog.Color = gatep_.Color;
+			dialog.FullOpen = true;
+
+			if (dialog.ShowDialog() != DialogResult.OK)return;
+
+			gatep_.Color = dialog.Color;
+
+			Btn_SelectColor.BackColor = gatep_.Color;
+		}
+	}
 }

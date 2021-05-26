@@ -62,6 +62,11 @@ namespace Ratatoskr.Config.Data.System
         ShowAppDocument_PacketFilter,
 
         ShowAppInformation,
+
+		Gate_ConnectToggle_Begin = 0x10000,
+		Gate_ConnectToggle_End   = 0x10010,
+
+		None = 0xFFFFFF
     }
 
     [Serializable]

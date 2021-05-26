@@ -202,7 +202,7 @@ namespace Ratatoskr.Device.UsbCapture
             return (hid);
         }
 
-        public static IntPtr OpenDevice(string devname)
+        public static IntPtr OpenDevice(string devname, bool async = true)
         {
             var handle = WinAPI.CreateFile(
                                     devname,
@@ -210,7 +210,7 @@ namespace Ratatoskr.Device.UsbCapture
                                     0,
                                     IntPtr.Zero,
                                     WinAPI.OPEN_EXISTING,
-                                    WinAPI.FILE_FLAG_OVERLAPPED,
+                                    (async) ? (WinAPI.FILE_FLAG_OVERLAPPED) : (0),
                                     IntPtr.Zero);
 
             if (handle != WinAPI.INVALID_HANDLE_VALUE) {

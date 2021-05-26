@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ratatoskr.Config;
 using Ratatoskr.Config.Data.User;
-using RtsCore;
+using Ratatoskr.Debugger;
 using Ratatoskr.PacketConverter;
 
 namespace Ratatoskr.Forms.MainWindow
@@ -168,7 +168,7 @@ namespace Ratatoskr.Forms.MainWindow
             var index_new = GetConverterIndex(Panel_ConverterList.PointToClient(pos_screen));
 
             if (index_new != index_old) {
-                Debugger.DebugSystem.MessageOut(string.Format("MoveConverterIndex {0} => {1}", index_new, index_old));
+                DebugManager.MessageOut(string.Format("MoveConverterIndex {0} => {1}", index_new, index_old));
 
                 /* コントロールを入れ替え */
                 Panel_ConverterList.Controls.SetChildIndex(control, (int)index_new);

@@ -4,11 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Scripting;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
+//using Microsoft.CodeAnalysis.Scripting;
+//using Microsoft.CodeAnalysis.CSharp.Scripting;
 
 namespace Ratatoskr.Scripts.ScriptEngines
 {
+	public class ScriptAPI
+	{
+		public void Test()
+		{
+			var i = 0;
+		}
+	}
+
+
     internal class ScriptCodeRunner : IScriptRunner
     {
         private const int TASK_EXIT_WAIT_TIME  = 2000;
@@ -180,10 +189,12 @@ namespace Ratatoskr.Scripts.ScriptEngines
             MessageAppended?.Invoke(this, msg_info);
         }
 
+#if false
         private void AddCompileErrorMessage(CompilationErrorException exp)
         {
             AddMessage(ScriptMessageType.Error, exp.Message);
         }
+#endif
 
         public void AddScriptMessage(string message)
         {
@@ -219,9 +230,16 @@ namespace Ratatoskr.Scripts.ScriptEngines
 
         private void RunTask()
         {
+#if false
             try {
+				var script_options = ScriptOptions.Default.WithImports("System.Security.Cryptography.Algorithms");
+
+//				var script_obj = CSharpScript.Create(script_code_, script_options, task_sandbox_.GetType());
+				var script_obj = CSharpScript.Create(script_code_, null, typeof(ScriptAPI));
+
                 /* スクリプト開始 */
-                var task_states = CSharpScript.RunAsync(script_code_, null, task_sandbox_, task_sandbox_.GetType());
+//                var task_states = script_obj.RunAsync(task_sandbox_);
+                var task_states = script_obj.RunAsync(new ScriptAPI());
 
                 /* スクリプト終了まで待機 */
                 task_states.Wait();
@@ -233,6 +251,7 @@ namespace Ratatoskr.Scripts.ScriptEngines
             } catch (OperationCanceledException) {
             } catch (Exception) {
             }
+#endif
         }
 
         private delegate void RunTaskWatcherHandler();

@@ -31,12 +31,14 @@ namespace Ratatoskr.Debugger
 		private List<DebugMessageInfo>	msg_list_all_ = new List<DebugMessageInfo>();
 
 		private object						draw_msg_sync_ = new object();
-        private Queue<DebugMessageInfo>	draw_msg_queue_ = new Queue<DebugMessageInfo>();
+        private Queue<DebugMessageInfo>		draw_msg_queue_ = new Queue<DebugMessageInfo>();
 		private DebugMessageInfo			draw_msg_last_ = null;
 		private bool						draw_msg_enable_ = true;
 
 		private DrawItemAttr		draw_item_attr_ = (DrawItemAttr)(-1);
-		private DebugMessageAttr	draw_msg_attr_ = (DebugMessageAttr)(-1);
+
+		private DebugMessageSender	draw_msg_sender_ = DebugMessageSender.Unknown;
+		private DebugMessageType	draw_msg_type_   = DebugMessageType.NoCategory;
 
 
         public DebugMessageMonitor()
@@ -65,14 +67,28 @@ namespace Ratatoskr.Debugger
 				MenuBar_View.DropDownItems.Add(menu);
 			}
 
-			/* MenuBar - Filter */
-			foreach (DebugMessageAttr attr in Enum.GetValues(typeof(DebugMessageAttr))) {
+			/* MenuBar - Filter - Sender */
+			foreach (DebugMessageSender sender in Enum.GetValues(typeof(DebugMessageSender))) {
 				var menu = new ToolStripMenuItem();
 
-				menu.Text = attr.ToString();
-				menu.Tag  = attr;
-				menu.Checked = draw_msg_attr_.HasFlag(attr);
-				menu.Click += MenuBar_Filter_Item_Click;
+				menu.Text = sender.ToString();
+				menu.Tag  = sender;
+				menu.Checked = draw_msg_sender_.HasFlag(sender);
+				menu.Click += MenuBar_Filter_Sender_Item_Click;
+
+				MenuBar_Filter.DropDownItems.Add(menu);
+			}
+
+			MenuBar_Filter.DropDownItems.Add(new ToolStripSeparator());
+
+			/* MenuBar - Filter - Type */
+			foreach (DebugMessageType type in Enum.GetValues(typeof(DebugMessageType))) {
+				var menu = new ToolStripMenuItem();
+
+				menu.Text = type.ToString();
+				menu.Tag  = type;
+				menu.Checked = draw_msg_type_.HasFlag(type);
+				menu.Click += MenuBar_Filter_Type_Item_Click;
 
 				MenuBar_Filter.DropDownItems.Add(menu);
 			}
@@ -85,21 +101,37 @@ namespace Ratatoskr.Debugger
 		{
 			draw_item_attr_ = 0;
 
-			foreach (ToolStripMenuItem item in MenuBar_View.DropDownItems) {
-				if (item.Checked) {
-					draw_item_attr_ |= (DrawItemAttr)item.Tag;
-				}
+			foreach (var item in MenuBar_View.DropDownItems) {
+				if (item is ToolStripMenuItem menu) {
+					if (menu.Checked) {
+						switch (menu.Tag) {
+							case DrawItemAttr attr:
+								draw_item_attr_ |= attr;
+								break;
+						}
+					}
+                }
 			}
 		}
 
-		private void UpdateDrawMessageAttribute()
+		private void UpdateDrawMessageFilter()
 		{
-			draw_msg_attr_ = 0;
+			draw_msg_sender_ = 0;
+			draw_msg_type_ = 0;
 
-			foreach (ToolStripMenuItem item in MenuBar_View.DropDownItems) {
-				if (item.Checked) {
-					draw_msg_attr_ |= (DebugMessageAttr)item.Tag;
-				}
+			foreach (var item in MenuBar_Filter.DropDownItems) {
+				if (item is ToolStripMenuItem menu) {
+					if (menu.Checked) {
+						switch (menu.Tag) {
+							case DebugMessageSender sender:
+								draw_msg_sender_ |= sender;
+								break;
+							case DebugMessageType type:
+								draw_msg_type_ |= type;
+								break;
+						}
+					}
+                }
 			}
 		}
 
@@ -135,14 +167,14 @@ namespace Ratatoskr.Debugger
 
 		private void OnDrawTimer(object sender, EventArgs e)
         {
-            var msg = (DebugMessageInfo)null;
+            DebugMessageInfo msg;
 
             draw_time_.Restart();
 
             while ((draw_msg_enable_) && ((msg = PopMessage()) != null)) {
 				msg_list_all_.Add(msg);
 
-				if (draw_msg_attr_.HasFlag(msg.Attr)) {
+				if (((draw_msg_sender_ & msg.Sender) != 0) && ((draw_msg_type_ & msg.Type) != 0)) {
 					TBox_Message.AppendText(BuildMessage(msg, draw_msg_last_, draw_item_attr_) + Environment.NewLine);
 					draw_msg_last_ = msg;
 				}
@@ -193,15 +225,20 @@ namespace Ratatoskr.Debugger
 			TBox_Message.Clear();
 
 			lock (draw_msg_sync_) {
-				/* 表示待ちのログをメッセージリストに結合させる */
+				/* 表示待ちのログと表示済みメッセージリストを結合させる */
 				while (draw_msg_queue_.Count > 0) {
 					msg_list_all_.Add(draw_msg_queue_.Dequeue());
 				}
 
+				/* 表示待ちメッセージキューを初期化 */
 				draw_msg_queue_ = new Queue<DebugMessageInfo>();
 				draw_msg_last_ = null;
 
+				/* 全メッセージを表示待ちにする */
 				msg_list_all_.ForEach(minfo => draw_msg_queue_.Enqueue(minfo));
+
+				/* 表示済みメッセージリストを初期化 */
+				msg_list_all_ = new List<DebugMessageInfo>();
 			}
 		}
 
@@ -232,12 +269,22 @@ namespace Ratatoskr.Debugger
 			}
 		}
 
-		private void MenuBar_Filter_Item_Click(object sender, EventArgs e)
+		private void MenuBar_Filter_Sender_Item_Click(object sender, EventArgs e)
 		{
 			if (sender is ToolStripMenuItem menu) {
 				menu.Checked = !menu.Checked;
 
-				UpdateDrawMessageAttribute();
+				UpdateDrawMessageFilter();
+				RedrawMessage();
+			}
+		}
+
+		private void MenuBar_Filter_Type_Item_Click(object sender, EventArgs e)
+		{
+			if (sender is ToolStripMenuItem menu) {
+				menu.Checked = !menu.Checked;
+
+				UpdateDrawMessageFilter();
 				RedrawMessage();
 			}
 		}

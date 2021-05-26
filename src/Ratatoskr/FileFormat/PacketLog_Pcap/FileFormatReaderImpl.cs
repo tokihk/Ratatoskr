@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.General.Packet;
 using Ratatoskr.FileFormat;
-using RtsPlugin.Pcap.Utility;
+using Ratatoskr.General.Pcap;
+using Ratatoskr.General.Pcap.SharpPcap;
 using SharpPcap.LibPcap;
 
 namespace Ratatoskr.FileFormat.PacketLog_Pcap
@@ -50,7 +51,12 @@ namespace Ratatoskr.FileFormat.PacketLog_Pcap
 
             if (option_ == null)return (false);
 
-            option_parser_ = new PcapPacketParserOption(option_.ViewSourceType, option_.ViewDestinationType, option_.ViewDataType);
+            option_parser_ = new PcapPacketParserOption()
+			{
+				SourceType = option_.PacketSourceType,
+				DestinationType = option_.PacketDestinationType,
+				DataContentsType = option_.PacketDataType,
+			};
 
             device_ = new CaptureFileReaderDevice(path);
 
@@ -75,7 +81,8 @@ namespace Ratatoskr.FileFormat.PacketLog_Pcap
                 }
 
                 if (packets_busy_out_ != null) {
-                    packet = SharpPcapPacketParser.Convert(device_, packets_busy_out_.Dequeue(), option_parser_);
+                    packet = SharpPcapParser.ParseAndBuild(packets_busy_out_.Dequeue(), option_parser_);
+						
                     if (packets_busy_out_.Count == 0) {
                         packets_busy_out_ = null;
                         packets_count_out_++;

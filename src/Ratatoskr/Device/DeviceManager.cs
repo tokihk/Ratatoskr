@@ -4,6 +4,7 @@ using System.Linq;
 using System.Timers;
 using System.Threading;
 using System.Threading.Tasks;
+using Ratatoskr.Debugger;
 using Ratatoskr.Gate;
 using Ratatoskr.General.Packet;
 
@@ -32,8 +33,6 @@ namespace Ratatoskr.Device
         private static System.Timers.Timer         dev_timer_base_;
         private static int                         dev_timer_cntr_1000ms_ = 0;
 
-        public static AutoResetEvent  WaitHandle_1000ms { get; private set; }  = new AutoResetEvent(false);
-
 
         private DeviceManager()
         {
@@ -50,10 +49,10 @@ namespace Ratatoskr.Device
             AddDevice(new AudioFile.DeviceClassImpl());
 
             AddDevice(new UsbCapture.DeviceClassImpl());
-            AddDevice(new EthernetCapture.DeviceClassImpl());
+            AddDevice(new Ethernet.DeviceClassImpl());
 
 #if DEBUG
-            AddDevice(new UsbComm.DeviceClassImpl());
+            AddDevice(new UsbCommHost.DeviceClassImpl());
 #endif
 
             dev_timer_base_ = new System.Timers.Timer();
@@ -76,7 +75,9 @@ namespace Ratatoskr.Device
         {
             dev_timer_cntr_1000ms_++;
             if (dev_timer_cntr_1000ms_ >= DEVICE_TIMER_CNTR_1000MS) {
-                WaitHandle_1000ms.Set();
+				lock (devi_list_) {
+					devi_list_.ForEach(devi => devi.DataRateSamplingRequest());
+				}
                 dev_timer_cntr_1000ms_ = 0;
             }
         }
@@ -110,6 +111,8 @@ namespace Ratatoskr.Device
                 devd_list_.Sort((a, b) => a.Name.CompareTo(b.Name));
             }
 
+			DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.ControlEvent, String.Format("Device Class Added. count = {0}", devd_list_.Count));
+
             return (true);
         }
 
@@ -142,6 +145,8 @@ namespace Ratatoskr.Device
             /* インスタンス登録 */
             lock (devi_list_) {
                 devi_list_.Add(devi);
+
+				DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.ControlEvent, String.Format("Device Instance Added. count = {0}", devi_list_.Count));
 
                 /* 各インスタンスのリダイレクト先を更新 */
                 UpdateRedirectMap();
@@ -180,6 +185,8 @@ namespace Ratatoskr.Device
             lock (devi_list_) {
                 /* 終了済みインスタンスを破棄 */
                 if (devi_list_.RemoveAll(devi => devi.IsShutdown) > 0) {
+					DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.ControlEvent, String.Format("Device Instance Removed. count = {0}", devi_list_.Count));
+
                     /* 各インスタンスのリダイレクト先を更新 */
                     UpdateRedirectMap();
                 }

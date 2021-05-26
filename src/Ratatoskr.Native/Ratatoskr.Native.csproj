@@ -49,6 +49,7 @@
     <Compile Include="Windows\Shell.cs" />
     <Compile Include="Windows\WinAPI.cs" />
     <Compile Include="Windows\WinErrorCode.cs" />
+    <Compile Include="Windows\WinUtility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ratatoskr.Debugger;
 using Ratatoskr.Forms.Dialog;
 using Ratatoskr.Gate;
 using Ratatoskr.General;
@@ -20,10 +21,13 @@ namespace Ratatoskr.Forms.MainWindow
         private readonly Padding DATA_RATE_GRAPH_MARGIN = new Padding(5, 2, 5, 4);
 
         private readonly Font  DATA_RATE_FONT = new Font("MS Gothic", 8);
+
         private readonly Brush DATA_RATE_FONT_BRUSH = Brushes.Gray;
         private StringFormat   DATA_RATE_FONT_FORMAT = new StringFormat();
+
         private Rectangle      DATA_RATE_GRAPH_REGION = new Rectangle();
-        private Pen            DATA_RATE_GRAPH_PEN = Pens.Gray;
+        private Pen            SEND_DATA_RATE_GRAPH_PEN = Pens.Red;
+        private Pen            RECV_DATA_RATE_GRAPH_PEN = Pens.DarkSeaGreen;
 
         private GateObject gate_ = null;
         private MainWindow_DeviceControlPanel devcp_ = new MainWindow_DeviceControlPanel();
@@ -33,9 +37,12 @@ namespace Ratatoskr.Forms.MainWindow
 
         private ToolTip ttip_main_ = new ToolTip();
 
-        private ulong[] data_rate_buffer_ = null;
         private int     data_rate_in_ = 0;
-        private ulong   data_rate_latest_ = 0;
+
+        private ulong[] send_data_rate_buffer_ = null;
+        private ulong   send_data_rate_latest_ = 0;
+        private ulong[] recv_data_rate_buffer_ = null;
+        private ulong   recv_data_rate_latest_ = 0;
 
         private bool details_mode_ = false;
 
@@ -57,7 +64,8 @@ namespace Ratatoskr.Forms.MainWindow
             DATA_RATE_GRAPH_REGION.Height = PBox_DataRate.ClientSize.Height - DATA_RATE_GRAPH_MARGIN.Vertical;
 
             /* 幅に合わせてバッファを初期化 */
-            data_rate_buffer_ = new ulong[DATA_RATE_GRAPH_REGION.Width];
+            send_data_rate_buffer_ = new ulong[DATA_RATE_GRAPH_REGION.Width];
+            recv_data_rate_buffer_ = new ulong[DATA_RATE_GRAPH_REGION.Width];
         }
 
         public MainWindow_Gate(GateObject gate) : this()
@@ -72,7 +80,7 @@ namespace Ratatoskr.Forms.MainWindow
                 if (gate_ != value) {
                     if (gate_ != null) {
                         /* 登録イベント解除 */
-                        gate_.StatusChanged -= OnGateStatusChanged;
+                        gate_.StatusChanged   -= OnGateStatusChanged;
                         gate_.DataRateUpdated -= OnGateDataRateUpdated;
                     }
 
@@ -83,7 +91,7 @@ namespace Ratatoskr.Forms.MainWindow
                         Btn_Main.BackColor = gate_.GateProperty.Color;
 
                         /* イベント登録 */
-                        gate_.StatusChanged += OnGateStatusChanged;
+                        gate_.StatusChanged   += OnGateStatusChanged;
                         gate_.DataRateUpdated += OnGateDataRateUpdated;
                     }
                 }
@@ -109,6 +117,8 @@ namespace Ratatoskr.Forms.MainWindow
                 BeginInvoke(new UpdateViewHandler(UpdateView));
                 return;
             }
+
+			Btn_Main.BackColor = gate_.GateProperty.Color;
 
             UpdateToolTip();
             Refresh();
@@ -181,22 +191,35 @@ namespace Ratatoskr.Forms.MainWindow
             gate_.ChangeDevice(edit_form.GateProperty, edit_form.DeviceConfig, edit_form.DeviceClassID, edit_form.DeviceProperty);
         }
 
-        private void DataRateValueInput(ulong value)
+        private void UpdateDataRate(ulong send_rate, ulong recv_rate)
         {
-            /* 入力データを記憶 */
-            data_rate_latest_ = value;
+            /* 最新データを記憶 */
+            send_data_rate_latest_ = send_rate;
+            recv_data_rate_latest_ = recv_rate;
 
+#if false
             /* グラフ表示用に入力データを補正 */
-            value = Math.Min(value, gate_.GateProperty.DataRateGraphLimit) * (ulong)DATA_RATE_GRAPH_REGION.Height;
-            if (value > 0) {
-                value = value / gate_.GateProperty.DataRateGraphLimit;
+            send_rate = Math.Min(send_rate, gate_.GateProperty.DataRateGraphLimit) * (ulong)DATA_RATE_GRAPH_REGION.Height;
+            recv_rate = Math.Min(recv_rate, gate_.GateProperty.DataRateGraphLimit) * (ulong)DATA_RATE_GRAPH_REGION.Height;
+
+            if (send_rate > 0) {
+                send_rate /= gate_.GateProperty.DataRateGraphLimit;
             }
+            if (recv_rate > 0) {
+                recv_rate /= gate_.GateProperty.DataRateGraphLimit;
+            }
+#endif
 
             /* グラフ表示用に入力データを補正して記憶 */
-            data_rate_buffer_[data_rate_in_++] = value;
+            send_data_rate_buffer_[data_rate_in_] = send_rate;
+            recv_data_rate_buffer_[data_rate_in_] = recv_rate;
 
             /* 入力ポインタを移動 */
-            data_rate_in_ %= data_rate_buffer_.Length;
+			if (data_rate_in_ < (send_data_rate_buffer_.Length - 1)) {
+				data_rate_in_++;
+			} else {
+				data_rate_in_ = 0;
+			}
 
             PBox_DataRate.Invalidate();
         }
@@ -207,9 +230,11 @@ namespace Ratatoskr.Forms.MainWindow
             UpdateDeviceControlPanel();
         }
 
-        private void OnGateDataRateUpdated(object sender, ulong data_rate)
+        private void OnGateDataRateUpdated(object sender, ulong send_rate, ulong recv_rate)
         {
-            DataRateValueInput(data_rate);
+			DebugManager.MessageOut(DebugMessageSender.Device, DebugMessageType.ControlEvent, String.Format("{0} RateUpdated send={1} recv={2}", gate_.Alias, send_rate, recv_rate));
+
+            UpdateDataRate(send_rate, recv_rate);
         }
 
         private void OnMouseLeftClick()
@@ -286,28 +311,51 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void PBox_DataRate_Paint(object sender, PaintEventArgs e)
         {
-            /* === グラフ === */
-            var points = new Point[data_rate_buffer_.Length];
+			/* 最大レート走査 */
+			ulong rate_max = 1000;
+
+            for (var index = 0; index < send_data_rate_buffer_.Length; index++) {
+				if (rate_max < send_data_rate_buffer_[index]) {
+					rate_max = send_data_rate_buffer_[index];
+				}
+				if (rate_max < recv_data_rate_buffer_[index]) {
+					rate_max = recv_data_rate_buffer_[index];
+				}
+			}
+
+			/* グラフ上限値を最大レートの1.2倍とする */
+			rate_max += rate_max / 10 * 2;
+
+			/* 表示ポイント生成 */
+            var send_rate_points = new Point[send_data_rate_buffer_.Length];
+            var recv_rate_points = new Point[recv_data_rate_buffer_.Length];
             var data_offset = data_rate_in_;
 
-            for (var data_count = 0; data_count < data_rate_buffer_.Length; data_count++) {
-                points[data_count].X = DATA_RATE_GRAPH_REGION.Left + data_count;
-                points[data_count].Y = DATA_RATE_GRAPH_REGION.Bottom - (int)data_rate_buffer_[data_offset];
+            for (var data_count = 0; data_count < send_data_rate_buffer_.Length; data_count++) {
+                send_rate_points[data_count].X = DATA_RATE_GRAPH_REGION.Left + data_count;
+                send_rate_points[data_count].Y = DATA_RATE_GRAPH_REGION.Bottom - (int)(send_data_rate_buffer_[data_offset] * (ulong)DATA_RATE_GRAPH_REGION.Height / rate_max);
+
+                recv_rate_points[data_count].X = send_rate_points[data_count].X;
+                recv_rate_points[data_count].Y = DATA_RATE_GRAPH_REGION.Bottom - (int)(recv_data_rate_buffer_[data_offset] * (ulong)DATA_RATE_GRAPH_REGION.Height / rate_max);
 
                 data_offset++;
-                data_offset %= data_rate_buffer_.Length;
+                data_offset %= send_data_rate_buffer_.Length;
             }
-            e.Graphics.DrawLines(DATA_RATE_GRAPH_PEN, points);
+
+            e.Graphics.DrawLines(SEND_DATA_RATE_GRAPH_PEN, send_rate_points);
+            e.Graphics.DrawLines(RECV_DATA_RATE_GRAPH_PEN, recv_rate_points);
 
             /* テキスト */
             e.Graphics.DrawString(
                 String.Format(
-                    "Rate: {0,7}B/s",
-                    TextUtil.DecToText(data_rate_latest_)),
-                    DATA_RATE_FONT,
-                    DATA_RATE_FONT_BRUSH,
-                    (sender as Control).ClientRectangle,
-                    DATA_RATE_FONT_FORMAT);
+                    "Send: {0,7}B/s\nRecv: {1,7}B/s",
+                    TextUtil.DecToText(send_data_rate_latest_),
+					TextUtil.DecToText(recv_data_rate_latest_)
+				),
+                DATA_RATE_FONT,
+                DATA_RATE_FONT_BRUSH,
+                (sender as Control).ClientRectangle,
+                DATA_RATE_FONT_FORMAT);
         }
 
         private void Btn_ControlPanel_Click(object sender, EventArgs e)

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Ratatoskr.Config;
 using Ratatoskr.Config.Data.User;
 using Ratatoskr.FileFormat;
-using Ratatoskr.Forms;
+using Ratatoskr.Forms.ConfigEditor;
 using Ratatoskr.Forms.Dialog;
 using Ratatoskr.Gate;
 using Ratatoskr.Plugin;
@@ -33,8 +33,9 @@ namespace Ratatoskr.Forms
         private static Stopwatch startup_busy_timer_;
         private static bool      startup_complete_ = false;
 
-        private static string          last_save_path_ = null;
-        private static FileFormatClass last_save_format_ = null;
+        private static string           last_save_path_ = null;
+        private static FileFormatClass  last_save_format_ = null;
+		private static FileFormatOption last_save_option_ = null;
 
         private static FormStatus status_busy_;
         private static FormStatus status_new_;
@@ -412,15 +413,19 @@ namespace Ratatoskr.Forms
                 return;
             }
 
-            var clone_data = new OptionEditForm.OptionDataMap(ConfigManager.System, ConfigManager.User, ConfigManager.Language);
+			var edit_config = ConfigEditorData.LoadFromCurrentConfig();
 
-            if (clone_data == null)return;
+            if (edit_config == null)return;
 
-            var dialog = new OptionEditForm.OptionEditForm(clone_data);
+            var dialog = new ConfigEditorForm(edit_config);
 
             if (dialog.ShowDialog() != DialogResult.OK)return;
 
-            clone_data.Backup(ConfigManager.System, ConfigManager.User, ConfigManager.Language);
+			ConfigManager.UpdateConfig(
+				sys_config:  edit_config.System,
+				user_config: edit_config.User,
+				lang_config: edit_config.Language
+			);
         }
 
         public static void ShowAppDocument()
@@ -456,15 +461,15 @@ namespace Ratatoskr.Forms
             }
 
             /* 開くファイルをユーザーに選択させる */
-            var infos = FileManager.FileOpen.SelectReadTargetFromDialog(ConfigManager.GetCurrentDirectory(), true, true);
+            var files = FileManager.FileOpen.SelectReadControllerFromDialog(ConfigManager.GetCurrentDirectory(), true, true);
 
-            if (infos == null)return;
+            if (files == null)return;
 
             /* 選択したファイルを開く */
-            FileOpen(infos);
+            FileOpen(files);
 
             /* カレントディレクトリ更新 */
-            ConfigManager.SetCurrentDirectory(Path.GetDirectoryName(infos.First().FilePath));
+            ConfigManager.SetCurrentDirectory(Path.GetDirectoryName(files.First().FilePath));
         }
 
         public static void FileOpen(IEnumerable<string> paths)
@@ -486,44 +491,67 @@ namespace Ratatoskr.Forms
             file_paths.Sort();
 
             /* ファイル名もしくはファイル内容から初期フォーマットを特定する */
-            FileOpen(FileManager.FileOpen.GetReadTargetFromPaths(file_paths));
+            FileOpen(FileManager.FileOpen.GetReadControllerFromPaths(file_paths));
         }
 
-        private delegate void FileOpenDelegate(IEnumerable<FileReadTargetInfo> infos);
-        public static void FileOpen(IEnumerable<FileReadTargetInfo> infos)
+        private delegate void FileOpenDelegate(IEnumerable<FileControlParam> files);
+        public static void FileOpen(IEnumerable<FileControlParam> files)
         {
-            if (infos == null)return;
-            if (infos.Count() == 0)return;
+            if (files == null)return;
+            if (files.Count() == 0)return;
 
             if (InvokeRequired) {
-                Invoke((FileOpenDelegate)FileOpen, infos);
+                Invoke((FileOpenDelegate)FileOpen, files);
                 return;
             }
 
-            /* ファイル種別毎に分類分け */
-            var infos_config = infos.Where(info => info.Reader is UserConfigReader);
-            var infos_log = infos.Where(info => info.Reader is PacketLogReader);
+			/* ファイルを開くフォーマットとオプションを設定/確認させる */
+			var dialog = new OpenFileSetupDialog();
 
-            FileOpen_UserConfig(infos.Where(info => info.Reader is UserConfigReader));
-            FileOpen_PacketLog(infos.Where(info => info.Reader is PacketLogReader));
+			dialog.FileFormats = FileManager.FileOpen.Formats;
+			dialog.Files = files;
+
+			if (dialog.ShowDialog() != DialogResult.OK)return;
+
+			var controllers = dialog.FileReadControllers;
+
+            /* ファイル種別毎に分類分け */
+			var user_configs = new List<FileControlParam>();
+			var packet_logs = new List<FileControlParam>();
+
+			foreach (var file in dialog.Files) {
+				switch (file.Format) {
+					case UserConfigFormatClass format:
+						user_configs.Add(file);
+						break;
+
+					case PacketLogFormatClass format:
+						packet_logs.Add(file);
+						break;
+				}
+			}
+
+			/* 種別毎に読み込み処理を実行 */
+            FileOpen_UserConfig(user_configs);
+            FileOpen_PacketLog(packet_logs);
         }
 
-        private static void FileOpen_UserConfig(IEnumerable<FileReadTargetInfo> infos)
+        private static void FileOpen_UserConfig(IEnumerable<FileControlParam> files)
         {
-            if (infos == null)return;
+            if (files == null)return;
 
-            foreach (var info in infos) {
-                FileOpen_UserConfig(info);
+            foreach (var file in files) {
+                FileOpen_UserConfig(file);
             }
         }
 
-        private static void FileOpen_UserConfig(FileReadTargetInfo info)
+        private static void FileOpen_UserConfig(FileControlParam file)
         {
-            var reader = info.Reader as UserConfigReader;
+			var reader = file.Format.CreateReader() as UserConfigReader;
 
             if (reader == null)return;
 
-            if (!reader.Open(null, info.FilePath))return;
+            if (!reader.Open(file.Option, file.FilePath))return;
 
             var config = reader.Load();
 
@@ -535,14 +563,11 @@ namespace Ratatoskr.Forms
             reader.Close();
         }
 
-        private static void FileOpen_PacketLog(IEnumerable<FileReadTargetInfo> infos)
+        private static void FileOpen_PacketLog(IEnumerable<FileControlParam> files)
         {
-            if (infos == null)return;
+            if (files == null)return;
 
-            /* ファイルの読み込み順を昇順にソート */
-            infos = infos.OrderBy(info => info.FilePath);
-
-            GatePacketManager.LoadPacketFile(infos);
+            GatePacketManager.LoadPacketFile(files);
         }
 
         private delegate string AnyFileOpenDelegate(string init_dir);
@@ -593,54 +618,62 @@ namespace Ratatoskr.Forms
             return (dialog.FileName);
         }
 
-        private delegate void PacketSaveDelegate(bool overwrite, bool rule);
-        public static void PacketSave(bool overwrite, bool rule)
+        private delegate void SavePacketLogDelegate(bool overwrite, bool rule);
+        public static void SavePacketLog(bool overwrite, bool rule)
         {
             if (InvokeRequired) {
-                Invoke((PacketSaveDelegate)PacketSave, overwrite, rule);
+                Invoke((SavePacketLogDelegate)SavePacketLog, overwrite, rule);
                 return;
             }
 
-            var info = (FileWriteTargetInfo)null;
+            var file = (FileControlParam)null;
 
             /* 保存先とフォーマットを取得 */
             if (   (overwrite)
                 && (last_save_path_ != null)
                 && (last_save_format_ != null)
             ) {
-                info = new FileWriteTargetInfo()
+				/* Save */
+                file = new FileControlParam()
                 {
                     FilePath = last_save_path_,
-                    Writer = last_save_format_.CreateWriter(),
-                    Option = last_save_format_.CreateWriterOption()
+					Format = last_save_format_,
+                    Option = last_save_option_,
                 };
             } else {
-                info = FileManager.PacketLogSave.SelectWriterTargetFromDialog(ConfigManager.GetCurrentDirectory());
+				/* Save As */
+                file = FileManager.PacketLogSave.SelectWriteControllerFromDialog(ConfigManager.GetCurrentDirectory());
             }
 
-            if (info == null)return;
+            if (file == null)return;
 
             if (rule) {
-                GatePacketManager.SavePacketFile(info, FormTaskManager.GetPacketConverterClone());
+                GatePacketManager.SavePacketFile(file, FormTaskManager.GetPacketConverterClone());
             } else {
-                GatePacketManager.SavePacketFile(info, null);
+                GatePacketManager.SavePacketFile(file, null);
             }
 
-            last_save_format_ = info.Writer.Class;
-            last_save_path_ = info.FilePath;
+            last_save_path_ = file.FilePath;
+            last_save_format_ = file.Format;
+			last_save_option_ = file.Option;
 
             /* カレントディレクトリ更新 */
             ConfigManager.SetCurrentDirectory(Path.GetDirectoryName(last_save_path_));
         }
 
-        private delegate FileWriteTargetInfo CreateUserConfigWriterDelegate();
-        public static FileWriteTargetInfo CreateUserConfigWriter()
+        public static void SaveUserConfig()
         {
             if (MainFrame.InvokeRequired) {
-                return ((FileWriteTargetInfo)MainFrame.Invoke(new CreateUserConfigWriterDelegate(CreateUserConfigWriter)));
+                MainFrame.Invoke((MethodInvoker)SaveUserConfig);
+				return;
             }
 
-            return (FileManager.UserConfigSave.SelectWriterTargetFromDialog(ConfigManager.GetCurrentDirectory()));
+			var file = FileManager.UserConfigSave.SelectWriteControllerFromDialog(ConfigManager.GetCurrentDirectory());
+
+            if (file == null)return;
+
+            ConfigManager.SaveToFile(true);
+			ConfigManager.ExportProfile(file, ConfigManager.GetCurrentProfileID());
         }
     }
 }

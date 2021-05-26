@@ -17,6 +17,21 @@ namespace Ratatoskr.FileFormat
             InitializeComponent();
         }
 
-        public virtual void Flush() { }
+		public void LoadOption(FileFormatOption option)
+		{
+			if (option == null)return;
+
+			OnLoadOption(option);
+		}
+
+		public void BackupOption(FileFormatOption option)
+		{
+			if (option == null)return;
+
+			OnBackupOption(option);
+		}
+
+		protected virtual void OnLoadOption(FileFormatOption option) { }
+		protected virtual void OnBackupOption(FileFormatOption option) { }
     }
 }

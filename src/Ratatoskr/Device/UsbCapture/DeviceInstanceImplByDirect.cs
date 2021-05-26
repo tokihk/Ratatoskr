@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define ASYNC_RECV_MODE
+
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -7,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.Device;
+using Ratatoskr.Debugger;
 using Ratatoskr.Native.Windows;
 
 namespace Ratatoskr.Device.UsbCapture
@@ -20,8 +22,12 @@ namespace Ratatoskr.Device.UsbCapture
 
         private IntPtr handle_ = IntPtr.Zero;
 
-        private IntPtr       exit_event_handle_ = IntPtr.Zero;
-        private IntPtr       recv_event_handle_ = IntPtr.Zero;
+#if ASYNC_RECV_MODE
+        private IntPtr		exit_event_handle_ = IntPtr.Zero;
+        private IntPtr		recv_event_handle_ = IntPtr.Zero;
+#else
+		private bool		exit_req_ = false;
+#endif
 
         private IAsyncResult recv_task_ar_;
 
@@ -42,7 +48,8 @@ namespace Ratatoskr.Device.UsbCapture
 
         protected override EventResult OnConnectBusy()
         {
-            handle_ = UsbPcapManager.OpenDevice(prop_.DeviceName.Value);
+//            handle_ = UsbPcapManager.OpenDevice(prop_.DeviceName.Value);
+            handle_ = UsbPcapManager.OpenDevice(prop_.DeviceName.Value, false);
 
             return ((handle_ != WinAPI.INVALID_HANDLE_VALUE) ? (EventResult.Success) : (EventResult.Busy));
         }
@@ -56,35 +63,51 @@ namespace Ratatoskr.Device.UsbCapture
 //            recv_parser_ = new UsbPcapRecordParser();
             recv_parser_ = new USBPcapParser();
 
+#if ASYNC_RECV_MODE
             exit_event_handle_ = WinAPI.CreateEvent(IntPtr.Zero, true, false, null);
             recv_event_handle_ = WinAPI.CreateEvent(IntPtr.Zero, true, false, null);
+#else
+			exit_req_ = false;
+#endif
 
             /* タスク開始 */
-            recv_task_ar_ = (new RecvTaskDelegate(RecvTask)).BeginInvoke(null, null);
+            recv_task_ar_ = (new MethodInvoker(RecvTask)).BeginInvoke(null, null);
         }
 
         protected override void OnDisconnectStart()
         {
             /* タスク終了要求 */
+#if ASYNC_RECV_MODE
             WinAPI.SetEvent(exit_event_handle_);
+#else
+			exit_req_ = true;
+#endif
         }
 
         protected override EventResult OnDisconnectBusy()
         {
-            if (WinAPI.WaitForSingleObject(exit_event_handle_, 0) != WinAPI.WAIT_OBJECT_0) {
-                return (EventResult.Busy);
-            }
+			if (recv_task_ar_ != null) {
+				if (!recv_task_ar_.AsyncWaitHandle.WaitOne(0)) {
+					return (EventResult.Busy);
+				}
+			}
+
+//            if (WinAPI.WaitForSingleObject(exit_event_handle_, 0) != WinAPI.WAIT_OBJECT_0) {
+//                return (EventResult.Busy);
+//            }
 
             return (EventResult.Success);
         }
 
         protected override void OnDisconnected()
         {
+#if ASYNC_RECV_MODE
             WinAPI.CloseHandle(exit_event_handle_);
             exit_event_handle_ = IntPtr.Zero;
 
             WinAPI.CloseHandle(recv_event_handle_);
             recv_event_handle_ = IntPtr.Zero;
+#endif
 
             UsbPcapManager.CloseDevice(handle_);
             handle_ = WinAPI.INVALID_HANDLE_VALUE;
@@ -95,26 +118,25 @@ namespace Ratatoskr.Device.UsbCapture
             return (PollState.Idle);
         }
 
-        private delegate void RecvTaskDelegate();
         private unsafe void RecvTask()
         {
+#if ASYNC_RECV_MODE
             var task_exit = false;
+            var wait_event_list = new IntPtr[] { exit_event_handle_, recv_event_handle_ };
             var recv_overlapped = new NativeOverlapped();
 
             recv_overlapped.EventHandle = recv_event_handle_;
+#endif
 
             fixed (byte *recv_buff = recv_buffer_)
             {
-                var event_list = new IntPtr[] { exit_event_handle_, recv_overlapped.EventHandle };
                 var recv_size = (uint)0;
-                var result = (int)0;
 
+#if ASYNC_RECV_MODE
                 WinAPI.ReadFile(handle_, recv_buff, (uint)recv_buffer_.Length, out recv_size, ref recv_overlapped);
 
                 while (!task_exit) {
-                    result = WinAPI.WaitForMultipleObjects((uint)event_list.Length, event_list, false, WinAPI.INFINITE);
-
-                    switch ((uint)result) {
+                    switch ((uint)WinAPI.WaitForMultipleObjects((uint)wait_event_list.Length, wait_event_list, false, WinAPI.INFINITE)) {
                         /* スレッド停止イベント */
                         case WinAPI.WAIT_OBJECT_0:
                         {
@@ -137,6 +159,7 @@ namespace Ratatoskr.Device.UsbCapture
                                 }
 #else
 								foreach (var packet in recv_parser_.InputData(recv_buffer_, (int)recv_size)) {
+
 									if (NotifyUSBPcapPacketFilter(packet)) {
 //										NotifyRecvComplete(packet.MakeTime, "", "", "", packet.RawData);
 										NotifyUSBPcapPacket(packet);
@@ -144,14 +167,30 @@ namespace Ratatoskr.Device.UsbCapture
 								}
 
 //                                NotifyRecvComplete("", "", "", ClassUtil.CloneCopy(recv_buffer_, (int)recv_size));
-#endif
                             }
+#endif
 
                             WinAPI.ReadFile(handle_, recv_buff, (uint)recv_buffer_.Length, out recv_size, ref recv_overlapped);
                         }
                             break;
                     }
                 }
+#else
+                while (!exit_req_) {
+					if (WinAPI.ReadFile(handle_, recv_buff, (uint)recv_buffer_.Length, out recv_size, WinAPI.Null)) {
+#if true
+                        if (recv_size > 0) {
+							foreach (var packet in recv_parser_.InputData(recv_buffer_, (int)recv_size)) {
+								if (NotifyUSBPcapPacketFilter(packet)) {
+									NotifyUSBPcapPacket(packet);
+								}
+							}
+                        }
+#endif
+					} else {
+					}
+                }
+#endif
             }
         }
 
@@ -220,14 +259,24 @@ namespace Ratatoskr.Device.UsbCapture
 
 			var device_address = String.Format("{0}.{1}.{2}", packet.PacketHeader.bus, packet.PacketHeader.device, packet.PacketHeader.endpoint);
 
-			var packet_data = packet.Payload;
+			byte[] packet_data;
+
+			switch (prop_.DataContentsType.Value) {
+				case UsbCaptureDataContentsType.Raw:
+					packet_data = packet.RawData;
+					break;
+
+				default:
+					packet_data = packet.Payload;
+					break;
+			}
 
 			if (packet.PacketHeader.info == 0) {
 				/* Host -> Device */
 				NotifySendComplete(packet.MakeTime, packet_info.ToString(), "host", device_address, packet_data);
 			} else {
 				/* Host <- Device */
-				NotifySendComplete(packet.MakeTime, packet_info.ToString(), device_address, "host", packet_data);
+				NotifyRecvComplete(packet.MakeTime, packet_info.ToString(), device_address, "host", packet_data);
 			}
 		}
 

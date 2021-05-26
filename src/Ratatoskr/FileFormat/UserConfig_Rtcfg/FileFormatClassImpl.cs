@@ -9,7 +9,7 @@ using Ratatoskr.Config;
 
 namespace Ratatoskr.FileFormat.UserConfig_Rtcfg
 {
-    internal sealed class FileFormatClassImpl : FileFormatClass
+    internal sealed class FileFormatClassImpl : UserConfigFormatClass
     {
         public enum FormatVersion
         {

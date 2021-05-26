@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.General.Packet;
-using RtsCore.Protocol;
 using Ratatoskr.Device;
 using Ratatoskr.FileFormat;
 using Ratatoskr.PacketView;

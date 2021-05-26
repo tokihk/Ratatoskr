@@ -22,9 +22,11 @@ namespace Ratatoskr.Forms.MainWindow
         public MainWindow_GatePanel()
         {
             InitializeComponent();
+
+			ConfigManager.Updated += OnConfigUpdated;
         }
 
-        public void LoadConfig()
+		public void LoadConfig()
         {
             LoadGateListConfig();
         }
@@ -38,6 +40,8 @@ namespace Ratatoskr.Forms.MainWindow
                     config.DeviceClassID,
                     config.DeviceProperty);
             }
+
+			AdjustGateList();
         }
 
         public void BackupConfig()
@@ -65,12 +69,57 @@ namespace Ratatoskr.Forms.MainWindow
             }
         }
 
-        private delegate void ClearGateDelegate();
+		private void OnConfigUpdated(object sender, EventArgs e)
+		{
+			AdjustGateList();
+		}
+
+		public void AdjustGateList()
+		{
+            /* Invoke */
+            if (InvokeRequired) {
+                Invoke(new MethodInvoker(AdjustGateList));
+                return;
+            }
+
+			Color[] gate_color_default =
+			{
+				Color.LightGoldenrodYellow,
+				Color.LightBlue,
+				Color.LightPink,
+				Color.LightGreen,
+				Color.LightSalmon,
+				Color.LightCyan,
+				Color.LightSteelBlue,
+				Color.Pink,
+				Color.LightSeaGreen,
+				Color.LightYellow,
+				Color.LightSkyBlue,
+				Color.AntiqueWhite,
+			};
+			
+			/* システムに設定したゲート数に達するまでゲートを追加 */
+			for (var gate_no = gatec_list_.Count; gate_no < ConfigManager.System.ApplicationCore.GateNum.Value; gate_no++) {
+				var color = gate_color_default.Last();
+
+				if (gate_no < gate_color_default.Length) {
+					color = gate_color_default[gate_no];
+				}
+
+				AddGate(new GateProperty(String.Format("GATE_{0:000}", gate_no + 1), color), new DeviceConfig(), Guid.Empty, null);
+			}
+
+			/* システムに設定したゲート数以上のゲートを削除 */
+			while (gatec_list_.Count > ConfigManager.System.ApplicationCore.GateNum.Value) {
+				RemoveGateAt(gatec_list_.Count - 1);
+			}
+		}
+
         public void ClearGate()
         {
             /* Invoke */
             if (InvokeRequired) {
-                Invoke(new ClearGateDelegate(ClearGate));
+                Invoke(new MethodInvoker(ClearGate));
                 return;
             }
 
@@ -81,6 +130,10 @@ namespace Ratatoskr.Forms.MainWindow
 
         public void AddGate(GateProperty gatep, DeviceConfig devconf, Guid devc_id, DeviceProperty devp)
         {
+			if (gatec_list_.Count >= ConfigManager.System.ApplicationCore.GateNum.Value) {
+				return;
+			}
+
             var gate = GateManager.CreateGateObject(gatep, devconf, devc_id, devp);
 
             if (gate == null)return;
@@ -93,5 +146,20 @@ namespace Ratatoskr.Forms.MainWindow
             /* フォームに追加 */
             Panel_GateList.Controls.Add(gatec);
         }
+
+		public void RemoveGateAt(int gate_no)
+		{
+			if ((gate_no < 0) || (gate_no >= gatec_list_.Count))return;
+
+			var gatec = gatec_list_[gate_no];
+
+			gatec_list_.Remove(gatec);
+
+			Panel_GateList.Controls.Remove(gatec);
+
+			if (gatec.Gate != null) {
+				gatec.Gate.Dispose();
+			}
+		}
     }
 }

@@ -7,7 +7,6 @@ using Ratatoskr.General.Packet;
 using Ratatoskr.Device;
 using Ratatoskr.FileFormat;
 using Ratatoskr.PacketView;
-using RtsCore.Protocol;
 using Ratatoskr.General;
 
 namespace Ratatoskr.Plugin

@@ -9,7 +9,7 @@ using Ratatoskr.General;
 
 namespace Ratatoskr.Gate
 {
-    internal sealed class GateObject
+    internal sealed class GateObject : IDisposable
     {
         public enum SendRequestStatus
         {
@@ -21,15 +21,13 @@ namespace Ratatoskr.Gate
         private const int SEND_DATA_QUEUE_LIMIT = 4;
 
 
-        public delegate void StatusChangedDelegate(object sender, EventArgs e);
-        public static event StatusChangedDelegate AnyStatusChanged = delegate(object sender, EventArgs e) { };
-        public event StatusChangedDelegate        StatusChanged = delegate(object sender, EventArgs e) { };
+        public static event EventHandler AnyStatusChanged;
 
-        public delegate void SendBufferEmptyDelegate(object sender, EventArgs e);
-        public event SendBufferEmptyDelegate SendBufferEmpty = delegate(object sender, EventArgs e) { };
+        public event EventHandler StatusChanged;
+        public event EventHandler SendBufferEmpty;
 
-        public delegate void DataRateUpdatedHandler(object sender, ulong data_rate);
-        public event DataRateUpdatedHandler DataRateUpdated = delegate(object sender, ulong data_rate) { };
+        public delegate void DataRateUpdatedHandler(object sender, ulong send_rate, ulong recv_rate);
+        public event DataRateUpdatedHandler DataRateUpdated;
 
         private GateProperty   gatep_;
         private DeviceConfig   devconf_;
@@ -45,6 +43,11 @@ namespace Ratatoskr.Gate
         {
             ChangeDevice(gatep, devconf, devc_id, devp);
         }
+
+		public void Dispose()
+		{
+			ReleaseDevice();
+		}
 
         public GateProperty GateProperty
         {
@@ -126,11 +129,11 @@ namespace Ratatoskr.Gate
             if (devi_ != null) {
                 devi_.Alias = gatep_.Alias;
                 devi_.ConnectRequest = gatep_.ConnectRequest;
-                devi_.RedirectAlias = gatep_.RedirectAlias;
-                devi_.DataRateTarget = gatep_.DataRateTarget;
+                devi_.SendRedirectAlias = gatep_.SendRedirectAlias;
+                devi_.RecvRedirectAlias = gatep_.RecvRedirectAlias;
             }
 
-            StatusChanged(this, EventArgs.Empty);
+            StatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void ChangeDevice(GateProperty gatep, DeviceConfig devconf, Guid devc_id, DeviceProperty devp)
@@ -145,8 +148,8 @@ namespace Ratatoskr.Gate
 
             /* いずれかの状態が変化したらデバイスを再構築 */
             if (   (devi_ == null)
-                || (!devconf_.Equals(devconf))
                 || (devc_id != devi_.Class.ID)
+				|| (!ClassUtil.Compare(devi_.Config, devconf))
                 || (!ClassUtil.Compare(devi_.Property, devp))
             ) {
                 SetupDevice(DeviceManager.Instance.CreateDeviceObject(devconf, devc_id, devp));
@@ -163,7 +166,7 @@ namespace Ratatoskr.Gate
             /* 直前のデバイスを終了 */
             if (devi_ != null) {
                 /* 登録イベント解除 */
-                devi_.StatusChanged -= OnDeviceStatusChanged;
+                devi_.StatusChanged   -= OnDeviceStatusChanged;
                 devi_.SendDataRequest -= OnDeviceSendBufferEmpty;
                 devi_.DataRateUpdated -= OnDeviceDataRateUpdated;
 
@@ -174,13 +177,12 @@ namespace Ratatoskr.Gate
             /* 新しいデバイスをセットアップ */
             if (devi != null) {
                 /* イベント登録 */
-                devi.StatusChanged += OnDeviceStatusChanged;
+                devi.StatusChanged   += OnDeviceStatusChanged;
                 devi.SendDataRequest += OnDeviceSendBufferEmpty;
                 devi.DataRateUpdated += OnDeviceDataRateUpdated;
 
                 /* ゲートの設定/状態を反映 */
                 devi.ConnectRequest = gatep_.ConnectRequest;
-                devi.DataRateTarget = gatep_.DataRateTarget;
             }
 
             /* インスタンス入れ替え */
@@ -218,7 +220,7 @@ namespace Ratatoskr.Gate
             lock (send_queue_sync_) {
                 /* 切断/送信禁止時は無視 */
                 if (   (!gatep_.ConnectRequest)
-                    || (!devconf_.SendEnable)
+                    || (!devconf_.DataSendEnable)
                     || (devi_ == null)
                 ) {
                     return (true, SendRequestStatus.Ignore);
@@ -241,20 +243,20 @@ namespace Ratatoskr.Gate
             return (true, SendRequestStatus.Accept);
         }
 
-        private void OnDeviceStatusChanged()
+        private void OnDeviceStatusChanged(object sender, EventArgs e)
         {
-            StatusChanged(this, EventArgs.Empty);
-            AnyStatusChanged(this, EventArgs.Empty);
+            StatusChanged?.Invoke(this, EventArgs.Empty);
+            AnyStatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void OnDeviceSendBufferEmpty()
+        private void OnDeviceSendBufferEmpty(object sender, EventArgs e)
         {
             SendExec();
         }
 
-        private void OnDeviceDataRateUpdated(object sender, ulong value)
+        private void OnDeviceDataRateUpdated(object sender, ulong send_rate, ulong recv_rate)
         {
-            DataRateUpdated(this, value);
+            DataRateUpdated?.Invoke(this, send_rate, recv_rate);
         }
     }
 }

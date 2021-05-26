@@ -9,6 +9,7 @@ using Ratatoskr.Config.Data.Fixed;
 using Ratatoskr.Config.Data.System;
 using Ratatoskr.Config.Data.User;
 using Ratatoskr.Config.Data.Language;
+using Ratatoskr.Debugger;
 using Ratatoskr.FileFormat;
 using Ratatoskr.Forms;
 using Ratatoskr.Plugin;
@@ -61,12 +62,6 @@ namespace Ratatoskr.Config
         }
 
 
-        public static FixedConfig			Fixed    { get; private set; } = new FixedConfig();
-        public static SystemConfig			System   { get; private set; } = new SystemConfig();
-        public static UserConfig			User     { get; private set; } = new UserConfig();
-        public static LanguageConfig		Language { get; private set; } = new LanguageConfig();
-
-
 		static ConfigManager()
 		{
             Fixed.ApplicationName.Value = AppInfo.Name;
@@ -75,6 +70,13 @@ namespace Ratatoskr.Config
 
             Fixed.ApplicationListUrl.Value.Add("");
 		}
+
+        public static FixedConfig			Fixed    { get; private set; } = new FixedConfig();
+        public static SystemConfig			System   { get; private set; } = new SystemConfig();
+        public static UserConfig			User     { get; private set; } = new UserConfig();
+        public static LanguageConfig		Language { get; private set; } = new LanguageConfig();
+
+		public static event EventHandler	Updated;
 
         public static void Startup()
         {
@@ -117,6 +119,21 @@ namespace Ratatoskr.Config
                 SaveCurrentProfile();
             }
         }
+
+		public static void UpdateConfig(SystemConfig sys_config = null, UserConfig user_config = null, LanguageConfig lang_config = null)
+		{
+			if (sys_config != null) {
+				System.DeepCopy(sys_config);
+			}
+			if (user_config != null) {
+				User.DeepCopy(user_config);
+			}
+			if (lang_config != null) {
+				Language.DeepCopy(lang_config);
+			}
+
+			Updated?.Invoke(null, EventArgs.Empty);
+		}
 
         public static string GetCurrentDirectory()
         {
@@ -245,7 +262,7 @@ namespace Ratatoskr.Config
                 System.Profile.ProfileID.Value = profile_list.First().ID;
             }
 
-            Debugger.DebugSystem.MessageOut(string.Format("Load Profile :{0}", GetCurrentProfileID()));
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.ConfigEvent, string.Format("Load Profile :{0}", GetCurrentProfileID()));
 
             User.Load(GetCurrentProfilePath());
 
@@ -266,7 +283,7 @@ namespace Ratatoskr.Config
 			/* 各モジュールの設定値をバックアップ */
 			PluginManager.BackupConfig();
 
-            Debugger.DebugSystem.MessageOut(string.Format("Save Profile :{0}", GetCurrentProfileID()));
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.ConfigEvent, string.Format("Save Profile :{0}", GetCurrentProfileID()));
 
             User.Save(GetCurrentProfilePath());
         }
@@ -311,7 +328,7 @@ namespace Ratatoskr.Config
             /* 指定のプロファイルを削除 */
             Shell.rm(GetProfilePath(profile_id));
 
-            Debugger.DebugSystem.MessageOut(string.Format("Delete Profile :{0}", profile_id));
+            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.ConfigEvent, string.Format("Delete Profile :{0}", profile_id));
 
             /* 選択中のプロファイルを削除したときは違うプロファイルを選択 */
             if (System.Profile.ProfileID.Value == profile_id) {
@@ -347,23 +364,21 @@ namespace Ratatoskr.Config
             }
         }
 
-        public static void ExportProfile(Guid profile_id)
+        public static void ExportProfile(FileControlParam file, Guid profile_id)
         {
-            var info = FormUiManager.CreateUserConfigWriter();
+            var writer = file.Format.CreateWriter() as UserConfigWriter;
 
-            if (info == null)return;
+			if (writer == null)return;
 
-            var writer = info.Writer as UserConfigWriter;
-            var option = info.Option as UserConfigWriterOption;
+            var option = file.Option as UserConfigWriterOption;
 
-            if (writer == null)return;
-            if (option == null)return;
+			if (option == null)return;
 
             /* 出力設定 */
             option.TargetProfileID = profile_id;
 
             /* 出力 */
-            if (writer.Open(option, info.FilePath)) {
+            if (writer.Open(option, file.FilePath)) {
                 writer.Save();
                 writer.Close();
             }
