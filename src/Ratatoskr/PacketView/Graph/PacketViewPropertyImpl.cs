@@ -12,55 +12,65 @@ namespace Ratatoskr.PacketView.Graph
 {
     internal enum DisplayModeType
     {
-        Oscillo,
-//        Spectrum,
+        OscilloScope,
+        SpectrumAnalyzer,
     }
 
-    internal enum DataFormatType
+    internal enum GraphTargetType
     {
-        UnsignedByte,
-        UnsignedWord,
-        UnsignedDword,
-        UnsignedQword,
-        SignedByte,
-        SignedWord,
-        SignedDword,
-        SignedQword,
-        IEEE754_Float,
-        IEEE754_Double,
+        DataValue,
+        DataValueSum,
+        DataBlockCount,
     }
 
-    internal enum DataEndianType
-    {
-        BigEndian,
-        LittleEndian
-    }
+	internal enum SamplingSettingTemplateType
+	{
+		PCM_8kHz_8bit_1ch,
+		PCM_8kHz_8bit_2ch,
+		PCM_8kHz_16bit_1ch,
+		PCM_8kHz_16bit_2ch,
+		PCM_44_1kHz_8bit_1ch,
+		PCM_44_1kHz_8bit_2ch,
+		PCM_44_1kHz_16bit_1ch,
+		PCM_44_1kHz_16bit_2ch,
+		PCM_48kHz_8bit_1ch,
+		PCM_48kHz_8bit_2ch,
+		PCM_48kHz_16bit_1ch,
+		PCM_48kHz_16bit_2ch,
+	}
 
-    internal enum DataCollectModeType
-    {
-        Value,
-        ValueSum,
-        Count,
-    }
+	internal enum SamplingTriggerType
+	{
+		DataBlockDetect,
+		TimeInterval,
+	}
+
+	internal enum SamplingIntervalUnitType
+	{
+		Hz,
+		kHz,
+		sec,
+		msec,
+		usec,
+	}
 
     internal class PacketViewPropertyImpl : PacketViewProperty
     {
-        public EnumConfig<DisplayModeType>     DisplayMode          { get; } = new EnumConfig<DisplayModeType>(DisplayModeType.Oscillo);
+        public EnumConfig<DisplayModeType>			DisplayMode				{ get; } = new EnumConfig<DisplayModeType>(DisplayModeType.OscilloScope);
 
-        public EnumConfig<DataFormatType>      DataFormat           { get; } = new EnumConfig<DataFormatType>(DataFormatType.SignedWord);
-        public EnumConfig<DataEndianType>      DataEndian           { get; } = new EnumConfig<DataEndianType>(DataEndianType.LittleEndian);
-        public IntegerConfig                   DataChannelNum       { get; } = new IntegerConfig(2);
-        public EnumConfig<DataCollectModeType> DataCollectMode      { get; } = new EnumConfig<DataCollectModeType>(DataCollectModeType.Value);
+        public EnumConfig<GraphTargetType>			GraphTarget				{ get; } = new EnumConfig<GraphTargetType>(GraphTargetType.DataValue);
 
-        public IntegerConfig SamplingPoint    { get; } = new IntegerConfig(1000000);
-        public IntegerConfig SamplingInterval { get; } = new IntegerConfig(0);
+        public EnumConfig<SamplingTriggerType>		SamplingTrigger			{ get; } = new EnumConfig<SamplingTriggerType>(SamplingTriggerType.DataBlockDetect);
+        public IntegerConfig						SamplingInterval		{ get; } = new IntegerConfig(1);
+        public EnumConfig<SamplingIntervalUnitType>	SamplingIntervalUnit	{ get; } = new EnumConfig<SamplingIntervalUnitType>(SamplingIntervalUnitType.sec);
+		public IntegerConfig						InputDataBlockSize		{ get; } = new IntegerConfig(1);
+		public IntegerConfig						InputDataChannelNum		{ get; } = new IntegerConfig(1);
 
-        public IntegerConfig DisplayPoint { get; } = new IntegerConfig(10000);
-        public IntegerConfig AxisY_ValueMin { get; } = new IntegerConfig(-100000);
-        public IntegerConfig AxisY_ValueMax { get; } = new IntegerConfig(100000);
 
-        public IntegerConfig     CurrentChannel { get; } = new IntegerConfig(0);
-        public ChannelListConfig ChannelList    { get; } = new ChannelListConfig();
+        public IntegerConfig		Oscillo_RecordPoint		{ get; } = new IntegerConfig(1000000);
+        public IntegerConfig		Oscillo_DisplayPoint	{ get; } = new IntegerConfig(10000);
+
+        public ChannelListConfig	ChannelList		{ get; } = new ChannelListConfig();
 
 
         public PacketViewPropertyImpl()

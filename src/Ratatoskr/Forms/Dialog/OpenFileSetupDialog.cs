@@ -271,9 +271,20 @@ namespace Ratatoskr.Forms.Dialog
 				/* オプションエディタクリア */
 				GBox_FileFormatOption.Controls.Clear();
 
-				/* オプション初期化 */
+				/* 選択中のファイルからオプションデータを取得 */
+				if ((select_file_format_ != null) && (LView_OpenFileList.SelectedItems.Count > 0)) {
+					if (LView_OpenFileList.SelectedItems[0].Tag is FileControlParam file) {
+						if (select_file_format_ == file.Format) {
+							select_file_format_option_ = file.Option;
+						}
+					}
+				}
+
 				if (select_file_format_ != null) {
-					select_file_format_option_ = select_file_format_.CreateReaderOption();
+					/* オプション初期化 */
+					if (select_file_format_option_ == null) {
+						select_file_format_option_ = select_file_format_.CreateReaderOption();
+					}
 
 					/* オプションエディタ初期化 */
 					if (select_file_format_option_ != null) {

@@ -60,6 +60,8 @@ namespace Ratatoskr.Forms
 		private int          get_hostaddr_index_ = 0;
 		private IAsyncResult get_hostaddr_task_ar_ = null;
 
+		private List<IPAddress> ipaddr_list_ = new List<IPAddress>();
+
 
 		public DnsAddressSelectBox()
 		{
@@ -138,6 +140,20 @@ namespace Ratatoskr.Forms
 			}
 		}
 
+		private void ClearIpAddressList()
+        {
+			RBtnList_IpAddress.ClearItems();
+			ipaddr_list_ = new List<IPAddress>();
+		}
+
+		private void AddIpAddress(IPAddress ipaddr)
+        {
+			if (!ipaddr_list_.Contains(ipaddr)) {
+				ipaddr_list_.Add(ipaddr);
+				RBtnList_IpAddress.AddItem(new IPAddressListItem(ipaddr));
+			}
+		}
+
 		private void UpdateView()
 		{
 			if ((ipaddr_update_req_) || (get_hostaddr_busy_)) {
@@ -170,7 +186,7 @@ namespace Ratatoskr.Forms
 			text_blink_flag_ = false;
 
 			/* 即座にIPアドレスリストをクリアする */
-			RBtnList_IpAddress.ClearItems();
+			ClearIpAddressList();
 
 			UpdateView();
 		}
@@ -183,7 +199,7 @@ namespace Ratatoskr.Forms
 
 			ipaddr_update_req_  = false;
 
-			RBtnList_IpAddress.ClearItems();
+			ClearIpAddressList();
 
 			get_hostaddr_index_ = 0;
 
@@ -251,7 +267,7 @@ namespace Ratatoskr.Forms
 			/* IPアドレスリストを更新 */
 			foreach (var ipaddr in ipaddr_list) {
 				if (ipaddr.AddressFamily == addr_family_) {
-					RBtnList_IpAddress.AddItem(new IPAddressListItem(ipaddr));
+					AddIpAddress(ipaddr);
 				}
 			}
 		}

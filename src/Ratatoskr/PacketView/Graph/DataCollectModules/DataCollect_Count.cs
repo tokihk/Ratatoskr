@@ -13,13 +13,8 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
         private decimal data_count_ = 0;
 
 
-        public DataCollect_Count(uint layer_count, uint sampling_ival) : base(layer_count, sampling_ival)
+        public DataCollect_Count(PacketViewPropertyImpl prop) : base(prop)
         {
-        }
-
-        protected override void OnAssignData(PacketObject base_packet, decimal[] assign_data)
-        {
-            data_count_++;
         }
 
         protected override void OnSamplingStart()
@@ -27,11 +22,14 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
             data_count_ = 0;
         }
 
-        protected override void OnSamplingEnd(decimal[] sampling_data)
+		protected override void OnSamplingValue(decimal[] value)
+		{
+			data_count_++;
+		}
+
+		protected override decimal[] OnSamplingEnd()
         {
-            for (var index = 0; index < sampling_data.Length; index++) {
-                sampling_data[index] = data_count_;
-            }
+			return (Enumerable.Repeat(data_count_, (int)ChannelNum).ToArray());
         }
     }
 }

@@ -9,19 +9,27 @@ using Ratatoskr.Config;
 
 namespace Ratatoskr.PacketView.Graph.Configs
 {
+	internal enum VertRangeType
+	{
+		Preset_100,
+		Preset_200,
+		Preset_500,
+		Preset_10000,
+		Custom,
+	}
+
     internal sealed class ChannelConfig
     {
-        public Color   ForeColor     { get; set; } = Color.Black;
-        public decimal Magnification { get; set; } = 1;
-        public decimal Offset        { get; set; } = 0;
+		public bool				Visible					{ get; set; } = false;
+		public Color			ForeColor				{ get; set; } = Color.Black;
+		public uint				ValueBitSize			{ get; set; } = 8;
+		public bool				ReverseByteEndian		{ get; set; } = false;
+		public bool				ReverseBitEndian		{ get; set; } = false;
+		public bool				SignedValue				{ get; set; } = false;
+		public int				OscilloVertOffset		{ get; set; } = 0;
+		public VertRangeType	OscilloVertRange		{ get; set; } = VertRangeType.Preset_100;
+		public uint				OscilloVertRangeCustom	{ get; set; } = 1000;
 
-
-        public ChannelConfig(Color fore_color, decimal mag, decimal offset)
-        {
-            ForeColor = fore_color;
-            Magnification = mag;
-            Offset = offset;
-        }
 
         public ChannelConfig()
         {
@@ -38,11 +46,35 @@ namespace Ratatoskr.PacketView.Graph.Configs
 
         public ChannelListConfig()
         {
-            Value.Add(new ChannelConfig(Color.LightGoldenrodYellow, 1, 0));
-            Value.Add(new ChannelConfig(Color.LightBlue, 1, 0));
-            Value.Add(new ChannelConfig(Color.LightPink, 1, 0));
-            Value.Add(new ChannelConfig(Color.LightGreen, 1, 0));
-            Value.Add(new ChannelConfig(Color.LightSalmon, 1, 0));
+            Value.Add(new ChannelConfig()
+			{
+				Visible = true,
+				ForeColor = Color.LightGoldenrodYellow,
+			});
+
+            Value.Add(new ChannelConfig()
+			{
+				Visible = true,
+				ForeColor = Color.LightBlue,
+			});
+
+            Value.Add(new ChannelConfig()
+			{
+				Visible = true,
+				ForeColor = Color.LightPink,
+			});
+
+            Value.Add(new ChannelConfig()
+			{
+				Visible = true,
+				ForeColor = Color.LightGreen,
+			});
+
+            Value.Add(new ChannelConfig()
+			{
+				Visible = true,
+				ForeColor = Color.LightSalmon,
+			});
         }
 
         public bool LoadConfigData(XmlElement xml_own)
@@ -69,14 +101,50 @@ namespace Ratatoskr.PacketView.Graph.Configs
 
             /* パラメータ読み込み */
 
-            /* fore-color */
-            newobj.ForeColor = ColorTranslator.FromHtml(xml_node.GetAttribute("fore-color"));
+			/* visible */
+			try {
+				newobj.Visible = bool.Parse(xml_node.GetAttribute("visible"));
+			} catch {}
 
-            /* mag */
-            newobj.Magnification = decimal.Parse(xml_node.GetAttribute("mag"));
+			/* fore-color */
+			try {
+				newobj.ForeColor = ColorTranslator.FromHtml(xml_node.GetAttribute("fore-color"));
+			} catch {}
 
-            /* offset */
-            newobj.Offset = decimal.Parse(xml_node.GetAttribute("offset"));
+			/* value-bit-size */
+			try {
+				newobj.ValueBitSize = uint.Parse(xml_node.GetAttribute("value-bit-size"));
+			} catch {}
+
+			/* reverse-byte-endian */
+			try {
+				newobj.ReverseByteEndian = bool.Parse(xml_node.GetAttribute("reverse-byte-endian"));
+			} catch {}
+
+			/* reverse-bit-endian */
+			try {
+				newobj.ReverseBitEndian = bool.Parse(xml_node.GetAttribute("reverse-bit-endian"));
+			} catch {}
+
+			/* signed-value */
+			try {
+				newobj.SignedValue = bool.Parse(xml_node.GetAttribute("signed-value"));
+			} catch {}
+
+			/* oscillo-vert-offset */
+			try {
+				newobj.OscilloVertOffset = int.Parse(xml_node.GetAttribute("oscillo-vert-offset"));
+			} catch {}
+
+			/* oscillo-vert-range */
+			try {
+				newobj.OscilloVertRange = (VertRangeType)Enum.Parse(typeof(VertRangeType), xml_node.GetAttribute("oscillo-vert-range"));
+			} catch {}
+
+			/* oscillo-vert-range-custom */
+			try {
+				newobj.OscilloVertRangeCustom = uint.Parse(xml_node.GetAttribute("oscillo-vert-range-custom"));
+			} catch {}
 
             /* 設定リストへ追加 */
             Value.Add(newobj);
@@ -90,11 +158,26 @@ namespace Ratatoskr.PacketView.Graph.Configs
                 /* fore-color */
                 xml_data.SetAttribute("fore-color", ColorTranslator.ToHtml(info.ForeColor));
 
-                /* mag */
-                xml_data.SetAttribute("mag", info.Magnification.ToString());
+				/* value-bit-size */
+                xml_data.SetAttribute("value-bit-size", info.ValueBitSize.ToString());
 
-                /* offset */
-                xml_data.SetAttribute("offset", info.Offset.ToString());
+				/* value-byte-endian */
+                xml_data.SetAttribute("value-byte-endian", info.ValueByteEndian.ToString());
+
+				/* value-bit-endian */
+                xml_data.SetAttribute("value-bit-endian", info.ValueBitEndian.ToString());
+
+				/* value-sign */
+                xml_data.SetAttribute("value-sign", info.ValueSign.ToString());
+
+                /* oscillo-vert-offset */
+                xml_data.SetAttribute("oscillo-vert-offset", info.OscilloVertOffset.ToString());
+
+                /* oscillo-vert-range */
+                xml_data.SetAttribute("oscillo-vert-range", info.OscilloVertRange.ToString());
+
+                /* oscillo-vert-range-custom */
+                xml_data.SetAttribute("oscillo-vert-range-custom", info.OscilloVertRangeCustom.ToString());
 
                 xml_own.AppendChild(xml_data);
             }

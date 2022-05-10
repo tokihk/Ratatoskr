@@ -10,27 +10,25 @@ namespace Ratatoskr.PacketView.Graph.DataFormatModules
     {
         private const int DATA_FORMAT_SIZE = 8;
 
-        DataEndianType endian_;
         private byte[] collect_buffer_;
         private int    collect_size_;
 
 
-        public DataFormat_IEEE754_Double(DataEndianType endian)
+        public DataFormat_IEEE754_Double(PacketViewPropertyImpl prop) : base(prop)
         {
-            endian_ = endian;
             collect_buffer_ = new byte[DATA_FORMAT_SIZE];
         }
 
-        protected override void OnAssignData(byte assign_data)
+        protected override void OnInputData(byte data)
         {
-            collect_buffer_[collect_size_++] = assign_data;
+            collect_buffer_[collect_size_++] = data;
 
             if (collect_size_ < collect_buffer_.Length)return;
 
-            var data = (Double)0;
+            var value = (Double)0;
 
-            if (endian_ == DataEndianType.BigEndian) {
-                data = (Double)(
+            if (ByteEndian == DataEndianType.BigEndian) {
+                value = (Double)(
                           ((UInt64)collect_buffer_[0] << 56)
                         | ((UInt64)collect_buffer_[1] << 48)
                         | ((UInt64)collect_buffer_[2] << 40)
@@ -40,7 +38,7 @@ namespace Ratatoskr.PacketView.Graph.DataFormatModules
                         | ((UInt64)collect_buffer_[6] << 8)
                         | ((UInt64)collect_buffer_[7] << 0));
             } else {
-                data = (Double)(
+                value = (Double)(
                           ((UInt64)collect_buffer_[7] << 56)
                         | ((UInt64)collect_buffer_[6] << 48)
                         | ((UInt64)collect_buffer_[5] << 40)
@@ -51,7 +49,7 @@ namespace Ratatoskr.PacketView.Graph.DataFormatModules
                         | ((UInt64)collect_buffer_[0] << 0));
             }
 
-            ExtractData((decimal)data);
+            ExtractValue((decimal)value);
 
             collect_size_ = 0;
         }

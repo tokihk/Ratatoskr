@@ -13,54 +13,41 @@ namespace Ratatoskr.PacketView.Graph
 {
     internal partial class GraphControlPanel : UserControl
     {
-        private class ChannelListItem
-        {
-            public ChannelListItem(uint channel_no)
-            {
-                Channel = channel_no;
-            }
-
-            public uint Channel { get; }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (obj is uint) {
-                    return (Channel == (uint)obj);
-                }
-
-                return (base.Equals(obj));
-            }
-
-            public override string ToString()
-            {
-                return (string.Format("CH{0}", Channel));
-            }
-        }
+		private readonly RadioButton[] CH_RBTN_LIST;
 
 
         private PacketViewPropertyImpl prop_;
 
-        private bool ui_update_busy_ = false;
+		private int				ch_no_ = -1;
+		private ChannelConfig	ch_config_ = null;
 
 
         public event EventHandler SamplingSettingUpdated;
         public event EventHandler DisplaySettingUpdated;
+        public event EventHandler ChannelSettingUpdated;
 
 
         public GraphControlPanel()
         {
             InitializeComponent();
-            InitializeComboBox<DataFormatType>(CBox_DataFormat);
-            InitializeComboBox<DataEndianType>(CBox_DataEndian);
-            InitializeComboBox<DataCollectModeType>(CBox_DataCollectMode);
-            InitializeChannelList();
-//            UpdateTrackBarFromNumeric(TBar_ChSet_ValueDiv, Num_ChSet_ValueMag);
-//            UpdateTrackBarFromNumeric(TBar_ChSet_ValueOffset, Num_ChSet_ValueCenter);
+            InitializeComboBox<GraphTargetType>(CBox_GraphTarget);
+            InitializeComboBox<SamplingSettingTemplateType>(CBox_SamplingSettingTemplate);
+            InitializeComboBox<SamplingTriggerType>(CBox_SamplingTrigger);
+            InitializeComboBox<SamplingIntervalUnitType>(CBox_SamplingInterval_Unit);
+            InitializeComboBox<DisplayModeType>(CBox_DisplayMode);
+            InitializeComboBox<VertRangeType>(CBox_ChSet_Oscillo_Range);
+
+			CH_RBTN_LIST = new RadioButton[]
+			{
+				RBtn_ChSet_CH1,
+				RBtn_ChSet_CH2,
+				RBtn_ChSet_CH3,
+				RBtn_ChSet_CH4,
+				RBtn_ChSet_CH5,
+				RBtn_ChSet_CH6,
+				RBtn_ChSet_CH7,
+				RBtn_ChSet_CH8,
+			};
         }
 
         private void InitializeComboBox<EnumType>(ComboBox control)
@@ -76,63 +63,40 @@ namespace Ratatoskr.PacketView.Graph
             control.EndUpdate();
         }
 
-        private void InitializeDataCollectMode()
-        {
-            CBox_DataCollectMode.BeginUpdate();
-            {
-                CBox_DataCollectMode.Items.Clear();
-                foreach (DataCollectModeType value in Enum.GetValues(typeof(DataCollectModeType))) {
-                    CBox_DataCollectMode.Items.Add(value);
-                }
-                CBox_DataCollectMode.SelectedIndex = 0;
-            }
-            CBox_DataCollectMode.EndUpdate();
-        }
-
-        private void InitializeChannelList()
-        {
-            CBox_ChSet_Channel.BeginUpdate();
-            {
-                CBox_ChSet_Channel.Items.Clear();
-                for (var channel = (uint)1; channel <= 10; channel++) {
-                    CBox_ChSet_Channel.Items.Add(new ChannelListItem(channel));
-                }
-                CBox_ChSet_Channel.SelectedIndex = 0;
-            }
-            CBox_ChSet_Channel.EndUpdate();
-        }
-
         public void LoadConfig(PacketViewPropertyImpl prop)
         {
-            CBox_DataFormat.SelectedItem = prop.DataFormat.Value;
-            CBox_DataEndian.SelectedItem = prop.DataEndian.Value;
-            Num_DataChannel.Value = prop.DataChannelNum.Value;
-            CBox_DataCollectMode.SelectedItem = prop.DataCollectMode.Value;
-
-            Num_SamplingPoint.Value = prop.SamplingPoint.Value;
-            Num_SamplingInterval.Value = prop.SamplingInterval.Value / 1000;
-
-            Num_DisplayPoint.Value = prop.DisplayPoint.Value;
-            Num_AxisY_ValueMax.Value = prop.AxisY_ValueMax.Value;
-            Num_AxisY_ValueMin.Value = prop.AxisY_ValueMin.Value;
-
-            CBox_ChSet_Channel.SelectedItem = prop.CurrentChannel.Value;
-
             prop_ = prop;
+
+			/* --- Sampling Setting --- */
+            CBox_GraphTarget.SelectedItem = prop_.GraphTarget.Value;
+
+			CBox_SamplingTrigger.SelectedItem = prop_.SamplingTrigger.Value;
+            Num_SamplingInterval_Value.Value = prop_.SamplingInterval.Value;
+			CBox_SamplingInterval_Unit.SelectedItem = prop_.SamplingIntervalUnit.Value;
+			Num_InputDataBlockSize.Value = prop_.InputDataBlockSize.Value;
+            Num_InputDataChannelNum.Value = prop_.InputDataChannelNum.Value;
+
+			/* --- Display Setting --- */
+			CBox_DisplayMode.SelectedItem = prop_.DisplayMode.Value;
+            Num_Oscillo_RecordPoint.Value = prop_.Oscillo_RecordPoint.Value;
+            Num_Oscillo_DisplayPoint.Value = prop_.Oscillo_DisplayPoint.Value;
+
+			/* --- Channel Setting --- */
+			SetCurrentChannel(0);
+			LoadCurrentChannelConfig();
         }
 
-        private void LoadChannelConfig()
+        private void LoadCurrentChannelConfig()
         {
-            if (prop_ == null)return;
-
-            if (   (prop_.CurrentChannel.Value > 0)
-                && (prop_.CurrentChannel.Value <= prop_.ChannelList.Value.Count)
-            ) {
-                var conf = prop_.ChannelList.Value[(int)prop_.CurrentChannel.Value - 1];
-
-                Btn_ChSet_Color.BackColor = conf.ForeColor;
-                Num_ChSet_ValueMag.Value = conf.Magnification;
-                TBar_ChSet_ValueOffset.Value = (int)Math.Max((decimal)TBar_ChSet_ValueOffset.Minimum, Math.Min((decimal)TBar_ChSet_ValueOffset.Maximum, conf.Offset));
+            if (ch_config_ != null) {
+                Btn_ChSet_Color.BackColor = ch_config_.ForeColor;
+				Num_ValueBitSize.Value = ch_config_.ValueBitSize;
+				ChkBox_ByteEndian_Reverse.Checked = ch_config_.ReverseByteEndian;
+				ChkBox_BitEndian_Reverse.Checked = ch_config_.ReverseBitEndian;
+				ChkBox_SignedValue.Checked = ch_config_.SignedValue;
+				CBox_ChSet_Oscillo_Range.SelectedItem = ch_config_.OscilloVertRange;
+				Num_ChSet_Oscillo_Range_Custom.Value = ch_config_.OscilloVertRangeCustom;
+                TBar_ChSet_Oscillo_VertOffset.Value = (int)Math.Max((decimal)TBar_ChSet_Oscillo_VertOffset.Minimum, Math.Min((decimal)TBar_ChSet_Oscillo_VertOffset.Maximum, ch_config_.OscilloVertOffset));
             }
         }
 
@@ -143,81 +107,71 @@ namespace Ratatoskr.PacketView.Graph
             BackupSamplingConfig();
 
             BackupDisplayConfig();
+
+			BackupCurrentChannelConfig();
         }
 
         private void BackupSamplingConfig()
         {
             if (prop_ == null)return;
 
-            prop_.DataFormat.Value = (DataFormatType)CBox_DataFormat.SelectedItem;
-            prop_.DataEndian.Value = (DataEndianType)CBox_DataEndian.SelectedItem;
-            prop_.DataChannelNum.Value = Num_DataChannel.Value;
-            prop_.DataCollectMode.Value = (DataCollectModeType)CBox_DataCollectMode.SelectedItem;
+			prop_.GraphTarget.Value = (GraphTargetType)CBox_GraphTarget.SelectedItem;
 
-            prop_.SamplingPoint.Value = Num_SamplingPoint.Value;
-            prop_.SamplingInterval.Value = Num_SamplingInterval.Value * 1000;
+			prop_.SamplingTrigger.Value = (SamplingTriggerType)CBox_SamplingTrigger.SelectedItem;
+			prop_.SamplingInterval.Value = Num_SamplingInterval_Value.Value;
+			prop_.SamplingIntervalUnit.Value = (SamplingIntervalUnitType)CBox_SamplingInterval_Unit.SelectedItem;
+			prop_.InputDataBlockSize.Value = Num_InputDataBlockSize.Value;
+			prop_.InputDataChannelNum.Value = Num_InputDataChannelNum.Value;
         }
 
         private void BackupDisplayConfig()
         {
             if (prop_ == null)return;
 
-            BackupChannelConfig();
+			prop_.DisplayMode.Value = (DisplayModeType)CBox_DisplayMode.SelectedItem;
 
-            prop_.DisplayPoint.Value = Num_DisplayPoint.Value;
-            prop_.AxisY_ValueMax.Value = Num_AxisY_ValueMax.Value;
-            prop_.AxisY_ValueMin.Value = Num_AxisY_ValueMin.Value;
-
-            prop_.CurrentChannel.Value = (CBox_ChSet_Channel.SelectedItem as ChannelListItem).Channel;
+            prop_.Oscillo_RecordPoint.Value = Num_Oscillo_RecordPoint.Value;
+            prop_.Oscillo_DisplayPoint.Value = Num_Oscillo_DisplayPoint.Value;
         }
-
-        private void BackupChannelConfig()
+		
+        private void BackupCurrentChannelConfig()
         {
-            if (prop_ == null)return;
+			if (ch_config_ != null) {
+				ch_config_.ForeColor = Btn_ChSet_Color.BackColor;
+				ch_config_.ValueBitSize = (uint)Num_ValueBitSize.Value;
+				ch_config_.ReverseByteEndian = ChkBox_ByteEndian_Reverse.Checked;
+				ch_config_.ReverseBitEndian = ChkBox_BitEndian_Reverse.Checked;
+				ch_config_.SignedValue = ChkBox_SignedValue.Checked;
 
-            var conf = GetCurrentChannelConfig();
-
-            if (conf != null) {
-                conf.ForeColor = Btn_ChSet_Color.BackColor;
-                conf.Magnification = Num_ChSet_ValueMag.Value;
-                conf.Offset = TBar_ChSet_ValueOffset.Value;
+				ch_config_.OscilloVertRange = (VertRangeType)CBox_ChSet_Oscillo_Range.SelectedItem;
+				ch_config_.OscilloVertRangeCustom = (uint)Num_ChSet_Oscillo_Range_Custom.Value;
+				ch_config_.OscilloVertOffset = TBar_ChSet_Oscillo_VertOffset.Value;
             }
         }
 
-        private ChannelConfig GetCurrentChannelConfig()
-        {
-            var conf = (ChannelConfig)null;
+		private void SetCurrentChannel(int ch_no)
+		{
+			if ((ch_no >= 0) && (ch_no < CH_RBTN_LIST.Length)) {
+				CH_RBTN_LIST[ch_no].Checked = true;
 
-            if (   (prop_.CurrentChannel.Value > 0)
-                && (prop_.CurrentChannel.Value <= prop_.ChannelList.Value.Count)
-            ) {
-                conf = prop_.ChannelList.Value[(int)prop_.CurrentChannel.Value - 1];
+				ch_no_ = ch_no;
+				ch_config_ = prop_.ChannelList.Value[ch_no_];
+			}
+		}
 
-                conf.ForeColor = Btn_ChSet_Color.BackColor;
-                conf.Magnification = Num_ChSet_ValueMag.Value;
-                conf.Offset = TBar_ChSet_ValueOffset.Value;
-            }
+		private int GetCurrentChannel()
+		{
+			var index = 0;
 
-            return (conf);
-        }
+			while (index < CH_RBTN_LIST.Length) {
+				if (CH_RBTN_LIST[index].Checked) {
+					break;
+				}
+				index++;
+			}
 
-        private void UpdateTrackBarFromNumeric(TrackBar tbar, NumericUpDown num)
-        {
-            if (ui_update_busy_)return;
-
-            ui_update_busy_ = true;
-            {
-                tbar.Value = (int)((tbar.Maximum - tbar.Minimum) * num.Value / num.Maximum);
-            }
-            ui_update_busy_ = false;
-        }
-
-        private void CBox_ChSet_Channel_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BackupConfig();
-
-            LoadChannelConfig();
-        }
+			return (index);
+		}
 
         private void OnSamplingSettingUpdated(object sender, EventArgs e)
         {
@@ -228,30 +182,167 @@ namespace Ratatoskr.PacketView.Graph
 
         private void OnDisplaySettingUpdated(object sender, EventArgs e)
         {
-            /* 補正 */
-            Num_AxisY_ValueMin.Value = Math.Min(Num_AxisY_ValueMin.Value, Num_AxisY_ValueMax.Value);
-            Num_AxisY_ValueMax.Value = Math.Max(Num_AxisY_ValueMin.Value, Num_AxisY_ValueMax.Value);
-
             BackupDisplayConfig();
 
             DisplaySettingUpdated?.Invoke(this, EventArgs.Empty);
         }
 
+		private void OnChannelSettingUpdated(object sender, EventArgs e)
+		{
+			BackupCurrentChannelConfig();
+
+			ChannelSettingUpdated?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void Btn_SamplingSettingTemplate_Load_Click(object sender, EventArgs e)
+		{
+			var template_table = new []
+			{
+				/* PCM_8kHz_8bit_1ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_8kHz_8bit_1ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 1,
+					ch_num				= 1,
+				},
+
+				/* PCM_8kHz_8bit_2ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_8kHz_8bit_2ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 2,
+					ch_num				= 2,
+				},
+
+				/* PCM_8kHz_16bit_1ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_8kHz_16bit_1ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 2,
+					ch_num				= 1,
+				},
+
+				/* PCM_8kHz_16bit_2ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_8kHz_8bit_2ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 4,
+					ch_num				= 2,
+				},
+
+				/* PCM_44_1kHz_8bit_1ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_44_1kHz_8bit_1ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 1,
+					ch_num				= 1,
+				},
+
+				/* PCM_44_1kHz_8bit_2ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_44_1kHz_8bit_2ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 2,
+					ch_num				= 2,
+				},
+
+				/* PCM_44_1kHz_16bit_1ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_44_1kHz_16bit_1ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 2,
+					ch_num				= 1,
+				},
+
+				/* PCM_44_1kHz_16bit_2ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_44_1kHz_16bit_2ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 4,
+					ch_num				= 2,
+				},
+
+				/* PCM_48kHz_8bit_1ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_48kHz_8bit_1ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 1,
+					ch_num				= 1,
+				},
+
+				/* PCM_48kHz_8bit_2ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_48kHz_8bit_2ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 2,
+					ch_num				= 1,
+				},
+
+				/* PCM_48kHz_16bit_1ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_48kHz_16bit_1ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 2,
+					ch_num				= 1,
+				},
+
+				/* PCM_48kHz_16bit_2ch */
+				new {
+					id					= SamplingSettingTemplateType.PCM_48kHz_16bit_2ch,
+					sampling_ival		= (decimal)8,
+					sampling_ival_unit	= SamplingIntervalUnitType.kHz,
+					data_block_size		= 4,
+					ch_num				= 2,
+				},
+			};
+
+			var select_id = (SamplingSettingTemplateType)CBox_SamplingSettingTemplate.SelectedItem;
+
+			foreach (var table in template_table) {
+				if (select_id == table.id) {
+					Num_SamplingInterval_Value.Value = table.sampling_ival;
+					CBox_SamplingInterval_Unit.SelectedItem = table.sampling_ival_unit;
+					Num_InputDataBlockSize.Value = table.data_block_size;
+					Num_InputDataChannelNum.Value = table.ch_num;
+				}
+			}
+		}
+
+		private void RBtn_ChSet_CH_Click(object sender, EventArgs e)
+		{
+			BackupCurrentChannelConfig();
+
+			SetCurrentChannel(GetCurrentChannel());
+
+			LoadCurrentChannelConfig();
+		}
+
         private void Btn_ChSet_Color_Click(object sender, EventArgs e)
         {
-            var conf = GetCurrentChannelConfig();
-
-            if (conf == null)return;
+			if (ch_config_ == null)return;
 
             var dialog = new ColorDialog();
 
-            dialog.Color = conf.ForeColor;
+            dialog.Color = ch_config_.ForeColor;
 
             if (dialog.ShowDialog() != DialogResult.OK)return;
 
             Btn_ChSet_Color.BackColor = dialog.Color;
 
-            OnDisplaySettingUpdated(sender, e);
+			BackupCurrentChannelConfig();
+
+            OnChannelSettingUpdated(sender, e);
         }
-    }
+	}
 }

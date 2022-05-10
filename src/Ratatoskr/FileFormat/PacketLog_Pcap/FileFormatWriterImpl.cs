@@ -25,11 +25,7 @@ namespace Ratatoskr.FileFormat.PacketLog_Pcap
 		protected override bool OnOpenPath(FileFormatOption option, string path, bool is_append)
 		{
 			try {
-				pcap_device_ = new CaptureFileWriterDevice(
-					LinkLayers.Ethernet,
-					null,
-					path,
-					(is_append) ? (FileMode.Append) : (FileMode.Create));
+				pcap_device_ = new CaptureFileWriterDevice(path, (is_append) ? (FileMode.Append) : (FileMode.Create));
 
 				return (true);
 			} catch {

@@ -12,9 +12,9 @@ namespace Ratatoskr.FileFormat.PacketLog_Pcap
     internal sealed class FileFormatWriterOptionImpl : FileFormatOption
     {
         public string              Filter              { get; set; } = "";
-        public SourceInfoType      ViewSourceType      { get; set; } = SourceInfoType.IpAddress;
-        public DestinationInfoType ViewDestinationType { get; set; } = DestinationInfoType.IpAddress;
-        public DataContentsType    ViewDataType        { get; set; } = DataContentsType.Raw;
+        public PcapPacketSourceType      ViewSourceType      { get; set; } = PcapPacketSourceType.IpAddress;
+        public PcapPacketDestinationType ViewDestinationType { get; set; } = PcapPacketDestinationType.IpAddress;
+        public PcapPacketDataType    ViewDataType        { get; set; } = PcapPacketDataType.Raw;
 
 
         public FileFormatWriterOptionImpl()

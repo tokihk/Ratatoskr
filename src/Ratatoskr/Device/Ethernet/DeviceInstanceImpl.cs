@@ -66,9 +66,9 @@ namespace Ratatoskr.Device.Ethernet
 
                 if (pcap_dev_ == null)throw new Exception();
 
-                /* イベント登録 */
+				/* イベント登録 */
 #if __SHARPPCAP__
-                pcap_dev_.OnPacketArrival += OnSharpPcapDev_OnPacketArrival;
+				pcap_dev_.OnPacketArrival += OnSharpPcapDev_OnPacketArrival;
 #endif
 
                 /* デバイスを開く */
@@ -83,7 +83,7 @@ namespace Ratatoskr.Device.Ethernet
 					InfoType = prop_.PacketInfo.Value,
 					SourceType = prop_.PacketSource.Value,
 					DestinationType = prop_.PacketDestination.Value,
-					DataContentsType = prop_.PacketData.Value
+					DataType = prop_.PacketData.Value
 				};
 
 #elif __PCAPDOTNET__
@@ -124,7 +124,7 @@ namespace Ratatoskr.Device.Ethernet
             return (EventResult.Success);
         }
 
-        protected override void OnConnected()
+		protected override void OnConnected()
         {
         }
 
@@ -186,13 +186,15 @@ namespace Ratatoskr.Device.Ethernet
 #endif
 
 #if __SHARPPCAP__
-        private void OnSharpPcapDev_OnPacketArrival(object sender, CaptureEventArgs e)
+		private void OnSharpPcapDev_OnPacketArrival(object sender, PacketCapture e)
         {
-            try {
-                NotifyPcapPacket(SharpPcapParser.ParseAndBuild(e.Packet, parser_option_));
-            } catch (Exception exp) {
-                NotifyMessage(PacketPriority.Standard, "Ethernet", string.Format("Parse error.[{0}]", exp.Message));
-            }
+			if (e.GetPacket() is RawCapture packet) {
+				try {
+					NotifyPcapPacket(SharpPcapParser.ParseAndBuild(packet, parser_option_));
+				} catch (Exception exp) {
+					NotifyMessage(PacketPriority.Standard, "Ethernet", string.Format("Parse error.[{0}]", exp.Message));
+				}
+			}
         }
 #elif __PCAPDOTNET__
         private void OnPcapDotNet_OnPacketReceive(Packet packet)

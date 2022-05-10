@@ -27,8 +27,8 @@ namespace Ratatoskr.General
         };
 
 
-        public byte[] Data   { get; }
-        public uint   Length { get; }
+        public byte[] Data   { get; private set; }
+        public uint   Length { get; private set; }
 
 
         public BitData()
@@ -70,6 +70,32 @@ namespace Ratatoskr.General
             return (ToHexText());
         }
 
+        public void ReverseByteEndian()
+        {
+            Array.Reverse(Data);
+            Length = (uint)Data.Length * 8;
+        }
+
+        /* Byte単位でBit位置を入れ替え */
+        public void ReverseBitEndian()
+        {
+            var work_data = (byte)0;
+
+            for (var byte_index = 0; byte_index < Data.Length; byte_index++) {
+                work_data = Data[byte_index];
+
+                /* Bit反転 */
+                work_data = (byte)(((work_data & 0xaa) >> 1) | ((work_data & 0x55) << 1));
+                work_data = (byte)(((work_data & 0xcc) >> 2) | ((work_data & 0x33) << 2));
+                work_data = (byte)(((work_data & 0xf0) >> 4) | ((work_data & 0x0f) << 4));
+
+                /* 8bitではないブロックは詰める */
+                work_data <<= (8 - Math.Min(8, (int)Length - byte_index * 8));
+
+                Data[byte_index] = work_data;
+            }
+        }
+
         public BitData GetBitData(uint offset, uint bitlen)
         {
             offset = Math.Min(offset, Length);
@@ -106,23 +132,18 @@ namespace Ratatoskr.General
             return (new BitData(dst_data, dst_bitlen));
         }
 
-        public UInt64 GetInteger(uint offset, uint bitlen, bool little_endian = false)
+        private UInt64 GetIntegerBit(uint bit_offset, uint bitlen)
         {
-            offset = Math.Min(offset, Length);
-            bitlen = Math.Min(bitlen, Length - offset);
-
-            if (bitlen <= 0)return (0);
-
-            var dst_data = (UInt64)0;
+            var work_data = (UInt64)0;
 
             /* 最左ビットからスキャン */
-            var src_offset_byte = (int)(offset / 8);
-            var src_offset_bit  = (int)(7 - offset % 8);
+            var src_offset_byte = (int)(bit_offset / 8);
+            var src_offset_bit  = (int)(7 - bit_offset % 8);
 
             while (bitlen > 0) {
-                dst_data <<= 1;
+                work_data <<= 1;
                 if ((Data[src_offset_byte] & (1u << src_offset_bit)) != 0) {
-                    dst_data |= 1;
+                    work_data |= 1;
                 }
 
                 if ((--src_offset_bit) < 0) {
@@ -133,17 +154,72 @@ namespace Ratatoskr.General
                 bitlen--;
             }
 
+            return (work_data);
+        }
+
+        private UInt64 GetIntegerByte(uint byte_offset, uint bitlen)
+        {
+            var dst_data = (UInt64)0;
+            var work_bitlen = (int)bitlen;
+
+            /* Byte単位で結合 */
+            while (work_bitlen > 0) {
+                dst_data <<= 8;
+                dst_data |= Data[byte_offset++];
+                work_bitlen -= 8;
+			}
+
+            /* 処理しすぎた場合はシフトで消す */
+            if (work_bitlen < 0) {
+                dst_data >>= (-work_bitlen);
+			}
+
             return (dst_data);
         }
 
-        public UInt64 GetInteger(uint offset, bool little_endian = false)
+        public Int64 GetInteger(uint bit_offset, uint bitlen, bool signed = false)
         {
-            return (GetInteger(offset, Length));
+            bit_offset = Math.Min(bit_offset, Length);
+            bitlen = Math.Min(bitlen, Length - bit_offset);
+
+            var raw_data = (UInt64)0;
+
+            if ((bit_offset & 0x07) == 0) {
+                raw_data = GetIntegerByte(bit_offset / 8, bitlen);
+			} else {
+                raw_data = GetIntegerBit(bit_offset, bitlen);
+			}
+
+            var ret_data = (Int64)0;
+
+            if (signed) {
+                if (bitlen < 64) {
+                    /* 64bit未満の場合は計算で作成 */
+                    bitlen = Math.Min(bitlen, 63);
+
+                    if (((raw_data >> (int)bitlen) & 1) != 0) {
+                        /* 最上位ビットが1なら負数に変換 */
+                        ret_data = (Int64)(((~raw_data) + 1) & (0xFFFFFFFFFFFFFFFFul >> (int)(64 - bitlen))) * -1;
+                    } else {
+                        ret_data = (Int64)raw_data;
+					}
+                } else {
+                    /* 64bit以上のときはキャストで作成 */
+                    ret_data = (Int64)raw_data;
+				}
+            }
+
+            return (ret_data);
         }
 
-        public UInt64 GetInteger(bool little_endian = false)
+        public Int64 GetInteger(uint bit_offset, bool signed = false)
         {
-            return (GetInteger(0));
+            return (GetInteger(bit_offset, Length, signed));
+        }
+
+        public Int64 GetInteger(bool signed = false)
+        {
+            return (GetInteger(0, signed));
         }
 
         public void SetBitData(uint dst_offset, byte[] src_data, uint src_offset, uint bitlen)

@@ -68,10 +68,7 @@ namespace Ratatoskr.Gate
 
         private static void PacketPoll()
         {
-            if (!Enable) return;
-
-            if ((ar_load_ != null) && (!ar_load_.IsCompleted))return;
-            if ((ar_save_ != null) && (!ar_save_.IsCompleted))return;
+            if (!Enable || IsLoadBusy || IsSaveBusy)return;
 
             var rate = (ulong)0;
 

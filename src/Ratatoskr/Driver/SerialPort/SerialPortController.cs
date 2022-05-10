@@ -21,7 +21,6 @@ namespace RtsCore.Driver.SerialPort
 
     public enum SerialPortStopBits
     {
-        None,
         One,
         OnePointFive,
         Two,

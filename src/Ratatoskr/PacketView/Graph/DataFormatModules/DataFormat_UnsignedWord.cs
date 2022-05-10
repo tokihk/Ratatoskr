@@ -10,36 +10,34 @@ namespace Ratatoskr.PacketView.Graph.DataFormatModules
     {
         private const int DATA_FORMAT_SIZE = 2;
 
-        DataEndianType endian_;
         private byte[] collect_buffer_;
         private int    collect_size_;
 
 
-        public DataFormat_UnsignedWord(DataEndianType endian)
+        public DataFormat_UnsignedWord(PacketViewPropertyImpl prop) : base(prop)
         {
-            endian_ = endian;
             collect_buffer_ = new byte[DATA_FORMAT_SIZE];
         }
 
-        protected override void OnAssignData(byte assign_data)
+        protected override void OnInputData(byte data)
         {
-            collect_buffer_[collect_size_++] = assign_data;
+            collect_buffer_[collect_size_++] = data;
 
             if (collect_size_ < collect_buffer_.Length)return;
 
-            var data = (UInt16)0;
+            var value = (UInt16)0;
 
-            if (endian_ == DataEndianType.BigEndian) {
-                data = (UInt16)(
+            if (ByteEndian == DataEndianType.BigEndian) {
+                value = (UInt16)(
                           ((UInt16)collect_buffer_[0] << 8)
                         | ((UInt16)collect_buffer_[1] << 0));
             } else {
-                data = (UInt16)(
+                value = (UInt16)(
                           ((UInt16)collect_buffer_[1] << 8)
                         | ((UInt16)collect_buffer_[0] << 0));
             }
 
-            ExtractData(data);
+            ExtractValue(value);
 
             collect_size_ = 0;
         }

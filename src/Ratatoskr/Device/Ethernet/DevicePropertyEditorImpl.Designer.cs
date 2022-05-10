@@ -43,22 +43,22 @@
             this.GBox_RecvFilterPattern = new System.Windows.Forms.GroupBox();
             this.TBox_RecvFilter = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.PGrid_SelectProtocolParameter = new System.Windows.Forms.PropertyGrid();
-            this.Btn_AddProtocolItem = new System.Windows.Forms.Button();
-            this.Btn_RemoveProtocolItem = new System.Windows.Forms.Button();
-            this.LBox_FrameProtocolList = new System.Windows.Forms.ListBox();
-            this.LBox_ProtocolItemList = new System.Windows.Forms.ListBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.PGrid_SelectProtocolParameter = new System.Windows.Forms.PropertyGrid();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.LBox_FrameProtocolList = new System.Windows.Forms.ListBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.LBox_ProtocolItemList = new System.Windows.Forms.ListBox();
+            this.Btn_RemoveProtocolItem = new System.Windows.Forms.Button();
+            this.Btn_AddProtocolItem = new System.Windows.Forms.Button();
             this.GBox_IfceList.SuspendLayout();
             this.GBox_RecvConfig.SuspendLayout();
             this.GBox_PacketObjectItem.SuspendLayout();
             this.GBox_RecvFilterPattern.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // GBox_IfceList
@@ -230,6 +230,17 @@
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Send setting";
+            this.groupBox1.Visible = false;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.PGrid_SelectProtocolParameter);
+            this.groupBox4.Location = new System.Drawing.Point(252, 18);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(280, 435);
+            this.groupBox4.TabIndex = 7;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Select protocol parameter";
             // 
             // PGrid_SelectProtocolParameter
             // 
@@ -239,25 +250,15 @@
             this.PGrid_SelectProtocolParameter.Size = new System.Drawing.Size(274, 417);
             this.PGrid_SelectProtocolParameter.TabIndex = 1;
             // 
-            // Btn_AddProtocolItem
+            // groupBox5
             // 
-            this.Btn_AddProtocolItem.Location = new System.Drawing.Point(50, 224);
-            this.Btn_AddProtocolItem.Name = "Btn_AddProtocolItem";
-            this.Btn_AddProtocolItem.Size = new System.Drawing.Size(75, 23);
-            this.Btn_AddProtocolItem.TabIndex = 2;
-            this.Btn_AddProtocolItem.Text = "Add";
-            this.Btn_AddProtocolItem.UseVisualStyleBackColor = true;
-            this.Btn_AddProtocolItem.Click += new System.EventHandler(this.Btn_AddProtocolItem_Click);
-            // 
-            // Btn_RemoveProtocolItem
-            // 
-            this.Btn_RemoveProtocolItem.Location = new System.Drawing.Point(131, 224);
-            this.Btn_RemoveProtocolItem.Name = "Btn_RemoveProtocolItem";
-            this.Btn_RemoveProtocolItem.Size = new System.Drawing.Size(75, 23);
-            this.Btn_RemoveProtocolItem.TabIndex = 5;
-            this.Btn_RemoveProtocolItem.Text = "Remove";
-            this.Btn_RemoveProtocolItem.UseVisualStyleBackColor = true;
-            this.Btn_RemoveProtocolItem.Click += new System.EventHandler(this.Btn_RemoveProtocolItem_Click);
+            this.groupBox5.Controls.Add(this.LBox_FrameProtocolList);
+            this.groupBox5.Location = new System.Drawing.Point(6, 18);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(240, 200);
+            this.groupBox5.TabIndex = 10;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Frame protocol llist";
             // 
             // LBox_FrameProtocolList
             // 
@@ -270,16 +271,6 @@
             this.LBox_FrameProtocolList.TabIndex = 6;
             this.LBox_FrameProtocolList.SelectedIndexChanged += new System.EventHandler(this.LBox_FrameProtocolList_SelectedIndexChanged);
             // 
-            // LBox_ProtocolItemList
-            // 
-            this.LBox_ProtocolItemList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LBox_ProtocolItemList.FormattingEnabled = true;
-            this.LBox_ProtocolItemList.ItemHeight = 12;
-            this.LBox_ProtocolItemList.Location = new System.Drawing.Point(3, 15);
-            this.LBox_ProtocolItemList.Name = "LBox_ProtocolItemList";
-            this.LBox_ProtocolItemList.Size = new System.Drawing.Size(234, 182);
-            this.LBox_ProtocolItemList.TabIndex = 7;
-            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.LBox_ProtocolItemList);
@@ -290,25 +281,35 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Protocol item list";
             // 
-            // groupBox4
+            // LBox_ProtocolItemList
             // 
-            this.groupBox4.Controls.Add(this.PGrid_SelectProtocolParameter);
-            this.groupBox4.Location = new System.Drawing.Point(252, 18);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(280, 435);
-            this.groupBox4.TabIndex = 7;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Select protocol parameter";
+            this.LBox_ProtocolItemList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LBox_ProtocolItemList.FormattingEnabled = true;
+            this.LBox_ProtocolItemList.ItemHeight = 12;
+            this.LBox_ProtocolItemList.Location = new System.Drawing.Point(3, 15);
+            this.LBox_ProtocolItemList.Name = "LBox_ProtocolItemList";
+            this.LBox_ProtocolItemList.Size = new System.Drawing.Size(234, 182);
+            this.LBox_ProtocolItemList.TabIndex = 7;
             // 
-            // groupBox5
+            // Btn_RemoveProtocolItem
             // 
-            this.groupBox5.Controls.Add(this.LBox_FrameProtocolList);
-            this.groupBox5.Location = new System.Drawing.Point(6, 18);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(240, 200);
-            this.groupBox5.TabIndex = 10;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Frame protocol llist";
+            this.Btn_RemoveProtocolItem.Location = new System.Drawing.Point(131, 224);
+            this.Btn_RemoveProtocolItem.Name = "Btn_RemoveProtocolItem";
+            this.Btn_RemoveProtocolItem.Size = new System.Drawing.Size(75, 23);
+            this.Btn_RemoveProtocolItem.TabIndex = 5;
+            this.Btn_RemoveProtocolItem.Text = "Remove";
+            this.Btn_RemoveProtocolItem.UseVisualStyleBackColor = true;
+            this.Btn_RemoveProtocolItem.Click += new System.EventHandler(this.Btn_RemoveProtocolItem_Click);
+            // 
+            // Btn_AddProtocolItem
+            // 
+            this.Btn_AddProtocolItem.Location = new System.Drawing.Point(50, 224);
+            this.Btn_AddProtocolItem.Name = "Btn_AddProtocolItem";
+            this.Btn_AddProtocolItem.Size = new System.Drawing.Size(75, 23);
+            this.Btn_AddProtocolItem.TabIndex = 2;
+            this.Btn_AddProtocolItem.Text = "Add";
+            this.Btn_AddProtocolItem.UseVisualStyleBackColor = true;
+            this.Btn_AddProtocolItem.Click += new System.EventHandler(this.Btn_AddProtocolItem_Click);
             // 
             // DevicePropertyEditorImpl
             // 
@@ -325,9 +326,9 @@
             this.GBox_RecvFilterPattern.ResumeLayout(false);
             this.GBox_RecvFilterPattern.PerformLayout();
             this.groupBox1.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.PacketView.Graph.DisplayModules
 {
-    internal class DisplayLayerParam
+    internal class DisplayChannelInfo
     {
-        public DisplayLayerParam()
+        public DisplayChannelInfo()
         {
         }
 

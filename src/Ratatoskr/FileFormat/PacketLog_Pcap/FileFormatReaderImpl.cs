@@ -53,14 +53,15 @@ namespace Ratatoskr.FileFormat.PacketLog_Pcap
 
             option_parser_ = new PcapPacketParserOption()
 			{
+				InfoType = option_.PacketInfoType,
 				SourceType = option_.PacketSourceType,
 				DestinationType = option_.PacketDestinationType,
-				DataContentsType = option_.PacketDataType,
+				DataType = option_.PacketDataType,
 			};
 
             device_ = new CaptureFileReaderDevice(path);
 
-            device_.Filter = option_.Filter;
+            device_.Filter = option_.PcapFilter;
 
             ar_load_device_packet_ = (new LoadDevicePacketTaskDelegate(LoadDevicePacketTask)).BeginInvoke(device_, null, null);
 
@@ -100,9 +101,12 @@ namespace Ratatoskr.FileFormat.PacketLog_Pcap
         private delegate void LoadDevicePacketTaskDelegate(CaptureFileReaderDevice device);
         private void LoadDevicePacketTask(CaptureFileReaderDevice device)
         {
-            device.OnPacketArrival += Device_OnPacketArrival;
+			device.OnPacketArrival += Device_OnPacketArrival1;
 
-            device.Open();
+			device.Open(new SharpPcap.DeviceConfiguration()
+			{
+				Mode = SharpPcap.DeviceModes.Promiscuous,
+			});
 
             /* 全パケットの読み込み開始(完了するまで戻ってこない) */
             device_.Capture();
@@ -116,10 +120,10 @@ namespace Ratatoskr.FileFormat.PacketLog_Pcap
             }
         }
 
-        private void Device_OnPacketArrival(object sender, SharpPcap.CaptureEventArgs e)
-        {
-            if (e.Packet != null) {
-                packets_busy_in_.Enqueue(e.Packet);
+		private void Device_OnPacketArrival1(object sender, SharpPcap.PacketCapture e)
+		{
+            if (e.GetPacket() is SharpPcap.RawCapture packet) {
+                packets_busy_in_.Enqueue(packet);
 
                 /* バッファがいっぱいになったらリストに登録してバッファをリロード */
                 if (packets_busy_in_.Count >= READ_PACKET_BLOCK_NUMBER) {

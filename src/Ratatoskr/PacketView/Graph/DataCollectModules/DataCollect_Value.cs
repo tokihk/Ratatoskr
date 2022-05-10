@@ -12,23 +12,23 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
         private decimal[] last_data_;
 
 
-        public DataCollect_Value(uint layer_count, uint sampling_ival) : base(layer_count, sampling_ival)
+        public DataCollect_Value(PacketViewPropertyImpl prop) : base(prop)
         {
-            last_data_ = new decimal[LayerCount];
-        }
-
-        protected override void OnAssignData(PacketObject base_packet, decimal[] assign_data)
-        {
-            assign_data.CopyTo(last_data_, 0);
         }
 
         protected override void OnSamplingStart()
         {
+			last_data_ = new decimal[ChannelNum];
         }
 
-        protected override void OnSamplingEnd(decimal[] sampling_data)
+		protected override void OnSamplingValue(decimal[] channel_data)
+		{
+			channel_data.CopyTo(last_data_, 0);
+		}
+
+		protected override decimal[] OnSamplingEnd()
         {
-            last_data_.CopyTo(sampling_data, 0);
+			return (last_data_);
         }
     }
 }

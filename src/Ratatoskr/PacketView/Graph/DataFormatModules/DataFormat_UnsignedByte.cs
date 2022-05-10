@@ -8,9 +8,13 @@ namespace Ratatoskr.PacketView.Graph.DataFormatModules
 {
     internal class DataFormat_UnsignedByte : DataFormatModule
     {
-        protected override void OnAssignData(byte assign_data)
+		public DataFormat_UnsignedByte(PacketViewPropertyImpl prop) : base(prop)
+		{
+		}
+
+        protected override void OnInputData(byte data)
         {
-            ExtractData((byte)assign_data);
+            ExtractValue((byte)data);
         }
     }
 }

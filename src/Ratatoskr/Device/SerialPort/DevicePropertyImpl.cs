@@ -20,7 +20,7 @@ namespace Ratatoskr.Device.SerialPort
         public IntegerConfig                  BaudRate { get; } = new IntegerConfig(9600);
         public EnumConfig<SerialPortParity>   Parity   { get; } = new EnumConfig<SerialPortParity>(SerialPortParity.None);
         public IntegerConfig                  DataBits { get; } = new IntegerConfig(8);
-        public EnumConfig<SerialPortStopBits> StopBits { get; } = new EnumConfig<SerialPortStopBits>(SerialPortStopBits.None);
+        public EnumConfig<SerialPortStopBits> StopBits { get; } = new EnumConfig<SerialPortStopBits>(SerialPortStopBits.One);
 
         public BoolConfig           fOutxCtsFlow      { get; } = new BoolConfig(false);
         public BoolConfig           fOutxDsrFlow      { get; } = new BoolConfig(false);

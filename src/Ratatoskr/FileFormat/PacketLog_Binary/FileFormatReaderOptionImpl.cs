@@ -6,17 +6,24 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.FileFormat.PacketLog_Binary
 {
+	internal enum PacketAliasModeType
+	{
+		FileName,
+		ParentDirectoryName,
+		Custom,
+	}
+
 	[Serializable]
     internal sealed class FileFormatReaderOptionImpl : FileFormatOption
     {
-        public string PacketAlias    { get; set; } = "External";
-        public uint   PacketDataSize { get; set; } = 1024;
-        public uint   PacketInterval { get; set; } = 10;
+		public PacketAliasModeType	PacketAliasMode   { get; set; } = PacketAliasModeType.FileName;
+        public string				PacketCustomAlias { get; set; } = "File";
 
+		public DateTime				PacketBaseTime		{ get; set; } = DateTime.Now;
+        public uint					PacketIntervalUsec	{ get; set; } = 10;
 
-        public FileFormatReaderOptionImpl()
-        {
-        }
+        public uint					DataMaxSize			 { get; set; } = 1024;
+		public string				DataTerminatePattern { get; set; } = "";
 
         public override FileFormatOptionEditor GetEditor()
         {

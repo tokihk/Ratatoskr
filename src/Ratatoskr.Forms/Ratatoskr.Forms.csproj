@@ -52,6 +52,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BinEditBox.cs">
       <SubType>UserControl</SubType>
     </Compile>

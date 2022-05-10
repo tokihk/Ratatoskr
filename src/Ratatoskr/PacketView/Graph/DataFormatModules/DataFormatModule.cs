@@ -9,31 +9,36 @@ namespace Ratatoskr.PacketView.Graph.DataFormatModules
 {
     internal class DataFormatModule
     {
-        public delegate void ExtractedEventHandler(object sender, PacketObject base_packet, decimal data);
+        public delegate void ExtractedEventHandler(object sender, decimal value);
 
 
-        private PacketObject base_packet_;
+		private bool byte_little_endian_ = false;
 
 
-        public event ExtractedEventHandler Extracted;
+        public event ExtractedEventHandler		Extracted;
 
 
-        public void InputData(PacketObject base_packet, IEnumerable<byte> data)
+		public DataFormatModule(PacketViewPropertyImpl prop)
+		{
+			ByteEndian = prop.InputDataByteEndian.Value;
+			BitEndian = prop.InputDataBitEndian.Value;
+		}
+
+		public DataEndianType ByteEndian { get; }
+		public DataEndianType BitEndian  { get; }
+
+        public void InputData(IEnumerable<byte> data)
         {
-            base_packet_ = base_packet;
-
             foreach (var data_one in data) {
-                OnAssignData(data_one);
+                OnInputData(data_one);
             }
         }
 
-        protected virtual void OnAssignData(byte assign_data)
+        protected virtual void OnInputData(byte data)
         {
         }
 
-        protected void ExtractData(decimal data)
+        protected void ExtractValue(decimal value)
         {
-            Extracted?.Invoke(this, base_packet_, data);
+			Extracted?.Invoke(this, value);
         }
-    }
-}

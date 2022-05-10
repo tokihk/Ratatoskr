@@ -6,27 +6,27 @@ using System.Threading.Tasks;
 
 namespace Ratatoskr.General.Pcap
 {
-    public enum PacketInfoType
+    public enum PcapPacketInfoType
     {
         TopProtocolName,
         AllProtocolName,
     }
 
-    public enum SourceInfoType
+    public enum PcapPacketSourceType
     {
         MacAddress,
         IpAddress,
         IpAddressAndPortNo
     }
 
-    public enum DestinationInfoType
+    public enum PcapPacketDestinationType
     {
         MacAddress,
         IpAddress,
         IpAddressAndPortNo
     }
 
-    public enum DataContentsType
+    public enum PcapPacketDataType
     {
         Raw,
         TopProtocolDataUnit,
@@ -34,13 +34,13 @@ namespace Ratatoskr.General.Pcap
 
     public class PcapPacketParserOption
     {
-        public PcapLinkType             LinkType            = PcapLinkType.LINKTYPE_NULL;
+        public PcapLinkType                 LinkType            = PcapLinkType.LINKTYPE_NULL;
 
-        public PacketInfoType           InfoType            = PacketInfoType.TopProtocolName;
+        public PcapPacketInfoType           InfoType            = PcapPacketInfoType.TopProtocolName;
 
-        public SourceInfoType           SourceType          = SourceInfoType.MacAddress;
-        public DestinationInfoType      DestinationType     = DestinationInfoType.MacAddress;
+        public PcapPacketSourceType         SourceType          = PcapPacketSourceType.MacAddress;
+        public PcapPacketDestinationType    DestinationType     = PcapPacketDestinationType.MacAddress;
 
-        public DataContentsType         DataContentsType    = DataContentsType.Raw;
+        public PcapPacketDataType           DataType            = PcapPacketDataType.Raw;
     }
 }

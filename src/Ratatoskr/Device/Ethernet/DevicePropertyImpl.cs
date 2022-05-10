@@ -28,10 +28,10 @@ namespace Ratatoskr.Device.Ethernet
         public StringConfig                    Interface           { get; } = new StringConfig("");
         public StringConfig                    Filter              { get; } = new StringConfig("");
 
-        public EnumConfig<PacketInfoType>      PacketInfo        { get; } = new EnumConfig<PacketInfoType>(PacketInfoType.TopProtocolName);
-        public EnumConfig<SourceInfoType>      PacketSource      { get; } = new EnumConfig<SourceInfoType>(SourceInfoType.IpAddress);
-        public EnumConfig<DestinationInfoType> PacketDestination { get; } = new EnumConfig<DestinationInfoType>(DestinationInfoType.IpAddress);
-        public EnumConfig<DataContentsType>    PacketData        { get; } = new EnumConfig<DataContentsType>(DataContentsType.TopProtocolDataUnit);
+        public EnumConfig<PcapPacketInfoType>		 PacketInfo        { get; } = new EnumConfig<PcapPacketInfoType>(PcapPacketInfoType.TopProtocolName);
+        public EnumConfig<PcapPacketSourceType>      PacketSource      { get; } = new EnumConfig<PcapPacketSourceType>(PcapPacketSourceType.IpAddress);
+        public EnumConfig<PcapPacketDestinationType> PacketDestination { get; } = new EnumConfig<PcapPacketDestinationType>(PcapPacketDestinationType.IpAddress);
+        public EnumConfig<PcapPacketDataType>		 PacketData        { get; } = new EnumConfig<PcapPacketDataType>(PcapPacketDataType.TopProtocolDataUnit);
 
         public override DeviceProperty Clone()
         {

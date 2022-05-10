@@ -113,7 +113,7 @@ namespace Ratatoskr.Device.Ethernet
         {
             CBox_PacketInfoType.BeginUpdate();
             {
-                foreach (PacketInfoType type in Enum.GetValues(typeof(PacketInfoType))) {
+                foreach (PcapPacketInfoType type in Enum.GetValues(typeof(PcapPacketInfoType))) {
                     CBox_PacketInfoType.Items.Add(type);
                 }
 				CBox_PacketInfoType.SelectedIndex = 0;
@@ -125,7 +125,7 @@ namespace Ratatoskr.Device.Ethernet
         {
             CBox_PacketSourceType.BeginUpdate();
             {
-                foreach (SourceInfoType type in Enum.GetValues(typeof(SourceInfoType))) {
+                foreach (PcapPacketSourceType type in Enum.GetValues(typeof(PcapPacketSourceType))) {
                     CBox_PacketSourceType.Items.Add(type);
                 }
 				CBox_PacketSourceType.SelectedIndex = 0;
@@ -137,7 +137,7 @@ namespace Ratatoskr.Device.Ethernet
         {
             CBox_PacketDestinationType.BeginUpdate();
             {
-                foreach (DestinationInfoType type in Enum.GetValues(typeof(DestinationInfoType))) {
+                foreach (PcapPacketDestinationType type in Enum.GetValues(typeof(PcapPacketDestinationType))) {
                     CBox_PacketDestinationType.Items.Add(type);
                 }
 				CBox_PacketDestinationType.SelectedIndex = 0;
@@ -149,7 +149,7 @@ namespace Ratatoskr.Device.Ethernet
         {
             CBox_PacketDataType.BeginUpdate();
             {
-                foreach (DataContentsType type in Enum.GetValues(typeof(DataContentsType))) {
+                foreach (PcapPacketDataType type in Enum.GetValues(typeof(PcapPacketDataType))) {
                     CBox_PacketDataType.Items.Add(type);
                 }
 				CBox_PacketDataType.SelectedIndex = 0;
@@ -201,10 +201,10 @@ namespace Ratatoskr.Device.Ethernet
 
             devp_.Filter.Value = TBox_RecvFilter.Text;
 
-            devp_.PacketInfo.Value = (PacketInfoType)CBox_PacketInfoType.SelectedItem;
-            devp_.PacketSource.Value = (SourceInfoType)CBox_PacketSourceType.SelectedItem;
-            devp_.PacketDestination.Value = (DestinationInfoType)CBox_PacketDestinationType.SelectedItem;
-            devp_.PacketData.Value = (DataContentsType)CBox_PacketDataType.SelectedItem;
+            devp_.PacketInfo.Value = (PcapPacketInfoType)CBox_PacketInfoType.SelectedItem;
+            devp_.PacketSource.Value = (PcapPacketSourceType)CBox_PacketSourceType.SelectedItem;
+            devp_.PacketDestination.Value = (PcapPacketDestinationType)CBox_PacketDestinationType.SelectedItem;
+            devp_.PacketData.Value = (PcapPacketDataType)CBox_PacketDataType.SelectedItem;
         }
 
         private void CBox_IfceList_SelectedIndexChanged(object sender, EventArgs e)

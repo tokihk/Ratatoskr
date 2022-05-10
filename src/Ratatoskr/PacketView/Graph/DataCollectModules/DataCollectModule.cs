@@ -3,116 +3,210 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ratatoskr.Gate;
+using Ratatoskr.Forms;
+using Ratatoskr.General;
 using Ratatoskr.General.Packet;
 
 namespace Ratatoskr.PacketView.Graph.DataCollectModules
 {
     internal class DataCollectModule
     {
+		private class ChannelValueInfo
+		{
+			public uint		BitSize;
+			public bool		ReverseByteEndian;
+			public bool		ReverseBitEndian;
+			public bool		SignedValue;
+		}
+
+
+
         public delegate void SampledEventHandler(object sender, decimal[] data);
 
 
-        private decimal[] layer_data_;
-        private uint      layer_data_index_ = 0;
+		private PacketViewPropertyImpl prop_;
 
-        private bool      sampling_init_ = false;
-        private TimeSpan  sampling_ival_;
-        private DateTime  sampling_start_time_ = DateTime.MinValue;
+		private SamplingTriggerType		sampling_trigger_;
+
+        private bool		ival_sampling_init_ = false;
+        private DateTime	ival_sampling_time_ = DateTime.MinValue;
+        private TimeSpan	ival_sampling_span_;
+
+		private byte[]		data_block_;
+		private int			data_block_size_ = 0;
+		private int			data_block_ch_num_ = 0;
+        private DateTime	data_block_time_ = DateTime.MinValue;
+
+		private ChannelValueInfo[] ch_value_infos_ = null;
 
 
-        private bool auto_update_ = true;
+		private DateTime  value_datetime_ = DateTime.MinValue;
+		private TimeSpan  value_span_ = TimeSpan.Zero;
+		private decimal[] value_;
+		private int       value_index_;
+
+        private bool      realtime_mode_ = true;
 
         
         public event SampledEventHandler Sampled;
 
 
-        public DataCollectModule(uint layer_count, uint sampling_ival)
+        public DataCollectModule(PacketViewPropertyImpl prop)
         {
-            LayerCount = Math.Max(1, layer_count);
-            layer_data_ = new decimal[LayerCount];
+			prop_ = prop;
 
-            sampling_ival_ = TimeSpan.FromMilliseconds(sampling_ival);
+			sampling_trigger_ = prop.SamplingTrigger.Value;
+
+			switch (prop.SamplingIntervalUnit.Value) {
+				case SamplingIntervalUnitType.Hz:
+					ival_sampling_span_ = TimeSpan.FromTicks((long)(10000000 / prop.SamplingInterval.Value));
+					break;
+				case SamplingIntervalUnitType.kHz:
+					ival_sampling_span_ = TimeSpan.FromTicks((long)(10000 / prop.SamplingInterval.Value));
+					break;
+				case SamplingIntervalUnitType.sec:
+					ival_sampling_span_ = TimeSpan.FromTicks((long)(prop.SamplingInterval.Value * 10000000));
+					break;
+				case SamplingIntervalUnitType.msec:
+					ival_sampling_span_ = TimeSpan.FromTicks((long)(prop.SamplingInterval.Value * 10000));
+					break;
+			}
+
+			data_block_ = new byte[Math.Max(1, (int)prop.InputDataBlockSize.Value)];
+			data_block_size_ = 0;
+
+			data_block_ch_num_ = (int)prop.InputDataChannelNum.Value;
+
+			/* チャンネル設定から解析機を生成 */
+			var ch_value_info_list = new List<ChannelValueInfo>();
+			var value_bit_size = 0;
+			var value_bit_size_max = data_block_.Length * 8;
+
+			foreach (var ch_config in prop.ChannelList.Value.Select((v, i) => (v, i))) {
+				/* 設定ブロック数を超えるときは終了 */
+				if (ch_config.i >= data_block_ch_num_)break;
+
+				/* チャンネルのデータサイズ加算後のサイズがデータブロックサイズを超えるときは終了 */
+				if ((value_bit_size + ch_config.v.ValueBitSize) > value_bit_size_max)break;
+
+				ch_value_info_list.Add(new ChannelValueInfo()
+				{
+					BitSize = ch_config.v.ValueBitSize,
+					ReverseByteEndian = ch_config.v.ReverseByteEndian,
+					ReverseBitEndian = ch_config.v.ReverseBitEndian,
+					SignedValue = ch_config.v.SignedValue,
+				});
+			}
+
+			ch_value_infos_ = ch_value_info_list.ToArray();
         }
 
-        public uint LayerCount { get; }
-
-        public bool AutoUpdate
+        public bool RealtimeMode
         {
-            get { return (auto_update_); }
+            get { return (realtime_mode_); }
             set
             {
-                if (auto_update_ == value)return;
+                if (realtime_mode_ == value)return;
 
-                auto_update_ = value;
+				Debugger.DebugManager.MessageOut(realtime_mode_);
 
-                OnAutoUpdateChanged();
+                realtime_mode_ = value;
 
-                if (auto_update_) {
-                    sampling_init_ = true;
-                    sampling_start_time_ = DateTime.Now;
-                    OnSamplingStart();
+                OnModeChanged();
+
+                if (realtime_mode_) {
+					InitSampling(DateTime.Now);
                 }
             }
         }
 
-        private void Sampling(DateTime next_start_time)
+        private void Sampling()
         {
-            if (sampling_init_) {
-                var data = new decimal[layer_data_.Length];
-
-                OnSamplingEnd(data);
-
-                Sampled?.Invoke(this, data);
-            }
-
-            sampling_init_ = true;
-            sampling_start_time_ = next_start_time;
-            OnSamplingStart();
+			Sampled?.Invoke(this, OnSampling());
         }
 
-        private void SamplingProc(DateTime sampling_time)
-        {
-            if (sampling_ival_.TotalMilliseconds == 0)return;
+		private void TimeSamplingProc(DateTime cur_time)
+		{
+			/* サンプリング開始時刻より遡る場合は強制サンプリング */
+			if (ival_sampling_time_ > cur_time) {
+				ival_sampling_time_ = cur_time;
+				Sampling();
+			}
 
-            /* サンプリング時間が設定されている場合は入力時間に達するまでサンプリングを行う */
-            while (sampling_time > (sampling_start_time_ + sampling_ival_)) {
-                Sampling(sampling_start_time_ + sampling_ival_);
-            }
-        }
+			/* 次のサンプリング時刻が入力時刻を超えるまで強制サンプリング */
+			while ((ival_sampling_time_ + ival_sampling_span_) <= cur_time) {
+				Sampling();
+				ival_sampling_time_ += ival_sampling_span_;
+			}
+		}
 
-        public void InputData(PacketObject base_packet, decimal data)
-        {
-            /* 最初のデータ入力でサンプリング開始 */
-            if (!sampling_init_) {
-                sampling_init_ = true;
-                sampling_start_time_ = base_packet.MakeTime;
-                OnSamplingStart();
-            }
+		public void InputData(DateTime input_dt, IEnumerable<byte> data)
+		{
+			if (sampling_trigger_ == SamplingTriggerType.TimeInterval) {
+				/* 時間サンプリング開始 */
+				if (!ival_sampling_init_) {
+					ival_sampling_init_ = true;
+					ival_sampling_time_ = input_dt;
+				}
 
-            /* データをチャンネルバッファに格納 */
-            if (layer_data_index_ < layer_data_.Length) {
-                layer_data_[layer_data_index_++] = data;
+				TimeSamplingProc(input_dt);
+			}
 
-                /* データが集まったら上位層に通知 */
-                if (layer_data_index_ >= layer_data_.Length) {
-                    OnAssignData(base_packet, layer_data_.Clone() as decimal[]);
-                    layer_data_index_ = 0;
+			/* データブロック収集 */
+			foreach (var data_one in data) {
+				data_block_[data_block_size_++] = data_one;
 
-                    /* サンプリング設定がOFFの場合はデータが集まるたびにサンプリング処理 */
-                    if (sampling_ival_.TotalMilliseconds == 0) {
-                        Sampling(base_packet.MakeTime);
-                    }
-                }
-            }
+				/* データブロックが集まったら解析 */
+				if (data_block_size_ >= data_block_.Length) {
+					ParseDataBlock(data_block_);
+					data_block_size_ = 0;
+				}
+			}
+		}
 
-            SamplingProc(base_packet.MakeTime);
-        }
+		private void ParseDataBlock(byte[] data_block)
+		{
+			var data_block_all = new BitData(data_block, (uint)data_block.Length * 8);
+			var value_list = new decimal[data_block_ch_num_];
+			var bit_offset = (uint)0;
+			var ch_value_info = (ChannelValueInfo)null;
+
+			/* CH設定に合わせてデータ抽出 */
+			for (var ch_index = 0; ch_index < ch_value_infos_.Length; ch_index++) {
+				ch_value_info = ch_value_infos_[ch_index];
+
+				if (ch_value_info.BitSize == 0)continue;
+
+				/* データブロックからCH設定に合致する位置のデータを抽出 */
+				var data_block_ch = data_block_all.GetBitData(bit_offset, ch_value_info.BitSize);
+
+				if (ch_value_info.ReverseBitEndian) {
+					data_block_ch.ReverseBitEndian();
+				}
+				if (ch_value_info.ReverseByteEndian) {
+					data_block_ch.ReverseByteEndian();
+				}
+
+				value_list[ch_index] = data_block_ch.GetInteger(ch_value_info.SignedValue);
+			}
+
+			/* 抽出したチャンネル値を上層へ通知 */
+			OnExtractedValue(value_list);
+
+			if (sampling_trigger_ == SamplingTriggerType.DataBlockDetect) {
+				Sampling();
+			}
+		}
 
         public void Poll()
         {
-            if (auto_update_) {
-                SamplingProc(DateTime.Now);
-            }
+			if ((!GatePacketManager.IsSaveBusy)
+				&& (!GatePacketManager.IsLoadBusy)
+				&& (!FormTaskManager.IsRedrawBusy)
+			) {
+				TimeSamplingProc(DateTime.Now);
+			}
 
             OnPoll();
         }
@@ -121,27 +215,21 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
         {
         }
 
-        protected virtual void OnAutoUpdateChanged()
+        protected virtual void OnModeChanged()
         {
         }
 
-        /* レイヤー数分のデータが集まった時に発生
-         * 通知されたデータは継承先が管理する
-         */
-        protected virtual void OnAssignData(PacketObject base_packet, decimal[] assign_data)
-        {
-        }
-
-        protected virtual void OnSamplingStart()
-        {
-        }
+		protected virtual void OnExtractedValue(decimal[] value)
+		{
+		}
 
         /* サンプリング条件が成立したときに発生
          * sampling_dataに格納するデータをセットする。
          * セットできるサイズはsampling_dataのサイズまで。
          */
-        protected virtual void OnSamplingEnd(decimal[] sampling_data)
+        protected virtual decimal[] OnSampling()
         {
+			return (null);
         }
     }
 }
