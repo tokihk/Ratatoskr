@@ -21,11 +21,8 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 		}
 
 
-
         public delegate void SampledEventHandler(object sender, decimal[] data);
 
-
-		private PacketViewPropertyImpl prop_;
 
 		private SamplingTriggerType		sampling_trigger_;
 
@@ -34,19 +31,10 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
         private TimeSpan	ival_sampling_span_;
 
 		private byte[]		data_block_;
-		private int			data_block_size_ = 0;
-		private int			data_block_ch_num_ = 0;
-        private DateTime	data_block_time_ = DateTime.MinValue;
+		private uint		data_block_size_ = 0;
+		private uint		data_block_ch_num_ = 0;
 
 		private ChannelValueInfo[] ch_value_infos_ = null;
-
-
-		private DateTime  value_datetime_ = DateTime.MinValue;
-		private TimeSpan  value_span_ = TimeSpan.Zero;
-		private decimal[] value_;
-		private int       value_index_;
-
-        private bool      realtime_mode_ = true;
 
         
         public event SampledEventHandler Sampled;
@@ -54,37 +42,44 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 
         public DataCollectModule(PacketViewPropertyImpl prop)
         {
-			prop_ = prop;
-
+			/* --- サンプリングトリガー --- */
 			sampling_trigger_ = prop.SamplingTrigger.Value;
 
-			switch (prop.SamplingIntervalUnit.Value) {
-				case SamplingIntervalUnitType.Hz:
-					ival_sampling_span_ = TimeSpan.FromTicks((long)(10000000 / prop.SamplingInterval.Value));
-					break;
-				case SamplingIntervalUnitType.kHz:
-					ival_sampling_span_ = TimeSpan.FromTicks((long)(10000 / prop.SamplingInterval.Value));
-					break;
-				case SamplingIntervalUnitType.sec:
-					ival_sampling_span_ = TimeSpan.FromTicks((long)(prop.SamplingInterval.Value * 10000000));
-					break;
-				case SamplingIntervalUnitType.msec:
-					ival_sampling_span_ = TimeSpan.FromTicks((long)(prop.SamplingInterval.Value * 10000));
-					break;
+			if (sampling_trigger_ == SamplingTriggerType.TimeInterval) {
+				switch (prop.SamplingIntervalUnit.Value) {
+					case SamplingIntervalUnitType.Hz:
+						ival_sampling_span_ = TimeSpan.FromTicks((long)(10000000 / prop.SamplingInterval.Value));
+						break;
+					case SamplingIntervalUnitType.kHz:
+						ival_sampling_span_ = TimeSpan.FromTicks((long)(10000 / prop.SamplingInterval.Value));
+						break;
+					case SamplingIntervalUnitType.sec:
+						ival_sampling_span_ = TimeSpan.FromTicks((long)(prop.SamplingInterval.Value * 10000000));
+						break;
+					case SamplingIntervalUnitType.msec:
+						ival_sampling_span_ = TimeSpan.FromTicks((long)(prop.SamplingInterval.Value * 10000));
+						break;
+				}
 			}
 
+			/* --- データブロックサイズ --- */
 			data_block_ = new byte[Math.Max(1, (int)prop.InputDataBlockSize.Value)];
 			data_block_size_ = 0;
 
-			data_block_ch_num_ = (int)prop.InputDataChannelNum.Value;
+			/* --- データブロック内のチャンネル数 --- */
+			if (prop.GraphTarget.Value == GraphTargetType.DataBlockCount) {
+				data_block_ch_num_ = 1;
+			} else {
+				data_block_ch_num_ = (uint)prop.InputDataChannelNum.Value;
+			}
 
-			/* チャンネル設定から解析機を生成 */
+			/* --- チャンネル情報 --- */
 			var ch_value_info_list = new List<ChannelValueInfo>();
 			var value_bit_size = 0;
 			var value_bit_size_max = data_block_.Length * 8;
 
 			foreach (var ch_config in prop.ChannelList.Value.Select((v, i) => (v, i))) {
-				/* 設定ブロック数を超えるときは終了 */
+				/* 設定チャンネル数を超えるときは終了 */
 				if (ch_config.i >= data_block_ch_num_)break;
 
 				/* チャンネルのデータサイズ加算後のサイズがデータブロックサイズを超えるときは終了 */
@@ -102,28 +97,28 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 			ch_value_infos_ = ch_value_info_list.ToArray();
         }
 
-        public bool RealtimeMode
-        {
-            get { return (realtime_mode_); }
-            set
-            {
-                if (realtime_mode_ == value)return;
-
-				Debugger.DebugManager.MessageOut(realtime_mode_);
-
-                realtime_mode_ = value;
-
-                OnModeChanged();
-
-                if (realtime_mode_) {
-					InitSampling(DateTime.Now);
-                }
-            }
-        }
+		public uint ValueChannelNum
+		{
+			get { return (data_block_ch_num_); }
+		}
 
         private void Sampling()
         {
-			Sampled?.Invoke(this, OnSampling());
+			var values = OnSampling();
+
+			if (values != null) {
+				/* 取得したデータ値の数が設定チャンネル数と異なる場合は調整 */
+				if (values.Length != data_block_ch_num_) {
+					var values_new = new decimal[data_block_ch_num_];
+
+					Array.Copy(values, values_new, Math.Min(values.Length, values_new.Length));
+					values = values_new;
+				}
+			} else {
+				values = new decimal[data_block_ch_num_];
+			}
+
+			Sampled?.Invoke(this, values);
         }
 
 		private void TimeSamplingProc(DateTime cur_time)
@@ -168,31 +163,31 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 		private void ParseDataBlock(byte[] data_block)
 		{
 			var data_block_all = new BitData(data_block, (uint)data_block.Length * 8);
-			var value_list = new decimal[data_block_ch_num_];
+			var ch_value_list = new decimal[data_block_ch_num_];
 			var bit_offset = (uint)0;
 			var ch_value_info = (ChannelValueInfo)null;
 
-			/* CH設定に合わせてデータ抽出 */
+			/* CH情報のデータ値を抽出 */
 			for (var ch_index = 0; ch_index < ch_value_infos_.Length; ch_index++) {
 				ch_value_info = ch_value_infos_[ch_index];
 
 				if (ch_value_info.BitSize == 0)continue;
 
 				/* データブロックからCH設定に合致する位置のデータを抽出 */
-				var data_block_ch = data_block_all.GetBitData(bit_offset, ch_value_info.BitSize);
+				var ch_block = data_block_all.GetBitData(bit_offset, ch_value_info.BitSize);
 
 				if (ch_value_info.ReverseBitEndian) {
-					data_block_ch.ReverseBitEndian();
+					ch_block.ReverseBitEndian();
 				}
 				if (ch_value_info.ReverseByteEndian) {
-					data_block_ch.ReverseByteEndian();
+					ch_block.ReverseByteEndian();
 				}
 
-				value_list[ch_index] = data_block_ch.GetInteger(ch_value_info.SignedValue);
+				ch_value_list[ch_index] = ch_block.GetInteger(ch_value_info.SignedValue);
 			}
 
 			/* 抽出したチャンネル値を上層へ通知 */
-			OnExtractedValue(value_list);
+			OnExtractedValue(ch_value_list);
 
 			if (sampling_trigger_ == SamplingTriggerType.DataBlockDetect) {
 				Sampling();
@@ -201,7 +196,8 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 
         public void Poll()
         {
-			if ((!GatePacketManager.IsSaveBusy)
+			if (   (sampling_trigger_ == SamplingTriggerType.TimeInterval)
+				&& (!GatePacketManager.IsSaveBusy)
 				&& (!GatePacketManager.IsLoadBusy)
 				&& (!FormTaskManager.IsRedrawBusy)
 			) {
@@ -212,10 +208,6 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
         }
 
         protected virtual void OnPoll()
-        {
-        }
-
-        protected virtual void OnModeChanged()
         {
         }
 

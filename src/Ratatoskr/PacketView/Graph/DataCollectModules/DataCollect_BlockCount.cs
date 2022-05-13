@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,23 +8,27 @@ using Ratatoskr.General.Packet;
 
 namespace Ratatoskr.PacketView.Graph.DataCollectModules
 {
-    internal class DataCollect_Value : DataCollectModule
+    internal class DataCollect_BlockCount : DataCollectModule
     {
-        private decimal[] values_latest_;
+        private ulong data_count_ = 0;
 
 
-        public DataCollect_Value(PacketViewPropertyImpl prop) : base(prop)
+        public DataCollect_BlockCount(PacketViewPropertyImpl prop) : base(prop)
         {
         }
 
 		protected override void OnExtractedValue(decimal[] value)
 		{
-			values_latest_ = value;
+			data_count_++;
 		}
 
 		protected override decimal[] OnSampling()
 		{
-			return (values_latest_);
+			var sampling_value = data_count_;
+
+			data_count_ = 0;
+
+			return (new decimal[]{ sampling_value });
 		}
     }
 }

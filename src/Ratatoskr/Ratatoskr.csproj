@@ -679,22 +679,10 @@
     </Compile>
     <Compile Include="PacketConverter\Transfer\PacketConverterPropertyImpl.cs" />
     <Compile Include="PacketView\Graph\Configs\ChannelListConfig.cs" />
-    <Compile Include="PacketView\Graph\DataCollectModules\DataCollectModule - コピー.cs" />
     <Compile Include="PacketView\Graph\DataCollectModules\DataCollectModule.cs" />
-    <Compile Include="PacketView\Graph\DataCollectModules\DataCollect_Count.cs" />
+    <Compile Include="PacketView\Graph\DataCollectModules\DataCollect_BlockCount.cs" />
     <Compile Include="PacketView\Graph\DataCollectModules\DataCollect_Value.cs" />
     <Compile Include="PacketView\Graph\DataCollectModules\DataCollect_ValueSum.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormatModule.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_IEEE754_Double.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_IEEE754_Float.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_SignedByte.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_SignedDword.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_SignedQword.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_SignedWord.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_UnsignedByte.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_UnsignedDword.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_UnsignedQword.cs" />
-    <Compile Include="PacketView\Graph\DataFormatModules\DataFormat_UnsignedWord.cs" />
     <Compile Include="PacketView\Graph\DisplayModules\DisplayInfo.cs" />
     <Compile Include="PacketView\Graph\DisplayModules\DisplayChannelInfo.cs" />
     <Compile Include="PacketView\Graph\DisplayModules\DisplayModule.cs" />

@@ -103,6 +103,9 @@
     <Compile Include="ListViewEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NumericUpDownEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PacketFilterBox.cs">
       <SubType>UserControl</SubType>
     </Compile>

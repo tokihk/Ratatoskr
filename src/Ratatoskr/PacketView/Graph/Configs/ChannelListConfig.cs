@@ -161,14 +161,14 @@ namespace Ratatoskr.PacketView.Graph.Configs
 				/* value-bit-size */
                 xml_data.SetAttribute("value-bit-size", info.ValueBitSize.ToString());
 
-				/* value-byte-endian */
-                xml_data.SetAttribute("value-byte-endian", info.ValueByteEndian.ToString());
+				/* reverse-byte-endian */
+                xml_data.SetAttribute("reverse-byte-endian", info.ReverseByteEndian.ToString());
 
-				/* value-bit-endian */
-                xml_data.SetAttribute("value-bit-endian", info.ValueBitEndian.ToString());
+				/* reverse-bit-endian */
+                xml_data.SetAttribute("reverse-bit-endian", info.ReverseBitEndian.ToString());
 
-				/* value-sign */
-                xml_data.SetAttribute("value-sign", info.ValueSign.ToString());
+				/* signed-value */
+                xml_data.SetAttribute("signed-value", info.SignedValue.ToString());
 
                 /* oscillo-vert-offset */
                 xml_data.SetAttribute("oscillo-vert-offset", info.OscilloVertOffset.ToString());

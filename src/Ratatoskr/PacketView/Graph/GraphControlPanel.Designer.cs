@@ -58,12 +58,12 @@
 			this.Btn_SamplingSettingTemplate_Load = new System.Windows.Forms.Button();
 			this.CBox_SamplingSettingTemplate = new System.Windows.Forms.ComboBox();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.label17 = new System.Windows.Forms.Label();
 			this.Num_InputDataBlockSize = new System.Windows.Forms.NumericUpDown();
 			this.label15 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
 			this.Num_InputDataChannelNum = new System.Windows.Forms.NumericUpDown();
 			this.label5 = new System.Windows.Forms.Label();
+			this.label17 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.CBox_DisplayMode = new System.Windows.Forms.ComboBox();
 			this.Btn_SamplingSetting_Apply = new System.Windows.Forms.Button();
@@ -78,8 +78,8 @@
 			this.label13 = new System.Windows.Forms.Label();
 			this.ChkBox_ByteEndian_Reverse = new System.Windows.Forms.CheckBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.label1 = new System.Windows.Forms.Label();
 			this.CBox_SamplingTrigger = new System.Windows.Forms.ComboBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -250,7 +250,7 @@
 			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.CBox_ChSet_Oscillo_Range);
 			this.groupBox2.Controls.Add(this.Num_ChSet_Oscillo_Range_Custom);
-			this.groupBox2.Location = new System.Drawing.Point(357, 290);
+			this.groupBox2.Location = new System.Drawing.Point(294, 290);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(243, 139);
 			this.groupBox2.TabIndex = 18;
@@ -334,7 +334,7 @@
 			this.label3.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.label3.Location = new System.Drawing.Point(3, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(643, 28);
+			this.label3.Size = new System.Drawing.Size(544, 28);
 			this.label3.TabIndex = 11;
 			this.label3.Text = "Sampling Setting";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -348,7 +348,7 @@
 			this.label2.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.label2.Location = new System.Drawing.Point(3, 154);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(643, 28);
+			this.label2.Size = new System.Drawing.Size(544, 28);
 			this.label2.TabIndex = 12;
 			this.label2.Text = "Display Setting";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -366,9 +366,14 @@
 			// 
 			this.Num_SamplingInterval_Value.DecimalPlaces = 1;
 			this.Num_SamplingInterval_Value.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.Num_SamplingInterval_Value.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
 			this.Num_SamplingInterval_Value.Location = new System.Drawing.Point(122, 44);
 			this.Num_SamplingInterval_Value.Maximum = new decimal(new int[] {
-            86400,
+            10000,
             0,
             0,
             0});
@@ -377,7 +382,7 @@
 			this.Num_SamplingInterval_Value.TabIndex = 0;
 			this.Num_SamplingInterval_Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.Num_SamplingInterval_Value.Value = new decimal(new int[] {
-            86400,
+            1000,
             0,
             0,
             0});
@@ -503,19 +508,10 @@
 			this.groupBox6.Controls.Add(this.label5);
 			this.groupBox6.Location = new System.Drawing.Point(3, 79);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(298, 72);
+			this.groupBox6.Size = new System.Drawing.Size(225, 72);
 			this.groupBox6.TabIndex = 5;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Input Data Format";
-			// 
-			// label17
-			// 
-			this.label17.Location = new System.Drawing.Point(6, 44);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(100, 19);
-			this.label17.TabIndex = 27;
-			this.label17.Text = "Sampling Interval";
-			this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// Num_InputDataBlockSize
 			// 
@@ -591,6 +587,15 @@
 			this.label5.Text = "Data Channel Num";
 			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// label17
+			// 
+			this.label17.Location = new System.Drawing.Point(6, 44);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(100, 19);
+			this.label17.TabIndex = 27;
+			this.label17.Text = "Sampling Interval";
+			this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
 			// groupBox3
 			// 
 			this.groupBox3.Controls.Add(this.CBox_DisplayMode);
@@ -630,7 +635,7 @@
 			this.label11.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.label11.Location = new System.Drawing.Point(3, 259);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(643, 28);
+			this.label11.Size = new System.Drawing.Size(544, 28);
 			this.label11.TabIndex = 22;
 			this.label11.Text = "Channel Setting";
 			this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -657,7 +662,7 @@
 			this.groupBox4.Controls.Add(this.ChkBox_ByteEndian_Reverse);
 			this.groupBox4.Location = new System.Drawing.Point(81, 290);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(270, 139);
+			this.groupBox4.Size = new System.Drawing.Size(204, 139);
 			this.groupBox4.TabIndex = 24;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Common Setting";
@@ -677,7 +682,7 @@
 			// 
 			this.label14.Location = new System.Drawing.Point(171, 43);
 			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(36, 19);
+			this.label14.Size = new System.Drawing.Size(27, 19);
 			this.label14.TabIndex = 25;
 			this.label14.Text = "bit";
 			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -750,21 +755,12 @@
 			this.groupBox5.Controls.Add(this.label17);
 			this.groupBox5.Controls.Add(this.CBox_SamplingInterval_Unit);
 			this.groupBox5.Controls.Add(this.Num_SamplingInterval_Value);
-			this.groupBox5.Location = new System.Drawing.Point(307, 79);
+			this.groupBox5.Location = new System.Drawing.Point(234, 79);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(298, 72);
 			this.groupBox5.TabIndex = 28;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Sampling Setting";
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(6, 18);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(100, 19);
-			this.label1.TabIndex = 28;
-			this.label1.Text = "Sampling Trigger";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// CBox_SamplingTrigger
 			// 
@@ -774,6 +770,15 @@
 			this.CBox_SamplingTrigger.Name = "CBox_SamplingTrigger";
 			this.CBox_SamplingTrigger.Size = new System.Drawing.Size(140, 20);
 			this.CBox_SamplingTrigger.TabIndex = 29;
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(6, 18);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(100, 19);
+			this.label1.TabIndex = 28;
+			this.label1.Text = "Sampling Trigger";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// GraphControlPanel
 			// 
@@ -794,7 +799,7 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label3);
 			this.Name = "GraphControlPanel";
-			this.Size = new System.Drawing.Size(649, 673);
+			this.Size = new System.Drawing.Size(550, 673);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox9.ResumeLayout(false);
 			this.groupBox9.PerformLayout();
