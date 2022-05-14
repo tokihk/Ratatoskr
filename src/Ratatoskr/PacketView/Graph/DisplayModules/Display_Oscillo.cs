@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.PacketView.Graph.Configs;
 
 
 namespace Ratatoskr.PacketView.Graph.DisplayModules
@@ -14,11 +13,13 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
     {
         private readonly Padding GRAPH_DETAILS_MARGIN;
 
-        private const int GRID_X_LINES      = 50;
-        private const int GRID_X_LINES_MAIN = 5;
+        private const int GRID_X_DIV		= 10;
+        private const int GRID_X_LINES		= 50;
+        private const int GRID_X_LINES_MAIN	= GRID_X_LINES / GRID_X_DIV;
 
-        private const int GRID_Y_LINES      = 50;
-        private const int GRID_Y_LINES_MAIN = 5;
+        private const int GRID_Y_DIV		= 10;
+        private const int GRID_Y_LINES		= 50;
+        private const int GRID_Y_LINES_MAIN	= GRID_Y_LINES / GRID_Y_DIV;
 
         private readonly Brush GRAPH_DETAILS_BG_BRUSH;
         private readonly Font  GRAPH_DETAILS_GRID_SCALE_FONT;
@@ -28,7 +29,7 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
         private readonly Pen   GRAPH_DETAILS_GRID_LINE_SUB_PEN;
 
 
-        private decimal[][]	points_;				// points_[record_point][display_point]
+        private long[][]	points_;				// points_[record_point][channel]
         private int			point_in_ = 0;
 		private uint		ch_index_max_ = 0;
 
@@ -59,33 +60,37 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
             GRAPH_DETAILS_GRID_LINE_SUB_PEN = new Pen(Color.FromArgb(40, 40, 40));
             GRAPH_DETAILS_GRID_LINE_SUB_PEN.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 
-            points_ = new decimal[Math.Max(1, (uint)prop.Oscillo_RecordPoint.Value)][];
+            points_ = new long[Math.Max(1, (uint)prop.Oscillo_RecordPoint.Value)][];
 
 			axisx_point_ = (uint)prop.Oscillo_DisplayPoint.Value;
         }
 
-        public override uint PointCount
-        {
-            get { return ((uint)points_.Length); }
-        }
-
-		private uint GetAxisYPoint(ChannelConfig ch_cfg)
+		public override uint PointCount
 		{
-			var point = (uint)0;
-
-			switch (ch_cfg.OscilloVertRange) {
-				case VertRangeType.Preset_100:		point = 100;									break;
-				case VertRangeType.Preset_200:		point = 200;									break;
-				case VertRangeType.Preset_500:		point = 500;									break;
-				case VertRangeType.Preset_10000:	point = 10000;									break;
-				case VertRangeType.Custom:			point = (uint)ch_cfg.OscilloVertRangeCustom;	break;
-				default:							point = 1;										break;
+			get
+			{
+				return ((uint)points_.Length);
 			}
-
-			return (point);
 		}
 
-        private void LoadGraphValue(uint ch_index, uint data_index, ref decimal value)
+		private (long value_min, long value_max) GetChannelValueRange(GraphChannelConfig ch_cfg)
+		{
+			var point = (uint)GRID_Y_DIV;
+
+			/* DIV単位のポイント数 */
+			switch (ch_cfg.OscilloVertRange) {
+				case VertRangeType.Preset_100:		point *= 100;									break;
+				case VertRangeType.Preset_200:		point *= 200;									break;
+				case VertRangeType.Preset_500:		point *= 500;									break;
+				case VertRangeType.Preset_10000:	point *= 10000;									break;
+				case VertRangeType.Custom:			point *= (uint)ch_cfg.OscilloVertRangeCustom;	break;
+				default:							point *= 1;										break;
+			}
+
+			return (0, point);
+		}
+
+        private void LoadGraphValue(uint ch_index, uint data_index, ref long value)
         {
             var draw_point_offset = point_in_ + data_index;
 
@@ -97,7 +102,9 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
                 && (ch_index < points_[draw_point_offset].Length)
             ) {
                 value = points_[draw_point_offset][ch_index];
-            }
+            } else {
+				value = 0;
+			}
         }
 
 		private void DrawGraph(DisplayContext dc)
@@ -110,9 +117,11 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 			DrawGraph_Grid(dc);
 
 			/* グラフのデータを描画 */
-			for (var ch_index = (uint)0; ch_index < dc.ChannelConfigs.Length; ch_index++) {
-				if (ch_index < ch_index_max_) {
-					DrawGraph_Data(dc, ch_index, dc.ChannelConfigs[ch_index]);
+			if (dc.ChannelConfigs != null) {
+				for (var ch_index = (uint)0; ch_index < dc.ChannelConfigs.Length; ch_index++) {
+					if (ch_index < ch_index_max_) {
+						DrawGraph_Data(dc, ch_index, dc.ChannelConfigs[ch_index]);
+					}
 				}
 			}
 
@@ -135,35 +144,15 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
             draw_scale_format.Alignment = StringAlignment.Center;
             draw_scale_format.LineAlignment = StringAlignment.Near;
 
-			{
-				var rect = new Rectangle();
-				var format = new StringFormat();
-
-				rect.X = dc.CanvasRect.X;
-				rect.Y = dc.CanvasRect.Y - 10;
-				rect.Width = 100;
-				rect.Height = 100;
-
-				format.Alignment = StringAlignment.Near;
-				format.LineAlignment = StringAlignment.Near;
-
-				gdc_graph_.DrawString(
-					"test",
-					GRAPH_DETAILS_GRID_SCALE_FONT,
-					GRAPH_DETAILS_GRID_SCALE_BRUSH,
-					rect,
-					format);
-			}
-
             for (var index = 0; index <= GRID_X_LINES; index++) {
                 draw_offset = graph_rect_.Left + graph_rect_.Width * index / GRID_X_LINES;
 
                 /* 目盛(最右を0とする) */
                 if ((index % GRID_X_LINES_MAIN) == 0) {
-					var str = (dc.HScrollPos + index * (axisx_point_ / GRID_X_LINES) - PointCount);
+					var str = (dc.HScrollPos + index * (axisx_point_ / GRID_X_LINES) - points_.Length);
 
                     gdc_all_.DrawString(
-                        (dc.HScrollPos + index * (axisx_point_ / GRID_X_LINES) - PointCount).ToString(),
+                        (dc.HScrollPos + index * (axisx_point_ / GRID_X_LINES) - points_.Length).ToString(),
                         GRAPH_DETAILS_GRID_SCALE_FONT,
                         GRAPH_DETAILS_GRID_SCALE_BRUSH,
                         draw_scale_rect,
@@ -233,26 +222,27 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 			);
         }
 
-        private void DrawGraph_Data(DisplayContext dc, uint ch_index, ChannelConfig ch_cfg)
+        private void DrawGraph_Data(DisplayContext dc, uint ch_index, GraphChannelConfig ch_cfg)
         {
-			var axisy_point = GetAxisYPoint(ch_cfg);
-			var axisy_max = axisy_point * (GRID_Y_LINES / GRID_Y_LINES_MAIN);
+			var axisy_point = GetChannelValueRange(ch_cfg);
 
-            var value_y = (decimal)0;
-            var value_y_canvas = 0;
+            var value_y = (long)0;
+			var (value_y_min, value_y_max) = GetChannelValueRange(ch_cfg);
+            var value_y_canvas = (long)0;
 
             var value_x_canvas = 0;
             var value_x_canvas_last = 0;
 
-            var value_x_step  = (decimal)graph_rect_.Width / axisx_point_;
-            var value_y_mag = (decimal)graph_rect_.Height / axisy_point;
+            var value_canvas_x_step  = (double)graph_rect_.Width / axisx_point_;
+            var value_canvas_y_mag = (double)graph_rect_.Height / value_y_max;
 
             var draw_pen = new Pen(ch_cfg.ForeColor);
             var draw_points = new List<Point>();
 
-            for (var value_x = dc.HScrollPos; value_x <= axisx_max_; value_x++) {
+			/* for Debug */
+			for (var value_x = dc.HScrollPos; value_x <= axisx_max_; value_x++) {
                 /* 実データを座標データに置き換える */
-                value_x_canvas = (int)((value_x - axisx_min_) * value_x_step);
+                value_x_canvas = (int)((value_x - axisx_min_) * value_canvas_x_step);
 
                 if (   (value_x == axisx_min_)
                     || (value_x_canvas != value_x_canvas_last)
@@ -260,13 +250,18 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
                     /* 実データを取得 */
                     LoadGraphValue(ch_index, value_x, ref value_y);
 
-                    /* 実データを補正 */
-                    value_y = value_y + ch_cfg.OscilloVertOffset;
+                    /* 座標データに変換 */
+                    value_y_canvas = (long)((value_y_max - value_y) * value_canvas_y_mag) - graph_rect_.Height / 2;
 
-                    /* 座標データに変換(ウィンドウ座標はwordサイズ以内としなければ例外が発生) */
-                    value_y_canvas = (int)Math.Max(short.MinValue, Math.Min(short.MaxValue, (axisy_max - value_y) * value_y_mag));
+					/* 表示位置をオフセット補正 */
+					if (ch_cfg.OscilloVertOffset != 0) {
+						value_y_canvas = value_y_canvas - (graph_rect_.Height * ch_cfg.OscilloVertOffset / 100);
+					}
 
-                    draw_points.Add(new Point(graph_rect_.Left + value_x_canvas, graph_rect_.Top + value_y_canvas));
+                    /* 座標データを補正(ウィンドウ座標はwordサイズ以内としなければ例外が発生) */
+                    value_y_canvas = (long)Math.Max(short.MinValue, Math.Min(short.MaxValue, value_y_canvas));
+
+                    draw_points.Add(new Point(graph_rect_.Left + value_x_canvas, graph_rect_.Top + (int)value_y_canvas));
                     value_x_canvas_last = value_x_canvas;
                 }
             }
@@ -274,17 +269,40 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
             if (draw_points.Count > 1) {
                 gdc_graph_.DrawLines(draw_pen, draw_points.ToArray());
             }
+
+#if DEBUG
+			if (ch_index == 0) {
+				var str_format = new StringFormat();
+
+				str_format.Alignment = StringAlignment.Near;
+				str_format.LineAlignment = StringAlignment.Near;
+
+				gdc_all_.DrawString(
+					string.Format(
+						"x={0} y={1} offset_y={2}",
+						graph_rect_.Left + value_x_canvas,
+						graph_rect_.Top + (int)value_y_canvas,
+						ch_cfg.OscilloVertOffset
+					),
+                    GRAPH_DETAILS_GRID_SCALE_FONT,
+                    GRAPH_DETAILS_GRID_SCALE_BRUSH,
+					10,
+					10,
+					str_format
+				);
+			}
+#endif
         }
 
         protected override void OnClearValue()
         {
-            points_ = new decimal[points_.Length][];
+            points_ = new long[points_.Length][];
             point_in_ = 0;
 
 			ch_index_max_ = 0;
         }
 
-        protected override void OnInputValue(decimal[] value)
+        protected override void OnInputValue(long[] value)
         {
             points_[point_in_++] = value;
             if (point_in_ >= points_.Length) {

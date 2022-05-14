@@ -279,6 +279,7 @@
 			this.TBar_ChSet_Oscillo_VertOffset.TabIndex = 13;
 			this.TBar_ChSet_Oscillo_VertOffset.TickFrequency = 10;
 			this.TBar_ChSet_Oscillo_VertOffset.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.TBar_ChSet_Oscillo_VertOffset.ValueChanged += new System.EventHandler(this.OnChannelSettingUpdated);
 			// 
 			// label8
 			// 

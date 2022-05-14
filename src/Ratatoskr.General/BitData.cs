@@ -190,7 +190,7 @@ namespace Ratatoskr.General
                 raw_data = GetIntegerBit(bit_offset, bitlen);
 			}
 
-            var ret_data = (Int64)0;
+            var ret_data = (Int64)raw_data;
 
             if (signed) {
                 if (bitlen < 64) {

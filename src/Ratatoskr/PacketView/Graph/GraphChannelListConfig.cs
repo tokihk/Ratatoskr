@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Ratatoskr.Config;
 
-namespace Ratatoskr.PacketView.Graph.Configs
+namespace Ratatoskr.PacketView.Graph
 {
 	internal enum VertRangeType
 	{
@@ -18,7 +18,7 @@ namespace Ratatoskr.PacketView.Graph.Configs
 		Custom,
 	}
 
-    internal sealed class ChannelConfig
+    internal sealed class GraphChannelConfig
     {
 		public bool				Visible					{ get; set; } = false;
 		public Color			ForeColor				{ get; set; } = Color.Black;
@@ -31,46 +31,46 @@ namespace Ratatoskr.PacketView.Graph.Configs
 		public uint				OscilloVertRangeCustom	{ get; set; } = 1000;
 
 
-        public ChannelConfig()
+        public GraphChannelConfig()
         {
         }
     }
 
-    internal sealed class ChannelListConfig : IConfigDataReadOnly<List<ChannelConfig>>, IConfigReader, IConfigWriter
+    internal sealed class GraphChannelListConfig : IConfigDataReadOnly<List<GraphChannelConfig>>, IConfigReader, IConfigWriter
     {
         private const string XML_NODE_DATA = "data";
 
 
-        public List<ChannelConfig> Value { get; } = new List<ChannelConfig>();
+        public List<GraphChannelConfig> Value { get; } = new List<GraphChannelConfig>();
 
 
-        public ChannelListConfig()
+        public GraphChannelListConfig()
         {
-            Value.Add(new ChannelConfig()
+            Value.Add(new GraphChannelConfig()
 			{
 				Visible = true,
 				ForeColor = Color.LightGoldenrodYellow,
 			});
 
-            Value.Add(new ChannelConfig()
+            Value.Add(new GraphChannelConfig()
 			{
 				Visible = true,
 				ForeColor = Color.LightBlue,
 			});
 
-            Value.Add(new ChannelConfig()
+            Value.Add(new GraphChannelConfig()
 			{
 				Visible = true,
 				ForeColor = Color.LightPink,
 			});
 
-            Value.Add(new ChannelConfig()
+            Value.Add(new GraphChannelConfig()
 			{
 				Visible = true,
 				ForeColor = Color.LightGreen,
 			});
 
-            Value.Add(new ChannelConfig()
+            Value.Add(new GraphChannelConfig()
 			{
 				Visible = true,
 				ForeColor = Color.LightSalmon,
@@ -97,7 +97,7 @@ namespace Ratatoskr.PacketView.Graph.Configs
         {
             if (xml_node == null)return;
 
-            var newobj = new ChannelConfig();
+            var newobj = new GraphChannelConfig();
 
             /* パラメータ読み込み */
 

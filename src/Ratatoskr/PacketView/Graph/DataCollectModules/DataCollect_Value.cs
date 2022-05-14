@@ -9,19 +9,19 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 {
     internal class DataCollect_Value : DataCollectModule
     {
-        private decimal[] values_latest_;
+        private long[] values_latest_;
 
 
         public DataCollect_Value(PacketViewPropertyImpl prop) : base(prop)
         {
         }
 
-		protected override void OnExtractedValue(decimal[] value)
+		protected override void OnExtractedValue(long[] value)
 		{
 			values_latest_ = value;
 		}
 
-		protected override decimal[] OnSampling()
+		protected override long[] OnSampling()
 		{
 			return (values_latest_);
 		}

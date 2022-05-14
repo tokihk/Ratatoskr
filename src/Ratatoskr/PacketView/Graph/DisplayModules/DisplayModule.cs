@@ -5,21 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.PacketView.Graph.Configs;
 
 namespace Ratatoskr.PacketView.Graph.DisplayModules
 {
-    internal class DisplayModule
-    {
-		private const int CHANNEL_NUM_MAX = 8;
+	internal class DisplayModule
+	{
+		public DisplayModule(PacketViewPropertyImpl prop)
+		{
+		}
 
+		public uint ChannelNumber
+		{
+			get;
+		}
 
-        public DisplayModule(PacketViewPropertyImpl prop, uint channel_num_max)
-        {
-			ChannelNum = Math.Min((uint)prop.ChannelList.Value.Count, channel_num_max);
-        }
-
-		public uint ChannelNum { get; }
+		public virtual uint PointCount
+		{
+			get { return (0); }
+		}
 
         public void ClearValue()
         {
@@ -30,12 +33,12 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
         {
         }
 
-        public void InputValue(decimal[] value)
+        public void InputValue(long[] value)
         {
             OnInputValue(value);
         }
 
-        protected virtual void OnInputValue(decimal[] value)
+        protected virtual void OnInputValue(long[] value)
         {
         }
 

@@ -20,10 +20,10 @@ namespace Ratatoskr.PacketView.Graph
         private DisplayModule     disp_mod_ = null;
         private DataCollectModule data_collect_mod_ = null;
 
-        private Timer disp_update_timer_ = new Timer();
+        private Timer graph_update_timer_ = new Timer();
 
         private Panel panel1;
-        private TrackBar TBar_GraphOffset;
+        private TrackBar TBar_GraphHorizontalOffset;
         private PictureBox PBox_GraphDetails;
         private GraphControlPanel GCPanel_Main;
         private System.Windows.Forms.Panel Panel_Graph;
@@ -35,11 +35,11 @@ namespace Ratatoskr.PacketView.Graph
 			this.GCPanel_Main = new Ratatoskr.PacketView.Graph.GraphControlPanel();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.PBox_GraphDetails = new System.Windows.Forms.PictureBox();
-			this.TBar_GraphOffset = new System.Windows.Forms.TrackBar();
+			this.TBar_GraphHorizontalOffset = new System.Windows.Forms.TrackBar();
 			this.Panel_Graph.SuspendLayout();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBox_GraphDetails)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.TBar_GraphOffset)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.TBar_GraphHorizontalOffset)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// Panel_Graph
@@ -62,6 +62,7 @@ namespace Ratatoskr.PacketView.Graph
 			this.GCPanel_Main.TabIndex = 1;
 			this.GCPanel_Main.SamplingSettingUpdated += new System.EventHandler(this.GCPanel_Main_SamplingSettingUpdated);
 			this.GCPanel_Main.DisplaySettingUpdated += new System.EventHandler(this.GCPanel_Main_DisplaySettingUpdated);
+			this.GCPanel_Main.ChannelSettingUpdated += new System.EventHandler(this.GCPanel_Main_ChannelSettingUpdated);
 			// 
 			// panel1
 			// 
@@ -69,7 +70,7 @@ namespace Ratatoskr.PacketView.Graph
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.Controls.Add(this.PBox_GraphDetails);
-			this.panel1.Controls.Add(this.TBar_GraphOffset);
+			this.panel1.Controls.Add(this.TBar_GraphHorizontalOffset);
 			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(475, 570);
@@ -87,17 +88,17 @@ namespace Ratatoskr.PacketView.Graph
 			this.PBox_GraphDetails.Paint += new System.Windows.Forms.PaintEventHandler(this.PBox_GraphDetails_Paint);
 			this.PBox_GraphDetails.Resize += new System.EventHandler(this.PBox_GraphDetails_Resize);
 			// 
-			// TBar_GraphOffset
+			// TBar_GraphHorizontalOffset
 			// 
-			this.TBar_GraphOffset.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.TBar_GraphOffset.Location = new System.Drawing.Point(0, 525);
-			this.TBar_GraphOffset.Maximum = 100;
-			this.TBar_GraphOffset.Name = "TBar_GraphOffset";
-			this.TBar_GraphOffset.Size = new System.Drawing.Size(475, 45);
-			this.TBar_GraphOffset.TabIndex = 2;
-			this.TBar_GraphOffset.TickFrequency = 0;
-			this.TBar_GraphOffset.Value = 50;
-			this.TBar_GraphOffset.Scroll += new System.EventHandler(this.TBar_GraphOffset_Scroll);
+			this.TBar_GraphHorizontalOffset.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.TBar_GraphHorizontalOffset.Location = new System.Drawing.Point(0, 525);
+			this.TBar_GraphHorizontalOffset.Maximum = 100;
+			this.TBar_GraphHorizontalOffset.Name = "TBar_GraphHorizontalOffset";
+			this.TBar_GraphHorizontalOffset.Size = new System.Drawing.Size(475, 45);
+			this.TBar_GraphHorizontalOffset.TabIndex = 2;
+			this.TBar_GraphHorizontalOffset.TickFrequency = 0;
+			this.TBar_GraphHorizontalOffset.Value = 50;
+			this.TBar_GraphHorizontalOffset.Scroll += new System.EventHandler(this.TBar_GraphHorizontalOffset_Scroll);
 			// 
 			// PacketViewInstanceImpl
 			// 
@@ -109,7 +110,7 @@ namespace Ratatoskr.PacketView.Graph
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBox_GraphDetails)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.TBar_GraphOffset)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.TBar_GraphHorizontalOffset)).EndInit();
 			this.ResumeLayout(false);
 
         }
@@ -129,15 +130,10 @@ namespace Ratatoskr.PacketView.Graph
 
             Disposed += OnDisposed;
 
-            disp_update_timer_.Interval = 1000;
-            disp_update_timer_.Tick += OnDispUpdateTimer;
+            graph_update_timer_.Interval = 1000;
+            graph_update_timer_.Tick += OnUpdateGraphRequestTimer;
 
             UpdateModule();
-        }
-
-        private void OnDispUpdateTimer(object sender, EventArgs e)
-        {
-            PBox_GraphDetails.Refresh();
         }
 
         private void OnDisposed(object sender, EventArgs e)
@@ -161,12 +157,12 @@ namespace Ratatoskr.PacketView.Graph
 
             track_value_max = (int)Math.Max(0, track_value_max - prop_.Oscillo_DisplayPoint.Value);
 
-            if (TBar_GraphOffset.Maximum != track_value_max ) {
-                TBar_GraphOffset.Maximum = (int)track_value_max;
-                TBar_GraphOffset.Value = TBar_GraphOffset.Maximum;
-                TBar_GraphOffset.Enabled = (TBar_GraphOffset.Maximum > 0);
+            if (TBar_GraphHorizontalOffset.Maximum != track_value_max ) {
+                TBar_GraphHorizontalOffset.Maximum = (int)track_value_max;
+                TBar_GraphHorizontalOffset.Value = TBar_GraphHorizontalOffset.Maximum;
+                TBar_GraphHorizontalOffset.Enabled = (TBar_GraphHorizontalOffset.Maximum > 0);
 
-                PBox_GraphDetails.Refresh();
+                UpdateGraph();
             }
         }
 
@@ -205,27 +201,38 @@ namespace Ratatoskr.PacketView.Graph
 
             UpdateTrackBar();
 
+			/* グラフを即座に更新 */
+            UpdateGraph();
+        }
+
+		private void UpdateGraphRequest()
+		{
+            if (!graph_update_timer_.Enabled) {
+                graph_update_timer_.Start();
+            }
+		}
+
+		private void UpdateGraphRequestCancel()
+		{
+            if (graph_update_timer_.Enabled) {
+                graph_update_timer_.Stop();
+            }
+		}
+
+		private void UpdateGraph()
+		{
             PBox_GraphDetails.Refresh();
-        }
+		}
 
-        private void UpdateDisplay()
+        private void OnUpdateGraphRequestTimer(object sender, EventArgs e)
         {
-            if (!disp_update_timer_.Enabled) {
-                disp_update_timer_.Start();
-            }
+            UpdateGraph();
         }
 
-        private void UpdateDisplayComplete()
-        {
-            if (disp_update_timer_.Enabled) {
-                disp_update_timer_.Stop();
-            }
-        }
-
-        private void OnValueSampled(object sender, decimal[] value)
+        private void OnValueSampled(object sender, long[] value)
         {
 			/* for Debug */
-			if (value.Length > 0) {
+			if ((value.Length > 0) && (value[0] != 0)) {
 				Debugger.DebugManager.MessageOut(string.Format("ValueSampled: {0}", value[0]));
 			}
 
@@ -270,26 +277,28 @@ namespace Ratatoskr.PacketView.Graph
         {
 			Debugger.DebugManager.MessageOut("Paint");
 
+			UpdateGraphRequestCancel();
+
             disp_mod_?.DrawDisplay(
                 new DisplayContext(
                     e.Graphics,
                     PBox_GraphDetails.ClientRectangle,
-                    (uint)TBar_GraphOffset.Value,
+                    (uint)TBar_GraphHorizontalOffset.Value,
                     prop_,
-                    prop_.ChannelList.Value.ToArray())
+                    (data_collect_mod_ != null) ? (data_collect_mod_.ChannelConfigs) : (null))
             );
 
-            UpdateDisplayComplete();
+            UpdateGraphRequest();
         }
 
-        private void TBar_GraphOffset_Scroll(object sender, EventArgs e)
+        private void TBar_GraphHorizontalOffset_Scroll(object sender, EventArgs e)
         {
-            PBox_GraphDetails.Refresh();
+            UpdateGraph();
         }
 
         private void PBox_GraphDetails_Resize(object sender, EventArgs e)
         {
-            PBox_GraphDetails.Refresh();
+            UpdateGraph();
         }
 
         private void GCPanel_Main_SamplingSettingUpdated(object sender, EventArgs e)
@@ -300,6 +309,12 @@ namespace Ratatoskr.PacketView.Graph
         private void GCPanel_Main_DisplaySettingUpdated(object sender, EventArgs e)
         {
             UpdateTrackBar();
+        }
+
+        private void GCPanel_Main_ChannelSettingUpdated(object sender, EventArgs e)
+        {
+            UpdateTrackBar();
+			UpdateGraph();
         }
     }
 }

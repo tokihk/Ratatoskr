@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Ratatoskr.PacketView.Graph.Configs;
 
 namespace Ratatoskr.PacketView.Graph
 {
@@ -18,8 +17,8 @@ namespace Ratatoskr.PacketView.Graph
 
         private PacketViewPropertyImpl prop_;
 
-		private int				ch_no_ = -1;
-		private ChannelConfig	ch_config_ = null;
+		private int					ch_no_ = -1;
+		private GraphChannelConfig	ch_config_ = null;
 
 
         public event EventHandler SamplingSettingUpdated;

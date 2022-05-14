@@ -10,15 +10,15 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 {
     internal class DataCollect_ValueSum : DataCollectModule
     {
-        private decimal[] values_sum_;
+        private long[] values_sum_;
 
 
         public DataCollect_ValueSum(PacketViewPropertyImpl prop) : base(prop)
         {
-			values_sum_ = new decimal[ValueChannelNum];
+			values_sum_ = new long[ChannelConfigs.Length];
         }
 
-		protected override void OnExtractedValue(decimal[] value)
+		protected override void OnExtractedValue(long[] value)
 		{
 			var index_max = Math.Min(values_sum_.Length, value.Length);
 
@@ -27,11 +27,11 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
             }
 		}
 
-		protected override decimal[] OnSampling()
+		protected override long[] OnSampling()
 		{
 			var sampling_values = values_sum_;
 
-			values_sum_ = new decimal[ValueChannelNum];
+			values_sum_ = new long[ChannelConfigs.Length];
 
 			return (values_sum_);
 		}

@@ -12,16 +12,11 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
         {
         }
 
-        public override uint PointCount
-        {
-            get { return (0); }
-        }
-
         protected override void OnClearValue()
         {
         }
 
-        protected override void OnInputValue(decimal[] value)
+        protected override void OnInputValue(long[] value)
         {
         }
     }

@@ -4,13 +4,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.PacketView.Graph.Configs;
 
 namespace Ratatoskr.PacketView.Graph.DisplayModules
 {
     internal class DisplayContext
     {
-        public DisplayContext(Graphics graphics, Rectangle draw_rect, uint hscroll_pos, PacketViewPropertyImpl prop, ChannelConfig[] ch_configs)
+        public DisplayContext(Graphics graphics, Rectangle draw_rect, uint hscroll_pos, PacketViewPropertyImpl prop, GraphChannelConfig[] ch_configs)
         {
             Canvas = graphics;
             CanvasRect = draw_rect;
@@ -19,10 +18,10 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 			ChannelConfigs = ch_configs;
         }
 
-        public Graphics               Canvas         { get; }
-        public Rectangle              CanvasRect     { get; }
-		public uint                   HScrollPos     { get; }
-		public PacketViewPropertyImpl Property       { get; }
-		public ChannelConfig[]        ChannelConfigs { get; }
+        public Graphics					Canvas         { get; }
+        public Rectangle				CanvasRect     { get; }
+		public uint						HScrollPos     { get; }
+		public PacketViewPropertyImpl	Property       { get; }
+		public GraphChannelConfig[]		ChannelConfigs { get; }
     }
 }

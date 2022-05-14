@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Ratatoskr.Gate;
 using Ratatoskr.Forms;
 using Ratatoskr.General;
-using Ratatoskr.General.Packet;
 
 namespace Ratatoskr.PacketView.Graph.DataCollectModules
 {
@@ -15,16 +14,7 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 		private const uint IVAL_SAMPLING_IDLE_LOOP_MAX = 10;
 
 
-		private class ChannelValueInfo
-		{
-			public uint		BitSize;
-			public bool		ReverseByteEndian;
-			public bool		ReverseBitEndian;
-			public bool		SignedValue;
-		}
-
-
-        public delegate void SampledEventHandler(object sender, decimal[] data);
+        public delegate void SampledEventHandler(object sender, long[] data);
 
 
 		private SamplingTriggerType		sampling_trigger_;
@@ -37,7 +27,7 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 		private uint		data_block_size_ = 0;
 		private uint		data_block_ch_num_ = 0;
 
-		private ChannelValueInfo[] ch_value_infos_ = null;
+		private GraphChannelConfig[] ch_configs_ = null;
 
         
         public event SampledEventHandler Sampled;
@@ -77,7 +67,7 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 			}
 
 			/* --- チャンネル情報 --- */
-			var ch_value_info_list = new List<ChannelValueInfo>();
+			var ch_config_list = new List<GraphChannelConfig>();
 			var value_bit_size = 0;
 			var value_bit_size_max = data_block_.Length * 8;
 
@@ -88,21 +78,15 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 				/* チャンネルのデータサイズ加算後のサイズがデータブロックサイズを超えるときは終了 */
 				if ((value_bit_size + ch_config.v.ValueBitSize) > value_bit_size_max)break;
 
-				ch_value_info_list.Add(new ChannelValueInfo()
-				{
-					BitSize = ch_config.v.ValueBitSize,
-					ReverseByteEndian = ch_config.v.ReverseByteEndian,
-					ReverseBitEndian = ch_config.v.ReverseBitEndian,
-					SignedValue = ch_config.v.SignedValue,
-				});
+				ch_config_list.Add(ch_config.v);
 			}
 
-			ch_value_infos_ = ch_value_info_list.ToArray();
+			ch_configs_ = ch_config_list.ToArray();
         }
 
-		public uint ValueChannelNum
+		public GraphChannelConfig[] ChannelConfigs
 		{
-			get { return (data_block_ch_num_); }
+			get { return (ch_configs_); }
 		}
 
         private void Sampling()
@@ -112,13 +96,13 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 			if (values != null) {
 				/* 取得したデータ値の数が設定チャンネル数と異なる場合は調整 */
 				if (values.Length != data_block_ch_num_) {
-					var values_new = new decimal[data_block_ch_num_];
+					var values_new = new long[data_block_ch_num_];
 
 					Array.Copy(values, values_new, Math.Min(values.Length, values_new.Length));
 					values = values_new;
 				}
 			} else {
-				values = new decimal[data_block_ch_num_];
+				values = new long[data_block_ch_num_];
 			}
 
 			Sampled?.Invoke(this, values);
@@ -174,27 +158,29 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 		private void ParseDataBlock(byte[] data_block)
 		{
 			var data_block_all = new BitData(data_block, (uint)data_block.Length * 8);
-			var ch_value_list = new decimal[data_block_ch_num_];
+			var ch_value_list = new long[data_block_ch_num_];
 			var bit_offset = (uint)0;
-			var ch_value_info = (ChannelValueInfo)null;
+			var ch_config = (GraphChannelConfig)null;
 
 			/* CH情報のデータ値を抽出 */
-			for (var ch_index = 0; ch_index < ch_value_infos_.Length; ch_index++) {
-				ch_value_info = ch_value_infos_[ch_index];
+			for (var ch_index = 0; ch_index < ch_configs_.Length; ch_index++) {
+				ch_config = ch_configs_[ch_index];
 
-				if (ch_value_info.BitSize == 0)continue;
+				if (ch_config.ValueBitSize == 0)continue;
 
 				/* データブロックからCH設定に合致する位置のデータを抽出 */
-				var ch_block = data_block_all.GetBitData(bit_offset, ch_value_info.BitSize);
+				var ch_block = data_block_all.GetBitData(bit_offset, ch_config.ValueBitSize);
 
-				if (ch_value_info.ReverseBitEndian) {
+				if (ch_config.ReverseBitEndian) {
 					ch_block.ReverseBitEndian();
 				}
-				if (ch_value_info.ReverseByteEndian) {
+				if (ch_config.ReverseByteEndian) {
 					ch_block.ReverseByteEndian();
 				}
 
-				ch_value_list[ch_index] = ch_block.GetInteger(ch_value_info.SignedValue);
+				ch_value_list[ch_index] = ch_block.GetInteger(ch_config.SignedValue);
+
+				bit_offset += ch_config.ValueBitSize;
 			}
 
 			/* 抽出したチャンネル値を上層へ通知 */
@@ -222,7 +208,7 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
         {
         }
 
-		protected virtual void OnExtractedValue(decimal[] value)
+		protected virtual void OnExtractedValue(long[] value)
 		{
 		}
 
@@ -230,7 +216,7 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
          * sampling_dataに格納するデータをセットする。
          * セットできるサイズはsampling_dataのサイズまで。
          */
-        protected virtual decimal[] OnSampling()
+        protected virtual long[] OnSampling()
         {
 			return (null);
         }

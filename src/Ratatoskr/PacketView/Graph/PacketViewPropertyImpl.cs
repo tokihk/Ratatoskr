@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ratatoskr.PacketView.Graph.Configs;
 using Ratatoskr.Config.Types;
-using Ratatoskr.PacketView;
 using Ratatoskr.General;
 
 namespace Ratatoskr.PacketView.Graph
@@ -70,7 +68,7 @@ namespace Ratatoskr.PacketView.Graph
         public IntegerConfig		Oscillo_RecordPoint		{ get; } = new IntegerConfig(1000000);
         public IntegerConfig		Oscillo_DisplayPoint	{ get; } = new IntegerConfig(10000);
 
-        public ChannelListConfig	ChannelList		{ get; } = new ChannelListConfig();
+        public GraphChannelListConfig	ChannelList		{ get; } = new GraphChannelListConfig();
 
 
         public PacketViewPropertyImpl()

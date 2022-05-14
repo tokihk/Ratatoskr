@@ -17,18 +17,18 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
         {
         }
 
-		protected override void OnExtractedValue(decimal[] value)
+		protected override void OnExtractedValue(long[] value)
 		{
 			data_count_++;
 		}
 
-		protected override decimal[] OnSampling()
+		protected override long[] OnSampling()
 		{
 			var sampling_value = data_count_;
 
 			data_count_ = 0;
 
-			return (new decimal[]{ sampling_value });
+			return (new long[]{ (long)sampling_value });
 		}
     }
 }
