@@ -226,10 +226,10 @@ namespace Ratatoskr.PacketView.Graph
         {
 			/* for Debug */
 			if (value.Length > 0) {
-				Debugger.DebugManager.MessageOut(string.Format("ValueSampled: {0}", value));
+				Debugger.DebugManager.MessageOut(string.Format("ValueSampled: {0}", value[0]));
 			}
 
-//            disp_mod_.InputValue(value);
+            disp_mod_.InputValue(value);
         }
 
         protected override void OnIdle()

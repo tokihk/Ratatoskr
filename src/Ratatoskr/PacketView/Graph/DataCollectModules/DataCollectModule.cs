@@ -12,6 +12,9 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 {
     internal class DataCollectModule
     {
+		private const uint IVAL_SAMPLING_IDLE_LOOP_MAX = 10;
+
+
 		private class ChannelValueInfo
 		{
 			public uint		BitSize;
@@ -130,9 +133,17 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 			}
 
 			/* 次のサンプリング時刻が入力時刻を超えるまで強制サンプリング */
-			while ((ival_sampling_time_ + ival_sampling_span_) <= cur_time) {
+			var count = (uint)0;
+
+			while (((ival_sampling_time_ + ival_sampling_span_) <= cur_time) && (count < IVAL_SAMPLING_IDLE_LOOP_MAX)) {
 				Sampling();
 				ival_sampling_time_ += ival_sampling_span_;
+				count++;
+			}
+
+			/* IDLEループを制限まで行ったときはサンプリング時刻を現在時刻に更新 */
+			if (count >= IVAL_SAMPLING_IDLE_LOOP_MAX) {
+				ival_sampling_time_ = cur_time;
 			}
 		}
 

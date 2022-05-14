@@ -71,7 +71,7 @@ namespace Ratatoskr.PacketView.Graph
             CBox_GraphTarget.SelectedItem = prop_.GraphTarget.Value;
 
 			CBox_SamplingTrigger.SelectedItem = prop_.SamplingTrigger.Value;
-            Num_SamplingInterval_Value.Value = prop_.SamplingInterval.Value;
+            Num_SamplingInterval_Value.Value = decimal.Round(prop_.SamplingInterval.Value, Num_SamplingInterval_Value.DecimalPlaces);
 			CBox_SamplingInterval_Unit.SelectedItem = prop_.SamplingIntervalUnit.Value;
 			Num_InputDataBlockSize.Value = prop_.InputDataBlockSize.Value;
             Num_InputDataChannelNum.Value = prop_.InputDataChannelNum.Value;
