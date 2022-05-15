@@ -683,7 +683,7 @@
     <Compile Include="PacketView\Graph\DataCollectModules\DataCollect_BlockCount.cs" />
     <Compile Include="PacketView\Graph\DataCollectModules\DataCollect_Value.cs" />
     <Compile Include="PacketView\Graph\DataCollectModules\DataCollect_ValueSum.cs" />
-    <Compile Include="PacketView\Graph\DisplayModules\DisplayInfo.cs" />
+    <Compile Include="PacketView\Graph\DisplayModules\DisplayConfig.cs" />
     <Compile Include="PacketView\Graph\DisplayModules\DisplayModule.cs" />
     <Compile Include="PacketView\Graph\DisplayModules\DisplayContext.cs" />
     <Compile Include="PacketView\Graph\DisplayModules\Display_Oscillo.cs" />

@@ -54,25 +54,25 @@ namespace Ratatoskr.PacketView.Graph
 
             Value.Add(new GraphChannelConfig()
 			{
-				Visible = true,
+				Visible = false,
 				ForeColor = Color.LightBlue,
 			});
 
             Value.Add(new GraphChannelConfig()
 			{
-				Visible = true,
+				Visible = false,
 				ForeColor = Color.LightPink,
 			});
 
             Value.Add(new GraphChannelConfig()
 			{
-				Visible = true,
+				Visible = false,
 				ForeColor = Color.LightGreen,
 			});
 
             Value.Add(new GraphChannelConfig()
 			{
-				Visible = true,
+				Visible = false,
 				ForeColor = Color.LightSalmon,
 			});
         }
@@ -154,6 +154,9 @@ namespace Ratatoskr.PacketView.Graph
         {
             foreach (var info in Value) {
                 var xml_data = xml_own.OwnerDocument.CreateElement(XML_NODE_DATA);
+
+				/* visible */
+                xml_data.SetAttribute("visible", info.Visible.ToString());
 
                 /* fore-color */
                 xml_data.SetAttribute("fore-color", ColorTranslator.ToHtml(info.ForeColor));

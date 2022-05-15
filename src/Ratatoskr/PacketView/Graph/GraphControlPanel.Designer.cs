@@ -80,6 +80,7 @@
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.CBox_SamplingTrigger = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.ChkBox_Visible = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -135,7 +136,7 @@
 			this.groupBox9.Size = new System.Drawing.Size(69, 197);
 			this.groupBox9.TabIndex = 21;
 			this.groupBox9.TabStop = false;
-			this.groupBox9.Text = "Channel";
+			this.groupBox9.Text = "Select";
 			// 
 			// RBtn_ChSet_CH8
 			// 
@@ -237,7 +238,7 @@
 			// 
 			this.Btn_ChSet_Color.BackColor = System.Drawing.Color.Yellow;
 			this.Btn_ChSet_Color.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.Btn_ChSet_Color.Location = new System.Drawing.Point(115, 18);
+			this.Btn_ChSet_Color.Location = new System.Drawing.Point(112, 40);
 			this.Btn_ChSet_Color.Name = "Btn_ChSet_Color";
 			this.Btn_ChSet_Color.Size = new System.Drawing.Size(48, 19);
 			this.Btn_ChSet_Color.TabIndex = 0;
@@ -250,7 +251,7 @@
 			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.CBox_ChSet_Oscillo_Range);
 			this.groupBox2.Controls.Add(this.Num_ChSet_Oscillo_Range_Custom);
-			this.groupBox2.Location = new System.Drawing.Point(294, 290);
+			this.groupBox2.Location = new System.Drawing.Point(291, 290);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(243, 139);
 			this.groupBox2.TabIndex = 18;
@@ -653,6 +654,7 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.ChkBox_Visible);
 			this.groupBox4.Controls.Add(this.ChkBox_SignedValue);
 			this.groupBox4.Controls.Add(this.label14);
 			this.groupBox4.Controls.Add(this.Btn_ChSet_Color);
@@ -663,7 +665,7 @@
 			this.groupBox4.Controls.Add(this.ChkBox_ByteEndian_Reverse);
 			this.groupBox4.Location = new System.Drawing.Point(81, 290);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(204, 139);
+			this.groupBox4.Size = new System.Drawing.Size(204, 156);
 			this.groupBox4.TabIndex = 24;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Common Setting";
@@ -671,7 +673,7 @@
 			// ChkBox_SignedValue
 			// 
 			this.ChkBox_SignedValue.AutoSize = true;
-			this.ChkBox_SignedValue.Location = new System.Drawing.Point(15, 112);
+			this.ChkBox_SignedValue.Location = new System.Drawing.Point(12, 134);
 			this.ChkBox_SignedValue.Name = "ChkBox_SignedValue";
 			this.ChkBox_SignedValue.Size = new System.Drawing.Size(91, 16);
 			this.ChkBox_SignedValue.TabIndex = 28;
@@ -681,7 +683,7 @@
 			// 
 			// label14
 			// 
-			this.label14.Location = new System.Drawing.Point(171, 43);
+			this.label14.Location = new System.Drawing.Point(168, 65);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(27, 19);
 			this.label14.TabIndex = 25;
@@ -691,7 +693,7 @@
 			// ChkBox_BitEndian_Reverse
 			// 
 			this.ChkBox_BitEndian_Reverse.AutoSize = true;
-			this.ChkBox_BitEndian_Reverse.Location = new System.Drawing.Point(15, 90);
+			this.ChkBox_BitEndian_Reverse.Location = new System.Drawing.Point(12, 112);
 			this.ChkBox_BitEndian_Reverse.Name = "ChkBox_BitEndian_Reverse";
 			this.ChkBox_BitEndian_Reverse.Size = new System.Drawing.Size(123, 16);
 			this.ChkBox_BitEndian_Reverse.TabIndex = 26;
@@ -701,7 +703,7 @@
 			// 
 			// label12
 			// 
-			this.label12.Location = new System.Drawing.Point(9, 43);
+			this.label12.Location = new System.Drawing.Point(6, 65);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(100, 19);
 			this.label12.TabIndex = 19;
@@ -711,7 +713,7 @@
 			// Num_ValueBitSize
 			// 
 			this.Num_ValueBitSize.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.Num_ValueBitSize.Location = new System.Drawing.Point(115, 43);
+			this.Num_ValueBitSize.Location = new System.Drawing.Point(112, 65);
 			this.Num_ValueBitSize.Maximum = new decimal(new int[] {
             64,
             0,
@@ -731,7 +733,7 @@
 			// 
 			// label13
 			// 
-			this.label13.Location = new System.Drawing.Point(9, 18);
+			this.label13.Location = new System.Drawing.Point(6, 40);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(100, 19);
 			this.label13.TabIndex = 18;
@@ -741,7 +743,7 @@
 			// ChkBox_ByteEndian_Reverse
 			// 
 			this.ChkBox_ByteEndian_Reverse.AutoSize = true;
-			this.ChkBox_ByteEndian_Reverse.Location = new System.Drawing.Point(15, 68);
+			this.ChkBox_ByteEndian_Reverse.Location = new System.Drawing.Point(12, 90);
 			this.ChkBox_ByteEndian_Reverse.Name = "ChkBox_ByteEndian_Reverse";
 			this.ChkBox_ByteEndian_Reverse.Size = new System.Drawing.Size(132, 16);
 			this.ChkBox_ByteEndian_Reverse.TabIndex = 25;
@@ -780,6 +782,17 @@
 			this.label1.TabIndex = 28;
 			this.label1.Text = "Sampling Trigger";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// ChkBox_Visible
+			// 
+			this.ChkBox_Visible.AutoSize = true;
+			this.ChkBox_Visible.Location = new System.Drawing.Point(6, 18);
+			this.ChkBox_Visible.Name = "ChkBox_Visible";
+			this.ChkBox_Visible.Size = new System.Drawing.Size(59, 16);
+			this.ChkBox_Visible.TabIndex = 29;
+			this.ChkBox_Visible.Text = "Visible";
+			this.ChkBox_Visible.UseVisualStyleBackColor = true;
+			this.ChkBox_Visible.CheckedChanged += new System.EventHandler(this.OnChannelSettingUpdated);
 			// 
 			// GraphControlPanel
 			// 
@@ -881,5 +894,6 @@
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.ComboBox CBox_SamplingTrigger;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.CheckBox ChkBox_Visible;
 	}
 }

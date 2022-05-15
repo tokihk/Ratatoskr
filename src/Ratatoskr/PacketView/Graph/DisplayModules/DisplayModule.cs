@@ -8,20 +8,54 @@ using System.Windows.Forms;
 
 namespace Ratatoskr.PacketView.Graph.DisplayModules
 {
-	internal class DisplayModule
+	internal class DisplayModule : IDisposable
 	{
+		private PacketViewPropertyImpl	prop_ = null;
+		private DisplayConfig			disp_config_ = null;
+
+
 		public DisplayModule(PacketViewPropertyImpl prop)
+		{
+			prop_ = prop;
+		}
+
+		public void Dispose()
+		{
+			OnDisposed();
+		}
+
+		protected virtual void OnDisposed()
 		{
 		}
 
-		public uint ChannelNumber
+		public PacketViewPropertyImpl Property
 		{
-			get;
+			get { return (prop_); }
+		}
+
+		public DisplayConfig Config
+		{
+			get
+			{
+				return disp_config_;
+			}
+			set
+			{
+				if (disp_config_ == value)return;
+
+				disp_config_ = value;
+
+				OnDisplayConfigChanged(disp_config_);
+			}
 		}
 
 		public virtual uint PointCount
 		{
 			get { return (0); }
+		}
+
+		protected virtual void OnDisplayConfigChanged(DisplayConfig config)
+		{
 		}
 
         public void ClearValue()
@@ -44,7 +78,7 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 
         public void DrawDisplay(DisplayContext dc)
         {
-            if (dc == null) {
+            if ((dc == null) || (Config == null)) {
                 return;
             }
 

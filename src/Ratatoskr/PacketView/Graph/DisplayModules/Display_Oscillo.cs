@@ -11,6 +11,40 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 {
     internal class Display_Oscillo : DisplayModule
     {
+		private class GraphicsLayer : IDisposable
+		{
+			public GraphicsLayer(Graphics main_graphics)
+			{
+				Canvas = main_graphics;
+			}
+
+			public GraphicsLayer(Graphics graphics, Rectangle rect)
+			{
+				Manager = BufferedGraphicsManager.Current.Allocate(graphics, rect);
+				Canvas = Manager.Graphics;
+			}
+
+			public BufferedGraphics Manager		{ get; }
+			public Graphics			Canvas		{ get; }
+
+
+			public void Dispose()
+			{
+				Manager?.Dispose();
+			}
+
+			public void RenderTo(Graphics graphics)
+			{
+				Manager?.Render(graphics);
+			}
+
+			public void RenderTo(GraphicsLayer glayer)
+			{
+				Manager?.Render(glayer.Canvas);
+			}
+		}
+
+
         private readonly Padding GRAPH_DETAILS_MARGIN;
 
         private const int GRID_X_DIV		= 10;
@@ -29,14 +63,21 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
         private readonly Pen   GRAPH_DETAILS_GRID_LINE_SUB_PEN;
 
 
-        private long[][]	points_;				// points_[record_point][channel]
-        private int			point_in_ = 0;
+        private long[][]	ch_values_;				// points_[channel][record_point]
+        private uint		ch_values_in_ = 0;
+
+		private long		ch_value_max_ = 0;
+
 		private uint		ch_index_max_ = 0;
 
-		private Graphics	gdc_all_;
-		private Graphics	gdc_graph_;
 
-		private Rectangle	graph_rect_;
+		private Rectangle		canvas_rect_main_ = new Rectangle();
+		private Rectangle		canvas_rect_graph_ = new Rectangle();
+
+		private GraphicsLayer	glayer_main_ = null;
+		private GraphicsLayer	glayer_background_ = null;
+
+		private bool			bg_update_request_ = false;
 
 		private uint		axisx_min_;
 		private uint		axisx_max_;
@@ -60,16 +101,60 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
             GRAPH_DETAILS_GRID_LINE_SUB_PEN = new Pen(Color.FromArgb(40, 40, 40));
             GRAPH_DETAILS_GRID_LINE_SUB_PEN.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 
-            points_ = new long[Math.Max(1, (uint)prop.Oscillo_RecordPoint.Value)][];
+            InitGraphValueBuffer();
 
 			axisx_point_ = (uint)prop.Oscillo_DisplayPoint.Value;
         }
+
+		protected override void OnDisposed()
+		{
+			glayer_main_?.Dispose();
+			glayer_background_?.Dispose();
+		}
 
 		public override uint PointCount
 		{
 			get
 			{
-				return ((uint)points_.Length);
+				return ((uint)ch_values_[0].Length);
+			}
+		}
+
+		private void InitGraphValueBuffer()
+		{
+			/* 最大ポイント数でバッファを確保 */
+            ch_values_ = new long[Property.ChannelList.Value.Count][];
+			for (var index = 0; index < ch_values_.Length; index++) {
+				ch_values_[index] = new long[(uint)Property.Oscillo_RecordPoint.Value];
+			}
+		}
+
+		private void UpdateDisplayParameter()
+		{
+			/* グラフポイント数 */
+			axisx_point_ = Config.DisplayPoint;
+			axisx_min_ = Config.DisplayAxisX_Offset;
+			axisx_max_ = Config.DisplayAxisX_Offset + axisx_point_;
+
+			/* グラフ描画エリアのサイズ更新 */
+			var rect_graph = new Rectangle();
+
+			rect_graph.X = Config.DisplayRect.Left + GRAPH_DETAILS_MARGIN.Left;
+			rect_graph.Y = Config.DisplayRect.Top + GRAPH_DETAILS_MARGIN.Top;
+			rect_graph.Width = Config.DisplayRect.Width - GRAPH_DETAILS_MARGIN.Horizontal;
+			rect_graph.Height = Config.DisplayRect.Height - GRAPH_DETAILS_MARGIN.Vertical;
+
+			/* 描画エリアサイズが更新されている場合はグラフィクスを削除 */
+			if (   (!canvas_rect_main_.Equals(Config.DisplayRect))
+				|| (!canvas_rect_graph_.Equals(rect_graph))
+			) {
+				canvas_rect_main_ = Config.DisplayRect;
+				canvas_rect_graph_ = rect_graph;
+
+				if (glayer_background_ != null) {
+					glayer_background_.Dispose();
+					glayer_background_ = null;
+				}
 			}
 		}
 
@@ -90,69 +175,57 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 			return (0, point);
 		}
 
-        private void LoadGraphValue(uint ch_index, uint data_index, ref long value)
+        private void LoadGraphValue(ref long[] ch_value, uint data_index, ref long value)
         {
-            var draw_point_offset = point_in_ + data_index;
+            var draw_point_offset = ch_values_in_ + data_index;
 
-            if (draw_point_offset >= points_.Length) {
-                draw_point_offset -= points_.Length;
+            if (draw_point_offset >= ch_value.Length) {
+                draw_point_offset -= (uint)ch_value.Length;
             }
 
-            if (   (points_[draw_point_offset] != null)
-                && (ch_index < points_[draw_point_offset].Length)
-            ) {
-                value = points_[draw_point_offset][ch_index];
-            } else {
-				value = 0;
-			}
+            value = ch_value[draw_point_offset];
         }
 
-		private void DrawGraph(DisplayContext dc)
-        {
-			/* 背景を初期化 */
-			gdc_all_.FillRectangle(GRAPH_DETAILS_BG_BRUSH, dc.CanvasRect);
-			gdc_graph_.FillRectangle(GRAPH_DETAILS_BG_BRUSH, graph_rect_);
+		private void DrawBackground()
+		{
+			if (bg_update_request_) {
+				/* 背景を初期化 */
+				glayer_background_.Canvas.FillRectangle(GRAPH_DETAILS_BG_BRUSH, canvas_rect_main_);
 
-			/* グラフの線を描画 */
-			DrawGraph_Grid(dc);
+				/* グラフの線を描画 */
+				DrawBackground_GraphGrid();
 
-			/* グラフのデータを描画 */
-			if (dc.ChannelConfigs != null) {
-				for (var ch_index = (uint)0; ch_index < dc.ChannelConfigs.Length; ch_index++) {
-					if (ch_index < ch_index_max_) {
-						DrawGraph_Data(dc, ch_index, dc.ChannelConfigs[ch_index]);
-					}
-				}
+				bg_update_request_ = false;
 			}
 
-			/* グラフの枠を描画 */
-			DrawGraph_Frame(dc);
-        }
+			/* メインバッファにコピー */
+			glayer_background_.RenderTo(glayer_main_.Canvas);
+		}
 
-        private void DrawGraph_Grid(DisplayContext dc)
+        private void DrawBackground_GraphGrid()
         {
             var draw_offset = 0;
             var draw_scale_rect = new Rectangle();
             var draw_scale_format = new StringFormat();
 
             /* --- X軸 --- */
-            draw_scale_rect.Width = graph_rect_.Width * GRID_X_LINES_MAIN / GRID_X_LINES;
+            draw_scale_rect.Width = canvas_rect_graph_.Width * GRID_X_LINES_MAIN / GRID_X_LINES;
             draw_scale_rect.Height = GRAPH_DETAILS_GRID_SCALE_FONT.Height;
-            draw_scale_rect.X = graph_rect_.Left - draw_scale_rect.Width / 2;
-            draw_scale_rect.Y = graph_rect_.Bottom;
+            draw_scale_rect.X = canvas_rect_graph_.Left - draw_scale_rect.Width / 2;
+            draw_scale_rect.Y = canvas_rect_graph_.Bottom;
 
             draw_scale_format.Alignment = StringAlignment.Center;
             draw_scale_format.LineAlignment = StringAlignment.Near;
 
             for (var index = 0; index <= GRID_X_LINES; index++) {
-                draw_offset = graph_rect_.Left + graph_rect_.Width * index / GRID_X_LINES;
+                draw_offset = canvas_rect_graph_.Left + canvas_rect_graph_.Width * index / GRID_X_LINES;
 
                 /* 目盛(最右を0とする) */
                 if ((index % GRID_X_LINES_MAIN) == 0) {
-					var str = (dc.HScrollPos + index * (axisx_point_ / GRID_X_LINES) - points_.Length);
+					var str = (Config.DisplayAxisX_Offset + index * (axisx_point_ / GRID_X_LINES) - ch_values_.Length);
 
-                    gdc_all_.DrawString(
-                        (dc.HScrollPos + index * (axisx_point_ / GRID_X_LINES) - points_.Length).ToString(),
+                    glayer_background_.Canvas.DrawString(
+                        (Config.DisplayAxisX_Offset + index * (axisx_point_ / GRID_X_LINES) - ch_values_.Length).ToString(),
                         GRAPH_DETAILS_GRID_SCALE_FONT,
                         GRAPH_DETAILS_GRID_SCALE_BRUSH,
                         draw_scale_rect,
@@ -163,26 +236,26 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 
                 /* 罫線 */
                 if ((index > 0) && (index < GRID_X_LINES)) {
-                    gdc_graph_.DrawLine(
+                    glayer_background_.Canvas.DrawLine(
                         ((index % 5) == 0) ? (GRAPH_DETAILS_GRID_LINE_MAIN_PEN) : (GRAPH_DETAILS_GRID_LINE_SUB_PEN),
                         draw_offset,
-                        graph_rect_.Top,
+                        canvas_rect_graph_.Top,
                         draw_offset,
-                        graph_rect_.Bottom);
+                        canvas_rect_graph_.Bottom);
                 }
             }
 
             /* --- Y軸 --- */
             draw_scale_rect.Width = GRAPH_DETAILS_MARGIN.Right;
-            draw_scale_rect.Height = graph_rect_.Height * GRID_Y_LINES_MAIN / GRID_Y_LINES;
-            draw_scale_rect.X = graph_rect_.Right;
-            draw_scale_rect.Y = graph_rect_.Top - draw_scale_rect.Height / 2;
+            draw_scale_rect.Height = canvas_rect_graph_.Height * GRID_Y_LINES_MAIN / GRID_Y_LINES;
+            draw_scale_rect.X = canvas_rect_graph_.Right;
+            draw_scale_rect.Y = canvas_rect_graph_.Top - draw_scale_rect.Height / 2;
 
             draw_scale_format.Alignment = StringAlignment.Near;
             draw_scale_format.LineAlignment = StringAlignment.Center;
 
             for (var index = 0; index <= GRID_Y_LINES; index++) {
-                draw_offset = graph_rect_.Top + graph_rect_.Height * index / GRID_Y_LINES;
+                draw_offset = canvas_rect_graph_.Top + canvas_rect_graph_.Height * index / GRID_Y_LINES;
 
 #if false
 				/* 目盛 */
@@ -200,147 +273,131 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 
                 /* 罫線 */
                 if ((index > 0) && (index < GRID_Y_LINES)) {
-                    gdc_graph_.DrawLine(
+                    glayer_background_.Canvas.DrawLine(
                         ((index % 5) == 0) ? (GRAPH_DETAILS_GRID_LINE_MAIN_PEN) : (GRAPH_DETAILS_GRID_LINE_SUB_PEN),
-                        graph_rect_.Left,
+                        canvas_rect_graph_.Left,
                         draw_offset,
-                        graph_rect_.Right,
+                        canvas_rect_graph_.Right,
                         draw_offset);
                 }
             }
         }
 
-        private void DrawGraph_Frame(DisplayContext dc)
+		private void DrawForeground()
         {
-            gdc_graph_.DrawRectangle(
+			/* グラフのデータを描画 */
+			if (Config.ChannelConfigs != null) {
+				for (var ch_index = (uint)0; ch_index < Config.ChannelConfigs.Length; ch_index++) {
+					if (ch_index < ch_index_max_) {
+						DrawGraph_Data(ch_values_[ch_index], Config.ChannelConfigs[ch_index]);
+					}
+				}
+			}
+
+			/* グラフの枠 */
+            glayer_main_.Canvas.DrawRectangle(
 				GRAPH_DETAILS_GRID_FRAME_PEN,
 				new Rectangle(
-					graph_rect_.X,
-					graph_rect_.Y,
-					graph_rect_.Width - 1,
-					graph_rect_.Height - 1)
+					canvas_rect_graph_.X,
+					canvas_rect_graph_.Y,
+					canvas_rect_graph_.Width - 1,
+					canvas_rect_graph_.Height - 1)
 			);
         }
 
-        private void DrawGraph_Data(DisplayContext dc, uint ch_index, GraphChannelConfig ch_cfg)
+        private void DrawGraph_Data(long[] ch_values, GraphChannelConfig ch_cfg)
         {
-			var axisy_point = GetChannelValueRange(ch_cfg);
-
             var value_y = (long)0;
 			var (value_y_min, value_y_max) = GetChannelValueRange(ch_cfg);
             var value_y_canvas = (long)0;
 
             var value_x_canvas = 0;
-            var value_x_canvas_last = 0;
+            var value_x_canvas_last = -1;
 
-            var value_canvas_x_step  = (double)graph_rect_.Width / axisx_point_;
-            var value_canvas_y_mag = (double)graph_rect_.Height / value_y_max;
+            var value_canvas_x_step  = (double)canvas_rect_graph_.Width / axisx_point_;
+            var value_canvas_y_mag = (double)canvas_rect_graph_.Height / value_y_max;
 
             var draw_pen = new Pen(ch_cfg.ForeColor);
-            var draw_points = new List<Point>();
+            var draw_points = new Point[(uint)((axisx_max_ - axisx_min_) * value_canvas_x_step)];
 
-			/* for Debug */
-			for (var value_x = dc.HScrollPos; value_x <= axisx_max_; value_x++) {
+			for (var value_x = axisx_min_; value_x < axisx_max_; value_x++) {
                 /* 実データを座標データに置き換える */
                 value_x_canvas = (int)((value_x - axisx_min_) * value_canvas_x_step);
 
-                if (   (value_x == axisx_min_)
-                    || (value_x_canvas != value_x_canvas_last)
-                ) {
+				/* 直前のデータと同位置の場合は無視 */
+                if (value_x_canvas != value_x_canvas_last) {
                     /* 実データを取得 */
-                    LoadGraphValue(ch_index, value_x, ref value_y);
+                    LoadGraphValue(ref ch_values, value_x, ref value_y);
 
                     /* 座標データに変換 */
-                    value_y_canvas = (long)((value_y_max - value_y) * value_canvas_y_mag) - graph_rect_.Height / 2;
+                    value_y_canvas = (long)((value_y_max - value_y) * value_canvas_y_mag) - canvas_rect_graph_.Height / 2;
 
 					/* 表示位置をオフセット補正 */
 					if (ch_cfg.OscilloVertOffset != 0) {
-						value_y_canvas = value_y_canvas - (graph_rect_.Height * ch_cfg.OscilloVertOffset / 100);
+						value_y_canvas -= canvas_rect_graph_.Height * ch_cfg.OscilloVertOffset / 100;
 					}
 
                     /* 座標データを補正(ウィンドウ座標はwordサイズ以内としなければ例外が発生) */
                     value_y_canvas = (long)Math.Max(short.MinValue, Math.Min(short.MaxValue, value_y_canvas));
 
-                    draw_points.Add(new Point(graph_rect_.Left + value_x_canvas, graph_rect_.Top + (int)value_y_canvas));
+					draw_points[value_x_canvas] = new Point(canvas_rect_graph_.Left + value_x_canvas, canvas_rect_graph_.Top + (int)value_y_canvas);
+
                     value_x_canvas_last = value_x_canvas;
                 }
             }
 
-            if (draw_points.Count > 1) {
-                gdc_graph_.DrawLines(draw_pen, draw_points.ToArray());
-            }
+            glayer_main_.Canvas.DrawLines(draw_pen, draw_points.ToArray());
+        }
 
-#if DEBUG
-			if (ch_index == 0) {
-				var str_format = new StringFormat();
+		protected override void OnDisplayConfigChanged(DisplayConfig config)
+		{
+			ch_index_max_ = (uint)Math.Min(ch_values_.Length, config.ChannelConfigs.Length);
 
-				str_format.Alignment = StringAlignment.Near;
-				str_format.LineAlignment = StringAlignment.Near;
+			UpdateDisplayParameter();
+		}
 
-				gdc_all_.DrawString(
-					string.Format(
-						"x={0} y={1} offset_y={2}",
-						graph_rect_.Left + value_x_canvas,
-						graph_rect_.Top + (int)value_y_canvas,
-						ch_cfg.OscilloVertOffset
-					),
-                    GRAPH_DETAILS_GRID_SCALE_FONT,
-                    GRAPH_DETAILS_GRID_SCALE_BRUSH,
-					10,
-					10,
-					str_format
-				);
+		protected override void OnClearValue()
+        {
+			InitGraphValueBuffer();
+        }
+
+        protected override void OnInputValue(long[] ch_values)
+        {
+			for (var ch_index = 0; ch_index < ch_values.Length; ch_index++) {
+				ch_values_[ch_index][ch_values_in_] = ch_values[ch_index];
 			}
-#endif
-        }
 
-        protected override void OnClearValue()
-        {
-            points_ = new long[points_.Length][];
-            point_in_ = 0;
-
-			ch_index_max_ = 0;
-        }
-
-        protected override void OnInputValue(long[] value)
-        {
-            points_[point_in_++] = value;
-            if (point_in_ >= points_.Length) {
-                point_in_ = 0;
-            }
-
-            ch_index_max_ = Math.Max(ch_index_max_, (uint)value.Length);
+			ch_values_in_++;
+			ch_values_in_ %= (uint)ch_values_[0].Length;
         }
 
 		protected override void OnDrawDisplay(DisplayContext dc)
 		{
-			graph_rect_.X = dc.CanvasRect.Left + GRAPH_DETAILS_MARGIN.Left;
-			graph_rect_.Y = dc.CanvasRect.Top + GRAPH_DETAILS_MARGIN.Top;
-			graph_rect_.Width = dc.CanvasRect.Width - GRAPH_DETAILS_MARGIN.Horizontal;
-			graph_rect_.Height = dc.CanvasRect.Height - GRAPH_DETAILS_MARGIN.Vertical;
-
-            if (   (graph_rect_.Width > 0)
-                && (graph_rect_.Height > 0)
+            if (   (canvas_rect_main_.Width > 0)
+                && (canvas_rect_main_.Height > 0)
             ) {
-                /* レイヤー描画 */
-                var bgc_all = BufferedGraphicsManager.Current.Allocate(dc.Canvas, dc.CanvasRect);
-				var bgc_graph = BufferedGraphicsManager.Current.Allocate(dc.Canvas, graph_rect_);
+				glayer_main_ = new GraphicsLayer(dc.Canvas);
 
-				gdc_all_ = bgc_all.Graphics;
-				gdc_graph_ = bgc_graph.Graphics;
+                /* レイヤー生成 */
+				if (glayer_background_ == null) {
+					glayer_background_ = new GraphicsLayer(dc.Canvas, canvas_rect_main_);
+					bg_update_request_ = true;
+				}
 
-				/* グラフポイント数 */
-				axisx_point_ = (uint)dc.Property.Oscillo_DisplayPoint.Value;
-				axisx_min_ = dc.HScrollPos;
-				axisx_max_ = dc.HScrollPos + axisx_point_;
+				/* for Debug */
+//				Debugger.DebugManager.MessageOut(" DrawBackground Begin");
 
-				DrawGraph(dc);
+				DrawBackground();
 
-                bgc_all.Render(dc.Canvas);
-                bgc_all.Dispose();
+				/* for Debug */
+//				Debugger.DebugManager.MessageOut(" DrawForeground Begin");
 
-                bgc_graph.Render(dc.Canvas);
-                bgc_graph.Dispose();
+				DrawForeground();
+
+				/* for Debug */
+//				Debugger.DebugManager.MessageOut(" Draw End");
+
+				glayer_main_.RenderTo(dc.Canvas);
             }
 		}
     }
