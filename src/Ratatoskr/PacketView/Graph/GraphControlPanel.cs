@@ -19,6 +19,7 @@ namespace Ratatoskr.PacketView.Graph
 
 		private int					ch_no_ = -1;
 		private GraphChannelConfig	ch_config_ = null;
+		private bool				ch_select_busy_ = false;
 
 
         public event EventHandler SamplingSettingUpdated;
@@ -87,7 +88,10 @@ namespace Ratatoskr.PacketView.Graph
 
         private void LoadCurrentChannelConfig()
         {
+			ch_select_busy_ = true;
+
             if (ch_config_ != null) {
+				ChkBox_Visible.Checked = ch_config_.Visible;
                 Btn_ChSet_Color.BackColor = ch_config_.ForeColor;
 				Num_ValueBitSize.Value = ch_config_.ValueBitSize;
 				ChkBox_ByteEndian_Reverse.Checked = ch_config_.ReverseByteEndian;
@@ -97,6 +101,8 @@ namespace Ratatoskr.PacketView.Graph
 				Num_ChSet_Oscillo_Range_Custom.Value = ch_config_.OscilloVertRangeCustom;
                 TBar_ChSet_Oscillo_VertOffset.Value = (int)Math.Max((decimal)TBar_ChSet_Oscillo_VertOffset.Minimum, Math.Min((decimal)TBar_ChSet_Oscillo_VertOffset.Maximum, ch_config_.OscilloVertOffset));
             }
+
+			ch_select_busy_ = false;
         }
 
         public void BackupConfig()
@@ -136,6 +142,7 @@ namespace Ratatoskr.PacketView.Graph
         private void BackupCurrentChannelConfig()
         {
 			if (ch_config_ != null) {
+				ch_config_.Visible = ChkBox_Visible.Checked;
 				ch_config_.ForeColor = Btn_ChSet_Color.BackColor;
 				ch_config_.ValueBitSize = (uint)Num_ValueBitSize.Value;
 				ch_config_.ReverseByteEndian = ChkBox_ByteEndian_Reverse.Checked;
@@ -152,8 +159,13 @@ namespace Ratatoskr.PacketView.Graph
 		{
 			if ((ch_no >= 0) && (ch_no < CH_RBTN_LIST.Length)) {
 				CH_RBTN_LIST[ch_no].Checked = true;
-
+				 
 				ch_no_ = ch_no;
+
+				if (ch_no >= prop_.ChannelList.Value.Count) {
+					prop_.ChannelList.Value.Add(new GraphChannelConfig());
+				}
+
 				ch_config_ = prop_.ChannelList.Value[ch_no_];
 			}
 		}
@@ -188,6 +200,8 @@ namespace Ratatoskr.PacketView.Graph
 
 		private void OnChannelSettingUpdated(object sender, EventArgs e)
 		{
+			if (ch_select_busy_)return;
+
 			BackupCurrentChannelConfig();
 
 			ChannelSettingUpdated?.Invoke(this, EventArgs.Empty);
@@ -322,7 +336,12 @@ namespace Ratatoskr.PacketView.Graph
 		{
 			BackupCurrentChannelConfig();
 
-			SetCurrentChannel(GetCurrentChannel());
+			var ch_no = GetCurrentChannel();
+
+			/* for Debug */
+			Debugger.DebugManager.MessageOut(ch_no);
+
+			SetCurrentChannel(ch_no);
 
 			LoadCurrentChannelConfig();
 		}

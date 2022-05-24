@@ -32,8 +32,8 @@ namespace Ratatoskr.Device.AudioFile
             InitializeConnectActionList();
 
             TBox_InputFilePath.Text = devp.InputFilePath.Value;
-            CBox_InputSamplingRate.SelectedItem = (uint)devp.InputSamplingRate.Value;
-            CBox_InputBitsPerSample.SelectedItem = (uint)devp.InputBitsPerSample.Value;
+            CBox_InputSamplingRate.SelectedItem = devp.InputSamplingRate.Value;
+            CBox_InputBitsPerSample.SelectedItem = devp.InputBitsPerSample.Value;
             CBox_InputChannelNum.SelectedItem = devp.InputChannelNum.Value;
 
             Num_RepeatCount.Value = devp.RepeatCount.Value;
@@ -42,17 +42,10 @@ namespace Ratatoskr.Device.AudioFile
 
         private void InitializeSamplingRate()
         {
-            var items = new [] {
-                8000,
-                11025,
-                22050,
-                44100,
-            };
-
             CBox_InputSamplingRate.BeginUpdate();
             {
-                foreach (var item in items) {
-                    CBox_InputSamplingRate.Items.Add((uint)item);
+                foreach (var value in Enum.GetValues(typeof(SamplingRateType))) {
+                    CBox_InputSamplingRate.Items.Add(value);
                 }
                 CBox_InputSamplingRate.SelectedIndex = 0;
             }
@@ -61,15 +54,10 @@ namespace Ratatoskr.Device.AudioFile
 
         private void InitializeBitsPerSample()
         {
-            var items = new [] {
-                8,
-                16,
-            };
-
             CBox_InputBitsPerSample.BeginUpdate();
             {
-                foreach (var item in items) {
-                    CBox_InputBitsPerSample.Items.Add((uint)item);
+                foreach (var value in Enum.GetValues(typeof(BitPerSampleType))) {
+                    CBox_InputBitsPerSample.Items.Add(value);
                 }
                 CBox_InputBitsPerSample.SelectedIndex = 0;
             }
@@ -78,15 +66,10 @@ namespace Ratatoskr.Device.AudioFile
 
         private void InitializeChannelNum()
         {
-            var items = new [] {
-                1,
-                2,
-            };
-
             CBox_InputChannelNum.BeginUpdate();
             {
-                foreach (var item in items) {
-                    CBox_InputChannelNum.Items.Add((uint)item);
+                foreach (var value in Enum.GetValues(typeof(ChannelNumberType))) {
+                    CBox_InputChannelNum.Items.Add(value);
                 }
                 CBox_InputChannelNum.SelectedIndex = 0;
             }
@@ -133,7 +116,7 @@ namespace Ratatoskr.Device.AudioFile
                     info.AppendFormat("Channel:       {0}", reader.WaveFormat.Channels);
                 }
             } catch {
-                info.Append("認識できないファイルです。");
+                info.Append("Unknown format.");
             }
 
             TBox_InputFileInfo.Text = info.ToString();
@@ -142,9 +125,9 @@ namespace Ratatoskr.Device.AudioFile
         public override void Flush()
         {
             devp_.InputFilePath.Value = TBox_InputFilePath.Text;
-            devp_.InputSamplingRate.Value = uint.Parse(CBox_InputSamplingRate.Text);
-            devp_.InputBitsPerSample.Value = uint.Parse(CBox_InputBitsPerSample.Text);
-            devp_.InputChannelNum.Value = uint.Parse(CBox_InputChannelNum.Text);
+            devp_.InputSamplingRate.Value = (SamplingRateType)CBox_InputSamplingRate.SelectedItem;
+            devp_.InputBitsPerSample.Value = (BitPerSampleType)CBox_InputBitsPerSample.SelectedItem;
+            devp_.InputChannelNum.Value = (ChannelNumberType)CBox_InputChannelNum.SelectedItem;
 
             devp_.RepeatCount.Value = Num_RepeatCount.Value;
             devp_.ConnectAction.Value = (ConnectActionType)CBox_ConnectAction.SelectedItem;

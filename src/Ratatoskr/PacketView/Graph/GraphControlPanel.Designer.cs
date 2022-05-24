@@ -70,6 +70,7 @@
 			this.label11 = new System.Windows.Forms.Label();
 			this.Btn_DisplaySetting_Apply = new System.Windows.Forms.Button();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.ChkBox_Visible = new System.Windows.Forms.CheckBox();
 			this.ChkBox_SignedValue = new System.Windows.Forms.CheckBox();
 			this.label14 = new System.Windows.Forms.Label();
 			this.ChkBox_BitEndian_Reverse = new System.Windows.Forms.CheckBox();
@@ -80,7 +81,6 @@
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.CBox_SamplingTrigger = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.ChkBox_Visible = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -272,19 +272,19 @@
 			// 
 			this.TBar_ChSet_Oscillo_VertOffset.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.TBar_ChSet_Oscillo_VertOffset.Location = new System.Drawing.Point(3, 15);
-			this.TBar_ChSet_Oscillo_VertOffset.Maximum = 50;
-			this.TBar_ChSet_Oscillo_VertOffset.Minimum = -50;
+			this.TBar_ChSet_Oscillo_VertOffset.Maximum = 100;
+			this.TBar_ChSet_Oscillo_VertOffset.Minimum = -100;
 			this.TBar_ChSet_Oscillo_VertOffset.Name = "TBar_ChSet_Oscillo_VertOffset";
 			this.TBar_ChSet_Oscillo_VertOffset.Orientation = System.Windows.Forms.Orientation.Vertical;
 			this.TBar_ChSet_Oscillo_VertOffset.Size = new System.Drawing.Size(39, 97);
 			this.TBar_ChSet_Oscillo_VertOffset.TabIndex = 13;
-			this.TBar_ChSet_Oscillo_VertOffset.TickFrequency = 10;
+			this.TBar_ChSet_Oscillo_VertOffset.TickFrequency = 20;
 			this.TBar_ChSet_Oscillo_VertOffset.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.TBar_ChSet_Oscillo_VertOffset.ValueChanged += new System.EventHandler(this.OnChannelSettingUpdated);
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(112, 44);
+			this.label8.Location = new System.Drawing.Point(121, 43);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(65, 19);
 			this.label8.TabIndex = 19;
@@ -297,31 +297,31 @@
 			this.CBox_ChSet_Oscillo_Range.FormattingEnabled = true;
 			this.CBox_ChSet_Oscillo_Range.Location = new System.Drawing.Point(6, 18);
 			this.CBox_ChSet_Oscillo_Range.Name = "CBox_ChSet_Oscillo_Range";
-			this.CBox_ChSet_Oscillo_Range.Size = new System.Drawing.Size(130, 20);
+			this.CBox_ChSet_Oscillo_Range.Size = new System.Drawing.Size(180, 20);
 			this.CBox_ChSet_Oscillo_Range.TabIndex = 18;
 			this.CBox_ChSet_Oscillo_Range.SelectedIndexChanged += new System.EventHandler(this.OnChannelSettingUpdated);
 			// 
 			// Num_ChSet_Oscillo_Range_Custom
 			// 
-			this.Num_ChSet_Oscillo_Range_Custom.DecimalPlaces = 4;
 			this.Num_ChSet_Oscillo_Range_Custom.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.Num_ChSet_Oscillo_Range_Custom.Location = new System.Drawing.Point(6, 44);
 			this.Num_ChSet_Oscillo_Range_Custom.Maximum = new decimal(new int[] {
-            10000,
+            1000000000,
             0,
             0,
             0});
 			this.Num_ChSet_Oscillo_Range_Custom.Minimum = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
-            262144});
+            0});
 			this.Num_ChSet_Oscillo_Range_Custom.Name = "Num_ChSet_Oscillo_Range_Custom";
-			this.Num_ChSet_Oscillo_Range_Custom.Size = new System.Drawing.Size(100, 19);
+			this.Num_ChSet_Oscillo_Range_Custom.Size = new System.Drawing.Size(109, 19);
 			this.Num_ChSet_Oscillo_Range_Custom.TabIndex = 12;
 			this.Num_ChSet_Oscillo_Range_Custom.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.Num_ChSet_Oscillo_Range_Custom.ThousandsSeparator = true;
 			this.Num_ChSet_Oscillo_Range_Custom.Value = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -670,6 +670,17 @@
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Common Setting";
 			// 
+			// ChkBox_Visible
+			// 
+			this.ChkBox_Visible.AutoSize = true;
+			this.ChkBox_Visible.Location = new System.Drawing.Point(6, 18);
+			this.ChkBox_Visible.Name = "ChkBox_Visible";
+			this.ChkBox_Visible.Size = new System.Drawing.Size(59, 16);
+			this.ChkBox_Visible.TabIndex = 29;
+			this.ChkBox_Visible.Text = "Visible";
+			this.ChkBox_Visible.UseVisualStyleBackColor = true;
+			this.ChkBox_Visible.CheckedChanged += new System.EventHandler(this.OnChannelSettingUpdated);
+			// 
 			// ChkBox_SignedValue
 			// 
 			this.ChkBox_SignedValue.AutoSize = true;
@@ -782,17 +793,6 @@
 			this.label1.TabIndex = 28;
 			this.label1.Text = "Sampling Trigger";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// ChkBox_Visible
-			// 
-			this.ChkBox_Visible.AutoSize = true;
-			this.ChkBox_Visible.Location = new System.Drawing.Point(6, 18);
-			this.ChkBox_Visible.Name = "ChkBox_Visible";
-			this.ChkBox_Visible.Size = new System.Drawing.Size(59, 16);
-			this.ChkBox_Visible.TabIndex = 29;
-			this.ChkBox_Visible.Text = "Visible";
-			this.ChkBox_Visible.UseVisualStyleBackColor = true;
-			this.ChkBox_Visible.CheckedChanged += new System.EventHandler(this.OnChannelSettingUpdated);
 			// 
 			// GraphControlPanel
 			// 

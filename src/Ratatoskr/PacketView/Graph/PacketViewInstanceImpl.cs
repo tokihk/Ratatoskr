@@ -250,6 +250,11 @@ namespace Ratatoskr.PacketView.Graph
 
         private void OnValueSampled(object sender, long[] value)
         {
+			/* for Debug */
+			{
+				Debugger.DebugManager.MessageOut(value[0]);
+			}
+
             disp_mod_.InputValue(value);
         }
 

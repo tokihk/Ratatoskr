@@ -11,23 +11,22 @@ namespace Ratatoskr.PacketView.Graph
 {
 	internal enum VertRangeType
 	{
-		Preset_100,
-		Preset_200,
-		Preset_500,
-		Preset_10000,
+		Preset_8bit_30DIV,
+		Preset_16bit_8000DIV,
+		Preset_32bit_500000000DIV,
 		Custom,
 	}
 
     internal sealed class GraphChannelConfig
     {
 		public bool				Visible					{ get; set; } = false;
-		public Color			ForeColor				{ get; set; } = Color.Black;
+		public Color			ForeColor				{ get; set; } = Color.White;
 		public uint				ValueBitSize			{ get; set; } = 8;
 		public bool				ReverseByteEndian		{ get; set; } = false;
 		public bool				ReverseBitEndian		{ get; set; } = false;
 		public bool				SignedValue				{ get; set; } = false;
 		public int				OscilloVertOffset		{ get; set; } = 0;
-		public VertRangeType	OscilloVertRange		{ get; set; } = VertRangeType.Preset_100;
+		public VertRangeType	OscilloVertRange		{ get; set; } = VertRangeType.Preset_8bit_30DIV;
 		public uint				OscilloVertRangeCustom	{ get; set; } = 1000;
 
 
@@ -49,19 +48,19 @@ namespace Ratatoskr.PacketView.Graph
             Value.Add(new GraphChannelConfig()
 			{
 				Visible = true,
-				ForeColor = Color.LightGoldenrodYellow,
+				ForeColor = Color.Yellow,
 			});
 
             Value.Add(new GraphChannelConfig()
 			{
 				Visible = false,
-				ForeColor = Color.LightBlue,
+				ForeColor = Color.RoyalBlue,
 			});
 
             Value.Add(new GraphChannelConfig()
 			{
 				Visible = false,
-				ForeColor = Color.LightPink,
+				ForeColor = Color.Pink,
 			});
 
             Value.Add(new GraphChannelConfig()
@@ -74,6 +73,24 @@ namespace Ratatoskr.PacketView.Graph
 			{
 				Visible = false,
 				ForeColor = Color.LightSalmon,
+			});
+
+            Value.Add(new GraphChannelConfig()
+			{
+				Visible = false,
+				ForeColor = Color.LightCoral,
+			});
+
+            Value.Add(new GraphChannelConfig()
+			{
+				Visible = false,
+				ForeColor = Color.LightSkyBlue,
+			});
+
+            Value.Add(new GraphChannelConfig()
+			{
+				Visible = false,
+				ForeColor = Color.LightCyan,
 			});
         }
 

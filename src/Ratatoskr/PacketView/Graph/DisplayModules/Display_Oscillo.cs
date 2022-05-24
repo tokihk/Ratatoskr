@@ -164,13 +164,15 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 
 			/* DIV単位のポイント数 */
 			switch (ch_cfg.OscilloVertRange) {
-				case VertRangeType.Preset_100:		point *= 100;									break;
-				case VertRangeType.Preset_200:		point *= 200;									break;
-				case VertRangeType.Preset_500:		point *= 500;									break;
-				case VertRangeType.Preset_10000:	point *= 10000;									break;
-				case VertRangeType.Custom:			point *= (uint)ch_cfg.OscilloVertRangeCustom;	break;
-				default:							point *= 1;										break;
+				case VertRangeType.Preset_8bit_30DIV:			point *= 30;									break;
+				case VertRangeType.Preset_16bit_8000DIV:		point *= 8000;									break;
+				case VertRangeType.Preset_32bit_500000000DIV:	point *= 500000000;								break;
+				case VertRangeType.Custom:						point *= (uint)ch_cfg.OscilloVertRangeCustom;	break;
+				default:										point *= 1;										break;
 			}
+
+			/* for Debug */
+//			point *= 500000000;
 
 			return (0, point);
 		}
@@ -307,6 +309,8 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 
         private void DrawGraph_Data(long[] ch_values, GraphChannelConfig ch_cfg)
         {
+			if (!ch_cfg.Visible)return;
+
             var value_y = (long)0;
 			var (value_y_min, value_y_max) = GetChannelValueRange(ch_cfg);
             var value_y_canvas = (long)0;
@@ -318,7 +322,8 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
             var value_canvas_y_mag = (double)canvas_rect_graph_.Height / value_y_max;
 
             var draw_pen = new Pen(ch_cfg.ForeColor);
-            var draw_points = new Point[(uint)((axisx_max_ - axisx_min_) * value_canvas_x_step)];
+			var draw_points = new List<Point>();
+//            var draw_points = new Point[(uint)((axisx_max_ - axisx_min_) * value_canvas_x_step)];
 
 			for (var value_x = axisx_min_; value_x < axisx_max_; value_x++) {
                 /* 実データを座標データに置き換える */
@@ -340,7 +345,8 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
                     /* 座標データを補正(ウィンドウ座標はwordサイズ以内としなければ例外が発生) */
                     value_y_canvas = (long)Math.Max(short.MinValue, Math.Min(short.MaxValue, value_y_canvas));
 
-					draw_points[value_x_canvas] = new Point(canvas_rect_graph_.Left + value_x_canvas, canvas_rect_graph_.Top + (int)value_y_canvas);
+//					draw_points[value_x_canvas] = new Point(canvas_rect_graph_.Left + value_x_canvas, canvas_rect_graph_.Top + (int)value_y_canvas);
+					draw_points.Add(new Point(canvas_rect_graph_.Left + value_x_canvas, canvas_rect_graph_.Top + (int)value_y_canvas));
 
                     value_x_canvas_last = value_x_canvas;
                 }

@@ -14,6 +14,14 @@ namespace Ratatoskr.Device.AudioFile
 {
     internal sealed class DeviceInstanceImpl : DeviceInstance
     {
+		private class AudioSamplingInfo
+		{
+			public int SamplingRate		{ get; set; }
+			public int BitsPerSample	{ get; set; }
+			public int Channels			{ get; set; }
+		}
+
+
         private const int VOICE_OUTPUT_IVAL = 100;
 
         private DevicePropertyImpl devp_;
@@ -38,6 +46,50 @@ namespace Ratatoskr.Device.AudioFile
             sampling_timer_.Elapsed += OnSampling;
             sampling_timer_.Interval = VOICE_OUTPUT_IVAL;
         }
+
+		private AudioSamplingInfo GetAudioFileInfo(string path)
+		{
+			try {
+				using (var reader = new MediaFoundationReader(devp_.InputFilePath.Value)) {
+					return (new AudioSamplingInfo()
+					{
+						SamplingRate = reader.WaveFormat.SampleRate,
+						BitsPerSample = reader.WaveFormat.BitsPerSample,
+						Channels = reader.WaveFormat.Channels,
+					});
+				}
+			} catch {
+				return (null);
+			}
+		}
+
+		private AudioSamplingInfo GetAudioSamplingSetting(string path)
+		{
+			var info = GetAudioFileInfo(devp_.InputFilePath.Value);
+
+			if (info == null)return (null);
+
+			switch (devp_.InputSamplingRate.Value) {
+				case SamplingRateType.Preset_8kHz:		info.SamplingRate = 8000;	break;
+				case SamplingRateType.Preset_44_1kHz:	info.SamplingRate = 44100;	break;
+				case SamplingRateType.Preset_48kHz:		info.SamplingRate = 48000;	break;
+			}
+
+			switch (devp_.InputBitsPerSample.Value) {
+				case BitPerSampleType.Preset_8bit:		info.BitsPerSample = 8;		break;
+				case BitPerSampleType.Preset_16bit:		info.BitsPerSample = 16;	break;
+			}
+
+			switch (devp_.InputChannelNum.Value) {
+				case ChannelNumberType.Preset_Monoral:	info.Channels = 1;		break;
+				case ChannelNumberType.Preset_Stereo:	info.Channels = 2;		break;
+				case ChannelNumberType.Preset_5_1ch:	info.Channels = 6;		break;
+				case ChannelNumberType.Preset_6_1ch:	info.Channels = 7;		break;
+				case ChannelNumberType.Preset_7_1ch:	info.Channels = 8;		break;
+			}
+
+			return (info);
+		}
 
         private void DataOutputExec()
         {
@@ -91,14 +143,16 @@ namespace Ratatoskr.Device.AudioFile
                 if (   (reader_ == null)
                     || (resampler_ == null)
                 ) {
+					var sampling_info = GetAudioSamplingSetting(devp_.InputFilePath.Value);
+
                     reader_ = new MediaFoundationReader(devp_.InputFilePath.Value);
 
                     resampler_ = new MediaFoundationResampler(
                                         reader_,
                                         new WaveFormat(
-                                            (int)devp_.InputSamplingRate.Value,
-                                            (int)devp_.InputBitsPerSample.Value,
-                                            (int)devp_.InputChannelNum.Value));
+                                            sampling_info.SamplingRate,
+                                            sampling_info.BitsPerSample,
+                                            sampling_info.Channels));
 
                     sampling_buffer_ = new byte[resampler_.WaveFormat.AverageBytesPerSecond / 10];
                 }

@@ -9,6 +9,31 @@ using Ratatoskr.General;
 
 namespace Ratatoskr.Device.AudioFile
 {
+	internal enum SamplingRateType
+	{
+		Auto,
+		Preset_8kHz,
+		Preset_44_1kHz,
+		Preset_48kHz,
+	}
+
+	internal enum BitPerSampleType
+	{
+		Auto,
+		Preset_8bit,
+		Preset_16bit,
+	}
+
+	internal enum ChannelNumberType
+	{
+		Auto,
+		Preset_Monoral,
+		Preset_Stereo,
+		Preset_5_1ch,
+		Preset_6_1ch,
+		Preset_7_1ch,
+	}
+
     internal enum ConnectActionType
     {
         Restart,
@@ -19,9 +44,9 @@ namespace Ratatoskr.Device.AudioFile
     internal sealed class DevicePropertyImpl : DeviceProperty
     {
         public StringConfig  InputFilePath { get; } = new StringConfig("");
-        public IntegerConfig InputSamplingRate  { get; } = new IntegerConfig(8000);
-        public IntegerConfig InputBitsPerSample { get; } = new IntegerConfig(8);
-        public IntegerConfig InputChannelNum    { get; } = new IntegerConfig(1);
+        public EnumConfig<SamplingRateType>		InputSamplingRate  { get; } = new EnumConfig<SamplingRateType>(SamplingRateType.Auto);
+        public EnumConfig<BitPerSampleType>		InputBitsPerSample { get; } = new EnumConfig<BitPerSampleType>(BitPerSampleType.Auto);
+        public EnumConfig<ChannelNumberType>	InputChannelNum    { get; } = new EnumConfig<ChannelNumberType>(ChannelNumberType.Auto);
 
         public IntegerConfig                 RepeatCount   { get; } = new IntegerConfig(1);
         public EnumConfig<ConnectActionType> ConnectAction { get; } = new EnumConfig<ConnectActionType>(ConnectActionType.Restart);

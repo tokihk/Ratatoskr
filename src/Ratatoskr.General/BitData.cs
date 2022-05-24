@@ -195,11 +195,11 @@ namespace Ratatoskr.General
             if (signed) {
                 if (bitlen < 64) {
                     /* 64bit未満の場合は計算で作成 */
-                    bitlen = Math.Min(bitlen, 63);
+                    bitlen = Math.Min(bitlen - 1, 63);
 
                     if (((raw_data >> (int)bitlen) & 1) != 0) {
                         /* 最上位ビットが1なら負数に変換 */
-                        ret_data = (Int64)(((~raw_data) + 1) & (0xFFFFFFFFFFFFFFFFul >> (int)(64 - bitlen))) * -1;
+                        ret_data = (Int64)(((~raw_data) + 1) & (0xFFFFFFFFFFFFFFFFul >> (int)(63 - bitlen))) * -1;
                     } else {
                         ret_data = (Int64)raw_data;
 					}
