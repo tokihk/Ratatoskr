@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Ratatoskr.General
@@ -43,10 +44,24 @@ namespace Ratatoskr.General
             Length = bitlen;
         }
 
-        public BitData(byte[] bitdata, uint bitlen)
+        public unsafe BitData(byte[] bitdata, uint bitlen)
+        {
+            bitlen = Math.Min((uint)bitdata.Length * 8, bitlen);
+
+            Data = new byte[(bitlen + 7) / 8];
+            Length = bitlen;
+
+            fixed (byte *pData = Data) {
+                Marshal.Copy(bitdata, 0, (IntPtr)pData, Data.Length);
+			}
+        }
+
+        public unsafe BitData(byte *bitdata, uint bitlen)
         {
             Data = new byte[(bitlen + 7) / 8];
-            Array.Copy(bitdata, Data, Math.Min(bitdata.Length, Data.Length));
+
+            Marshal.Copy((IntPtr)bitdata, Data, 0, Data.Length);
+
             Length = bitlen;
         }
 
@@ -70,37 +85,49 @@ namespace Ratatoskr.General
             return (ToHexText());
         }
 
-        public void ReverseByteEndian()
+        public unsafe void ReverseByteEndian()
         {
-            Array.Reverse(Data);
-            Length = (uint)Data.Length * 8;
+            var data_new = new byte[Data.Length];
+
+            fixed (byte *pdata_new = data_new)
+            fixed (byte *pData = Data)
+            {
+                byte *pdata_new2 = pdata_new;
+                byte *pData2 = pData + Data.Length - 1;
+
+                while (pData2 >= pData) {
+					*pdata_new2++ = *pData2--;
+				}
+			}
+
+            Data = data_new;
+            Length = (uint)data_new.Length * 8;
         }
 
         /* Byte単位でBit位置を入れ替え */
-        public void ReverseBitEndian()
+        public unsafe void ReverseBitEndian()
         {
             var work_data = (byte)0;
 
-            for (var byte_index = 0; byte_index < Data.Length; byte_index++) {
-                work_data = Data[byte_index];
+            fixed (byte* pData = Data) {
+                for (var byte_index = 0; byte_index < Data.Length; byte_index++) {
+                    work_data = pData[byte_index];
 
-                /* Bit反転 */
-                work_data = (byte)(((work_data & 0xaa) >> 1) | ((work_data & 0x55) << 1));
-                work_data = (byte)(((work_data & 0xcc) >> 2) | ((work_data & 0x33) << 2));
-                work_data = (byte)(((work_data & 0xf0) >> 4) | ((work_data & 0x0f) << 4));
+                    /* Bit反転 */
+                    work_data = (byte)(((work_data & 0xaa) >> 1) | ((work_data & 0x55) << 1));
+                    work_data = (byte)(((work_data & 0xcc) >> 2) | ((work_data & 0x33) << 2));
+                    work_data = (byte)(((work_data & 0xf0) >> 4) | ((work_data & 0x0f) << 4));
 
-                /* 8bitではないブロックは詰める */
-                work_data <<= (8 - Math.Min(8, (int)Length - byte_index * 8));
+                    /* 8bitではないブロックは詰める */
+                    work_data <<= (8 - Math.Min(8, (int)Length - byte_index * 8));
 
-                Data[byte_index] = work_data;
+                    pData[byte_index] = work_data;
+                }
             }
         }
 
-        public BitData GetBitData(uint offset, uint bitlen)
+        private BitData GetBitDataBit(uint bit_offset, uint bitlen)
         {
-            offset = Math.Min(offset, Length);
-            bitlen = Math.Min(bitlen, Length - offset);
-
             if (bitlen <= 0)return (new BitData(0));
 
             var dst_data = new byte[(bitlen + 7) / 8];
@@ -108,8 +135,8 @@ namespace Ratatoskr.General
             var dst_offset_bit  = 7;
             var dst_bitlen = bitlen;
 
-            var src_offset_byte = (int)(offset / 8);
-            var src_offset_bit  = (int)(7 - offset % 8);
+            var src_offset_byte = (int)(bit_offset / 8);
+            var src_offset_bit  = (int)(7 - bit_offset % 8);
 
             while (bitlen > 0) {
                 if ((Data[src_offset_byte] & (1u << src_offset_bit)) != 0) {
@@ -132,7 +159,27 @@ namespace Ratatoskr.General
             return (new BitData(dst_data, dst_bitlen));
         }
 
-        private UInt64 GetIntegerBit(uint bit_offset, uint bitlen)
+        private unsafe BitData GetBitDataByte(uint byte_offset, uint bitlen)
+        {
+            fixed (byte *pData = Data)
+            {
+                return (new BitData(pData + byte_offset, bitlen));
+            }
+        }
+
+        public BitData GetBitData(uint offset, uint bitlen)
+        {
+            offset = Math.Min(offset, Length);
+            bitlen = Math.Min(bitlen, Length - offset);
+
+            if ((offset & 0x07) == 0) {
+                return (GetBitDataByte(offset / 8, bitlen));
+			} else {
+                return (GetBitDataBit(offset, bitlen));
+			}
+        }
+
+        private unsafe UInt64 GetIntegerBit(uint bit_offset, uint bitlen)
         {
             var work_data = (UInt64)0;
 
@@ -140,34 +187,40 @@ namespace Ratatoskr.General
             var src_offset_byte = (int)(bit_offset / 8);
             var src_offset_bit  = (int)(7 - bit_offset % 8);
 
-            while (bitlen > 0) {
-                work_data <<= 1;
-                if ((Data[src_offset_byte] & (1u << src_offset_bit)) != 0) {
-                    work_data |= 1;
-                }
+            fixed (byte *pData = Data) {
+                while (bitlen > 0) {
+                    work_data <<= 1;
+                    if ((pData[src_offset_byte] & (1u << src_offset_bit)) != 0) {
+                        work_data |= 1;
+                    }
 
-                if ((--src_offset_bit) < 0) {
-                    src_offset_bit = 7;
-                    src_offset_byte++;
-                }
+                    if ((--src_offset_bit) < 0) {
+                        src_offset_bit = 7;
+                        src_offset_byte++;
+                    }
 
-                bitlen--;
+                    bitlen--;
+                }
             }
 
             return (work_data);
         }
 
-        private UInt64 GetIntegerByte(uint byte_offset, uint bitlen)
+        private unsafe UInt64 GetIntegerByte(uint byte_offset, uint bitlen)
         {
             var dst_data = (UInt64)0;
             var work_bitlen = (int)bitlen;
 
             /* Byte単位で結合 */
-            while (work_bitlen > 0) {
-                dst_data <<= 8;
-                dst_data |= Data[byte_offset++];
-                work_bitlen -= 8;
-			}
+            fixed (byte *pData = Data) {
+                byte *pData_work = pData + byte_offset;
+
+                while (work_bitlen > 0) {
+                    dst_data <<= 8;
+                    dst_data |= *pData_work++;
+                    work_bitlen -= 8;
+                }
+            }
 
             /* 処理しすぎた場合はシフトで消す */
             if (work_bitlen < 0) {

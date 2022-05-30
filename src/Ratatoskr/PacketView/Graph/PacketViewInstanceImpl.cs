@@ -217,7 +217,7 @@ namespace Ratatoskr.PacketView.Graph
 					DisplayRect = PBox_GraphDetails.ClientRectangle,
 					DisplayPoint = (uint)prop_.Oscillo_DisplayPoint.Value,
 					DisplayAxisX_Offset = (uint)TBar_GraphHorizontalOffset.Value,
-					ChannelConfigs = (data_collect_mod_ != null) ? (data_collect_mod_.ChannelConfigs) : (null),
+					ChannelConfigs = (data_collect_mod_ != null) ? (data_collect_mod_.ChannelInfos.Select(v => v.ChannelConfig).ToArray()) : (null),
 				};
 			}
 
@@ -252,7 +252,7 @@ namespace Ratatoskr.PacketView.Graph
         {
 			/* for Debug */
 			{
-				Debugger.DebugManager.MessageOut(value[0]);
+//				Debugger.DebugManager.MessageOut(value[0]);
 			}
 
             disp_mod_.InputValue(value);

@@ -272,13 +272,13 @@
 			// 
 			this.TBar_ChSet_Oscillo_VertOffset.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.TBar_ChSet_Oscillo_VertOffset.Location = new System.Drawing.Point(3, 15);
-			this.TBar_ChSet_Oscillo_VertOffset.Maximum = 100;
-			this.TBar_ChSet_Oscillo_VertOffset.Minimum = -100;
+			this.TBar_ChSet_Oscillo_VertOffset.Maximum = 500;
+			this.TBar_ChSet_Oscillo_VertOffset.Minimum = -500;
 			this.TBar_ChSet_Oscillo_VertOffset.Name = "TBar_ChSet_Oscillo_VertOffset";
 			this.TBar_ChSet_Oscillo_VertOffset.Orientation = System.Windows.Forms.Orientation.Vertical;
 			this.TBar_ChSet_Oscillo_VertOffset.Size = new System.Drawing.Size(39, 97);
 			this.TBar_ChSet_Oscillo_VertOffset.TabIndex = 13;
-			this.TBar_ChSet_Oscillo_VertOffset.TickFrequency = 20;
+			this.TBar_ChSet_Oscillo_VertOffset.TickFrequency = 100;
 			this.TBar_ChSet_Oscillo_VertOffset.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.TBar_ChSet_Oscillo_VertOffset.ValueChanged += new System.EventHandler(this.OnChannelSettingUpdated);
 			// 

@@ -12,8 +12,9 @@ namespace Ratatoskr.PacketView.Graph
 	internal enum VertRangeType
 	{
 		Preset_8bit_30DIV,
-		Preset_16bit_8000DIV,
-		Preset_32bit_500000000DIV,
+		Preset_16bit_8kDIV,
+		Preset_32bit_700MDIV,
+		Preset_32bit_1000MDIV,
 		Custom,
 	}
 

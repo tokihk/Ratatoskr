@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Ratatoskr.Gate;
@@ -12,6 +13,13 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
     internal class DataCollectModule
     {
 		private const uint IVAL_SAMPLING_IDLE_LOOP_MAX = 10;
+
+
+		public class GraphChannelInfo
+		{
+			public GraphChannelConfig	ChannelConfig;
+			public uint					ValueBitOffset;
+		}
 
 
         public delegate void SampledEventHandler(object sender, long[] data);
@@ -27,7 +35,7 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 		private uint		data_block_size_ = 0;
 		private uint		data_block_ch_num_ = 0;
 
-		private GraphChannelConfig[] ch_configs_ = null;
+		private GraphChannelInfo[] ch_infos_ = null;
 
         
         public event SampledEventHandler Sampled;
@@ -67,9 +75,9 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 			}
 
 			/* --- チャンネル情報 --- */
-			var ch_config_list = new List<GraphChannelConfig>();
-			var value_bit_size = 0;
-			var value_bit_size_max = data_block_.Length * 8;
+			var ch_info_list = new List<GraphChannelInfo>();
+			var value_bit_size = (uint)0;
+			var value_bit_size_max = (uint)data_block_.Length * 8;
 
 			foreach (var ch_config in prop.ChannelList.Value.Select((v, i) => (v, i))) {
 				/* 設定チャンネル数を超えるときは終了 */
@@ -78,15 +86,21 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 				/* チャンネルのデータサイズ加算後のサイズがデータブロックサイズを超えるときは終了 */
 				if ((value_bit_size + ch_config.v.ValueBitSize) > value_bit_size_max)break;
 
-				ch_config_list.Add(ch_config.v);
+				/* 解析チャンネルとして登録 */
+				ch_info_list.Add(new GraphChannelInfo() {
+					ChannelConfig = ch_config.v,
+					ValueBitOffset = value_bit_size
+				});
+
+				value_bit_size += ch_config.v.ValueBitSize;
 			}
 
-			ch_configs_ = ch_config_list.ToArray();
+			ch_infos_ = ch_info_list.ToArray();
         }
 
-		public GraphChannelConfig[] ChannelConfigs
+		public GraphChannelInfo[] ChannelInfos
 		{
-			get { return (ch_configs_); }
+			get { return (ch_infos_); }
 		}
 
         private void Sampling()
@@ -131,7 +145,7 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 			}
 		}
 
-		public void InputData(DateTime input_dt, IEnumerable<byte> data)
+		public unsafe void InputData(DateTime input_dt, in byte[] data)
 		{
 			if (sampling_trigger_ == SamplingTriggerType.TimeInterval) {
 				/* 時間サンプリング開始 */
@@ -144,11 +158,20 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 			}
 
 			/* データブロック収集 */
-			foreach (var data_one in data) {
-				data_block_[data_block_size_++] = data_one;
+			// 62
+			int copy_size;
+			int rest_size = data.Length;
+
+			while (rest_size > 0) {
+				copy_size = Math.Min(rest_size, data_block_.Length - (int)data_block_size_);
+
+				Buffer.BlockCopy(data, data.Length - rest_size, data_block_, (int)data_block_size_, copy_size);
+
+				rest_size -= copy_size;
+				data_block_size_ += (uint)copy_size;
 
 				/* データブロックが集まったら解析 */
-				if (data_block_size_ >= data_block_.Length) {
+				if (data_block_size_ == data_block_.Length) {
 					ParseDataBlock(data_block_);
 					data_block_size_ = 0;
 				}
@@ -158,33 +181,31 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 		private void ParseDataBlock(byte[] data_block)
 		{
 			var data_block_all = new BitData(data_block, (uint)data_block.Length * 8);
-			var ch_value_list = new long[data_block_ch_num_];
-			var bit_offset = (uint)0;
-			var ch_config = (GraphChannelConfig)null;
+			var ch_values = new long[ch_infos_.Length];
+			GraphChannelInfo ch_info;
+			BitData ch_block;
 
 			/* CH情報のデータ値を抽出 */
-			for (var ch_index = 0; ch_index < ch_configs_.Length; ch_index++) {
-				ch_config = ch_configs_[ch_index];
+			for (var ch_index = 0; ch_index < ch_infos_.Length; ch_index++) {
+				ch_info = ch_infos_[ch_index];
 
-				if (ch_config.ValueBitSize == 0)continue;
+				if (ch_info.ChannelConfig.ValueBitSize == 0)continue;
 
 				/* データブロックからCH設定に合致する位置のデータを抽出 */
-				var ch_block = data_block_all.GetBitData(bit_offset, ch_config.ValueBitSize);
+				ch_block = data_block_all.GetBitData(ch_info.ValueBitOffset, ch_info.ChannelConfig.ValueBitSize);
 
-				if (ch_config.ReverseBitEndian) {
+				if (ch_info.ChannelConfig.ReverseBitEndian) {
 					ch_block.ReverseBitEndian();
 				}
-				if (ch_config.ReverseByteEndian) {
+				if (ch_info.ChannelConfig.ReverseByteEndian) {
 					ch_block.ReverseByteEndian();
 				}
 
-				ch_value_list[ch_index] = ch_block.GetInteger(ch_config.SignedValue);
-
-				bit_offset += ch_config.ValueBitSize;
+				ch_values[ch_index] = ch_block.GetInteger(ch_info.ChannelConfig.SignedValue);
 			}
 
 			/* 抽出したチャンネル値を上層へ通知 */
-			OnExtractedValue(ch_value_list);
+			OnExtractedValue(ch_values);
 
 			if (sampling_trigger_ == SamplingTriggerType.DataBlockDetect) {
 				Sampling();
