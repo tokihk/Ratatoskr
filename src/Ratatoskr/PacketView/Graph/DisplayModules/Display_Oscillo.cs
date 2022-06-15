@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -327,7 +328,8 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 			DrawBackground();
 
 			/* グラフのデータを描画(キャッシュ無し) */
-			DrawGraph();
+//			DrawGraph();
+			DrawGraphSimd();
 
 			/* グラフの前面描画(キャッシュ無し) */
 			DrawForeground();
@@ -517,6 +519,92 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 						pdraw_points_work->Y = (int)axisy_canvas_value;
 						pdraw_points_work++;
 					}
+
+					glayer_main_.Canvas.DrawLines(ch_data.GraphPen, draw_points);
+				}
+			}
+
+			glayer_main_.Canvas.ResetClip();
+			glayer_main_.Canvas.ResetTransform();
+        }
+
+        private unsafe void DrawGraphSimd()
+        {
+			if (draw_ch_data_ == null)return;
+
+            var axisy_value = (long)0;
+            var axisy_canvas_value = (long)0;
+			var draw_points = new Point[axisx_value_indexes_.Length];
+			var ch_value_in = ch_values_in_;
+
+			var axisy_values  = new double[axisx_value_indexes_.Length];
+			var asisy_steps   = new double[axisx_value_indexes_.Length];
+			var asisy_offsets = new double[axisx_value_indexes_.Length];
+			var asisy_max     = new double[axisx_value_indexes_.Length];
+			var asisy_min     = new double[axisx_value_indexes_.Length];
+
+			/* 描画領域を設定 */
+			glayer_main_.Canvas.SetClip(canvas_rect_graph_);
+			glayer_main_.Canvas.TranslateTransform(canvas_rect_graph_.Left, canvas_rect_graph_.Top);
+
+			fixed (int* paxisx_canvas_values = axisx_canvas_values_)
+			fixed (Point* pdraw_points = draw_points)
+			{
+				foreach (var ch_data in draw_ch_data_) {
+					int *		paxisx_canvas_values_work = paxisx_canvas_values;
+					Point *		pdraw_points_work = pdraw_points;
+
+
+					for (var index = 0; index < axisx_value_indexes_.Length; index++) {
+						axisy_values[index] = ch_data.AxisY_Values[(ch_value_in + axisx_value_indexes_[index]) % ch_data.AxisY_Values.Length];
+						asisy_steps[index] = ch_data.AxisY_CanvasStep;
+						asisy_offsets[index] = ch_data.AxisY_CanvasOffset;
+						asisy_max[index] = short.MaxValue;
+						asisy_min[index] = short.MinValue;
+					}
+
+					var axisy_value_v   = new Vector<double>(axisy_values);
+					var asisy_steps_v   = new Vector<double>(asisy_steps);
+					var asisy_offsets_v = new Vector<double>(asisy_offsets);
+					var asisy_max_v     = new Vector<double>(asisy_max);
+					var asisy_min_v     = new Vector<double>(asisy_min);
+
+					axisy_value_v *= asisy_steps_v;
+					axisy_value_v -= asisy_offsets_v;
+					axisy_value_v = Vector.Min(axisy_value_v, asisy_max_v);
+					axisy_value_v = Vector.Max(axisy_value_v, asisy_min_v);
+
+					for (var index = 0; index < axisx_value_indexes_.Length; index++) {
+						/* 座標データを登録 */
+						pdraw_points_work->X = *paxisx_canvas_values_work++;
+						pdraw_points_work->Y = (int)axisy_value_v[index];
+						pdraw_points_work++;
+					}
+
+#if false
+					foreach (var axisx_value_index in axisx_value_indexes_) {
+						/* 実データを取得 */
+						axisy_value = ch_data.AxisY_Values[(ch_value_in + axisx_value_index) % ch_data.AxisY_Values.Length];
+
+						/* 座標データに変換 */
+						axisy_canvas_value = (long)(axisy_value * ch_data.AxisY_CanvasStep);
+
+						/* 表示位置をオフセット補正 */
+						axisy_canvas_value -= ch_data.AxisY_CanvasOffset;
+
+						/* 座標データを補正(ウィンドウ座標はwordサイズ以内としなければ例外が発生) */
+						if (axisy_canvas_value < short.MinValue) {
+							axisy_canvas_value = short.MinValue;
+						} else if (axisy_canvas_value > short.MaxValue) {
+							axisy_canvas_value = short.MaxValue;
+						}
+
+						/* 座標データを登録 */
+						pdraw_points_work->X = *paxisx_canvas_values_work++;
+						pdraw_points_work->Y = (int)axisy_canvas_value;
+						pdraw_points_work++;
+					}
+#endif
 
 					glayer_main_.Canvas.DrawLines(ch_data.GraphPen, draw_points);
 				}
