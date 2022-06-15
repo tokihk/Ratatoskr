@@ -170,11 +170,11 @@ namespace Ratatoskr.Forms.Dialog
             if (CBox_DeviceType.SelectedItem is DeviceClass devc) {
                 devc_id_ = devc.ID;
 
-                DebugManager.MessageOut(DebugMessageSender.User, DebugMessageType.ControlEvent, "Gate Device Change Start");
+                DebugManager.MessageOut(DebugEventSender.User, DebugEventType.ControlEvent, "Gate Device Change Start");
 
                 UpdateDevice();
 
-                DebugManager.MessageOut(DebugMessageSender.User, DebugMessageType.ControlEvent, "Gate Device Change End");
+                DebugManager.MessageOut(DebugEventSender.User, DebugEventType.ControlEvent, "Gate Device Change End");
             }
         }
 

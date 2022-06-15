@@ -111,7 +111,7 @@ namespace Ratatoskr.Device
                 devd_list_.Sort((a, b) => a.Name.CompareTo(b.Name));
             }
 
-			DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.ControlEvent, String.Format("Device Class Added. count = {0}", devd_list_.Count));
+			DebugManager.MessageOut(DebugEventSender.Device ,DebugEventType.ControlEvent, String.Format("Device Class Added. count = {0}", devd_list_.Count));
 
             return (true);
         }
@@ -146,7 +146,7 @@ namespace Ratatoskr.Device
             lock (devi_list_) {
                 devi_list_.Add(devi);
 
-				DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.ControlEvent, String.Format("Device Instance Added. count = {0}", devi_list_.Count));
+				DebugManager.MessageOut(DebugEventSender.Device ,DebugEventType.ControlEvent, String.Format("Device Instance Added. count = {0}", devi_list_.Count));
 
                 /* 各インスタンスのリダイレクト先を更新 */
                 UpdateRedirectMap();
@@ -185,7 +185,7 @@ namespace Ratatoskr.Device
             lock (devi_list_) {
                 /* 終了済みインスタンスを破棄 */
                 if (devi_list_.RemoveAll(devi => devi.IsShutdown) > 0) {
-					DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.ControlEvent, String.Format("Device Instance Removed. count = {0}", devi_list_.Count));
+					DebugManager.MessageOut(DebugEventSender.Device ,DebugEventType.ControlEvent, String.Format("Device Instance Removed. count = {0}", devi_list_.Count));
 
                     /* 各インスタンスのリダイレクト先を更新 */
                     UpdateRedirectMap();

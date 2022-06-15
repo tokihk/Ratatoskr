@@ -131,7 +131,7 @@
 			this.groupBox9.Controls.Add(this.RBtn_ChSet_CH3);
 			this.groupBox9.Controls.Add(this.RBtn_ChSet_CH2);
 			this.groupBox9.Controls.Add(this.RBtn_ChSet_CH1);
-			this.groupBox9.Location = new System.Drawing.Point(6, 290);
+			this.groupBox9.Location = new System.Drawing.Point(3, 290);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(69, 197);
 			this.groupBox9.TabIndex = 21;
@@ -251,9 +251,9 @@
 			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.CBox_ChSet_Oscillo_Range);
 			this.groupBox2.Controls.Add(this.Num_ChSet_Oscillo_Range_Custom);
-			this.groupBox2.Location = new System.Drawing.Point(291, 290);
+			this.groupBox2.Location = new System.Drawing.Point(288, 291);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(243, 139);
+			this.groupBox2.Size = new System.Drawing.Size(243, 156);
 			this.groupBox2.TabIndex = 18;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Oscilloscope Setting";
@@ -263,7 +263,7 @@
 			this.groupBox13.Controls.Add(this.TBar_ChSet_Oscillo_VertOffset);
 			this.groupBox13.Location = new System.Drawing.Point(192, 18);
 			this.groupBox13.Name = "groupBox13";
-			this.groupBox13.Size = new System.Drawing.Size(45, 115);
+			this.groupBox13.Size = new System.Drawing.Size(45, 132);
 			this.groupBox13.TabIndex = 21;
 			this.groupBox13.TabStop = false;
 			this.groupBox13.Text = "Pos";
@@ -276,7 +276,7 @@
 			this.TBar_ChSet_Oscillo_VertOffset.Minimum = -500;
 			this.TBar_ChSet_Oscillo_VertOffset.Name = "TBar_ChSet_Oscillo_VertOffset";
 			this.TBar_ChSet_Oscillo_VertOffset.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.TBar_ChSet_Oscillo_VertOffset.Size = new System.Drawing.Size(39, 97);
+			this.TBar_ChSet_Oscillo_VertOffset.Size = new System.Drawing.Size(39, 114);
 			this.TBar_ChSet_Oscillo_VertOffset.TabIndex = 13;
 			this.TBar_ChSet_Oscillo_VertOffset.TickFrequency = 100;
 			this.TBar_ChSet_Oscillo_VertOffset.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
@@ -336,7 +336,7 @@
 			this.label3.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.label3.Location = new System.Drawing.Point(3, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(544, 28);
+			this.label3.Size = new System.Drawing.Size(534, 28);
 			this.label3.TabIndex = 11;
 			this.label3.Text = "Sampling Setting";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -350,7 +350,7 @@
 			this.label2.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.label2.Location = new System.Drawing.Point(3, 154);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(544, 28);
+			this.label2.Size = new System.Drawing.Size(534, 28);
 			this.label2.TabIndex = 12;
 			this.label2.Text = "Display Setting";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -637,7 +637,7 @@
 			this.label11.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.label11.Location = new System.Drawing.Point(3, 259);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(544, 28);
+			this.label11.Size = new System.Drawing.Size(534, 28);
 			this.label11.TabIndex = 22;
 			this.label11.Text = "Channel Setting";
 			this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -663,7 +663,7 @@
 			this.groupBox4.Controls.Add(this.Num_ValueBitSize);
 			this.groupBox4.Controls.Add(this.label13);
 			this.groupBox4.Controls.Add(this.ChkBox_ByteEndian_Reverse);
-			this.groupBox4.Location = new System.Drawing.Point(81, 290);
+			this.groupBox4.Location = new System.Drawing.Point(78, 291);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(204, 156);
 			this.groupBox4.TabIndex = 24;
@@ -813,7 +813,7 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label3);
 			this.Name = "GraphControlPanel";
-			this.Size = new System.Drawing.Size(550, 673);
+			this.Size = new System.Drawing.Size(540, 498);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox9.ResumeLayout(false);
 			this.groupBox9.PerformLayout();

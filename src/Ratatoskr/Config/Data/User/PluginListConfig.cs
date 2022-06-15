@@ -82,7 +82,7 @@ namespace Ratatoskr.Config.Data.User
 
             if (plgp == null) {
 				/* 該当IDのプラグインがインストールされていない場合は無視 */
-				DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.ConfigEvent, string.Format("LoadPluginProperty Error: {0}", class_id.ToString("D")));
+				DebugManager.MessageOut(DebugEventSender.Application, DebugEventType.ConfigEvent, string.Format("LoadPluginProperty Error: {0}", class_id.ToString("D")));
 				return (null);
 			}
 

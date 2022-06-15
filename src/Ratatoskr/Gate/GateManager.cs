@@ -63,7 +63,7 @@ namespace Ratatoskr.Gate
                 gate_list_.Add(gate);
             }
 
-			DebugManager.MessageOut(DebugMessageSender.Gate, String.Format("Gate Added. count = {0}", gate_list_.Count));
+			DebugManager.MessageOut(DebugEventSender.Gate, String.Format("Gate Added. count = {0}", gate_list_.Count));
 
             return (gate);
         }
@@ -82,7 +82,7 @@ namespace Ratatoskr.Gate
 
 			gate.Dispose();
 
-			DebugManager.MessageOut(DebugMessageSender.Gate, String.Format("Gate Removed. count = {0}", gate_list_.Count));
+			DebugManager.MessageOut(DebugEventSender.Gate, String.Format("Gate Removed. count = {0}", gate_list_.Count));
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 {
     internal class Display_Spectrum : DisplayModule
     {
-        public Display_Spectrum(PacketViewPropertyImpl prop) : base(prop)
+        public Display_Spectrum() : base()
         {
         }
 

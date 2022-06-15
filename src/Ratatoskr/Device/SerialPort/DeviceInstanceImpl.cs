@@ -179,7 +179,7 @@ namespace Ratatoskr.Device.SerialPort
 
         protected override void OnDisconnectStart()
         {
-            DebugManager.MessageOut(DebugMessageSender.Device, DebugMessageType.ControlEvent, "Serial Port - Disconnect Start");
+            DebugManager.MessageOut(DebugEventSender.Device, DebugEventType.ControlEvent, "Serial Port - Disconnect Start");
 #if ASYNC_MODE
             /* タスク停止イベント */
             NativeMethods.ResetEvent(exit_event_);
@@ -213,7 +213,7 @@ namespace Ratatoskr.Device.SerialPort
 			exit_request_event_.Set();
 #endif
 
-            DebugManager.MessageOut(DebugMessageSender.Device, DebugMessageType.ControlEvent, "Serial Port - Disconnect Start - End");
+            DebugManager.MessageOut(DebugEventSender.Device, DebugEventType.ControlEvent, "Serial Port - Disconnect Start - End");
         }
 
 		protected override EventResult OnDisconnectBusy()

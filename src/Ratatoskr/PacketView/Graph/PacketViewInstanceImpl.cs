@@ -21,7 +21,8 @@ namespace Ratatoskr.PacketView.Graph
 
         private DataCollectModule data_collect_mod_ = null;
 
-        private Timer graph_update_timer_ = new Timer();
+        private Timer	graph_update_timer_ = new Timer();
+		private bool	graph_update_req_ = false;
 
         private Panel panel1;
         private TrackBar TBar_GraphHorizontalOffset;
@@ -131,9 +132,10 @@ namespace Ratatoskr.PacketView.Graph
 
             GCPanel_Main.LoadConfig(prop_);
 
-            graph_update_timer_.Interval = 1000;
+            graph_update_timer_.Interval = 100;
             graph_update_timer_.Tick += OnUpdateGraphRequestTimer;
 
+			UpdateGraphRequest();
             UpdateModule();
         }
 
@@ -180,7 +182,7 @@ namespace Ratatoskr.PacketView.Graph
 
 			switch (prop_.DisplayMode.Value) {
 				case DisplayModeType.OscilloScope:
-					disp_mod_ = new Display_Oscillo(prop_);
+					disp_mod_ = new Display_Oscillo();
 					break;
 				default:
 					disp_mod_ = null;
@@ -212,13 +214,16 @@ namespace Ratatoskr.PacketView.Graph
 			UpdateDisplayTrackBar();
 
 			if (disp_mod_ != null) {
-				disp_mod_.Config = new DisplayConfig()
+				disp_mod_.SetDisplayConfig(new DisplayConfig()
 				{
-					DisplayRect = PBox_GraphDetails.ClientRectangle,
-					DisplayPoint = (uint)prop_.Oscillo_DisplayPoint.Value,
-					DisplayAxisX_Offset = (uint)TBar_GraphHorizontalOffset.Value,
-					ChannelConfigs = (data_collect_mod_ != null) ? (data_collect_mod_.ChannelInfos.Select(v => v.ChannelConfig).ToArray()) : (null),
-				};
+					GraphRecordPoint  = (uint)prop_.Oscillo_RecordPoint.Value,
+					GraphDisplayPoint = (uint)prop_.Oscillo_DisplayPoint.Value,
+					GraphDisplayOffset = (uint)TBar_GraphHorizontalOffset.Value,
+					GraphChannelConfigs = (data_collect_mod_ != null) ? (data_collect_mod_.ChannelConfigs) : (null),
+					DisplayRect = PBox_GraphDetails.ClientRectangle
+				});
+
+				UpdateDisplayTrackBar();
 			}
 
 			UpdateGraph();
@@ -238,23 +243,20 @@ namespace Ratatoskr.PacketView.Graph
             }
 		}
 
-		private void UpdateGraph()
+		public void UpdateGraph()
 		{
             PBox_GraphDetails.Refresh();
 		}
 
         private void OnUpdateGraphRequestTimer(object sender, EventArgs e)
         {
+			graph_update_req_ = true;
+
             UpdateGraph();
         }
 
         private void OnValueSampled(object sender, long[] value)
         {
-			/* for Debug */
-			{
-//				Debugger.DebugManager.MessageOut(value[0]);
-			}
-
             disp_mod_.InputValue(value);
         }
 
@@ -296,16 +298,12 @@ namespace Ratatoskr.PacketView.Graph
 		{
 			Debugger.DebugManager.MessageOut("Paint Begin");
 
-			UpdateGraphRequestCancel();
+			disp_mod_?.DrawDisplay(new DisplayContext()
+			{
+				Canvas = e.Graphics,
+			});
 
-			disp_mod_?.DrawDisplay(
-				new DisplayContext()
-				{
-					Canvas = e.Graphics,
-				}
-            );
-
-            UpdateGraphRequest();
+			graph_update_req_ = false;
 
 			Debugger.DebugManager.MessageOut("Paint End");
         }

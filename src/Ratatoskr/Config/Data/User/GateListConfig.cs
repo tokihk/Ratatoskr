@@ -144,7 +144,7 @@ namespace Ratatoskr.Config.Data.User
 
             if (devp == null) {
 				/* 該当デバイスが存在しないかプロパティが生成できない */
-				DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.ConfigEvent, string.Format("LoadDeviceProperty Error: {0}", class_id.ToString("D")));
+				DebugManager.MessageOut(DebugEventSender.Application, DebugEventType.ConfigEvent, string.Format("LoadDeviceProperty Error: {0}", class_id.ToString("D")));
 				return (null);
 			}
 

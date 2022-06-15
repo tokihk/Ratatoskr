@@ -9,7 +9,7 @@ namespace Ratatoskr.General
 {
     public static class TextUtil
     {
-        const string UNIT_CODE_INT = " kMGTPEZY";
+        const string UNIT_CODE_INT = " kMGTPEZY?";
         const string UNIT_CODE_DEC = "munpfazy";
 
         public static string[] ReadCsvLine(StreamReader reader)
@@ -104,11 +104,45 @@ namespace Ratatoskr.General
             return (str.ToString());
         }
 
-        public static string DecToText(ulong value)
+        public static string DecToText(ulong value, uint decimal_num = 2)
         {
+#if true
+            var value_integer = value;
+            var value_decimal = (ulong)0;
+            var unit_index = 0;
+
+            while (value_integer >= 1000) {
+                value_decimal = value_integer % 1000;
+                value_integer /= 1000;
+                unit_index++;
+			}
+
+            var value_str = new StringBuilder();
+            
+            /* 整数部 */
+            value_str.Append(value_integer);
+
+            /* 小数部 */
+            if (decimal_num > 0) {
+                var remove_num = (int)(3 - decimal_num);
+
+                value_str.AppendFormat(".{0:D3}", value_decimal);
+                value_str.Remove(value_str.Length - remove_num - 1, remove_num);
+			}
+
+            /* 単位 */
+            if (unit_index > 0) {
+                value_str.Append(UNIT_CODE_INT[Math.Min(UNIT_CODE_INT.Length - 1, unit_index)]);
+            }
+
+            return (value_str.ToString());
+
+#else
             var value_int = value;
-            var value_dec = "";
+            var value_dec = 0;
+            var value_dec_str = "";
             var unit_code = "";
+            var unit_index = 0;
 
             /* 整数部分と最上位桁に合わせた単位を取得 */
             foreach (var code in UNIT_CODE_INT) {
@@ -116,11 +150,12 @@ namespace Ratatoskr.General
                     unit_code = code.ToString();
                     break;
                 }
-                value_dec = string.Format(".{0:D2}", (value_int % 1000) / 10);
+                value_dec_str = string.Format(".{0:D2}", (value_int % 1000) / 10);
                 value_int /= 1000;
             }
 
-            return ((value_int.ToString() + value_dec + unit_code).TrimEnd());
+            return ((value_int.ToString() + value_dec_str + unit_code).TrimEnd());
+#endif
         }
     }
 }

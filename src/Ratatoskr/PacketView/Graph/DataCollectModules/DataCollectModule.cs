@@ -98,9 +98,9 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 			ch_infos_ = ch_info_list.ToArray();
         }
 
-		public GraphChannelInfo[] ChannelInfos
+		public GraphChannelConfig[] ChannelConfigs
 		{
-			get { return (ch_infos_); }
+			get { return (ch_infos_.Select(v => v.ChannelConfig).ToArray()); }
 		}
 
         private void Sampling()

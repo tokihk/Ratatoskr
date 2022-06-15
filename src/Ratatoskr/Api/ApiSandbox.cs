@@ -80,7 +80,7 @@ namespace Ratatoskr.Api
             if (gates == null)return;
 
             /* 送信実行 */
-			DebugManager.MessageOut(DebugMessageSender.User, DebugMessageType.SendEvent, "API_SendData");
+			DebugManager.MessageOut(DebugEventSender.User, DebugEventType.SendEvent, "API_SendData");
             foreach (var obj in gates) {
                 obj.SendRequest(data);
             }

@@ -65,10 +65,10 @@ namespace Ratatoskr.PacketView.Graph
 		public IntegerConfig						InputDataChannelNum		{ get; } = new IntegerConfig(1);
 
 
-        public IntegerConfig		Oscillo_RecordPoint		{ get; } = new IntegerConfig(100000);
-        public IntegerConfig		Oscillo_DisplayPoint	{ get; } = new IntegerConfig(1000);
+        public IntegerConfig						Oscillo_RecordPoint		{ get; } = new IntegerConfig(100000);
+        public IntegerConfig						Oscillo_DisplayPoint	{ get; } = new IntegerConfig(1000);
 
-        public GraphChannelListConfig	ChannelList		{ get; } = new GraphChannelListConfig();
+        public GraphChannelListConfig				ChannelList				{ get; } = new GraphChannelListConfig();
 
 
         public PacketViewPropertyImpl()

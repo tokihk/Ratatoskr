@@ -262,7 +262,7 @@ namespace Ratatoskr.Config
                 System.Profile.ProfileID.Value = profile_list.First().ID;
             }
 
-            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.ConfigEvent, string.Format("Load Profile :{0}", GetCurrentProfileID()));
+            DebugManager.MessageOut(DebugEventSender.Application, DebugEventType.ConfigEvent, string.Format("Load Profile :{0}", GetCurrentProfileID()));
 
             User.Load(GetCurrentProfilePath());
 
@@ -283,7 +283,7 @@ namespace Ratatoskr.Config
 			/* 各モジュールの設定値をバックアップ */
 			PluginManager.BackupConfig();
 
-            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.ConfigEvent, string.Format("Save Profile :{0}", GetCurrentProfileID()));
+            DebugManager.MessageOut(DebugEventSender.Application, DebugEventType.ConfigEvent, string.Format("Save Profile :{0}", GetCurrentProfileID()));
 
             User.Save(GetCurrentProfilePath());
         }
@@ -328,7 +328,7 @@ namespace Ratatoskr.Config
             /* 指定のプロファイルを削除 */
             Shell.rm(GetProfilePath(profile_id));
 
-            DebugManager.MessageOut(DebugMessageSender.Application, DebugMessageType.ConfigEvent, string.Format("Delete Profile :{0}", profile_id));
+            DebugManager.MessageOut(DebugEventSender.Application, DebugEventType.ConfigEvent, string.Format("Delete Profile :{0}", profile_id));
 
             /* 選択中のプロファイルを削除したときは違うプロファイルを選択 */
             if (System.Profile.ProfileID.Value == profile_id) {

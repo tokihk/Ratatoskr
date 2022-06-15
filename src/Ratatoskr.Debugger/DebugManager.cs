@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Ratatoskr.Debugger
 {
 	[Flags]
-    public enum DebugMessageSender : Int64
+    public enum DebugEventSender : Int64
     {
         Application		= 1 << 0,
 
@@ -26,7 +26,7 @@ namespace Ratatoskr.Debugger
     }
 
 	[Flags]
-    public enum DebugMessageType : Int64
+    public enum DebugEventType : Int64
     {
         Startup          = 1 << 0,
         Shutdown         = 1 << 1,
@@ -46,7 +46,7 @@ namespace Ratatoskr.Debugger
     {
         private static Stopwatch systick_base_ = new Stopwatch();
 
-        private static DebugMessageMonitor message_monitor_ = null;
+        private static DebugMonitorForm debug_monitor_ = null;
 
 
         [Conditional("DEBUG")]
@@ -54,8 +54,8 @@ namespace Ratatoskr.Debugger
         {
             systick_base_.Start();
 
-            message_monitor_ = new DebugMessageMonitor();
-            message_monitor_.Visible = true;
+            debug_monitor_ = new DebugMonitorForm();
+            debug_monitor_.Visible = true;
         }
 
         public static ulong SystemTick
@@ -65,23 +65,44 @@ namespace Ratatoskr.Debugger
 
         [Conditional("DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MessageOut(in DebugMessageSender sender, in DebugMessageType type, in object obj)
+        public static void StatusOut(in string name, in DebugEventSender sender, in DebugEventType type, in object obj)
         {
-            message_monitor_.MessageOut(new DebugMessageInfo(DateTime.Now, SystemTick, sender, type, obj.ToString()));
+            debug_monitor_.StatusOut(name, new DebugEventInfo(DateTime.Now, SystemTick, sender, type, obj.ToString()));
         }
 
         [Conditional("DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MessageOut(in DebugMessageSender sender, in object obj)
+        public static void StatusOut(in string name, in DebugEventSender sender, in object obj)
         {
-            MessageOut(sender, DebugMessageType.NoCategory, obj);
+            StatusOut(name, sender, DebugEventType.NoCategory, obj);
+        }
+
+        [Conditional("DEBUG")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StatusOut(in string name, in object obj)
+        {
+            StatusOut(name, DebugEventSender.Unknown, DebugEventType.NoCategory, obj);
+        }
+
+        [Conditional("DEBUG")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void MessageOut(in DebugEventSender sender, in DebugEventType type, in object obj)
+        {
+            debug_monitor_.MessageOut(new DebugEventInfo(DateTime.Now, SystemTick, sender, type, obj.ToString()));
+        }
+
+        [Conditional("DEBUG")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void MessageOut(in DebugEventSender sender, in object obj)
+        {
+            MessageOut(sender, DebugEventType.NoCategory, obj);
         }
 
         [Conditional("DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MessageOut(in object obj)
         {
-            MessageOut(DebugMessageSender.Unknown, DebugMessageType.NoCategory, obj);
+            MessageOut(DebugEventSender.Unknown, DebugEventType.NoCategory, obj);
         }
     }
 }

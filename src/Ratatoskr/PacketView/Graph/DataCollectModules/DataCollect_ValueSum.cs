@@ -15,7 +15,7 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 
         public DataCollect_ValueSum(PacketViewPropertyImpl prop) : base(prop)
         {
-			values_sum_ = new long[ChannelInfos.Length];
+			values_sum_ = new long[ChannelConfigs.Length];
         }
 
 		protected override void OnExtractedValue(long[] value)
@@ -31,7 +31,7 @@ namespace Ratatoskr.PacketView.Graph.DataCollectModules
 		{
 			var sampling_values = values_sum_;
 
-			values_sum_ = new long[ChannelInfos.Length];
+			values_sum_ = new long[ChannelConfigs.Length];
 
 			return (values_sum_);
 		}

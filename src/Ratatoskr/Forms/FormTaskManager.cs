@@ -260,7 +260,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.Ready:
                 {
-                    DebugManager.MessageOut(DebugMessageSender.Form, "RedrawSequence.Ready");
+                    DebugManager.MessageOut(DebugEventSender.Form, "RedrawSequence.Ready");
 
                     /* 高速描画モード開始 */
                     PacketViewManager.Instance.HiSpeedDrawStart(false);
@@ -274,7 +274,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.PreprocessingStart:
                 {
-                    DebugManager.MessageOut(DebugMessageSender.Form, "RedrawSequence.PreprocessingStart");
+                    DebugManager.MessageOut(DebugEventSender.Form, "RedrawSequence.PreprocessingStart");
 
                     redraw_step_all_ = (ulong)(Math.Max(draw_packets_.Count, 1));
                     redraw_step_end_ = 0;
@@ -305,7 +305,7 @@ namespace Ratatoskr.Forms
 
                 case RedrawSequence.DrawingStart:
                 {
-                    DebugManager.MessageOut(DebugMessageSender.Form, "RedrawSequence.DrawingStart");
+                    DebugManager.MessageOut(DebugEventSender.Form, "RedrawSequence.DrawingStart");
 
                     redraw_step_all_ = (ulong)Math.Max(PacketViewManager.Instance.DrawPacketCount, 1);
                     redraw_step_end_ = 0;
@@ -348,7 +348,7 @@ namespace Ratatoskr.Forms
 
                     redraw_state_ = false;
 
-                    DebugManager.MessageOut(DebugMessageSender.Form, "RedrawSequence.Complete");
+                    DebugManager.MessageOut(DebugEventSender.Form, "RedrawSequence.Complete");
                 }
                     break;
 

@@ -232,7 +232,7 @@ namespace Ratatoskr.Forms.MainWindow
 
         private void OnGateDataRateUpdated(object sender, ulong send_rate, ulong recv_rate)
         {
-			DebugManager.MessageOut(DebugMessageSender.Device, DebugMessageType.ControlEvent, String.Format("{0} RateUpdated send={1} recv={2}", gate_.Alias, send_rate, recv_rate));
+			DebugManager.MessageOut(DebugEventSender.Device, DebugEventType.ControlEvent, String.Format("{0} RateUpdated send={1} recv={2}", gate_.Alias, send_rate, recv_rate));
 
             UpdateDataRate(send_rate, recv_rate);
         }

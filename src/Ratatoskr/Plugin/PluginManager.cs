@@ -123,7 +123,7 @@ namespace Ratatoskr.Plugin
         private delegate void LoadAllPluginTaskDelegate(string path_plugin);
         private static void LoadAllPluginTask(string path_plugin)
         {
-            DebugManager.MessageOut(DebugMessageSender.Plugin, string.Format("LoadAllPlugin - Start: [{0}]", path_plugin));
+            DebugManager.MessageOut(DebugEventSender.Plugin, string.Format("LoadAllPlugin - Start: [{0}]", path_plugin));
 
             /* プラグイン検索 */
             try {
@@ -144,7 +144,7 @@ namespace Ratatoskr.Plugin
 
             Program.SetStartupProgress(Program.StartupTaskID.LoadPlugin, 100);
 
-            DebugManager.MessageOut(DebugMessageSender.Plugin, "LoadAllPlugin - End");
+            DebugManager.MessageOut(DebugEventSender.Plugin, "LoadAllPlugin - End");
         }
 
         private static void LoadPlugin(string asm_path)
@@ -185,7 +185,7 @@ namespace Ratatoskr.Plugin
 			if (plgi == null)return;
 
             lock (plugin_sync_) {
-                DebugManager.MessageOut(DebugMessageSender.Plugin, string.Format("LoadPlugin [{0}]", info.AssemblyPath));
+                DebugManager.MessageOut(DebugEventSender.Plugin, string.Format("LoadPlugin [{0}]", info.AssemblyPath));
 
                 plugin_list_.Add(plgi);
 

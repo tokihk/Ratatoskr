@@ -9,6 +9,6 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 {
     internal class DisplayContext
     {
-        public Graphics					Canvas         { get; set; }
+		public Graphics		Canvas				{ get; set; }
     }
 }

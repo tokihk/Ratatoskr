@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Ratatoskr.Debugger
 {
-    internal partial class DebugMessageMonitor : Form
+    internal partial class DebugMonitorForm : Form
     {
         private const int DRAW_INTERVAL = 100;
 
@@ -26,22 +26,26 @@ namespace Ratatoskr.Debugger
 
 
         private System.Windows.Forms.Timer draw_timer_ = new System.Windows.Forms.Timer();
-        private Stopwatch draw_time_ = new Stopwatch();
 
-		private List<DebugMessageInfo>	msg_list_all_ = new List<DebugMessageInfo>();
+		private Dictionary<string, DebugEventInfo>	status_list_all_ = new Dictionary<string, DebugEventInfo>();
+		private List<DebugEventInfo>				msg_list_all_ = new List<DebugEventInfo>();
+
+		private object											draw_status_sync_ = new object();
+        private Queue<KeyValuePair<string, DebugEventInfo>>		draw_status_queue_ = new Queue<KeyValuePair<string, DebugEventInfo>>();
+		private bool											draw_status_enable_ = true;
 
 		private object						draw_msg_sync_ = new object();
-        private Queue<DebugMessageInfo>		draw_msg_queue_ = new Queue<DebugMessageInfo>();
-		private DebugMessageInfo			draw_msg_last_ = null;
+        private Queue<DebugEventInfo>		draw_msg_queue_ = new Queue<DebugEventInfo>();
 		private bool						draw_msg_enable_ = true;
+		private DebugEventInfo				draw_msg_last_ = null;
 
-		private DrawItemAttr		draw_item_attr_ = (DrawItemAttr)(-1);
+		private DrawItemAttr				draw_item_attr_ = (DrawItemAttr)(-1);
 
-		private DebugMessageSender	draw_msg_sender_ = DebugMessageSender.Unknown;
-		private DebugMessageType	draw_msg_type_   = DebugMessageType.NoCategory;
+		private DebugEventSender			draw_msg_sender_ = DebugEventSender.Unknown;
+		private DebugEventType				draw_msg_type_   = DebugEventType.NoCategory;
 
 
-        public DebugMessageMonitor()
+        public DebugMonitorForm()
         {
             InitializeComponent();
 			InitializeMenuBar();
@@ -68,7 +72,7 @@ namespace Ratatoskr.Debugger
 			}
 
 			/* MenuBar - Filter - Sender */
-			foreach (DebugMessageSender sender in Enum.GetValues(typeof(DebugMessageSender))) {
+			foreach (DebugEventSender sender in Enum.GetValues(typeof(DebugEventSender))) {
 				var menu = new ToolStripMenuItem();
 
 				menu.Text = sender.ToString();
@@ -82,7 +86,7 @@ namespace Ratatoskr.Debugger
 			MenuBar_Filter.DropDownItems.Add(new ToolStripSeparator());
 
 			/* MenuBar - Filter - Type */
-			foreach (DebugMessageType type in Enum.GetValues(typeof(DebugMessageType))) {
+			foreach (DebugEventType type in Enum.GetValues(typeof(DebugEventType))) {
 				var menu = new ToolStripMenuItem();
 
 				menu.Text = type.ToString();
@@ -95,6 +99,7 @@ namespace Ratatoskr.Debugger
 
 			/* MenuBar - Debug */
 			MenuBar_Debug_MessageWatch.Checked = draw_msg_enable_;
+			MenuBar_Debug_StatusWatch.Checked = draw_status_enable_;
 		}
 
 		private void UpdateDrawItemType()
@@ -123,10 +128,10 @@ namespace Ratatoskr.Debugger
 				if (item is ToolStripMenuItem menu) {
 					if (menu.Checked) {
 						switch (menu.Tag) {
-							case DebugMessageSender sender:
+							case DebugEventSender sender:
 								draw_msg_sender_ |= sender;
 								break;
-							case DebugMessageType type:
+							case DebugEventType type:
 								draw_msg_type_ |= type;
 								break;
 						}
@@ -135,7 +140,34 @@ namespace Ratatoskr.Debugger
 			}
 		}
 
-		private string BuildMessage(DebugMessageInfo minfo, DebugMessageInfo minfo_prev, DrawItemAttr draw_item_attr = (DrawItemAttr)(-1))
+		private void UpdateStatusValue()
+		{
+			var status_list = status_list_all_.ToList();
+
+			status_list.Sort((a, b) => a.Key.CompareTo(b.Key));
+
+			LView_Status.BeginUpdate();
+			{
+				foreach (var status in status_list) {
+					var item = LView_Status.FindItemWithText(status.Key);
+
+					if (item != null) {
+						if (item.SubItems[1].Text != status.Value.Value) {
+							item.SubItems[1].Text = status.Value.Value;
+						}
+
+					} else {
+						item = new ListViewItem();
+						item.Text = status.Key;
+						item.SubItems.Add(status.Value.Value);
+						LView_Status.Items.Add(item);
+					}
+				}
+			}
+			LView_Status.EndUpdate();
+		}
+
+		private string BuildMessage(DebugEventInfo minfo, DebugEventInfo minfo_prev, DrawItemAttr draw_item_attr = (DrawItemAttr)(-1))
 		{
 			var str = new StringBuilder();
 
@@ -160,16 +192,33 @@ namespace Ratatoskr.Debugger
 			}
 
 			/* Message */
-			str.Append(minfo.Message);
+			str.Append(minfo.Value);
 
 			return (str.ToString());
 		}
 
-		private void OnDrawTimer(object sender, EventArgs e)
-        {
-            DebugMessageInfo msg;
+		private void DrawStatusProc()
+		{
+			var draw_timer = new System.Diagnostics.Stopwatch();
+            var status = new KeyValuePair<string, DebugEventInfo>();
 
-            draw_time_.Restart();
+            draw_timer.Restart();
+
+            while ((draw_status_enable_) && (PopStatus(ref status))) {
+				status_list_all_[status.Key] = status.Value;
+
+                if (draw_timer.ElapsedMilliseconds >= (DRAW_INTERVAL / 2))break;
+            }
+
+			UpdateStatusValue();
+		}
+
+		private void DrawMessageProc()
+		{
+			var draw_timer = new System.Diagnostics.Stopwatch();
+            DebugEventInfo msg;
+
+            draw_timer.Restart();
 
             while ((draw_msg_enable_) && ((msg = PopMessage()) != null)) {
 				msg_list_all_.Add(msg);
@@ -179,18 +228,59 @@ namespace Ratatoskr.Debugger
 					draw_msg_last_ = msg;
 				}
 
-                if (draw_time_.ElapsedMilliseconds >= (DRAW_INTERVAL / 2))break;
+                if (draw_timer.ElapsedMilliseconds >= (DRAW_INTERVAL / 2))break;
             }
+		}
+
+		private void OnDrawTimer(object sender, EventArgs e)
+        {
+            DrawStatusProc();
+			DrawMessageProc();
         }
 
-		public void MessageOut(DebugMessageInfo mi)
+		public void StatusOut(string name, DebugEventInfo ei)
+		{
+			lock (draw_msg_sync_) {
+				draw_status_queue_.Enqueue(new KeyValuePair<string, DebugEventInfo>(name, ei));
+			}
+		}
+
+        private bool PopStatus(ref KeyValuePair<string, DebugEventInfo> ei)
+        {
+			if (draw_status_queue_.Count == 0)return (false);
+
+			var get_ok = false;
+
+            lock (draw_status_sync_) {
+				if (draw_status_queue_.Count > 0) {
+					ei = draw_status_queue_.Dequeue();
+					get_ok = true;
+				}
+            }
+
+			return (get_ok);
+        }
+
+        private void ClearStatus()
+        {
+            if (InvokeRequired) {
+                Invoke((MethodInvoker)ClearStatus);
+                return;
+            }
+
+            LView_Status.Items.Clear();
+
+            draw_status_queue_ = new Queue<KeyValuePair<string, DebugEventInfo>>();
+        }
+
+		public void MessageOut(DebugEventInfo mi)
 		{
             lock (draw_msg_sync_) {
                 draw_msg_queue_.Enqueue(mi);
             }
 		}
 
-        private DebugMessageInfo PopMessage()
+        private DebugEventInfo PopMessage()
         {
             if (draw_msg_queue_.Count == 0)return (null);
 
@@ -209,8 +299,8 @@ namespace Ratatoskr.Debugger
             TBox_Message.Clear();
 
             lock (draw_msg_sync_) {
-				msg_list_all_ = new List<DebugMessageInfo>();
-                draw_msg_queue_ = new Queue<DebugMessageInfo>();
+				msg_list_all_ = new List<DebugEventInfo>();
+                draw_msg_queue_ = new Queue<DebugEventInfo>();
 				draw_msg_last_ = null;
             }
         }
@@ -231,14 +321,14 @@ namespace Ratatoskr.Debugger
 				}
 
 				/* 表示待ちメッセージキューを初期化 */
-				draw_msg_queue_ = new Queue<DebugMessageInfo>();
+				draw_msg_queue_ = new Queue<DebugEventInfo>();
 				draw_msg_last_ = null;
 
 				/* 全メッセージを表示待ちにする */
 				msg_list_all_.ForEach(minfo => draw_msg_queue_.Enqueue(minfo));
 
 				/* 表示済みメッセージリストを初期化 */
-				msg_list_all_ = new List<DebugMessageInfo>();
+				msg_list_all_ = new List<DebugEventInfo>();
 			}
 		}
 
@@ -292,7 +382,15 @@ namespace Ratatoskr.Debugger
 		private void MenuBar_Debug_MessageWatch_Click(object sender, EventArgs e)
 		{
 			draw_msg_enable_ = !draw_msg_enable_;
+
 			MenuBar_Debug_MessageWatch.Checked = draw_msg_enable_;
+		}
+
+		private void MenuBar_Debug_StatusWatch_Click(object sender, EventArgs e)
+		{
+			draw_status_enable_ = !draw_status_enable_;
+
+			MenuBar_Debug_StatusWatch.Checked = draw_status_enable_;
 		}
 	}
 }

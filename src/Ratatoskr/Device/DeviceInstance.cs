@@ -289,7 +289,7 @@ namespace Ratatoskr.Device
                 data_queue.Enqueue(data);
             }
 
-            DebugManager.MessageOut(DebugMessageSender.Application ,DebugMessageType.SendEvent, "DeviceInstance.OnSendRequest");
+            DebugManager.MessageOut(DebugEventSender.Application ,DebugEventType.SendEvent, "DeviceInstance.OnSendRequest");
 
             /* 送信要求に対する最速の通知 */
             OnSendRequest();
@@ -374,7 +374,7 @@ namespace Ratatoskr.Device
                     send_data_busy_ = null;
                 }
 
-                DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.SendEvent, "DeviceInstance.GetSendData");
+                DebugManager.MessageOut(DebugEventSender.Device ,DebugEventType.SendEvent, "DeviceInstance.GetSendData");
 
                 return (send_size);
             }
@@ -404,7 +404,7 @@ namespace Ratatoskr.Device
                 send_data_busy_ = null;
                 send_data_offset_ = 0;
 
-                DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.SendEvent, "DeviceInstance.GetSendData");
+                DebugManager.MessageOut(DebugEventSender.Device ,DebugEventType.SendEvent, "DeviceInstance.GetSendData");
 
                 return (send_data);
             }
@@ -604,7 +604,7 @@ namespace Ratatoskr.Device
 
 #if DEBUG
             if (wait_result == (int)DevicePollEventID.ActiveRequest) {
-                DebugManager.MessageOut(DebugMessageSender.Device ,DebugMessageType.PollEvent, string.Format("DeviceInstance.Poll = {0}", wait_result));
+                DebugManager.MessageOut(DebugEventSender.Device ,DebugEventType.PollEvent, string.Format("DeviceInstance.Poll = {0}", wait_result));
             }
 #endif
 
