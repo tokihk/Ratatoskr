@@ -10,8 +10,8 @@ namespace Ratatoskr.PacketView.Graph
 {
     internal enum DisplayModeType
     {
-        OscilloScope,
-        SpectrumAnalyzer,
+        Oscillo,
+        Spectrum,
     }
 
     internal enum GraphTargetType
@@ -54,7 +54,7 @@ namespace Ratatoskr.PacketView.Graph
 
     internal class PacketViewPropertyImpl : PacketViewProperty
     {
-        public EnumConfig<DisplayModeType>			DisplayMode				{ get; } = new EnumConfig<DisplayModeType>(DisplayModeType.OscilloScope);
+        public EnumConfig<DisplayModeType>			DisplayMode				{ get; } = new EnumConfig<DisplayModeType>(DisplayModeType.Oscillo);
 
         public EnumConfig<GraphTargetType>			GraphTarget				{ get; } = new EnumConfig<GraphTargetType>(GraphTargetType.DataValue);
 

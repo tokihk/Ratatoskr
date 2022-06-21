@@ -271,26 +271,6 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 			draw_ch_data_ = draw_ch_data_list.ToArray();
 		}
 
-		protected override void OnDisplayResized(Rectangle disp_rect)
-		{
-			/* グラフ描画エリアのサイズ更新 */
-			var rect_graph = new Rectangle();
-
-			rect_graph.X = disp_rect.Left + GRAPH_DETAILS_MARGIN.Left;
-			rect_graph.Y = disp_rect.Top + GRAPH_DETAILS_MARGIN.Top;
-			rect_graph.Width = disp_rect.Width - GRAPH_DETAILS_MARGIN.Horizontal;
-			rect_graph.Height = disp_rect.Height - GRAPH_DETAILS_MARGIN.Vertical;
-
-			canvas_rect_main_ = disp_rect;
-			canvas_rect_graph_ = rect_graph;
-
-			canvas_rect_ch_info_.X = canvas_rect_graph_.X;
-			canvas_rect_ch_info_.Y = canvas_rect_graph_.Bottom + CHANNEL_INFO_MARGIN.Top;
-			canvas_rect_ch_info_.Width = canvas_rect_graph_.Width;
-			canvas_rect_ch_info_.Height = canvas_rect_main_.Bottom - canvas_rect_graph_.Y;
-		}
-
-
 		private long GetChannelValueMax(GraphChannelConfig ch_cfg)
 		{
 			var point = (long)GRID_Y_DIV;
@@ -328,8 +308,8 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 			DrawBackground();
 
 			/* グラフのデータを描画(キャッシュ無し) */
-//			DrawGraph();
-			DrawGraphSimd();
+			DrawGraph();
+//			DrawGraphSimd();
 
 			/* グラフの前面描画(キャッシュ無し) */
 			DrawForeground();
@@ -554,7 +534,10 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 					int *		paxisx_canvas_values_work = paxisx_canvas_values;
 					Point *		pdraw_points_work = pdraw_points;
 
+					for (var index = 0; index < axisx_value_indexes_.Length; index++) {
+					}
 
+#if false
 					for (var index = 0; index < axisx_value_indexes_.Length; index++) {
 						axisy_values[index] = ch_data.AxisY_Values[(ch_value_in + axisx_value_indexes_[index]) % ch_data.AxisY_Values.Length];
 						asisy_steps[index] = ch_data.AxisY_CanvasStep;
@@ -580,6 +563,7 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 						pdraw_points_work->Y = (int)axisy_value_v[index];
 						pdraw_points_work++;
 					}
+#endif
 
 #if false
 					foreach (var axisx_value_index in axisx_value_indexes_) {

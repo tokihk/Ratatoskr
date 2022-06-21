@@ -35,16 +35,7 @@ namespace Ratatoskr.PacketView.Graph.DisplayModules
 			OnDisplayConfigUpdated(config);
 		}
 
-		public void SetDisplaySize(Rectangle display_rect)
-		{
-			OnDisplayResized(display_rect);
-		}
-
 		protected virtual void OnDisplayConfigUpdated(DisplayConfig config)
-		{
-		}
-
-		protected virtual void OnDisplayResized(Rectangle display_rect)
 		{
 		}
 

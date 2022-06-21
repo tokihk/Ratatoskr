@@ -23,6 +23,7 @@ namespace Ratatoskr.PacketView.Graph
 
 
         public event EventHandler SamplingSettingUpdated;
+        public event EventHandler DisplayModeUpdated;
         public event EventHandler DisplaySettingUpdated;
         public event EventHandler ChannelSettingUpdated;
 
@@ -191,11 +192,23 @@ namespace Ratatoskr.PacketView.Graph
             SamplingSettingUpdated?.Invoke(this, EventArgs.Empty);
         }
 
-        private void OnDisplaySettingUpdated(object sender, EventArgs e)
-        {
+		private void OnDisplayModeUpdated(object sender, EventArgs e)
+		{
             BackupDisplayConfig();
 
-            DisplaySettingUpdated?.Invoke(this, EventArgs.Empty);
+            DisplayModeUpdated?.Invoke(this, EventArgs.Empty);
+		}
+
+        private void OnDisplaySettingUpdated(object sender, EventArgs e)
+        {
+			if (prop_.DisplayMode.Value != (DisplayModeType)CBox_DisplayMode.SelectedItem) {
+				OnDisplayModeUpdated(sender, e);
+
+			} else {
+				BackupDisplayConfig();
+
+				DisplaySettingUpdated?.Invoke(this, EventArgs.Empty);
+			}
         }
 
 		private void OnChannelSettingUpdated(object sender, EventArgs e)
@@ -362,15 +375,5 @@ namespace Ratatoskr.PacketView.Graph
 
             OnChannelSettingUpdated(sender, e);
         }
-
-		private void label16_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void numericUpDown1_ValueChanged(object sender, EventArgs e)
-		{
-
-		}
 	}
 }

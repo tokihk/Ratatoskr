@@ -63,6 +63,7 @@ namespace Ratatoskr.PacketView.Graph
 			this.GCPanel_Main.Size = new System.Drawing.Size(550, 570);
 			this.GCPanel_Main.TabIndex = 1;
 			this.GCPanel_Main.SamplingSettingUpdated += new System.EventHandler(this.GCPanel_Main_SamplingSettingUpdated);
+			this.GCPanel_Main.DisplayModeUpdated += new System.EventHandler(this.GCPanel_Main_DisplayModeUpdated);
 			this.GCPanel_Main.DisplaySettingUpdated += new System.EventHandler(this.GCPanel_Main_DisplaySettingUpdated);
 			this.GCPanel_Main.ChannelSettingUpdated += new System.EventHandler(this.GCPanel_Main_ChannelSettingUpdated);
 			// 
@@ -181,8 +182,11 @@ namespace Ratatoskr.PacketView.Graph
 			disp_mod_?.Dispose();
 
 			switch (prop_.DisplayMode.Value) {
-				case DisplayModeType.OscilloScope:
+				case DisplayModeType.Oscillo:
 					disp_mod_ = new Display_Oscillo();
+					break;
+				case DisplayModeType.Spectrum:
+					disp_mod_ = new Display_Spectrum();
 					break;
 				default:
 					disp_mod_ = null;
@@ -211,8 +215,6 @@ namespace Ratatoskr.PacketView.Graph
 
 		private void UpdateDisplayConfig()
 		{
-			UpdateDisplayTrackBar();
-
 			if (disp_mod_ != null) {
 				disp_mod_.SetDisplayConfig(new DisplayConfig()
 				{
@@ -223,9 +225,9 @@ namespace Ratatoskr.PacketView.Graph
 					DisplayRect = PBox_GraphDetails.ClientRectangle
 				});
 
-				UpdateDisplayTrackBar();
 			}
 
+			UpdateDisplayTrackBar();
 			UpdateGraph();
 		}
 
@@ -321,6 +323,11 @@ namespace Ratatoskr.PacketView.Graph
         private void GCPanel_Main_SamplingSettingUpdated(object sender, EventArgs e)
         {
             UpdateModule();
+        }
+
+        private void GCPanel_Main_DisplayModeUpdated(object sender, EventArgs e)
+        {
+			UpdateModule();
         }
 
         private void GCPanel_Main_DisplaySettingUpdated(object sender, EventArgs e)
